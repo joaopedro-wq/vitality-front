@@ -50,6 +50,11 @@ src/app/
           revisar-step/            passo 4 — form + salva recomendação/meta, emite ao concluir
     recomendacao/    (sem página própria — a UI virou o passo "Sugestão" do quiz)
     perfil/perfil-page/
+      perfil-page.component.*      orquestrador do quiz de perfil (passo e confirmação)
+      steps/
+        identidade-step/           nome, e-mail, nascimento, gênero e avatar
+        corpo-step/                peso e altura
+        rotina-step/               atividade, objetivo e resumo final
     ui-check/    smoke test visual da Fase 0 — remover quando o dashboard real existir
   app.routes.ts
   app.config.ts

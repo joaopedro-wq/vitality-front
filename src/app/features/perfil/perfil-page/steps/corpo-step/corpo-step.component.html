@@ -1,0 +1,22 @@
+<div class="flex flex-col gap-6">
+  <div>
+    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">Etapa 2</p>
+    <h2 class="m-0 mt-1 text-[20px] tracking-[-0.02em]">Seu corpo</h2>
+    <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">Essas medidas permitem que as metas acompanhem melhor o seu momento.</p>
+  </div>
+
+  <form [formGroup]="form" class="grid max-w-xl gap-5 sm:grid-cols-2" (ngSubmit)="avancar()">
+    <bd-field label="Peso (kg)" required hint="Ajuda a estimar seu gasto energético basal." [error]="form.controls.peso.touched && form.controls.peso.invalid ? 'Use um valor entre 30 e 300 kg.' : ''">
+      <input bdInput type="number" formControlName="peso" vtpSomenteNumero inputmode="decimal" />
+    </bd-field>
+    <bd-field label="Altura (cm)" required hint="Informe a altura em centímetros." [error]="form.controls.altura.touched && form.controls.altura.invalid ? 'Use um valor entre 100 e 250 cm.' : ''">
+      <input bdInput type="number" formControlName="altura" vtpSomenteNumero inputmode="numeric" />
+    </bd-field>
+  </form>
+
+  <div class="rounded-[var(--bd-radius-md)] border border-border bg-surface-raised px-4 py-3 text-[12px] leading-[1.55] text-fg-muted">
+    Você poderá ajustar esses dados sempre que houver uma mudança significativa no seu corpo ou rotina.
+  </div>
+
+  <vtp-step-footer [carregando]="salvando()" (voltar)="voltar.emit()" (avancar)="avancar()" />
+</div>

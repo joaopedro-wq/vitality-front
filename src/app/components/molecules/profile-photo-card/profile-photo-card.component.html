@@ -1,0 +1,56 @@
+<section class="flex flex-col items-center gap-3 text-center">
+  <div class="relative">
+    <div
+      class="grid rounded-full p-[5px]"
+      style="background: conic-gradient(from -40deg, var(--bd-primary), var(--bd-accent) 40%, var(--bd-primary) 100%); box-shadow: 0 0 0 6px var(--bd-primary-soft);"
+    >
+      <bd-avatar [name]="name()" [src]="src()" size="xl" class="border-[3px] border-surface" />
+    </div>
+    @if (!somenteLeitura()) {
+      <label class="absolute inset-0 cursor-pointer rounded-full" [attr.aria-label]="src() ? 'Alterar foto de perfil' : 'Adicionar foto de perfil'">
+        <input class="sr-only" type="file" accept="image/jpeg,image/png,image/gif" (change)="onFileChange($event)" />
+        @if (!src() || selectedFileName()) {
+          <span class="absolute -right-0.5 bottom-1 grid size-7 place-items-center rounded-full border-2 border-surface bg-accent text-accent-contrast">
+            <svg lucideCamera size="14" aria-hidden="true"></svg>
+          </span>
+        }
+      </label>
+      @if (src() && !selectedFileName()) {
+        <button
+          type="button"
+          class="absolute -right-0.5 bottom-1 grid size-7 place-items-center rounded-full border-2 border-surface bg-danger text-white disabled:opacity-70"
+          aria-label="Remover foto"
+          [disabled]="removendo()"
+          (click)="remover.emit()"
+        >
+          @if (removendo()) {
+            <svg lucideLoaderCircle size="13" class="animate-spin" aria-hidden="true"></svg>
+          } @else {
+            <svg lucideTrash2 size="13" aria-hidden="true"></svg>
+          }
+        </button>
+      }
+    }
+  </div>
+
+  @if (!somenteLeitura() && selectedFileName(); as fileName) {
+    <div class="flex min-w-0 max-w-full items-center gap-1 rounded-full border border-border-strong py-1 pl-3 pr-1 text-[12px] font-bold text-fg-muted">
+      <span class="truncate">{{ fileName }}</span>
+      <button bdButton variant="ghost" size="sm" iconOnly aria-label="Cancelar nova foto" (click)="cancelar.emit()">
+        <svg lucideX size="15" aria-hidden="true"></svg>
+      </button>
+    </div>
+  }
+
+  <div class="min-w-0">
+    <p class="m-0 text-[15px] font-extrabold text-fg">{{ name() }}</p>
+    <p class="m-0 mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap text-[12px] text-fg-muted">{{ email() }}</p>
+  </div>
+
+  <span class="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 text-[11px] font-bold text-fg">
+    <span class="h-1 w-11 overflow-hidden rounded-full bg-border-strong">
+      <span class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out" [style.width.%]="progresso()"></span>
+    </span>
+    Perfil {{ progresso() }}% completo
+  </span>
+</section>

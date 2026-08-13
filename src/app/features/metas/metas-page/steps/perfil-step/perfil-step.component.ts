@@ -107,7 +107,10 @@ export class PerfilStepComponent {
       })
       .pipe(finalize(() => this.salvando.set(false)))
       .subscribe({
-        next: (userAtualizado) => this.concluido.emit(userAtualizado),
+        next: (userAtualizado) => {
+          this.authService.setCurrentUser(userAtualizado);
+          this.concluido.emit(userAtualizado);
+        },
         error: () => this.toastr.error('Não foi possível salvar seu perfil agora. Tente de novo.'),
       });
   }

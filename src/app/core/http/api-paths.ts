@@ -23,8 +23,7 @@ export const apiPaths = {
   me: () => `${environment.apiBaseUrl}/user/get-with-token`,
   users: () => `${environment.apiBaseUrl}/users`,
   user: (id: number | string) => `${environment.apiBaseUrl}/user/${id}`,
-  updateProfilePic: (id: number | string) => `${environment.apiBaseUrl}/user/update-profile-pic/${id}`,
-  deleteProfilePic: (id: number | string) => `${environment.apiBaseUrl}/user/delete-profile-pic/${id}`,
+  userAvatar: () => `${environment.apiBaseUrl}/user/avatar`,
 
   alimentos: () => `${environment.apiBaseUrl}/food`,
   alimento: (id: number | string) => `${environment.apiBaseUrl}/food/${id}`,

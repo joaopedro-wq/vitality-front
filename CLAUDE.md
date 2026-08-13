@@ -250,7 +250,7 @@ Resposta geralmente `{data, success, message?}`. **Nenhum endpoint pagina.**
 | Registro | `/api/registro[/{id}]` | `data, id_refeicao, alimentos:[{id,qtd}]` — o diário real (o que foi comido). `index` retorna `{id, data, descricao_refeicao, alimentos:[...], nutrientes_totais:{...}}`. Fator de cálculo: `qtd_pivot / qtd_base_alimento` (replicado em `shared/utils/nutrient-calc.util.ts` para preview client-side). |
 | Meta diária | `/api/meta[/{id}]` | `meta_calorias, meta_proteinas, meta_carboidratos, meta_gorduras, data?`. O backend não impede duplicatas, mas o front trata a meta com `data: null` como "a vigente" e faz upsert nela (`MetaService.save`) — evita acumular registros a cada salvamento. |
 | Recomendação | `/api/recomendacao[/{id}]` | `get` (Gasto Energético Total), `tmb` (Taxa Metabólica Basal), `caloria, proteina, carbo, gordura`. **1 por usuário** — `POST` dá 400 se já existe. Em vez de reagir ao 400, `RecomendacaoService.save` sempre consulta o `index` antes e decide `POST`/`PUT` — mais previsível. `shared/utils/recomendacao-calc.util.ts` calcula uma sugestão inicial (TMB Mifflin-St Jeor + fator de atividade) a partir do perfil do usuário (peso/altura/idade/gênero/atividade/objetivo — campos da Fase 8); sem esses dados, o formulário fica em preenchimento manual. |
-| User | `/api/users`, `/api/user/{id}`, `PUT /api/user/{id}` (multipart, avatar), `/api/user/update-profile-pic/{id}`, `/api/user/delete-profile-pic/{id}` | `name, email, password, data_nascimento, genero, peso, altura, avatar, nivel_atividade, objetivo`. **`name` e `email` são obrigatórios em TODO `PUT`**, mesmo atualizando só outro campo — `UserService.updateProfile()` sempre inclui os dois a partir de `AuthService.currentUser()`. Corrigido em 2026-08-13: o `update()` fazia `$user->update([...$request->campo])` com todo campo ausente virando `null`, **apagando o resto do perfil a cada PUT parcial** (achado ao implementar o quiz de Metas — passo 2 zerava peso/altura salvos no passo 1). Agora usa `$request->only([...])`, que só toca nos campos realmente enviados — testado ponta a ponta. |
+| User | `/api/users`, `/api/user/{id}`, `PUT /api/user/{id}`, `POST /api/user/avatar`, `DELETE /api/user/avatar` | `name, email, password, data_nascimento, genero, peso, altura, avatar, nivel_atividade, objetivo`. **`name` e `email` são obrigatórios em TODO `PUT`**, mesmo atualizando só outro campo — `UserService.updateProfile()` sempre inclui os dois a partir de `AuthService.currentUser()`. O avatar é do usuário autenticado (sem `id` na URL), usa `FormData` no campo `avatar` (JPEG/PNG/JPG/GIF, até 2 MB), `UpdateUserAvatarRequest` para validação, `UserAvatarService` para troca/remoção atômica no disco `public` e `UserResource` para devolver URL pública estável. O banco guarda apenas o caminho relativo. Corrigido em 2026-08-13: o `update()` fazia `$user->update([...$request->campo])` com todo campo ausente virando `null`, **apagando o resto do perfil a cada PUT parcial** (achado ao implementar o quiz de Metas — passo 2 zerava peso/altura salvos no passo 1). Agora usa `$request->only([...])`, que só toca nos campos realmente enviados — testado ponta a ponta. |
 
 Todos os caminhos acima são centralizados em `core/http/api-paths.ts` (`authPaths` / `apiPaths`) —
 usar sempre essas funções em vez de montar strings de URL na mão.
@@ -409,6 +409,26 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).
 7. Dietas (planos reutilizáveis).
-8. Perfil (dados pessoais + avatar) — `UserService` já existe (ver Fase 3), falta upload de
-   avatar e o resto da tela.
+8. Perfil (dados pessoais + avatar) — ✅ feito. É um quiz de 3 etapas: identidade e avatar,
+   corpo, rotina e confirmação. Cada avanço persiste seu grupo de dados, reduzindo perda de
+   progresso; permite preview, envio, troca e remoção de avatar. Toda resposta sincroniza
+   `AuthService.currentUser()` para refletir imediatamente na sidebar/topbar.
+   Segunda passada — "crachá de jogador" (2026-08-13): o `ProfilePhotoCardComponent` (avatar +
+   texto + botões, todos do mesmo peso visual) foi comparado contra 4 outros conceitos num
+   artefato (capa+avatar estilo LinkedIn, hover-reveal estilo Google Conta, dropzone estilo
+   Notion, popover estilo Slack) e reconstruído estendendo a linguagem de "jogo/RPG" que o
+   `MetaRevealComponent` já usa em Metas — anel com `conic-gradient` + glow em
+   `--bd-primary`/`--bd-accent`, badge de câmera em `--bd-accent`, e um selo
+   "Perfil X% completo" (`calcularProgressoPerfil`, `components/utils/perfil-progresso.util.ts` —
+   9 campos com peso igual, avatar recém-selecionado mas ainda não salvo conta como preenchido).
+   O componente ganhou `somenteLeitura` (booleano via `booleanAttribute`) pra reaproveitar o mesmo
+   crachá na tela de conclusão do quiz (`perfil-page.component.html`), substituindo o
+   ícone-de-check + avatar solto que só existia ali — antes eram duas linguagens visuais pro
+   mesmo "perfil pronto", agora é uma. Puxou o `rotina-step` (nível de atividade + objetivo) e os
+   chips de gênero do `identidade-step` pro mesmo padrão de chip com pontos de intensidade/ícone/
+   easing de mola que o `atividade-step` de Metas já tinha — os dois fluxos editam os mesmos
+   campos do `User` (`nivel_atividade`, `objetivo`), então usam agora o mesmo vocabulário visual
+   em vez de um grid de cards bordados num lugar e chips pill no outro. `profile-photo-card.
+   component.scss` foi apagado (Tailwind direto no template, mesmo padrão dos componentes mais
+   recentes — ver Stack).
 9. Polimento transversal (onboarding, estados vazios, a11y, testes essenciais) — intercalado com as demais.

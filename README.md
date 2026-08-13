@@ -25,12 +25,12 @@ API do backend Laravel (`../vitality-Back`).
   (composição nutricional de alimentos brasileiros), com valores de proteína/carboidrato/gordura/
   calorias por porção.
 - 📊 **Painel de acompanhamento** — meta vs. consumido, num relance.
-- 👤 **Perfil** — peso, altura, idade, nível de atividade e objetivo alimentam o cálculo da meta
-  automaticamente; atualizar qualquer um deles é o gatilho pra refazer o quiz e recalcular.
+- 👤 **Perfil em etapas** — identidade e avatar → corpo → rotina e confirmação. Cada avanço é salvo
+  imediatamente, reduzindo perda de dados e mantendo a meta alinhada ao perfil atual.
 
 Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
-metas/recomendação nutricional. O restante do roadmap — alimentos, diário, dietas, dashboard,
-perfil completo — está em desenvolvimento incremental.
+metas/recomendação nutricional e perfil completo (dados pessoais, rotina e avatar). O restante do
+roadmap — alimentos, diário, dietas e dashboard — está em desenvolvimento incremental.
 
 ## Identidade visual
 

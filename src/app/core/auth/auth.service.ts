@@ -38,6 +38,11 @@ export class AuthService {
   readonly bootstrapped = this.bootstrappedSignal.asReadonly();
   readonly isAuthenticated = computed(() => this.currentUserSignal() !== null);
 
+  /** Mantém a sessão em memória sincronizada após alterações feitas no perfil. */
+  setCurrentUser(user: User): void {
+    this.currentUserSignal.set(user);
+  }
+
   
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(authPaths.login(), payload).pipe(

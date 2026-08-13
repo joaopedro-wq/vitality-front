@@ -111,6 +111,7 @@ export class AtividadeStepComponent {
       .pipe(finalize(() => this.salvando.set(false)))
       .subscribe({
         next: (userAtualizado) => {
+          this.authService.setCurrentUser(userAtualizado);
           const sugestao = calcularSugestaoRecomendacao(userAtualizado);
           if (!sugestao) {
             this.toastr.error('Faltou algum dado pra calcular sua sugestão. Revise o passo anterior.');
