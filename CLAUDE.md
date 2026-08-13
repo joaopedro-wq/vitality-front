@@ -61,76 +61,11 @@ php artisan serve  # http://localhost:8000
 O `.env` do backend precisa ter `FRONTEND_URL=http://localhost:4200` (necessário para o CORS
 liberar o Angular — o `config/cors.php` do backend só aceita **uma** origin por vez).
 
-## Estrutura de pastas — Atomic Design + Features + Services
+## Estrutura de pastas
 
-Pastas por **feature** (área do produto) para tudo específico de uma tela; hierarquia **atômica**
-dentro de `components/` para tudo reutilizável; `services/` centraliza todo service que chama a
-API do backend, fora das features (mudou de `features/<nome>/data/` pra isso em 2026-08-13 — ver
-regras abaixo).
-
-```
-src/app/
-  core/
-    auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, auth.interceptor.ts, token.storage.ts
-    http/       error.interceptor.ts, api-paths.ts
-    models/     user, alimento, refeicao, dieta, registro, meta-diaria,
-                nutricao-recomendada, api-response, nutrientes
-    layout/     app-shell/, theme.service.ts
-  components/
-    atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
-    molecules/   composições pequenas, presentation-only (sem service de feature injetado)
-                 macro-summary/  anel + chips de macro (sm/lg/xl) — sem uso hoje, reserva pro
-                                 Dashboard (Fase 6)
-                 meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
-                                 → revelado) — usado no passo Sugestão e no painel "configurado"
-                 step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
-                 step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
-                                 multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
-    organisms/   blocos grandes e compostos, presentation-only
-                 auth-poster-layout/  chrome visual "Feira Vitality" das telas de auth
-    pipes/
-    utils/       recomendacao-calc.util.ts (TMB/GET), nutrient-calc.util.ts (fator
-                 qtd_pivot/qtd_base, replica o cálculo do backend pra preview client-side)
-  services/
-    meta.service.ts
-    recomendacao.service.ts
-    user.service.ts
-    (todo service novo que fala com o backend entra aqui — ver regra abaixo)
-  features/
-    auth/{login,register}/
-    dashboard/
-    diario/{diario-list,diario-form}/
-    alimentos/{alimentos-list,alimento-form}/
-    dietas/{dietas-list,dieta-form}/
-    metas/
-      metas-page/
-        metas-page.component.*     orquestrador — fase/passo/sugestão, navegação (markup próprio)
-        steps/
-          perfil-step/             passo 1 — lógica e form próprios, injeta UserService direto
-          atividade-step/          passo 2 — idem, calcula a sugestão a partir da própria resposta
-          sugestao-step/           passo 3 — só apresentação, sem serviço
-          revisar-step/            passo 4 — form + salva recomendação/meta, emite ao concluir
-    recomendacao/    (sem página própria — a UI virou o passo "Sugestão" do quiz)
-    perfil/perfil-page/
-    ui-check/    smoke test visual da Fase 0 — remover quando o dashboard real existir
-  app.routes.ts
-  app.config.ts
-```
-
-**Regra pra componente (nasce em `components/` ou na feature?)**: decide pela *natureza* do
-componente, não por quantas features já usam — não espera uma segunda feature aparecer.
-Presentation-only (só `input()`/`output()`, sem injetar service de uma feature específica) nasce
-direto em `components/atoms|molecules|organisms`, mesmo que só uma feature use hoje — é o caso de
-`MacroSummaryComponent` e `StepFooterComponent`, que nasceram dentro de `features/metas` e foram
-promovidos assim que ficou claro que eram só apresentação. Componente com lógica/service da própria
-feature (os 4 `*-step` do quiz, por exemplo) fica na feature — não tem o que promover, ele *é*
-daquela feature. Dentro de cada feature, componentes de uso único ficam soltos na própria pasta
-(sem sub-hierarquia atômica interna).
-
-**Regra pra service**: todo service que chama a API do backend (`HttpClient`) entra em
-`services/<nome>.service.ts`, plano, sem pasta por feature — não mais `features/<nome>/data/`.
-Exceção: `core/auth/auth.service.ts` e `core/layout/theme.service.ts` continuam em `core/`, por
-serem infraestrutura acoplada a guards/interceptors/boot da aplicação, não service de feature.
+Onde cada arquivo mora, critério de organização (feature vs. `components/`), regra pra service —
+tudo isso vive em **[`ESTRUTURA.md`](./ESTRUTURA.md)**, não aqui. Ao criar pasta nova ou mudar
+critério de organização, atualize lá, não aqui.
 
 ## Decisões de arquitetura
 

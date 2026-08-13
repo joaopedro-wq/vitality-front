@@ -30,8 +30,7 @@ API do backend Laravel (`../vitality-Back`).
 
 Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
 metas/recomendação nutricional. O restante do roadmap — alimentos, diário, dietas, dashboard,
-perfil completo — está em desenvolvimento incremental; o detalhamento de cada fase vive no
-[`CLAUDE.md`](./CLAUDE.md).
+perfil completo — está em desenvolvimento incremental.
 
 ## Identidade visual
 
@@ -56,8 +55,7 @@ Duas paletas convivem no produto, cada uma resolvendo um problema diferente de i
 | Testes | Jasmine / Karma |
 | Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back` |
 
-Decisões de arquitetura, convenções de código, tokens de design e o contrato completo da API estão
-documentados a fundo no [`CLAUDE.md`](./CLAUDE.md) — a referência viva do projeto.
+A organização de pastas do código está detalhada em [`ESTRUTURA.md`](./ESTRUTURA.md).
 
 ## Rodando localmente
 
@@ -97,11 +95,5 @@ src/app/
 ```
 
 Os critérios completos de organização — o que nasce em `components/` vs. dentro de uma `feature/`,
-por que `services/` é plano sem subpasta por feature — estão no `CLAUDE.md`, seção "Estrutura de
-pastas".
-
-## Documentação
-
-Toda decisão de arquitetura, bug crítico corrigido, token de design e o contrato detalhado de cada
-rota da API vivem em [`CLAUDE.md`](./CLAUDE.md) — mantido atualizado a cada mudança relevante,
-é a fonte de verdade do projeto além do próprio código.
+por que `services/` é plano sem subpasta por feature — estão em
+[`ESTRUTURA.md`](./ESTRUTURA.md).
