@@ -62,7 +62,7 @@ const OBJETIVO_IMPACTO: Record<Objetivo, string> = {
   standalone: true,
   imports: [ReactiveFormsModule, StepFooterComponent, LucideDynamicIcon],
   templateUrl: './atividade-step.component.html',
-  host: { class: 'card flex flex-col gap-5 p-6 md:p-8' },
+  host: { class: 'card flex flex-col gap-5 p-6 md:p-8 animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AtividadeStepComponent {

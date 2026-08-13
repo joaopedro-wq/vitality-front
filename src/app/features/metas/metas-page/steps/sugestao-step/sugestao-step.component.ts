@@ -9,7 +9,7 @@ import { StepFooterComponent } from '../../../../../components/molecules/step-fo
   standalone: true,
   imports: [StepFooterComponent, MetaRevealComponent],
   templateUrl: './sugestao-step.component.html',
-  host: { class: 'card flex flex-col gap-5 p-6 md:p-8' },
+  host: { class: 'card flex flex-col gap-5 p-6 md:p-8 animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SugestaoStepComponent {

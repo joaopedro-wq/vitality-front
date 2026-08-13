@@ -459,6 +459,18 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
    confirmação, no mesmo espírito de jogo do resto da tela. Os três grupos de chip (e o rótulo
    "Gênero"/"Nível de atividade"/"Objetivo" acima deles) ficaram centralizados — o resto do passo
    já é centralizado (badge, título, subtítulo), os grupos alinhados à esquerda destoavam.
+   Décima primeira passada (2026-08-13, mesmo dia): dois ajustes finos. (1) Bug — os campos
+   Peso/Altura/Idade (`type="number"`) deixavam digitar letra, `e`/`E` (notação científica) e
+   outros símbolos via teclado (o `type="number"` nativo não bloqueia isso sozinho, principalmente
+   em Safari/Android/IME). Criada `components/directives/somente-numero.directive.ts`
+   (`vtpSomenteNumero`) — bloqueia `keydown`/`paste` fora de dígito/separador decimal/teclas de
+   navegação, presentation-only, sem estado — aplicada nos campos numéricos de `perfil-step` (peso,
+   altura, idade) e `revisar-step` (meta_calorias/proteinas/carboidratos/gorduras); é o padrão a
+   reusar em qualquer campo numérico futuro do sistema. (2) Os 4 passos do quiz (`perfil-step`,
+   `atividade-step`, `sugestao-step`, `revisar-step`) ganharam `animate-reveal` (a mesma entrada
+   fade+leve-subida já usada em partes do fluxo — ver nona passada) no próprio `host` do card —
+   cada passo agora "entra" ao ser exibido, reforçando a identidade de jogo pedida
+   ("jogo traz isso") em vez de só o conteúdo interno animar.
 4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).
