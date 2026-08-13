@@ -25,22 +25,7 @@ const PASSOS: StepTrackItem[] = [
   { titulo: 'Confirmar', descricao: 'Revisar e salvar' },
 ];
 
-/**
- * "Quiz Guiado" — orquestrador puro. Cada passo é um componente com a
- * própria lógica (form, validação, chamada de serviço); este componente só
- * guarda em que passo o usuário está, a sugestão calculada (compartilhada
- * entre os passos 3/4 e o painel) e navega entre eles.
- *
- * Navegação em "trilha numerada" (2026-08-13, sétima passada) — escolhida
- * entre 5 conceitos comparados (artefato), cada um baseado num padrão de UX
- * já conhecido. Essa é a mais próxima do que usuário já viu em qualquer
- * formulário multi-etapa (GOV.UK step-by-step, checkout da Stripe): bolinha
- * numerada vira check quando concluída, linha vertical conectando os passos.
- * A trilha em si virou `StepTrackComponent`
- * (`components/molecules/step-track/`) — presentation-only, sem nada de
- * Metas — pra dar pra reaproveitar em qualquer outro fluxo multi-passo do
- * produto (Dietas, Diário, etc.) sem duplicar a UI de novo.
- */
+
 @Component({
   selector: 'vtp-metas-page',
   standalone: true,
