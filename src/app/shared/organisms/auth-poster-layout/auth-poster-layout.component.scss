@@ -1,0 +1,139 @@
+:host {
+  // Paleta "Feira Vitality" — só dentro deste host. Sobrescreve os tokens da
+  // bandeira-ui (herdam via custom properties, não bloqueado por encapsulation)
+  // para os componentes bd-field/bdInput/bdButton projetados aqui saírem
+  // retemados sem tocar no --bd-* global do resto do app.
+  --plum: #3e1a24;
+  --cream: #fbf2de;
+  --cream-surface: #fffdf7;
+  --mango: #f0913f;
+  --mango-strong: #d97324;
+  --leaf: #52803f;
+  --sun: #f2bd3c;
+  --ink: #3e1a24;
+  --ink-soft: #7a5560;
+
+  // --bd-bg é o fundo dos PRÓPRIOS componentes (bd-input usa --bd-bg, não
+  // --bd-surface, pro seu fundo) — por isso é o creme claro, não o roxo da
+  // página. O roxo de fundo da página é pintado direto com --plum abaixo,
+  // sem passar por token da lib.
+  --bd-bg: var(--cream-surface);
+  --bd-surface: var(--cream-surface);
+  --bd-surface-hover: #f3ead4;
+  --bd-fg: var(--ink);
+  --bd-fg-muted: var(--ink-soft);
+  --bd-fg-subtle: #a68e94;
+  --bd-border: rgba(62, 26, 36, 0.16);
+  --bd-border-strong: rgba(62, 26, 36, 0.3);
+  --bd-primary: var(--mango);
+  --bd-primary-strong: var(--mango-strong);
+  --bd-primary-soft: rgba(240, 145, 63, 0.18);
+  --bd-primary-contrast: var(--cream);
+  --bd-radius: 0.875rem;
+  --bd-radius-sm: 0.625rem;
+  --bd-danger: #c6432b;
+  --bd-danger-soft: rgba(198, 67, 43, 0.12);
+  --bd-focus-ring: 0 0 0 3px rgba(240, 145, 63, 0.25);
+
+  display: block;
+  min-height: 100vh;
+  background: var(--plum);
+  position: relative;
+  overflow: hidden;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-sans-serif, system-ui, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+.block {
+  position: fixed;
+  inset: -10% -10% auto -10%;
+  height: 62%;
+  background: var(--mango);
+  clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%);
+  z-index: 0;
+}
+
+.block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(62, 26, 36, 0.06) 0 2px, transparent 2px 26px);
+}
+
+.dots {
+  position: fixed;
+  z-index: 0;
+}
+.dots.d1 { top: 8%; right: 6%; }
+.dots.d2 { bottom: 10%; left: 5%; }
+
+.fruit {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 3px 0 rgba(62, 26, 36, 0.18);
+}
+.dot.sm { width: 12px; height: 12px; }
+.dot.lg { width: 22px; height: 22px; }
+.dot.sun { background: var(--sun); }
+.dot.leaf { background: var(--leaf); }
+.dot.mango { background: var(--mango-strong); }
+
+.stage {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  background: var(--cream);
+  border-radius: 22px;
+  padding: 40px 36px 32px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stage {
+    animation: pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+@keyframes pop {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.badge {
+  position: absolute;
+  top: -18px;
+  right: 28px;
+  background: var(--sun);
+  color: var(--plum);
+  font-weight: 800;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  padding: 8px 14px;
+  border-radius: 999px;
+  box-shadow: 0 8px 18px -8px rgba(62, 26, 36, 0.5);
+  transform: rotate(4deg);
+}
+
+.eyebrow {
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--leaf);
+  margin: 0 0 12px;
+}
+
+@media (max-width: 480px) {
+  .dots { display: none; }
+}

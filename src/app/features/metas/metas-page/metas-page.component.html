@@ -1,0 +1,14 @@
+<bd-settings-template
+  title="Metas"
+  description="A base numérica usada pelo painel e pelo diário para comparar o que foi consumido com o que era esperado."
+  [sections]="sections"
+  [(activeSection)]="activeSection"
+>
+  <section id="recomendacao" class="flex flex-col gap-4">
+    <vtp-recomendacao-form />
+  </section>
+
+  <section id="metas" class="flex flex-col gap-4">
+    <vtp-meta-form />
+  </section>
+</bd-settings-template>

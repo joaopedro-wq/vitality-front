@@ -1,0 +1,43 @@
+<bd-app-shell>
+  <a bdAppShellBrand routerLink="/dashboard" class="flex items-center gap-2 font-semibold text-fg">
+    <i class="fas fa-leaf text-primary" aria-hidden="true"></i>
+    Vitality PLUS
+  </a>
+
+  <nav bdAppShellNav class="flex flex-col gap-1">
+    @for (item of navItems; track item.path) {
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="bg-primary-soft text-primary"
+        class="flex items-center gap-3 rounded-[var(--bd-radius-sm)] px-3 py-2 text-sm text-fg-muted transition-colors hover:bg-surface-hover hover:text-fg"
+      >
+        <i [class]="item.icon" class="w-4 text-center" aria-hidden="true"></i>
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+
+  <div bdAppShellActions class="flex items-center gap-2">
+    <button
+      bdButton
+      variant="ghost"
+      size="sm"
+      iconOnly
+      [bdTooltip]="theme.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'"
+      [attr.aria-label]="theme.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'"
+      (click)="theme.toggle()"
+    >
+      <i class="fas" [class.fa-sun]="theme.theme() === 'dark'" [class.fa-moon]="theme.theme() === 'light'" aria-hidden="true"></i>
+    </button>
+
+    <a routerLink="/perfil" [bdTooltip]="auth.currentUser()?.name ?? 'Perfil'">
+      <bd-avatar [name]="auth.currentUser()?.name ?? '?'" [src]="auth.currentUser()?.avatar ?? ''" size="sm" />
+    </a>
+
+    <button bdButton variant="ghost" size="sm" iconOnly bdTooltip="Sair" aria-label="Sair" (click)="logout()">
+      <i class="fas fa-right-from-bracket" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <router-outlet />
+</bd-app-shell>

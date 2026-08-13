@@ -1,0 +1,63 @@
+<vtp-auth-poster-layout>
+  <div class="heading">
+    <h1>Entra na roda</h1>
+    <p>Junte-se a quem já registrou a primeira refeição hoje.</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (generalError()) {
+      <bd-alert tone="danger" [title]="generalError()!" />
+    }
+
+    <bd-field
+      label="Nome"
+      required
+      [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''"
+    >
+      <input bdInput type="text" formControlName="name" autocomplete="name" placeholder="Como te chamam" />
+    </bd-field>
+
+    <bd-field
+      label="E-mail"
+      required
+      [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um e-mail válido.' : ''"
+    >
+      <input bdInput type="email" formControlName="email" autocomplete="email" placeholder="voce@exemplo.com" />
+    </bd-field>
+
+    <bd-field
+      label="Senha"
+      hint="Pelo menos 6 caracteres."
+      required
+      [error]="form.controls.password.touched && form.controls.password.invalid ? 'Senha muito curta.' : ''"
+    >
+      <input bdInput type="password" formControlName="password" autocomplete="new-password" placeholder="••••••••" />
+    </bd-field>
+
+    <bd-field
+      label="Confirmar senha"
+      required
+      [error]="
+        form.controls.password_confirmation.touched &&
+        (form.controls.password_confirmation.invalid || form.errors?.['passwordsMismatch'])
+          ? 'As senhas não coincidem.'
+          : ''
+      "
+    >
+      <input
+        bdInput
+        type="password"
+        formControlName="password_confirmation"
+        autocomplete="new-password"
+        placeholder="Repita a senha"
+      />
+    </bd-field>
+
+    <button bdButton type="submit" block [loading]="status() === 'sending'">Criar minha conta</button>
+  </form>
+
+  <p class="switch-line">
+    Já tem conta?
+    <a routerLink="/login">Entrar</a>
+  </p>
+</vtp-auth-poster-layout>

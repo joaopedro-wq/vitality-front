@@ -1,1 +1,151 @@
-/* You can add global styles to this file, and also import other style files */
+// ============================================================================
+// Vitality PLUS — estilos globais
+//
+// Fonte única de verdade de tokens: os --bd-* da bandeira-ui. Não criamos uma
+// camada extra de nomes (--bg/--primary) como no portfólio — aqui sobrescrevemos
+// os tokens da lib diretamente com a paleta do produto, e o Tailwind aponta
+// para os mesmos --bd-* via @theme. Ver CLAUDE.md > Decisões de arquitetura.
+// ============================================================================
+
+@use 'bandeira-ui/styles';
+@use 'tailwindcss';
+
+:root {
+  // Paleta "saúde/nutrição" — verde-menta (vitalidade) + laranja (energia)
+  --bd-bg: #f6f9f7;
+  --bd-bg-elevated: #ffffff;
+  --bd-surface: #ffffff;
+  --bd-surface-hover: #eef4f0;
+  --bd-border: #dde6e0;
+  --bd-border-strong: #c2d1c9;
+
+  --bd-fg: #10241c;
+  --bd-fg-muted: #4d5f56;
+  --bd-fg-subtle: #7a8d83;
+
+  --bd-primary: #12946f;
+  --bd-primary-strong: #0b7657;
+  --bd-primary-soft: rgba(18, 148, 111, 0.12);
+  --bd-primary-contrast: #ffffff;
+
+  --bd-accent: #ff8b4d;
+  --bd-accent-soft: rgba(255, 139, 77, 0.14);
+  --bd-accent-contrast: #2b1200;
+
+  --bd-gradient: linear-gradient(120deg, #12946f 0%, #3fb88f 45%, #ff8b4d 100%);
+
+  --bd-radius: 0.875rem;
+}
+
+:root[data-theme='dark'] {
+  --bd-bg: #0a1410;
+  --bd-bg-elevated: #0f1c16;
+  --bd-surface: #13221b;
+  --bd-surface-hover: #1a2e24;
+  --bd-border: #223c30;
+  --bd-border-strong: #2f5240;
+
+  --bd-fg: #eef7f2;
+  --bd-fg-muted: #a3b8ac;
+  --bd-fg-subtle: #6f8579;
+
+  --bd-primary: #34d399;
+  --bd-primary-strong: #22b586;
+  --bd-primary-soft: rgba(52, 211, 153, 0.16);
+  --bd-primary-contrast: #04140d;
+
+  --bd-accent: #ffab73;
+  --bd-accent-soft: rgba(255, 171, 115, 0.16);
+  --bd-accent-contrast: #2b1200;
+
+  --bd-gradient: linear-gradient(120deg, #34d399 0%, #5eead4 45%, #ffab73 100%);
+}
+
+// Segue a preferência do sistema quando o usuário não fixou um tema
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    --bd-bg: #0a1410;
+    --bd-bg-elevated: #0f1c16;
+    --bd-surface: #13221b;
+    --bd-surface-hover: #1a2e24;
+    --bd-border: #223c30;
+    --bd-border-strong: #2f5240;
+    --bd-fg: #eef7f2;
+    --bd-fg-muted: #a3b8ac;
+    --bd-fg-subtle: #6f8579;
+    --bd-primary: #34d399;
+    --bd-primary-strong: #22b586;
+    --bd-primary-soft: rgba(52, 211, 153, 0.16);
+    --bd-accent: #ffab73;
+    --bd-accent-soft: rgba(255, 171, 115, 0.16);
+    --bd-gradient: linear-gradient(120deg, #34d399 0%, #5eead4 45%, #ffab73 100%);
+  }
+}
+
+// Tailwind v4 (CSS-first): mapeia as utilities para os mesmos --bd-*, sem
+// duplicar paleta. Usar como `bg-primary`, `text-fg-muted`, `rounded-radius` etc.
+@theme {
+  --color-bg: var(--bd-bg);
+  --color-bg-elevated: var(--bd-bg-elevated);
+  --color-surface: var(--bd-surface);
+  --color-surface-hover: var(--bd-surface-hover);
+  --color-border: var(--bd-border);
+  --color-border-strong: var(--bd-border-strong);
+
+  --color-fg: var(--bd-fg);
+  --color-fg-muted: var(--bd-fg-muted);
+  --color-fg-subtle: var(--bd-fg-subtle);
+
+  --color-primary: var(--bd-primary);
+  --color-primary-strong: var(--bd-primary-strong);
+  --color-primary-soft: var(--bd-primary-soft);
+  --color-primary-contrast: var(--bd-primary-contrast);
+
+  --color-accent: var(--bd-accent);
+  --color-accent-soft: var(--bd-accent-soft);
+  --color-accent-contrast: var(--bd-accent-contrast);
+
+  --color-success: var(--bd-success);
+  --color-warning: var(--bd-warning);
+  --color-danger: var(--bd-danger);
+
+  --radius-DEFAULT: var(--bd-radius);
+  --radius-sm: var(--bd-radius-sm);
+  --radius-lg: var(--bd-radius-lg);
+
+  --font-sans: var(--bd-font-sans);
+  --font-mono: var(--bd-font-mono);
+}
+
+// Reset global mínimo
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--bd-font-sans);
+  background: var(--bd-bg);
+  color: var(--bd-fg);
+  transition:
+    background-color var(--bd-duration) var(--bd-ease),
+    color var(--bd-duration) var(--bd-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

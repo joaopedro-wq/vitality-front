@@ -1,0 +1,47 @@
+:host {
+  display: contents;
+}
+
+.heading h1 {
+  font-stretch: condensed;
+  font-weight: 900;
+  font-size: 34px;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+.heading p {
+  margin: 0 0 26px;
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.switch-line {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
+.switch-line a {
+  font-weight: 800;
+  color: var(--leaf);
+  text-decoration: none;
+}
+
+.switch-line a:hover,
+.switch-line a:focus-visible {
+  text-decoration: underline;
+}

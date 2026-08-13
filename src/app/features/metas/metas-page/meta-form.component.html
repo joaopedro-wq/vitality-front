@@ -1,0 +1,28 @@
+<bd-card class="flex flex-col gap-4 p-6">
+  @if (temRecomendacao) {
+    <button bdButton variant="subtle" size="sm" type="button" class="self-start" (click)="usarRecomendacao()">
+      Usar valores da recomendação nutricional
+    </button>
+  }
+
+  <form class="grid grid-cols-2 gap-4" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <bd-field label="Calorias (kcal)">
+      <input bdInput type="number" formControlName="meta_calorias" min="0" />
+    </bd-field>
+    <bd-field label="Proteína (g)">
+      <input bdInput type="number" formControlName="meta_proteinas" min="0" />
+    </bd-field>
+    <bd-field label="Carboidrato (g)">
+      <input bdInput type="number" formControlName="meta_carboidratos" min="0" />
+    </bd-field>
+    <bd-field label="Gordura (g)">
+      <input bdInput type="number" formControlName="meta_gorduras" min="0" />
+    </bd-field>
+
+    <div class="col-span-2">
+      <button bdButton type="submit" [loading]="status() === 'saving'" [disabled]="status() === 'loading'">
+        Salvar meta
+      </button>
+    </div>
+  </form>
+</bd-card>

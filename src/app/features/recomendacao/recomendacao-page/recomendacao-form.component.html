@@ -1,0 +1,46 @@
+<bd-card class="flex flex-col gap-4 p-6">
+  @if (sugestao(); as s) {
+    <bd-alert tone="info" title="Sugestão calculada a partir do seu perfil">
+      <div class="flex flex-col gap-2">
+        <p class="text-sm">
+          TMB {{ s.tmb }} kcal · GET {{ s.get }} kcal · Meta {{ s.caloria }} kcal ({{ s.proteina }}P /
+          {{ s.carbo }}C / {{ s.gordura }}G)
+        </p>
+        <button bdButton variant="subtle" size="sm" type="button" (click)="aplicarSugestao()">
+          Usar esta sugestão
+        </button>
+      </div>
+    </bd-alert>
+  } @else {
+    <bd-alert tone="warning" title="Complete seu perfil para receber uma sugestão automática">
+      Peso, altura, data de nascimento, gênero, nível de atividade e objetivo — em Perfil.
+    </bd-alert>
+  }
+
+  <form class="grid grid-cols-2 gap-4" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <bd-field label="TMB (kcal)" hint="Taxa Metabólica Basal">
+      <input bdInput type="number" formControlName="tmb" min="0" />
+    </bd-field>
+    <bd-field label="GET (kcal)" hint="Gasto Energético Total">
+      <input bdInput type="number" formControlName="get" min="0" />
+    </bd-field>
+    <bd-field label="Meta de calorias (kcal)">
+      <input bdInput type="number" formControlName="caloria" min="0" />
+    </bd-field>
+    <bd-field label="Proteína (g)">
+      <input bdInput type="number" formControlName="proteina" min="0" />
+    </bd-field>
+    <bd-field label="Carboidrato (g)">
+      <input bdInput type="number" formControlName="carbo" min="0" />
+    </bd-field>
+    <bd-field label="Gordura (g)">
+      <input bdInput type="number" formControlName="gordura" min="0" />
+    </bd-field>
+
+    <div class="col-span-2">
+      <button bdButton type="submit" [loading]="status() === 'saving'" [disabled]="status() === 'loading'">
+        Salvar recomendação
+      </button>
+    </div>
+  </form>
+</bd-card>

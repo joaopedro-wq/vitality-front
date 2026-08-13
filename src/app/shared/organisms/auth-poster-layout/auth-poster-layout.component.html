@@ -1,0 +1,23 @@
+<div class="block" aria-hidden="true"></div>
+
+<div class="dots d1" aria-hidden="true">
+  <div class="fruit">
+    <span class="dot sun"></span>
+    <span class="dot leaf sm"></span>
+  </div>
+</div>
+<div class="dots d2" aria-hidden="true">
+  <div class="fruit">
+    <span class="dot mango lg"></span>
+    <span class="dot sun sm"></span>
+  </div>
+</div>
+
+<div class="stage">
+  @if (badge()) {
+    <div class="badge">{{ badge() }}</div>
+  }
+  <p class="eyebrow">Vitality Plus · feira de hoje</p>
+
+  <ng-content />
+</div>
