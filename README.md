@@ -1,59 +1,107 @@
-# VitalityFront
+# Vitality PLUS
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.33.
+**Nutrição com propósito.** O Vitality PLUS transforma o cálculo de meta calórica — normalmente
+uma planilha chata ou uma fórmula que ninguém entende — num quiz guiado que revela, passo a passo,
+a meta ideal de calorias e macros de cada pessoa a partir do próprio perfil e rotina. Dali em
+diante, é o hub diário de quem quer comer melhor sem perder a cabeça: registra o que comeu, monta
+dietas reutilizáveis, acompanha o progresso contra a meta — tudo numa interface pensada pra ser
+usada todo dia, não só configurada uma vez e esquecida.
 
-## Development server
+Este repositório é o **frontend** do produto: uma single-page application em Angular que consome a
+API do backend Laravel (`../vitality-Back`).
 
-To start a local development server, run:
+## O produto
+
+- 🎯 **Quiz de metas** — em vez de um formulário longo, a meta calórica e de macros nasce de um
+  fluxo em 4 passos (perfil → rotina e objetivo → sugestão calculada → confirmação), com a
+  identidade de um quiz/jogo de verdade: cartões tocáveis, revelação animada do resultado, trilha
+  de progresso navegável a qualquer momento. O cálculo usa a fórmula de Mifflin-St Jeor (TMB) mais
+  fator de atividade — a mesma base científica usada por nutricionistas, sem exigir que o usuário
+  saiba o que isso significa.
+- 🍽️ **Diário alimentar** — o registro do que foi realmente comido, comparado contra a meta do dia.
+- 📋 **Dietas reutilizáveis** — planos de refeição montados uma vez, reaproveitados sempre que
+  quiser sem remontar a lista de alimentos do zero.
+- 🥗 **Banco de alimentos** — biblioteca própria de alimentos do usuário somada à tabela TACO
+  (composição nutricional de alimentos brasileiros), com valores de proteína/carboidrato/gordura/
+  calorias por porção.
+- 📊 **Painel de acompanhamento** — meta vs. consumido, num relance.
+- 👤 **Perfil** — peso, altura, idade, nível de atividade e objetivo alimentam o cálculo da meta
+  automaticamente; atualizar qualquer um deles é o gatilho pra refazer o quiz e recalcular.
+
+Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
+metas/recomendação nutricional. O restante do roadmap — alimentos, diário, dietas, dashboard,
+perfil completo — está em desenvolvimento incremental; o detalhamento de cada fase vive no
+[`CLAUDE.md`](./CLAUDE.md).
+
+## Identidade visual
+
+Duas paletas convivem no produto, cada uma resolvendo um problema diferente de identidade:
+
+- **"Feira Vitality"** nas telas de autenticação — manga, ameixa e creme, evocando uma feira livre
+  de produtos frescos.
+- **"Cozinha Quente"** no restante da área autenticada — coral e mostarda sobre areia clara, uma
+  paleta de cozinha, quente e apetitosa, sem cair em clichê de "app de saúde" (verde-menta
+  genérico).
+
+## Stack técnica
+
+| Camada | Tecnologia |
+|---|---|
+| Framework | Angular 20 — standalone components, Signals, `inject()`, lazy loading por rota |
+| Design system | [bandeira-ui](https://www.npmjs.com/package/bandeira-ui) (biblioteca própria do autor) |
+| Estilo | Tailwind v4 (CSS-first) — utilitário sempre que possível, SCSS só onde Tailwind não alcança |
+| Ícones | [Lucide](https://lucide.dev) via `@lucide/angular` |
+| Notificações | ngx-toastr |
+| Linguagem | TypeScript strict |
+| Testes | Jasmine / Karma |
+| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back` |
+
+Decisões de arquitetura, convenções de código, tokens de design e o contrato completo da API estão
+documentados a fundo no [`CLAUDE.md`](./CLAUDE.md) — a referência viva do projeto.
+
+## Rodando localmente
+
+Pré-requisitos: Node.js compatível com Angular 20 (LTS atual) e o backend em `../vitality-Back`
+rodando em paralelo.
 
 ```bash
-ng serve
+npm install
+npm start          # http://localhost:4200
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Em outro terminal, dentro de `../vitality-Back`:
 
 ```bash
-ng generate component component-name
+php artisan serve  # http://localhost:8000
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+O `.env` do backend precisa ter `FRONTEND_URL=http://localhost:4200` (necessário pro CORS liberar
+o Angular).
 
-```bash
-ng generate --help
+### Scripts disponíveis
+
+| Comando | O que faz |
+|---|---|
+| `npm start` | Sobe o dev server (`ng serve`) em `http://localhost:4200`, com reload automático. |
+| `npm run build` | Build de produção, otimizado, em `dist/`. |
+| `npm test` | Roda a suíte de testes (Jasmine/Karma). |
+
+## Estrutura de pastas
+
+```
+src/app/
+  core/         auth, http, models, layout (app-shell, tema)
+  components/   atoms/molecules/organisms/pipes/utils/directives reutilizáveis
+  services/     todo service que fala com o backend (HttpClient)
+  features/     uma pasta por área do produto (auth, metas, alimentos, diário, dietas, perfil...)
 ```
 
-## Building
+Os critérios completos de organização — o que nasce em `components/` vs. dentro de uma `feature/`,
+por que `services/` é plano sem subpasta por feature — estão no `CLAUDE.md`, seção "Estrutura de
+pastas".
 
-To build the project run:
+## Documentação
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Toda decisão de arquitetura, bug crítico corrigido, token de design e o contrato detalhado de cada
+rota da API vivem em [`CLAUDE.md`](./CLAUDE.md) — mantido atualizado a cada mudança relevante,
+é a fonte de verdade do projeto além do próprio código.

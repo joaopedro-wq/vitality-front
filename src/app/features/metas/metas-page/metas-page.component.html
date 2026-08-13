@@ -6,14 +6,14 @@
   @case ('configurado') {
     <div class="flex flex-col gap-7">
       <div class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border">
-        <div class="flex flex-col gap-2 max-w-[56ch]">
+        <div class="flex flex-col gap-2 max-w-[56ch] max-[640px]:max-w-none">
           <p class="m-0 text-[11px] font-extrabold tracking-[0.08em] uppercase text-primary-strong">Meta atual</p>
-          <h1 class="m-0 text-[28px] tracking-[-0.01em] text-balance">Sua meta diária está pronta</h1>
-          <p class="m-0 text-[14.5px] text-fg-muted leading-[1.6]">
-            Isso é o que vale hoje pro painel e pro diário — refaça o quiz sempre que sua rotina mudar.
+          <h1 class="m-0 text-[22px] max-[640px]:text-[20px] tracking-[-0.01em] text-balance">Sua meta diária está pronta</h1>
+          <p class="m-0 text-[13.5px] max-[640px]:text-[12.5px] text-fg-muted leading-[1.5]">
+            Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser.
           </p>
         </div>
-        <button bdButton size="lg" class="max-[640px]:self-start" (click)="irParaDashboard()">
+        <button bdButton class="max-[640px]:w-full max-[640px]:justify-center" (click)="irParaDashboard()">
           Ir para o painel <svg lucideArrowRight size="15" aria-hidden="true"></svg>
         </button>
       </div>
