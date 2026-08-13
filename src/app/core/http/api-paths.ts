@@ -25,8 +25,16 @@ export const apiPaths = {
   user: (id: number | string) => `${environment.apiBaseUrl}/user/${id}`,
   userAvatar: () => `${environment.apiBaseUrl}/user/avatar`,
 
-  alimentos: () => `${environment.apiBaseUrl}/food`,
-  alimento: (id: number | string) => `${environment.apiBaseUrl}/food/${id}`,
+  alimentos: () => `${environment.apiBaseUrl}/foods`,
+  alimento: (id: number | string) => `${environment.apiBaseUrl}/foods/${id}`,
+  favoritoAlimento: (id: number | string) => `${environment.apiBaseUrl}/foods/${id}/favorite`,
+  adminAlimentos: () => `${environment.apiBaseUrl}/admin/foods`,
+  adminAlimento: (id: number | string) => `${environment.apiBaseUrl}/admin/foods/${id}`,
+  adminArquivarAlimento: (id: number | string) =>
+    `${environment.apiBaseUrl}/admin/foods/${id}/archive`,
+  adminRestaurarAlimento: (id: number | string) =>
+    `${environment.apiBaseUrl}/admin/foods/${id}/restore`,
+  adminImportarTaco: () => `${environment.apiBaseUrl}/admin/foods/import-taco`,
 
   refeicoes: () => `${environment.apiBaseUrl}/refeicao`,
   refeicao: (id: number | string) => `${environment.apiBaseUrl}/refeicao/${id}`,

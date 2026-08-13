@@ -23,7 +23,7 @@
     <div class="grain" aria-hidden="true"></div>
 
     <nav aria-label="Navegação principal">
-      @for (item of navItems; track item.path) {
+      @for (item of navItemsVisiveis(); track item.path) {
         <a
           [routerLink]="item.path"
           routerLinkActive="active"
@@ -148,7 +148,6 @@
           <svg lucideLogOut size="16" aria-hidden="true"></svg>
         </button>
       </div>
-
     </header>
 
     <main class="content">

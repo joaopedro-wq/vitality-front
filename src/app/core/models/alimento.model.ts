@@ -1,7 +1,6 @@
-/**
- * `id_usuario === null` marca alimentos globais (tabela TACO pré-carregada,
- * vêm junto no `index` de qualquer usuário) — read-only na UI.
- */
+export type FonteAlimento = 'taco' | 'manual' | 'legado';
+export type StatusAlimento = 'ativo' | 'pendente' | 'arquivado';
+
 export interface Alimento {
   id: number;
   descricao: string;
@@ -9,17 +8,25 @@ export interface Alimento {
   gordura: number;
   carbo: number;
   caloria: number;
-  /** Quantidade base sobre a qual os valores acima são calculados (ex.: 100g). */
   qtd: number;
-  id_usuario: number | null;
+  fonte: FonteAlimento;
+  source_reference: string | null;
+  grupo: string | null;
+  status: StatusAlimento;
+  is_favorite: boolean;
+  updated_at: string | null;
+}
+
+export interface FoodPage {
+  data: Alimento[];
+  meta: { current_page: number; last_page: number; total: number };
 }
 
 export type CreateAlimentoPayload = Pick<
   Alimento,
-  'descricao' | 'proteina' | 'gordura' | 'carbo' | 'caloria' | 'qtd'
+  'descricao' | 'proteina' | 'gordura' | 'carbo' | 'caloria' | 'qtd' | 'grupo'
 >;
-
-export type UpdateAlimentoPayload = Partial<CreateAlimentoPayload>;
+export type UpdateAlimentoPayload = CreateAlimentoPayload & { status?: StatusAlimento };
 
 /** Item de alimento com quantidade consumida/planejada — usado em dieta e registro. */
 export interface AlimentoComQtd {

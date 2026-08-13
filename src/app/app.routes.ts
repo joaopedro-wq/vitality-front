@@ -2,17 +2,20 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth/auth.guard';
 import { guestGuard } from './core/auth/guest.guard';
+import { adminGuard } from './core/auth/admin.guard';
 
 export const routes: Routes = [
   {
     // Fase 0 do Plano B — remover quando o dashboard real (Fase 6) estiver pronto.
     path: 'ui-check',
-    loadComponent: () => import('./features/ui-check/ui-check.component').then((m) => m.UiCheckComponent),
+    loadComponent: () =>
+      import('./features/ui-check/ui-check.component').then((m) => m.UiCheckComponent),
   },
   {
     path: 'login',
     canActivate: [guestGuard],
-    loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
@@ -65,6 +68,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/perfil/perfil-page/perfil-page.component').then(
             (m) => m.PerfilPageComponent,
+          ),
+      },
+      {
+        path: 'admin/alimentos',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/alimentos/admin-foods/admin-foods.component').then(
+            (m) => m.AdminFoodsComponent,
           ),
       },
     ],

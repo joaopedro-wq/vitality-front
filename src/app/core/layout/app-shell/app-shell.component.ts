@@ -13,6 +13,7 @@ import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandei
 import {
   LucideCarrot,
   LucideClipboardList,
+  LucideShieldCheck,
   LucideDynamicIcon,
   LucideHouse,
   LucideLogOut,
@@ -36,6 +37,7 @@ interface NavItem {
   path: string;
   label: string;
   icon: LucideIcon;
+  adminOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -45,6 +47,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/dietas', label: 'Dietas', icon: LucideClipboardList },
   { path: '/metas', label: 'Metas', icon: LucideTarget },
   { path: '/perfil', label: 'Perfil', icon: LucideUser },
+  { path: '/admin/alimentos', label: 'Catálogo', icon: LucideShieldCheck, adminOnly: true },
 ];
 
 @Component({
@@ -78,6 +81,9 @@ export class AppShellComponent {
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
   protected readonly navItems = NAV_ITEMS;
+  protected readonly navItemsVisiveis = computed(() =>
+    NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin),
+  );
 
   /** Gaveta da sidebar no mobile (<900px) — some por padrão, some ao navegar. */
   protected readonly mobileMenuOpen = signal(false);

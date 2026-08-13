@@ -10,6 +10,10 @@ usada todo dia, não só configurada uma vez e esquecida.
 Este repositório é o **frontend** do produto: uma single-page application em Angular que consome a
 API do backend Laravel (`../vitality-Back`).
 
+Para preparar o catálogo no backend, execute `php artisan migrate --seed`; o seeder importa a TACO
+de forma idempotente. A primeira conta administrativa é promovida com
+`php artisan user:make-admin email@dominio.com`.
+
 ## O produto
 
 - 🎯 **Quiz de metas** — em vez de um formulário longo, a meta calórica e de macros nasce de um
@@ -21,9 +25,8 @@ API do backend Laravel (`../vitality-Back`).
 - 🍽️ **Diário alimentar** — o registro do que foi realmente comido, comparado contra a meta do dia.
 - 📋 **Dietas reutilizáveis** — planos de refeição montados uma vez, reaproveitados sempre que
   quiser sem remontar a lista de alimentos do zero.
-- 🥗 **Banco de alimentos** — biblioteca própria de alimentos do usuário somada à tabela TACO
-  (composição nutricional de alimentos brasileiros), com valores de proteína/carboidrato/gordura/
-  calorias por porção.
+- 🥗 **Biblioteca de alimentos** — catálogo global curado, iniciado pela TACO, com favoritos pessoais
+  e administração restrita para manter dados nutricionais confiáveis.
 - 📊 **Painel de acompanhamento** — meta vs. consumido, num relance.
 - 👤 **Perfil em etapas** — identidade e avatar → corpo → rotina e confirmação. Cada avanço é salvo
   imediatamente, reduzindo perda de dados e mantendo a meta alinhada ao perfil atual.
@@ -50,16 +53,16 @@ incluindo registrar refeição — em controles só de ícone com tooltips posic
 
 ## Stack técnica
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | Angular 20 — standalone components, Signals, `inject()`, lazy loading por rota |
-| Design system | [bandeira-ui](https://www.npmjs.com/package/bandeira-ui) (biblioteca própria do autor) |
-| Estilo | Tailwind v4 (CSS-first) — utilitário sempre que possível, SCSS só onde Tailwind não alcança |
-| Ícones | [Lucide](https://lucide.dev) via `@lucide/angular` |
-| Notificações | ngx-toastr |
-| Linguagem | TypeScript strict |
-| Testes | Jasmine / Karma |
-| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back` |
+| Camada            | Tecnologia                                                                                  |
+| ----------------- | ------------------------------------------------------------------------------------------- |
+| Framework         | Angular 20 — standalone components, Signals, `inject()`, lazy loading por rota              |
+| Design system     | [bandeira-ui](https://www.npmjs.com/package/bandeira-ui) (biblioteca própria do autor)      |
+| Estilo            | Tailwind v4 (CSS-first) — utilitário sempre que possível, SCSS só onde Tailwind não alcança |
+| Ícones            | [Lucide](https://lucide.dev) via `@lucide/angular`                                          |
+| Notificações      | ngx-toastr                                                                                  |
+| Linguagem         | TypeScript strict                                                                           |
+| Testes            | Jasmine / Karma                                                                             |
+| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back`                                     |
 
 A organização de pastas do código está detalhada em [`ESTRUTURA.md`](./ESTRUTURA.md).
 
@@ -84,11 +87,11 @@ o Angular).
 
 ### Scripts disponíveis
 
-| Comando | O que faz |
-|---|---|
-| `npm start` | Sobe o dev server (`ng serve`) em `http://localhost:4200`, com reload automático. |
-| `npm run build` | Build de produção, otimizado, em `dist/`. |
-| `npm test` | Roda a suíte de testes (Jasmine/Karma). |
+| Comando         | O que faz                                                                         |
+| --------------- | --------------------------------------------------------------------------------- |
+| `npm start`     | Sobe o dev server (`ng serve`) em `http://localhost:4200`, com reload automático. |
+| `npm run build` | Build de produção, otimizado, em `dist/`.                                         |
+| `npm test`      | Roda a suíte de testes (Jasmine/Karma).                                           |
 
 ## Estrutura de pastas
 

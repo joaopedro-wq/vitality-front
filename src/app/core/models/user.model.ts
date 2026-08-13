@@ -1,11 +1,6 @@
 export type Genero = 'M' | 'F' | 'O';
 
-export type NivelAtividade =
-  | 'sedentario'
-  | 'leve'
-  | 'moderado'
-  | 'intenso'
-  | 'muito_intenso';
+export type NivelAtividade = 'sedentario' | 'leve' | 'moderado' | 'intenso' | 'muito_intenso';
 
 export type Objetivo = 'emagrecer' | 'manter' | 'ganhar_massa';
 
@@ -20,12 +15,20 @@ export interface User {
   avatar: string | null;
   nivel_atividade: NivelAtividade | null;
   objetivo: Objetivo | null;
+  is_admin: boolean;
 }
 
 /** Payload de `PUT /api/user/{id}` — todos os campos opcionais (update parcial). */
 export type UpdateUserPayload = Partial<
   Pick<
     User,
-    'name' | 'email' | 'data_nascimento' | 'genero' | 'peso' | 'altura' | 'nivel_atividade' | 'objetivo'
+    | 'name'
+    | 'email'
+    | 'data_nascimento'
+    | 'genero'
+    | 'peso'
+    | 'altura'
+    | 'nivel_atividade'
+    | 'objetivo'
   >
 > & { password?: string };

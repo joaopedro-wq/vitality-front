@@ -1,0 +1,95 @@
+<div class="admin-foods">
+  <header>
+    <div>
+      <a routerLink="/alimentos" class="back"><svg lucideArrowLeft size="15"></svg> Biblioteca</a>
+      <p class="eyebrow">Administração</p>
+      <h1>Catálogo de alimentos</h1>
+      <p>Itens globais usados por toda a plataforma.</p>
+    </div>
+    <button bdButton variant="subtle" [loading]="importing()" (click)="importTaco()">
+      <svg lucideRefreshCw size="16"></svg> Reimportar TACO
+    </button>
+  </header>
+  <div class="layout">
+    <section class="card form-card">
+      <div class="form-title">
+        <svg lucidePlus size="17"></svg>
+        <h2>{{ editing() ? 'Editar alimento' : 'Novo alimento manual' }}</h2>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <bd-field label="Nome" required><input bdInput formControlName="descricao" (blur)="verificarDuplicados()" /></bd-field>
+        @if (duplicados().length) { <div class="duplicates"><b>Possíveis duplicatas</b><span>{{ textoDuplicados() }}</span></div> }
+        ><bd-field label="Grupo"
+          ><input bdInput formControlName="grupo" placeholder="Ex.: Cereais e derivados"
+        /></bd-field>
+        <div class="numbers">
+          <bd-field label="Calorias" required
+            ><input bdInput type="number" formControlName="caloria" /></bd-field
+          ><bd-field label="Base (g)" required
+            ><input bdInput type="number" formControlName="qtd" /></bd-field
+          ><bd-field label="Proteína (g)" required
+            ><input bdInput type="number" formControlName="proteina" /></bd-field
+          ><bd-field label="Carboidrato (g)" required
+            ><input bdInput type="number" formControlName="carbo" /></bd-field
+          ><bd-field label="Gordura (g)" required
+            ><input bdInput type="number" formControlName="gordura"
+          /></bd-field>
+        </div>
+        <button bdButton [loading]="saving()">
+          {{ editing() ? 'Salvar alterações' : 'Criar alimento' }}
+        </button>
+      </form>
+    </section>
+    <section class="catalog">
+      <div class="catalog__filters">
+        <input
+          #term
+          type="search"
+          placeholder="Buscar no catálogo"
+          [value]="search()"
+          (input)="search.set(term.value); filter()"
+        /><select [value]="source()" (change)="source.set($any($event.target).value); filter()">
+          <option value="">Todas as fontes</option>
+          <option value="taco">TACO</option>
+          <option value="manual">Manual</option>
+          <option value="legado">Legado</option></select
+        ><select [value]="status()" (change)="status.set($any($event.target).value); filter()">
+          <option value="">Todos os status</option>
+          <option value="ativo">Ativo</option>
+          <option value="pendente">Pendente</option>
+          <option value="arquivado">Arquivado</option>
+        </select>
+      </div>
+      @if (loading()) {
+        <p class="state">Carregando…</p>
+      } @else {
+        <div class="catalog__list">
+          @for (food of foods(); track food.id) {
+            <article>
+              <div>
+                <span class="tag">{{ food.fonte }}</span>
+                <h2>{{ food.descricao }}</h2>
+                <p>
+                  {{ food.grupo || 'Sem grupo' }} · {{ food.caloria | number: '1.0-0' }} kcal /
+                  {{ food.qtd | number: '1.0-0' }} g
+                </p>
+              </div>
+              <div class="row-actions">
+                <span class="status" [class.archived]="food.status === 'arquivado'">{{
+                  food.status
+                }}</span
+                ><button bdButton variant="ghost" size="sm" (click)="edit(food)">Editar</button
+                ><button bdButton variant="ghost" size="sm" (click)="archive(food)">
+                  <svg lucideArchive size="15"></svg
+                  >{{ food.status === 'arquivado' ? 'Restaurar' : 'Arquivar' }}
+                </button>
+              </div>
+            </article>
+          } @empty {
+            <p class="state">Nenhum alimento para estes filtros.</p>
+          }
+        </div>
+      }
+    </section>
+  </div>
+</div>

@@ -239,12 +239,12 @@ Breeze (`routes/auth.php`) — não usados por este front.
 
 ### Tudo mais — sob `/api`, protegido por `auth:sanctum`, header `Authorization: Bearer <token>`
 
-Resposta geralmente `{data, success, message?}`. **Nenhum endpoint pagina.**
+Resposta geralmente `{data, success, message?}`. Listas do catálogo de alimentos são paginadas no formato Laravel (`data`, `meta`, `links`).
 
 | Recurso | Rotas | Campos / observações |
 |---|---|---|
 | Me | `GET /api/user/get-with-token` | Usuário autenticado a partir do token. |
-| Alimento | `/api/food[/{id}]` | `descricao, proteina, gordura, caloria, carbo, qtd` (valores por `qtd` base, ex. 100g). `index` retorna alimentos do usuário **+** globais (`id_usuario === null`, tabela TACO) — globais são read-only na UI. |
+| Alimento | `GET /api/foods`, `GET /api/foods/{id}`, favoritos em `/api/foods/{id}/favorite` | Catálogo global curado: `descricao, proteina, gordura, caloria, carbo, qtd, fonte, grupo, status`. TACO é fonte oficial (597 itens, por 100 g); usuário comum só busca itens ativos e mantém favoritos em `user_foods`. Não há cadastro pessoal. Admin usa `/api/admin/foods` para criar/editar, arquivar/restaurar e reimportar TACO. Registro alimentar persiste snapshot de macros para não reescrever histórico após correções de catálogo. |
 | Refeição | `/api/refeicao[/{id}]` | `descricao, horario` — é o *tipo* de refeição (ex. "Café da manhã"), não o que foi comido. |
 | Dieta | `/api/dieta[/{id}]` | `descricao, id_refeicao, alimentos:[{id,qtd}]` — plano reutilizável. `index` já retorna totais agregados. |
 | Registro | `/api/registro[/{id}]` | `data, id_refeicao, alimentos:[{id,qtd}]` — o diário real (o que foi comido). `index` retorna `{id, data, descricao_refeicao, alimentos:[...], nutrientes_totais:{...}}`. Fator de cálculo: `qtd_pivot / qtd_base_alimento` (replicado em `shared/utils/nutrient-calc.util.ts` para preview client-side). |
@@ -255,6 +255,14 @@ Resposta geralmente `{data, success, message?}`. **Nenhum endpoint pagina.**
 Todos os caminhos acima são centralizados em `core/http/api-paths.ts` (`authPaths` / `apiPaths`) —
 usar sempre essas funções em vez de montar strings de URL na mão.
 
+### Catálogo e testes
+
+- O catálogo TACO é carregado pelo `TacoFoodSeeder`, chamado por `DatabaseSeeder`; inicialize um
+  ambiente novo com `php artisan migrate --seed`. A carga é idempotente e pode ser repetida.
+- Os testes **nunca** podem usar PostgreSQL de desenvolvimento: `phpunit.xml` e `.env.testing`
+  fixam SQLite em memória, e `Tests\TestCase` aborta a suíte se outra conexão for selecionada.
+- Promova a primeira conta administrativa com `php artisan user:make-admin email@dominio.com`.
+
 ### Inconsistências conhecidas do backend (o front contorna, não corrige — fora de escopo por ora)
 
 - `/logout` real é sessão Breeze, incompatível com Bearer token (única rota de auth que não foi
@@ -262,8 +270,8 @@ usar sempre essas funções em vez de montar strings de URL na mão.
 - Falta checagem de "dono do recurso" em alguns `show`/`update`/`destroy` (ex. `AlimentoController`,
   `DietaController`, `RefeicaoController`) — qualquer usuário autenticado pode, em teoria, acessar
   recurso de outro por ID.
-- Nenhum endpoint pagina — atenção a performance em listas grandes (ex. `/food` com a tabela TACO
-  inteira).
+- Os endpoints legados `/food` foram aposentados pelo catálogo global `/foods`; não reintroduzir
+  alimentos por usuário nem a cópia da TACO no cadastro.
 
 ## Roadmap de implementação (Plano B)
 

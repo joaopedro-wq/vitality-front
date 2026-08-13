@@ -8,7 +8,7 @@ estrutura mudar (uma pasta nova, um critério de organização revisto), atualiz
 ```
 src/app/
   core/
-    auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, auth.interceptor.ts, token.storage.ts
+    auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, admin.guard.ts, auth.interceptor.ts, token.storage.ts
     http/       error.interceptor.ts, api-paths.ts
     models/     user, alimento, refeicao, dieta, registro, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes
@@ -23,6 +23,7 @@ src/app/
                  step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
                                  multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
                  palette-picker/ seletor presentation-only de paleta (swatch + opção ativa)
+                 profile-photo-card/ apresentação reutilizável da foto de perfil
     organisms/   blocos grandes e compostos, presentation-only
                  auth-poster-layout/  chrome visual das telas de auth, herdando a paleta ativa
     directives/  diretivas presentation-only reusáveis (ex.: somente-numero.directive.ts)
@@ -38,7 +39,9 @@ src/app/
     auth/{login,register}/
     dashboard/
     diario/{diario-list,diario-form}/
-    alimentos/{alimentos-list,alimento-form}/
+    alimentos/
+      alimentos-list/             Biblioteca global: busca, TACO e favoritos pessoais
+      admin-foods/                gestão de catálogo protegida por adminGuard
     dietas/{dietas-list,dieta-form}/
     metas/
       metas-page/
@@ -76,7 +79,7 @@ feature aparecer:
   caso de `MacroSummaryComponent` e `StepFooterComponent`, que nasceram dentro de `features/metas`
   e foram promovidos assim que ficou claro que eram só apresentação.
 - **Componente com lógica/service da própria feature** (os 4 `*-step` do quiz de Metas, por
-  exemplo) fica na feature — não tem o que promover, ele *é* daquela feature.
+  exemplo) fica na feature — não tem o que promover, ele _é_ daquela feature.
 - Dentro de cada feature, componentes de uso único ficam soltos na própria pasta, sem
   sub-hierarquia atômica interna.
 
@@ -91,12 +94,12 @@ guards/interceptors/boot da aplicação, não service de feature.
 
 ## Onde entra código novo
 
-| Tipo de código | Onde mora |
-|---|---|
-| Tela/fluxo de uma área do produto | `features/<area>/` |
-| Componente reutilizável, sem service de feature | `components/atoms\|molecules\|organisms/` |
-| Diretiva reutilizável, sem estado | `components/directives/` |
-| Pipe reutilizável | `components/pipes/` |
-| Função utilitária pura (cálculo, formatação) | `components/utils/` |
-| Service que chama o backend | `services/` |
-| Guard, interceptor, model, infraestrutura de boot | `core/` |
+| Tipo de código                                    | Onde mora                                 |
+| ------------------------------------------------- | ----------------------------------------- |
+| Tela/fluxo de uma área do produto                 | `features/<area>/`                        |
+| Componente reutilizável, sem service de feature   | `components/atoms\|molecules\|organisms/` |
+| Diretiva reutilizável, sem estado                 | `components/directives/`                  |
+| Pipe reutilizável                                 | `components/pipes/`                       |
+| Função utilitária pura (cálculo, formatação)      | `components/utils/`                       |
+| Service que chama o backend                       | `services/`                               |
+| Guard, interceptor, model, infraestrutura de boot | `core/`                                   |

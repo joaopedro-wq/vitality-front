@@ -1,0 +1,137 @@
+<div class="food-library">
+  <header class="food-library__header">
+    <div>
+      <p class="eyebrow">Biblioteca</p>
+      <h1>Alimentos</h1>
+      <p>Encontre itens do catálogo TACO e guarde os que você usa com frequência.</p>
+    </div>
+    @if (auth.currentUser()?.is_admin) {
+      <a bdButton routerLink="/admin/alimentos"
+        ><svg lucideShieldCheck size="16" aria-hidden="true"></svg> Gerenciar catálogo</a
+      >
+    }
+  </header>
+
+  <section class="food-library__controls card">
+    <label class="search"
+      ><svg lucideSearch size="17" aria-hidden="true"></svg
+      ><input
+        #termo
+        type="search"
+        placeholder="Buscar arroz, banana, frango…"
+        [value]="busca()"
+        (input)="buscar(termo.value)"
+    /></label>
+    <div class="tabs" role="tablist" aria-label="Filtros de alimentos">
+      <button type="button" [class.active]="tab() === 'all'" (click)="selecionarTab('all')">
+        Todos
+      </button>
+      <button
+        type="button"
+        [class.active]="tab() === 'favorites'"
+        (click)="selecionarTab('favorites')"
+      >
+        Meus favoritos
+      </button>
+    </div>
+  </section>
+
+  @if (carregando()) {
+    <p class="state">Carregando catálogo…</p>
+  } @else if (vazio()) {
+    <section class="empty card">
+      <svg lucideHeart size="24" aria-hidden="true"></svg>
+      <h2>{{ tab() === 'favorites' ? 'Nenhum favorito ainda' : 'Nenhum alimento encontrado' }}</h2>
+      <p>
+        {{
+          tab() === 'favorites'
+            ? 'Use o coração em qualquer alimento para montar sua lista rápida.'
+            : 'Tente outro termo. O catálogo é curado e não permite cadastro pessoal.'
+        }}
+      </p>
+    </section>
+  } @else {
+    <section class="food-grid" aria-label="Resultados do catálogo">
+      @for (food of alimentos(); track food.id) {
+        <article class="food-card card">
+          <div class="food-card__top">
+            <span class="source" [class.manual]="food.fonte === 'manual'">{{
+              food.fonte === 'taco' ? 'TACO' : 'Manual'
+            }}</span
+            ><button
+              type="button"
+              class="favorite"
+              [class.active]="food.is_favorite"
+              [attr.aria-label]="
+                food.is_favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'
+              "
+              (click)="alternarFavorito(food)"
+            >
+              <svg
+                lucideHeart
+                size="18"
+                [attr.fill]="food.is_favorite ? 'currentColor' : 'none'"
+                aria-hidden="true"
+              ></svg>
+            </button>
+          </div>
+          <h2>{{ food.descricao }}</h2>
+          <p class="group">{{ food.grupo || 'Catálogo geral' }}</p>
+          <div class="kcal">
+            <b>{{ food.caloria | number: '1.0-0' }}</b
+            ><span>kcal / {{ food.qtd | number: '1.0-0' }} g</span>
+          </div>
+          <dl>
+            <div>
+              <dt>Prot.</dt>
+              <dd>{{ food.proteina | number: '1.0-1' }} g</dd>
+            </div>
+            <div>
+              <dt>Carbo</dt>
+              <dd>{{ food.carbo | number: '1.0-1' }} g</dd>
+            </div>
+            <div>
+              <dt>Gord.</dt>
+              <dd>{{ food.gordura | number: '1.0-1' }} g</dd>
+            </div>
+          </dl>
+          <button class="details" type="button" (click)="detalhe.set(food)">Ver detalhes</button>
+        </article>
+      }
+    </section>
+    @if (ultimaPagina() > 1) {
+      <nav class="pagination">
+        <button
+          bdButton
+          variant="subtle"
+          size="sm"
+          [disabled]="pagina() === 1"
+          (click)="irParaPagina(pagina() - 1)"
+        >
+          Anterior</button
+        ><span>Página {{ pagina() }} de {{ ultimaPagina() }}</span
+        ><button
+          bdButton
+          variant="subtle"
+          size="sm"
+          [disabled]="pagina() === ultimaPagina()"
+          (click)="irParaPagina(pagina() + 1)"
+        >
+          Próxima
+        </button>
+      </nav>
+    }
+  }
+  @if (detalhe(); as food) {
+    <div class="detail-backdrop" (click)="detalhe.set(null)">
+      <aside class="detail card" role="dialog" aria-modal="true" [attr.aria-label]="food.descricao" (click)="$event.stopPropagation()">
+        <button class="detail__close" type="button" aria-label="Fechar detalhes" (click)="detalhe.set(null)"><svg lucideX size="18"></svg></button>
+        <span class="source">{{ food.fonte === 'taco' ? 'TACO' : 'Manual' }}</span>
+        <h2>{{ food.descricao }}</h2><p>{{ food.grupo || 'Catálogo geral' }}</p>
+        <div class="detail__kcal">{{ food.caloria | number: '1.0-0' }} <small>kcal por {{ food.qtd | number: '1.0-0' }} g</small></div>
+        <dl><div><dt>Proteína</dt><dd>{{ food.proteina | number: '1.0-1' }} g</dd></div><div><dt>Carboidrato</dt><dd>{{ food.carbo | number: '1.0-1' }} g</dd></div><div><dt>Gordura</dt><dd>{{ food.gordura | number: '1.0-1' }} g</dd></div></dl>
+        <button bdButton variant="subtle" (click)="alternarFavorito(food)">{{ food.is_favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}</button>
+      </aside>
+    </div>
+  }
+</div>
