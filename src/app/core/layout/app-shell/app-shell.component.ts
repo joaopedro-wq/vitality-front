@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 import {
@@ -37,7 +46,6 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/metas', label: 'Metas', icon: LucideTarget },
   { path: '/perfil', label: 'Perfil', icon: LucideUser },
 ];
-
 
 @Component({
   selector: 'vtp-app-shell',
@@ -105,11 +113,17 @@ export class AppShellComponent {
     }
   }
 
-  protected readonly primeiroNome = computed(() => this.auth.currentUser()?.name?.split(' ')[0] ?? '');
+  protected readonly primeiroNome = computed(
+    () => this.auth.currentUser()?.name?.split(' ')[0] ?? '',
+  );
+
+  protected readonly saudacaoPeriodo = computed(() => {
+    const hora = new Date().getHours();
+    return hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+  });
 
   protected readonly saudacao = computed(() => {
-    const hora = new Date().getHours();
-    const periodo = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    const periodo = this.saudacaoPeriodo();
     const nome = this.primeiroNome();
     return nome ? `${periodo}, ${nome}` : periodo;
   });

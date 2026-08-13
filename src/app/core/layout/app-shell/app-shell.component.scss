@@ -39,7 +39,11 @@
 .grain {
   height: 8px;
   border-radius: 4px;
-  background-image: repeating-linear-gradient(100deg, rgba(255, 255, 255, 0.14) 0 2px, transparent 2px 9px);
+  background-image: repeating-linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.14) 0 2px,
+    transparent 2px 9px
+  );
   background-color: rgba(0, 0, 0, 0.15);
 }
 
@@ -111,7 +115,7 @@ nav {
   min-height: 70px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   padding: 14px 28px;
   border-bottom: 1px solid var(--bd-border);
   background: var(--bd-surface);
@@ -120,14 +124,32 @@ nav {
   z-index: 10;
 }
 
+.topbar-leading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
 .greeting {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 18px;
   font-weight: 800;
   color: var(--bd-fg);
 }
 
+.greeting-compact,
+.greeting-mobile,
+.cta-compact {
+  display: none;
+}
+
 .top-actions {
   margin-left: auto;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -145,7 +167,9 @@ nav {
 }
 
 .cta {
+  flex: 0 0 auto;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
@@ -186,6 +210,7 @@ nav {
   }
 
   .sidebar {
+    width: min(86vw, 320px);
     position: fixed;
     top: 0;
     left: 0;
@@ -217,6 +242,70 @@ nav {
 
   .content {
     padding: 20px;
+  }
+}
+
+// Tablet estreito: preserva uma linha, mas abre espaço para os controles
+// globais reduzindo a saudação e o rótulo da ação principal.
+@media (max-width: 1199px) {
+  .topbar {
+    gap: 10px;
+    padding-inline: 20px;
+  }
+
+  .greeting-full,
+  .cta-full {
+    display: none;
+  }
+
+  .greeting-compact,
+  .cta-compact {
+    display: inline;
+  }
+
+  .cta {
+    padding-inline: 14px;
+  }
+}
+
+// No celular, todos os controles da topbar viram ícones para preservar uma
+// única linha compacta, incluindo o CTA primário de registrar.
+@media (max-width: 640px) {
+  .topbar {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .topbar-leading {
+    gap: 8px;
+  }
+
+  .top-actions {
+    gap: 4px;
+  }
+
+  .cta {
+    width: 38px;
+    min-height: 38px;
+    height: 38px;
+    padding: 0;
+  }
+
+  .cta-full,
+  .cta-compact {
+    display: none;
+  }
+
+  .content { padding: 16px; }
+}
+
+@media (max-width: 375px) {
+  .greeting-compact {
+    display: none;
+  }
+
+  .greeting-mobile {
+    display: inline;
   }
 }
 
