@@ -1,0 +1,18 @@
+<div class="palette-picker" role="menu" aria-label="Escolher paleta">
+  @for (paleta of paletas(); track paleta.id) {
+    <button
+      type="button"
+      role="menuitemradio"
+      class="palette-option"
+      [class.active]="paleta.id === ativa()"
+      [attr.aria-checked]="paleta.id === ativa()"
+      (click)="escolher.emit(paleta.id)"
+    >
+      <span class="swatch" [style.background-color]="paleta.swatch" aria-hidden="true"></span>
+      <span>{{ paleta.label }}</span>
+      @if (paleta.id === ativa()) {
+        <svg lucideCheck size="16" aria-hidden="true"></svg>
+      }
+    </button>
+  }
+</div>

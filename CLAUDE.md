@@ -88,10 +88,12 @@ critério de organização, atualize lá, não aqui.
   Tailwind aponta para os mesmos `--bd-*` — sem duplicar paleta em dois lugares. Tema controlado
   via `data-theme` no `documentElement` (`ThemeService` em `core/layout/theme.service.ts`),
   persistido em `localStorage`, com script anti-flash no `index.html`.
-- **Paleta "Cozinha Quente"** (2026-08-13, escolhida entre 5 mockups de menu/topbar): coral
-  (`--bd-primary`) + mostarda (`--bd-accent`) sobre areia clara — substituiu a paleta original
-  "saúde/nutrição" (verde-menta/laranja) da Fase 0. É a paleta de TODA a área autenticada (cards,
-  botões, badges), não só do menu.
+- **Paletas trocáveis do sistema** (2026-08-13): a antiga "Cozinha Quente" coral foi substituída
+  por Horta (default), Especiaria, Sálvia e Ameixa Reversa. `PaletteService` persiste a escolha em
+  `localStorage` (`palette`) e sincroniza `data-palette` no `documentElement`; o script anti-flash
+  do `index.html` aplica a escolha antes do Angular iniciar. Cada paleta altera somente
+  `--bd-primary*` e `--sidebar-*`; accent e neutros continuam variando exclusivamente com o tema.
+  A escolha vale para o sistema inteiro, inclusive login e cadastro.
 - **Auth via Bearer token puro** (Sanctum), sem cookies/CSRF — mesmo com
   `supports_credentials: true` no CORS do backend, não é necessário `withCredentials`.
 - **`authInterceptor`** só anexa `Authorization` em requests para `environment.apiBaseUrl` — nunca
@@ -101,20 +103,18 @@ critério de organização, atualize lá, não aqui.
   tratam o próprio erro por campo (ver contrato abaixo).
 - **Sessão restaurada no boot**: `provideAppInitializer` chama `AuthService.restoreSession()`
   antes da primeira navegação, para um refresh de página não deslogar quem já tinha token válido.
-- **Identidade visual "Feira Vitality" nas telas de auth**: login/registro têm uma paleta própria
-  (pôster de feira livre — manga/ameixa/creme), diferente do resto do app ("Cozinha Quente").
-  Em vez de duplicar layout, `shared/organisms/auth-poster-layout/` sobrescreve os tokens `--bd-*`
-  só no próprio `:host` (custom properties herdam pela árvore do DOM, independente de view
-  encapsulation) — os componentes `bd-field`/`bdInput`/`bdButton` projetados dentro saem retemados
-  sem tocar no tema global. Esse é o padrão a seguir sempre que uma tela precisar de uma paleta
-  isolada sem reescrever os componentes da lib.
+- **Auth herda a identidade ativa**: a decisão anterior de manter a paleta isolada "Feira
+  Vitality" em login/registro foi revertida. `auth-poster-layout/` não sobrescreve mais tokens
+  `--bd-*`: seu pôster usa `--sidebar-bg` e os CTAs/formulários usam os tokens globais da paleta
+  ativa. Como custom properties herdam pela árvore do DOM mesmo com view encapsulation, login e
+  cadastro acompanham imediatamente a paleta escolhida no restante do app.
 - **Menu lateral não usa `BdAppShellComponent`**: o layout desejado (sidebar de altura cheia +
   topbar só na coluna de conteúdo) não bate com a estrutura fixa da lib (header full-width acima
   de tudo). `core/layout/app-shell/` é markup próprio, reaproveitando só os átomos da lib
-  (`bd-avatar`, `bdButton`, `bdTooltip`). A cor de fundo do menu (`--sidebar-bg`, oliva escuro) é
-  uma variável local do componente, **não** um token `--bd-*` global — mesma lição do bug de
-  contraste da Fase 1: `--bd-bg` é lido pelo `bd-input` como o próprio fundo de campo, então nunca
-  reaproveitar esse token pra pintar um painel de chrome.
+  (`bd-avatar`, `bdButton`, `bdTooltip`). A cor de fundo do menu usa os tokens globais
+  `--sidebar-*`, definidos por `data-palette` e compartilhados com o pôster de auth; continua
+  sendo chrome separado de `--bd-bg`, pois esse último é lido pelo `bd-input` como o próprio fundo
+  de campo e nunca deve ser reaproveitado para pintar um painel escuro.
   Gaveta mobile (<900px) implementada à mão (sem a gaveta pronta da lib) — `mobileMenuOpen` signal
   + scrim + fecha em `Escape`. Falta ainda: foco preso dentro da gaveta enquanto aberta (Fase 9).
 - **Todo botão é pill (raio total), sem exceção**: decisão de produto (2026-08-13), não só do
@@ -123,7 +123,7 @@ critério de organização, atualize lá, não aqui.
   (`--bd-radius-sm`), token que também dá forma a chip/tab/skip-link; mexer nele quebraria essas
   outras peças, então a sobrescrita mira só `[bdButton]`. Navegação de passo (voltar/avançar) vai
   além do raio: é **sempre** um par de botões redondos só-ícone — nunca texto/link — avançar em
-  `--bd-primary` sólido, voltar em contorno neutro (`--bd-border-strong`, hover coral). Ver
+  `--bd-primary` sólido, voltar em contorno neutro (`--bd-border-strong`, hover primary). Ver
   `StepFooterComponent` (`.round-back`/`.round-next`) como referência do padrão.
 - **Painel inicial de Metas ("configurado") é "cabeçalho conectado"** (2026-08-13, escolhido entre
   4 conceitos): título+subtítulo e a ação principal vivem na mesma faixa no topo (`.hero-row`),
@@ -158,12 +158,12 @@ critério de organização, atualize lá, não aqui.
   referência externa, ler a implementação de verdade antes de copiar a *sensação* — a suposição
   inicial (rodapé fixo = boa UX) não batia com o que a própria referência fazia.
 
-## Design tokens — paleta "Cozinha Quente"
+## Design tokens — paletas do sistema
 
-Fonte de verdade: `src/styles.scss` (`:root` e `:root[data-theme='dark']`). Qualquer artefato,
-mockup ou tela nova **usa exatamente estes valores** — não inventar tom novo "parecido". Se uma
-tela precisar de uma paleta deliberadamente diferente (caso da auth, ver acima), isso é exceção
-documentada, não a regra.
+Fonte de verdade: `src/styles.scss`. `:root` e `:root[data-theme='dark']` definem neutros e accent;
+os blocos `data-palette` definem primary e sidebar (com espelho para preferência escura do sistema).
+Qualquer artefato, mockup ou tela nova **usa exatamente estes valores** — não inventar tom novo
+"parecido".
 
 **Classe `card`** (`@utility card` em `src/styles.scss`, Tailwind v4 custom utility — `class="card"`
 em qualquer template do projeto): primitivo de fundo pra **qualquer** tela do sistema com mais de
@@ -188,13 +188,12 @@ padding entre a borda e o conteúdo/próximo card.
 | `--bd-fg` | `#2b2417` | `#f3eedf` | Texto principal. |
 | `--bd-fg-muted` | `#786d54` | `#b3a88f` | Texto secundário/legenda. |
 | `--bd-fg-subtle` | `#a99d7e` | `#7d735c` | Placeholder, texto terciário. |
-| `--bd-primary` | `#e2694b` (coral) | `#f2895f` | Ação principal, CTA, estado ativo. |
-| `--bd-primary-strong` | `#c94f32` | `#ef7248` | Hover do primary. |
-| `--bd-primary-soft` | `rgba(226,105,75,.14)` | `rgba(242,137,95,.18)` | Fundo suave (badge, item ativo). |
+| `--bd-primary` | Horta `#5c7a3f`; Especiaria `#a9673a`; Sálvia `#7c9473`; Ameixa Reversa `#6b3f57` | Horta `#7c9a5c`; Especiaria `#c2814f`; Sálvia `#9bb18f`; Ameixa Reversa `#8c5d76` | Ação principal, CTA, estado ativo. |
+| `--bd-primary-strong` / `--bd-primary-soft` / `--bd-primary-contrast` | Derivados da paleta clara ativa | Derivados da paleta escura ativa | Hover, fundo suave e contraste do primary. |
 | `--bd-accent` | `#d9a441` (mostarda) | `#e8be5d` | Destaque secundário — nunca disputa com o primary na mesma composição. |
 | `--bd-accent-soft` | `rgba(217,164,65,.16)` | `rgba(232,190,93,.18)` | Fundo suave do accent. |
-| `--bd-danger`/`--bd-warning`/`--bd-success` | defaults da lib (não sobrescritos) | idem | Semântico — separado do accent de marca, não usar coral/mostarda pra status. |
-| `--sidebar-bg` (só no app-shell) | `#3e4a34` (oliva escuro) | mesmo | Cor de chrome, não é token `--bd-*` global — ver nota do menu lateral acima. |
+| `--bd-danger`/`--bd-warning`/`--bd-success` | defaults da lib (não sobrescritos) | idem | Semântico — separado do accent de marca, não usar primary/accent pra status. |
+| `--sidebar-*` | Horta `#33421f`; Especiaria `#4a2f3e`; Sálvia `#33302a`; Ameixa Reversa `#5a3826` | mesmo | Chrome do menu e fundo do pôster de auth; `fg`, `fg-muted` e `bg-hover` derivam de cada paleta. |
 | `--bd-radius` | `0.875rem` | idem | Raio padrão de card/botão/input. |
 
 Tipografia: `--bd-font-sans` (herdado da lib, `'Inter', system-ui, ...` — sem `@font-face`
@@ -202,7 +201,7 @@ próprio, cai pro stack do sistema na prática). Números tabulares (`font-varia
 tabular-nums`) em qualquer lugar com dígito alinhado em coluna (macros, calorias, tabelas).
 
 **Mapeamento de cor para macros** (gráficos/anéis de proteína·carbo·gordura — Metas, Diário,
-Dashboard): proteína = `--bd-primary` (coral), carboidrato = `--bd-accent` (mostarda), gordura =
+Dashboard): proteína = `--bd-primary` (paleta ativa), carboidrato = `--bd-accent` (mostarda), gordura =
 `#6b8552` (oliva — tom claro da família da sidebar, não um token `--bd-*` novo). Três cores que já
 pertencem ao sistema, nenhuma inventada pra virar "a quarta cor da marca".
 

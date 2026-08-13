@@ -12,7 +12,7 @@ src/app/
     http/       error.interceptor.ts, api-paths.ts
     models/     user, alimento, refeicao, dieta, registro, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes
-    layout/     app-shell/, theme.service.ts
+    layout/     app-shell/, theme.service.ts, palette.service.ts
   components/
     atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
@@ -22,8 +22,9 @@ src/app/
                  step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
                  step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
                                  multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
+                 palette-picker/ seletor presentation-only de paleta (swatch + opção ativa)
     organisms/   blocos grandes e compostos, presentation-only
-                 auth-poster-layout/  chrome visual "Feira Vitality" das telas de auth
+                 auth-poster-layout/  chrome visual das telas de auth, herdando a paleta ativa
     directives/  diretivas presentation-only reusáveis (ex.: somente-numero.directive.ts)
     pipes/
     utils/       recomendacao-calc.util.ts (TMB/GET), nutrient-calc.util.ts (fator
@@ -79,8 +80,9 @@ feature aparecer:
 Todo service que chama a API do backend (`HttpClient`) entra em `services/<nome>.service.ts`,
 plano, sem pasta por feature.
 
-**Exceção**: `core/auth/auth.service.ts` e `core/layout/theme.service.ts` continuam em `core/`, por
-serem infraestrutura acoplada a guards/interceptors/boot da aplicação, não service de feature.
+**Exceção**: `core/auth/auth.service.ts`, `core/layout/theme.service.ts` e
+`core/layout/palette.service.ts` continuam em `core/`, por serem infraestrutura acoplada a
+guards/interceptors/boot da aplicação, não service de feature.
 
 ## Onde entra código novo
 

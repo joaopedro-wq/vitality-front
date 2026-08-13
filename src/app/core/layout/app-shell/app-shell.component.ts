@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 import {
@@ -9,6 +9,7 @@ import {
   LucideLogOut,
   LucideMenu,
   LucideMoon,
+  LucidePalette,
   LucidePlus,
   LucideSun,
   LucideTarget,
@@ -18,7 +19,9 @@ import {
 } from '@lucide/angular';
 
 import { AuthService } from '../../auth/auth.service';
+import { PaletteService, type PaletteId } from '../palette.service';
 import { ThemeService } from '../theme.service';
+import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
 
 interface NavItem {
   path: string;
@@ -52,6 +55,8 @@ const NAV_ITEMS: NavItem[] = [
     LucideLogOut,
     LucideSun,
     LucideMoon,
+    LucidePalette,
+    PalettePickerComponent,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
@@ -60,12 +65,15 @@ const NAV_ITEMS: NavItem[] = [
 export class AppShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly theme = inject(ThemeService);
+  protected readonly palette = inject(PaletteService);
   private readonly router = inject(Router);
+  @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
   protected readonly navItems = NAV_ITEMS;
 
   /** Gaveta da sidebar no mobile (<900px) — some por padrão, some ao navegar. */
   protected readonly mobileMenuOpen = signal(false);
+  protected readonly paletaMenuAberto = signal(false);
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen.update((open) => !open);
@@ -75,9 +83,26 @@ export class AppShellComponent {
     this.mobileMenuOpen.set(false);
   }
 
+  togglePaletaMenu(): void {
+    this.paletaMenuAberto.update((aberto) => !aberto);
+  }
+
+  escolherPaleta(id: PaletteId): void {
+    this.palette.set(id);
+    this.paletaMenuAberto.set(false);
+  }
+
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
     this.closeMobileMenu();
+    this.paletaMenuAberto.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  protected onDocumentClick(event: MouseEvent): void {
+    if (!this.paletteControl?.nativeElement.contains(event.target as Node)) {
+      this.paletaMenuAberto.set(false);
+    }
   }
 
   protected readonly primeiroNome = computed(() => this.auth.currentUser()?.name?.split(' ')[0] ?? '');

@@ -1,11 +1,4 @@
 :host {
- 
-  --sidebar-bg: #3e4a34;
-  --sidebar-bg-hover: #4b5940;
-  --sidebar-fg: #e7e9de;
-  --sidebar-fg-muted: #aab39c;
-  --sidebar-accent: #d9a441;
-
   display: block;
 }
 
@@ -138,6 +131,17 @@ nav {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.palette-control {
+  position: relative;
+}
+
+.palette-control vtp-palette-picker {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
 }
 
 .cta {

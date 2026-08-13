@@ -49,6 +49,30 @@
       <div class="greeting">{{ saudacao() }}</div>
 
       <div class="top-actions">
+        <div #paletteControl class="palette-control">
+          <button
+            bdButton
+            variant="ghost"
+            size="sm"
+            iconOnly
+            bdTooltip="Escolher paleta"
+            aria-label="Escolher paleta"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="paletaMenuAberto()"
+            (click)="togglePaletaMenu()"
+          >
+            <svg lucidePalette size="16" aria-hidden="true"></svg>
+          </button>
+
+          @if (paletaMenuAberto()) {
+            <vtp-palette-picker
+              [paletas]="palette.paletas"
+              [ativa]="palette.palette()"
+              (escolher)="escolherPaleta($event)"
+            />
+          }
+        </div>
+
         <button
           bdButton
           variant="ghost"

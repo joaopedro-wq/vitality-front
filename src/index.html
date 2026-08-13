@@ -8,13 +8,18 @@
   <meta name="theme-color" content="#171410">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <!-- Evita flash de tema errado antes do Angular iniciar -->
+  <!-- Evita flash de tema/paleta errados antes do Angular iniciar -->
   <script>
     (function () {
       try {
         var t = localStorage.getItem('theme');
         if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', t);
+
+        var validPalettes = ['horta', 'especiaria', 'salvia', 'ameixa-reversa'];
+        var p = localStorage.getItem('palette');
+        if (validPalettes.indexOf(p) === -1) p = 'horta';
+        document.documentElement.setAttribute('data-palette', p);
       } catch (e) {}
     })();
   </script>

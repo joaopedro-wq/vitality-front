@@ -11,12 +11,12 @@
   text-transform: uppercase;
   margin: 0 0 10px;
   text-wrap: balance;
-  color: var(--ink);
+  color: var(--bd-fg);
 }
 
 .heading p {
   margin: 0 0 26px;
-  color: var(--ink-soft);
+  color: var(--bd-fg-muted);
   font-size: 14.5px;
   line-height: 1.55;
   max-width: 34ch;
@@ -32,12 +32,12 @@ form {
   margin-top: 20px;
   text-align: center;
   font-size: 13.5px;
-  color: var(--ink-soft);
+  color: var(--bd-fg-muted);
 }
 
 .switch-line a {
   font-weight: 800;
-  color: var(--leaf);
+  color: var(--bd-primary-strong);
   text-decoration: none;
 }
 

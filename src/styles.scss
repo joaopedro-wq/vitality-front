@@ -16,16 +16,11 @@
   --bd-fg-muted: #786d54;
   --bd-fg-subtle: #a99d7e;
 
-  --bd-primary: #e2694b;
-  --bd-primary-strong: #c94f32;
-  --bd-primary-soft: rgba(226, 105, 75, 0.14);
-  --bd-primary-contrast: #fff8f2;
-
   --bd-accent: #d9a441;
   --bd-accent-soft: rgba(217, 164, 65, 0.16);
   --bd-accent-contrast: #3e2f0e;
 
-  --bd-gradient: linear-gradient(120deg, #e2694b 0%, #d9a441 60%, #52803f 130%);
+  --bd-gradient: linear-gradient(120deg, var(--bd-primary) 0%, var(--bd-accent) 100%);
 
   --bd-radius: 0.875rem;
 }
@@ -42,16 +37,9 @@
   --bd-fg-muted: #b3a88f;
   --bd-fg-subtle: #7d735c;
 
-  --bd-primary: #f2895f;
-  --bd-primary-strong: #ef7248;
-  --bd-primary-soft: rgba(242, 137, 95, 0.18);
-  --bd-primary-contrast: #2b0f00;
-
   --bd-accent: #e8be5d;
   --bd-accent-soft: rgba(232, 190, 93, 0.18);
   --bd-accent-contrast: #2b1200;
-
-  --bd-gradient: linear-gradient(120deg, #f2895f 0%, #e8be5d 60%, #6fae57 130%);
 }
 
 // Segue a preferência do sistema quando o usuário não fixou um tema
@@ -66,12 +54,120 @@
     --bd-fg: #f3eedf;
     --bd-fg-muted: #b3a88f;
     --bd-fg-subtle: #7d735c;
-    --bd-primary: #f2895f;
-    --bd-primary-strong: #ef7248;
-    --bd-primary-soft: rgba(242, 137, 95, 0.18);
     --bd-accent: #e8be5d;
     --bd-accent-soft: rgba(232, 190, 93, 0.18);
-    --bd-gradient: linear-gradient(120deg, #f2895f 0%, #e8be5d 60%, #6fae57 130%);
+  }
+}
+
+// Primary e chrome mudam por paleta; accent e neutros continuam sendo definidos
+// exclusivamente pelo tema claro/escuro acima. O seletor sem data-palette mantém
+// Horta como fallback seguro fora do boot normal (que sempre define o atributo).
+:root,
+:root[data-palette='horta'] {
+  --bd-primary: #5c7a3f;
+  --bd-primary-strong: #47622f;
+  --bd-primary-soft: rgba(92, 122, 63, 0.14);
+  --bd-primary-contrast: #fffdf7;
+  --sidebar-bg: #33421f;
+  --sidebar-bg-hover: #43562c;
+  --sidebar-fg: #f1f4e8;
+  --sidebar-fg-muted: #c2cbaa;
+  --sidebar-accent: var(--bd-accent);
+}
+
+:root[data-palette='especiaria'] {
+  --bd-primary: #a9673a;
+  --bd-primary-strong: #8e512c;
+  --bd-primary-soft: rgba(169, 103, 58, 0.14);
+  --bd-primary-contrast: #fffaf5;
+  --sidebar-bg: #4a2f3e;
+  --sidebar-bg-hover: #5b3b4d;
+  --sidebar-fg: #f8edf1;
+  --sidebar-fg-muted: #d8bdc9;
+  --sidebar-accent: var(--bd-accent);
+}
+
+:root[data-palette='salvia'] {
+  --bd-primary: #7c9473;
+  --bd-primary-strong: #657a5e;
+  --bd-primary-soft: rgba(124, 148, 115, 0.14);
+  --bd-primary-contrast: #fffdf7;
+  --sidebar-bg: #33302a;
+  --sidebar-bg-hover: #464238;
+  --sidebar-fg: #f1eee5;
+  --sidebar-fg-muted: #c6c0ad;
+  --sidebar-accent: var(--bd-accent);
+}
+
+:root[data-palette='ameixa-reversa'] {
+  --bd-primary: #6b3f57;
+  --bd-primary-strong: #552d44;
+  --bd-primary-soft: rgba(107, 63, 87, 0.14);
+  --bd-primary-contrast: #fff7fb;
+  --sidebar-bg: #5a3826;
+  --sidebar-bg-hover: #6c4732;
+  --sidebar-fg: #fff1e6;
+  --sidebar-fg-muted: #e2c4ae;
+  --sidebar-accent: var(--bd-accent);
+}
+
+:root[data-theme='dark'][data-palette='horta'] {
+  --bd-primary: #7c9a5c;
+  --bd-primary-strong: #688547;
+  --bd-primary-soft: rgba(124, 154, 92, 0.18);
+  --bd-primary-contrast: #17200f;
+}
+
+:root[data-theme='dark'][data-palette='especiaria'] {
+  --bd-primary: #c2814f;
+  --bd-primary-strong: #a9673a;
+  --bd-primary-soft: rgba(194, 129, 79, 0.18);
+  --bd-primary-contrast: #2c160c;
+}
+
+:root[data-theme='dark'][data-palette='salvia'] {
+  --bd-primary: #9bb18f;
+  --bd-primary-strong: #849d79;
+  --bd-primary-soft: rgba(155, 177, 143, 0.18);
+  --bd-primary-contrast: #1d251b;
+}
+
+:root[data-theme='dark'][data-palette='ameixa-reversa'] {
+  --bd-primary: #8c5d76;
+  --bd-primary-strong: #78485f;
+  --bd-primary-soft: rgba(140, 93, 118, 0.18);
+  --bd-primary-contrast: #29121f;
+}
+
+// Espelho para quem ainda não fixou o tema manualmente: o tema do sistema
+// também precisa receber o primary escuro da paleta ativa.
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light'])[data-palette='horta'] {
+    --bd-primary: #7c9a5c;
+    --bd-primary-strong: #688547;
+    --bd-primary-soft: rgba(124, 154, 92, 0.18);
+    --bd-primary-contrast: #17200f;
+  }
+
+  :root:not([data-theme='light'])[data-palette='especiaria'] {
+    --bd-primary: #c2814f;
+    --bd-primary-strong: #a9673a;
+    --bd-primary-soft: rgba(194, 129, 79, 0.18);
+    --bd-primary-contrast: #2c160c;
+  }
+
+  :root:not([data-theme='light'])[data-palette='salvia'] {
+    --bd-primary: #9bb18f;
+    --bd-primary-strong: #849d79;
+    --bd-primary-soft: rgba(155, 177, 143, 0.18);
+    --bd-primary-contrast: #1d251b;
+  }
+
+  :root:not([data-theme='light'])[data-palette='ameixa-reversa'] {
+    --bd-primary: #8c5d76;
+    --bd-primary-strong: #78485f;
+    --bd-primary-soft: rgba(140, 93, 118, 0.18);
+    --bd-primary-contrast: #29121f;
   }
 }
 
