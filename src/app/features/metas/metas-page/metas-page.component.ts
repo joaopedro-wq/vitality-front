@@ -2,9 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import { LucideArrowRight } from '@lucide/angular';
+import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 
-import type { SugestaoRecomendacao } from '../../../components/utils/recomendacao-calc.util';
+import { AuthService } from '../../../core/auth/auth.service';
+import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../components/utils/recomendacao-calc.util';
 import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
 import { StepTrackComponent, type StepTrackItem } from '../../../components/molecules/step-track/step-track.component';
 import { RecomendacaoService } from '../../../services/recomendacao.service';
@@ -59,6 +61,8 @@ const PASSOS: StepTrackItem[] = [
 export class MetasPageComponent {
   private readonly recomendacaoService = inject(RecomendacaoService);
   private readonly metaService = inject(MetaService);
+  private readonly authService = inject(AuthService);
+  private readonly toastr = inject(ToastrService);
   private readonly router = inject(Router);
 
   protected readonly passos = PASSOS;
@@ -96,9 +100,23 @@ export class MetasPageComponent {
     this.sugestao.set(null);
   }
 
+  /** Navegação livre pela trilha — clicar em qualquer passo pula direto pra ele, não só
+   * voltar/avançar sequencial. Os passos 2/3 (Sugestão/Confirmar) dependem de `sugestao()`
+   * calculada; se o usuário ainda não passou pela Atividade, tenta calcular na hora a partir do
+   * que já está salvo no perfil — só bloqueia se realmente faltar dado (perfil incompleto). */
   irPara(passo: number): void {
-    // bd-steps (clickable) só deixa voltar pra etapas já concluídas — nunca pula pra frente.
-    if (passo <= this.passo()) this.passo.set(passo);
+    if (passo === this.passo()) return;
+
+    if ((passo === 2 || passo === 3) && !this.sugestao()) {
+      const calculada = calcularSugestaoRecomendacao(this.authService.currentUser());
+      if (!calculada) {
+        this.toastr.error('Preencha seu perfil e atividade antes de pular pra esse passo.');
+        return;
+      }
+      this.sugestao.set(calculada);
+    }
+
+    this.passo.set(passo);
   }
 
   onSugestaoCalculada(sugestao: SugestaoRecomendacao): void {

@@ -29,8 +29,8 @@
   }
 
   @case ('quiz') {
-    <div class="md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
-      <div class="hidden md:block card p-6">
+    <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+      <div class="hidden md:block">
         <vtp-step-track
           [steps]="passos"
           [ativo]="passo()"

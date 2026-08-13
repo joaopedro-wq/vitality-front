@@ -409,6 +409,16 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
    `components/` porque já foi desenhada pra servir qualquer fluxo multi-passo do produto, não só
    o quiz de Metas (mesmo critério de promoção documentado em "Estrutura de pastas"). Botões
    redondos de voltar/avançar do rodapé (`StepFooterComponent`) diminuíram de 48px pra 38px.
+   Oitava passada (2026-08-13, mesmo dia): navegação pela trilha virou livre — clicar em qualquer
+   passo pula direto pra ele, não só voltar pra um já concluído (`StepTrackComponent` não desabilita
+   mais passo nenhum; a área clicável também cresceu — é o item inteiro, badge + título, não só o
+   círculo). O passo em si virar acessível não significa que o dado dele existe: "Sugestão" e
+   "Confirmar" dependem de `sugestao()`, calculada só depois do passo "Atividade". `irPara()` em
+   `MetasPageComponent` tenta calcular na hora via `calcularSugestaoRecomendacao(currentUser)` se
+   o usuário pular direto pra um desses dois sem passar por Atividade antes — funciona se o perfil
+   já tem peso/altura/idade/gênero/nível de atividade/objetivo salvos (ex.: de uma sessão anterior);
+   se realmente faltar dado, mostra toast de erro e não navega, em vez de deixar o passo abrir em
+   branco.
 4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).
