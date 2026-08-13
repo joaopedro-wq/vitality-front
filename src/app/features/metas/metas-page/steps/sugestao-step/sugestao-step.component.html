@@ -1,0 +1,12 @@
+<h1>Aqui está sua sugestão</h1>
+<p class="sub">Calculado a partir do que você respondeu — no próximo passo você pode ajustar.</p>
+
+<div class="flow">
+  <div class="flow-chip"><span class="n">{{ sugestao().tmb }}</span><span class="k">TMB</span></div>
+  <span class="arrow">→</span>
+  <div class="flow-chip"><span class="n">{{ sugestao().get }}</span><span class="k">GET</span></div>
+  <span class="arrow">→</span>
+  <div class="flow-chip final"><span class="n">{{ sugestao().caloria }}</span><span class="k">sugestão</span></div>
+</div>
+
+<vtp-step-footer (voltar)="voltar.emit()" (avancar)="continuar.emit()" />

@@ -1,14 +1,66 @@
-<bd-settings-template
-  title="Metas"
-  description="A base numérica usada pelo painel e pelo diário para comparar o que foi consumido com o que era esperado."
-  [sections]="sections"
-  [(activeSection)]="activeSection"
->
-  <section id="recomendacao" class="flex flex-col gap-4">
-    <vtp-recomendacao-form />
-  </section>
+@switch (fase()) {
+  @case ('carregando') {
+    <div class="loading">Carregando suas metas…</div>
+  }
 
-  <section id="metas" class="flex flex-col gap-4">
-    <vtp-meta-form />
-  </section>
-</bd-settings-template>
+  @case ('configurado') {
+    <div class="stage-solo">
+      <div class="pagehead">
+        <div>
+          <h1>Metas</h1>
+          <p>Isso é o que vale hoje pro painel e pro diário.</p>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <vtp-macro-summary [valores]="sugestao()" tamanho="lg" />
+
+        <div class="panel-actions">
+          <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
+          <button bdButton (click)="irParaDashboard()">Ir para o painel →</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @case ('quiz') {
+    <div class="layout">
+      <aside class="steps-col">
+        <bd-steps
+          [steps]="passos"
+          [active]="passo()"
+          (stepChange)="irPara($event)"
+          variant="numbered"
+          orientation="vertical"
+          clickable
+          label="Etapas da configuração de metas"
+        />
+      </aside>
+
+      <div class="content-col">
+        <div class="panel-strip">
+          <vtp-macro-summary [valores]="sugestao()" tamanho="sm" />
+        </div>
+
+        @switch (passo()) {
+          @case (0) {
+            <vtp-perfil-step (concluido)="passo.set(1)" />
+          }
+          @case (1) {
+            <vtp-atividade-step (voltar)="irPara(0)" (concluido)="onSugestaoCalculada($event)" />
+          }
+          @case (2) {
+            @if (sugestao(); as s) {
+              <vtp-sugestao-step [sugestao]="s" (voltar)="irPara(1)" (continuar)="passo.set(3)" />
+            }
+          }
+          @case (3) {
+            @if (sugestao(); as s) {
+              <vtp-revisar-step [sugestao]="s" (voltar)="irPara(2)" (salvo)="fase.set('configurado')" />
+            }
+          }
+        }
+      </div>
+    </div>
+  }
+}

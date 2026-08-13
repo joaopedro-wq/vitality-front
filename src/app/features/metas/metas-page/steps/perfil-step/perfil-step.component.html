@@ -1,0 +1,18 @@
+<h1>Vamos calcular sua meta ideal?</h1>
+<p class="sub">Alguns dados sobre você — usamos isso pra estimar seu gasto calórico.</p>
+
+<form [formGroup]="form" class="field-grid">
+  <label class="field"><span>Peso (kg)</span><input type="number" formControlName="peso" /></label>
+  <label class="field"><span>Altura (cm)</span><input type="number" formControlName="altura" /></label>
+  <label class="field"><span>Idade</span><input type="number" formControlName="idade" /></label>
+  <label class="field">
+    <span>Gênero</span>
+    <select formControlName="genero">
+      <option value="M">Masculino</option>
+      <option value="F">Feminino</option>
+      <option value="O">Outro</option>
+    </select>
+  </label>
+</form>
+
+<vtp-step-footer [mostrarVoltar]="false" [carregando]="salvando()" (avancar)="confirmar()" />

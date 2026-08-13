@@ -1,0 +1,30 @@
+<h1>Atividade e objetivo</h1>
+<p class="sub">Isso ajusta seu gasto calórico total e a distribuição de macros.</p>
+
+<form [formGroup]="form" class="options-grid">
+  <div class="options-block">
+    <p class="group-label">Nível de atividade</p>
+    <div class="options">
+      @for (opt of ativididadeOptions; track opt[0]) {
+        <label class="opt" [class.selected]="form.controls.nivel_atividade.value === opt[0]">
+          <input type="radio" formControlName="nivel_atividade" [value]="opt[0]" />
+          {{ opt[1] }}
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="options-block">
+    <p class="group-label">Objetivo</p>
+    <div class="options">
+      @for (opt of objetivoOptions; track opt[0]) {
+        <label class="opt" [class.selected]="form.controls.objetivo.value === opt[0]">
+          <input type="radio" formControlName="objetivo" [value]="opt[0]" />
+          {{ opt[1] }}
+        </label>
+      }
+    </div>
+  </div>
+</form>
+
+<vtp-step-footer [carregando]="salvando()" (voltar)="voltar.emit()" (avancar)="confirmar()" />

@@ -72,8 +72,19 @@ src/app/
     diario/{diario-list,diario-form,data}/
     alimentos/{alimentos-list,alimento-form,data}/
     dietas/{dietas-list,dieta-form,data}/
-    metas/{metas-page,data}/
-    recomendacao/{recomendacao-page,data}/
+    metas/
+      data/                        meta.service.ts
+      metas-page/
+        metas-page.component.*     orquestrador — fase/passo/sugestão, navegação (bd-steps)
+        metas-step.scss            shell visual comum aos 4 passos (styleUrl compartilhado)
+        macro-summary/             anel + chips de macro (sm/lg), 3 usos dentro da feature
+        steps/
+          step-footer/             rodapé padrão (voltar + botão circular) — usado pelos 4 passos
+          perfil-step/             passo 1 — lógica e form próprios, injeta UserService direto
+          atividade-step/          passo 2 — idem, calcula a sugestão a partir da própria resposta
+          sugestao-step/           passo 3 — só apresentação, sem serviço
+          revisar-step/            passo 4 — form + salva recomendação/meta, emite ao concluir
+    recomendacao/{data}/            (sem página própria — a UI virou o passo "Sugestão" do quiz)
     perfil/{perfil-page,data}/
     ui-check/    smoke test visual da Fase 0 — remover quando o dashboard real existir
   app.routes.ts
@@ -124,6 +135,45 @@ Cada `features/<nome>/data/<nome>.service.ts` é próprio da feature — não ce
   reaproveitar esse token pra pintar um painel de chrome.
   Gaveta mobile (<900px) implementada à mão (sem a gaveta pronta da lib) — `mobileMenuOpen` signal
   + scrim + fecha em `Escape`. Falta ainda: foco preso dentro da gaveta enquanto aberta (Fase 9).
+- **Ícone de tema é SVG inline, não Font Awesome**: sol (raios) em dark / lua (crescente) em
+  light, linework fino (`stroke-width="2"`, `currentColor`) — estilo dos ícones do mockup "Cozinha
+  Quente", diferente do resto dos ícones do app (que usam Font Awesome `fas fa-*`). Se algum dia
+  todo o set de ícones migrar pra linework próprio, esse par de SVGs já está no padrão certo.
+
+## Design tokens — paleta "Cozinha Quente"
+
+Fonte de verdade: `src/styles.scss` (`:root` e `:root[data-theme='dark']`). Qualquer artefato,
+mockup ou tela nova **usa exatamente estes valores** — não inventar tom novo "parecido". Se uma
+tela precisar de uma paleta deliberadamente diferente (caso da auth, ver acima), isso é exceção
+documentada, não a regra.
+
+| Token | Light | Dark | Uso |
+|---|---|---|---|
+| `--bd-bg` | `#f7f1e4` | `#171410` | Fundo da página. **Também é o fundo que `bd-input` usa pra si mesmo** — nunca reaproveitar pra pintar um painel/chrome escuro (bug já cometido na Fase 1). |
+| `--bd-surface` / `--bd-bg-elevated` | `#fffdf7` | `#201c14` | Cards, campos, superfícies elevadas. |
+| `--bd-surface-hover` | `#f2e9d4` | `#29241a` | Hover de linha/item. |
+| `--bd-border` | `#eae0c8` | `#362f22` | Borda padrão. |
+| `--bd-border-strong` | `#d9c9a0` | `#4a4030` | Borda em hover/foco. |
+| `--bd-fg` | `#2b2417` | `#f3eedf` | Texto principal. |
+| `--bd-fg-muted` | `#786d54` | `#b3a88f` | Texto secundário/legenda. |
+| `--bd-fg-subtle` | `#a99d7e` | `#7d735c` | Placeholder, texto terciário. |
+| `--bd-primary` | `#e2694b` (coral) | `#f2895f` | Ação principal, CTA, estado ativo. |
+| `--bd-primary-strong` | `#c94f32` | `#ef7248` | Hover do primary. |
+| `--bd-primary-soft` | `rgba(226,105,75,.14)` | `rgba(242,137,95,.18)` | Fundo suave (badge, item ativo). |
+| `--bd-accent` | `#d9a441` (mostarda) | `#e8be5d` | Destaque secundário — nunca disputa com o primary na mesma composição. |
+| `--bd-accent-soft` | `rgba(217,164,65,.16)` | `rgba(232,190,93,.18)` | Fundo suave do accent. |
+| `--bd-danger`/`--bd-warning`/`--bd-success` | defaults da lib (não sobrescritos) | idem | Semântico — separado do accent de marca, não usar coral/mostarda pra status. |
+| `--sidebar-bg` (só no app-shell) | `#3e4a34` (oliva escuro) | mesmo | Cor de chrome, não é token `--bd-*` global — ver nota do menu lateral acima. |
+| `--bd-radius` | `0.875rem` | idem | Raio padrão de card/botão/input. |
+
+Tipografia: `--bd-font-sans` (herdado da lib, `'Inter', system-ui, ...` — sem `@font-face`
+próprio, cai pro stack do sistema na prática). Números tabulares (`font-variant-numeric:
+tabular-nums`) em qualquer lugar com dígito alinhado em coluna (macros, calorias, tabelas).
+
+**Mapeamento de cor para macros** (gráficos/anéis de proteína·carbo·gordura — Metas, Diário,
+Dashboard): proteína = `--bd-primary` (coral), carboidrato = `--bd-accent` (mostarda), gordura =
+`#6b8552` (oliva — tom claro da família da sidebar, não um token `--bd-*` novo). Três cores que já
+pertencem ao sistema, nenhuma inventada pra virar "a quarta cor da marca".
 
 ## Contrato da API (backend em `../vitality-Back`)
 
@@ -170,7 +220,7 @@ Resposta geralmente `{data, success, message?}`. **Nenhum endpoint pagina.**
 | Registro | `/api/registro[/{id}]` | `data, id_refeicao, alimentos:[{id,qtd}]` — o diário real (o que foi comido). `index` retorna `{id, data, descricao_refeicao, alimentos:[...], nutrientes_totais:{...}}`. Fator de cálculo: `qtd_pivot / qtd_base_alimento` (replicado em `shared/utils/nutrient-calc.util.ts` para preview client-side). |
 | Meta diária | `/api/meta[/{id}]` | `meta_calorias, meta_proteinas, meta_carboidratos, meta_gorduras, data?`. O backend não impede duplicatas, mas o front trata a meta com `data: null` como "a vigente" e faz upsert nela (`MetaService.save`) — evita acumular registros a cada salvamento. |
 | Recomendação | `/api/recomendacao[/{id}]` | `get` (Gasto Energético Total), `tmb` (Taxa Metabólica Basal), `caloria, proteina, carbo, gordura`. **1 por usuário** — `POST` dá 400 se já existe. Em vez de reagir ao 400, `RecomendacaoService.save` sempre consulta o `index` antes e decide `POST`/`PUT` — mais previsível. `shared/utils/recomendacao-calc.util.ts` calcula uma sugestão inicial (TMB Mifflin-St Jeor + fator de atividade) a partir do perfil do usuário (peso/altura/idade/gênero/atividade/objetivo — campos da Fase 8); sem esses dados, o formulário fica em preenchimento manual. |
-| User | `/api/users`, `/api/user/{id}`, `PUT /api/user/{id}` (multipart, avatar), `/api/user/update-profile-pic/{id}`, `/api/user/delete-profile-pic/{id}` | `name, email, password, data_nascimento, genero, peso, altura, avatar, nivel_atividade, objetivo`. |
+| User | `/api/users`, `/api/user/{id}`, `PUT /api/user/{id}` (multipart, avatar), `/api/user/update-profile-pic/{id}`, `/api/user/delete-profile-pic/{id}` | `name, email, password, data_nascimento, genero, peso, altura, avatar, nivel_atividade, objetivo`. **`name` e `email` são obrigatórios em TODO `PUT`**, mesmo atualizando só outro campo — `UserService.updateProfile()` sempre inclui os dois a partir de `AuthService.currentUser()`. Corrigido em 2026-08-13: o `update()` fazia `$user->update([...$request->campo])` com todo campo ausente virando `null`, **apagando o resto do perfil a cada PUT parcial** (achado ao implementar o quiz de Metas — passo 2 zerava peso/altura salvos no passo 1). Agora usa `$request->only([...])`, que só toca nos campos realmente enviados — testado ponta a ponta. |
 
 Todos os caminhos acima são centralizados em `core/http/api-paths.ts` (`authPaths` / `apiPaths`) —
 usar sempre essas funções em vez de montar strings de URL na mão.
@@ -194,10 +244,36 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
 1. Autenticação (login/registro, token persistido) — ✅ feito, com identidade visual "Feira
    Vitality" e confirmação de senha no cadastro. Testado ponta a ponta contra o backend real.
 2. App Shell autenticado (`BdAppShellComponent`) + guards + logout — ✅ feito.
-3. Recomendação nutricional + Metas diárias (base numérica do dashboard) — ✅ feito.
+3. Recomendação nutricional + Metas diárias — ✅ feito, revisão 2026-08-13 (duas rodadas): os dois
+   formulários soltos da primeira versão viraram um **"Quiz Guiado"** (`features/metas/metas-page/`)
+   — 4 passos (perfil → atividade/objetivo → sugestão calculada → revisar e salvar), escolhido
+   entre 8 mockups comparados. Segunda passada trocou o indicador de etapas customizado por
+   `<bd-steps variant="numbered" orientation="vertical" clickable>` da própria lib (sidebar
+   esquerda, 220px, sticky) e abriu o layout pra duas colunas (steps | conteúdo, `max-width: 840px`)
+   em vez da coluna única de 480px — menos espaço vazio, painel de resumo mais horizontal (anel +
+   chips lado a lado numa faixa larga, não empilhado). Avançar de etapa é um botão circular com
+   seta (`round-next`, vira ✓ verde na última etapa) no rodapé do card, não mais um botão de texto
+   full-width. `bd-steps` só deixa voltar a etapas concluídas (`clickable`), nunca pular pra
+   frente — `irPara()` reforça isso do lado do componente também. Estado "configurado" mostra o
+   resumo direto e oferece "Refazer metas" em vez de forçar o quiz de novo a cada visita. Puxou
+   pra frente um `UserService.updateProfile()` mínimo (em `features/perfil/data/`) que a Fase 8
+   completa depois — sem isso o passo 1 do quiz não tinha onde salvar peso/altura/gênero.
+   Terceira passada (mesmo dia): cada passo virou componente próprio (`steps/*-step/`), cada um
+   com sua validação e sua própria chamada de serviço — `PerfilStepComponent` injeta `UserService`
+   direto, `AtividadeStepComponent` idem (e calcula a sugestão a partir da resposta do próprio
+   save, sem reconsultar nada), `SugestaoStepComponent` é só apresentação, `RevisarStepComponent`
+   injeta `RecomendacaoService`/`MetaService`. O componente pai (`MetasPageComponent`) virou um
+   orquestrador puro: só `fase`/`passo`/`sugestao` + navegação, escuta os `output()` de cada passo.
+   Uniformidade de layout garantida por construção, não por convenção: `metas-step.scss` é UM
+   arquivo de estilo que os 4 componentes de passo compartilham via `styleUrl` (cada um encapsula
+   sua própria cópia, mas o conteúdo é idêntico — mudar o arquivo muda os 4 de uma vez);
+   `StepFooterComponent` é o rodapé (voltar + botão circular) usado pelos 4; `MacroSummaryComponent`
+   é o anel+chips usado nos 3 lugares que mostram macro (tira do quiz, painel "configurado", e
+   reaproveitável no passo de sugestão se um dia precisar).
 4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).
 7. Dietas (planos reutilizáveis).
-8. Perfil (dados pessoais + avatar).
+8. Perfil (dados pessoais + avatar) — `UserService` já existe (ver Fase 3), falta upload de
+   avatar e o resto da tela.
 9. Polimento transversal (onboarding, estados vazios, a11y, testes essenciais) — intercalado com as demais.

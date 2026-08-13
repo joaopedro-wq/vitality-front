@@ -1,0 +1,11 @@
+<h1>Revisar e salvar</h1>
+<p class="sub">Já preenchido com a sugestão — ajuste o que quiser antes de salvar.</p>
+
+<form [formGroup]="form" class="field-grid">
+  <label class="field"><span>Calorias</span><input type="number" formControlName="meta_calorias" /></label>
+  <label class="field"><span>Proteína (g)</span><input type="number" formControlName="meta_proteinas" /></label>
+  <label class="field"><span>Carboidrato (g)</span><input type="number" formControlName="meta_carboidratos" /></label>
+  <label class="field"><span>Gordura (g)</span><input type="number" formControlName="meta_gorduras" /></label>
+</form>
+
+<vtp-step-footer [carregando]="salvando()" [ultimo]="true" (voltar)="voltar.emit()" (avancar)="confirmar()" />

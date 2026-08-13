@@ -1,0 +1,71 @@
+:host {
+  display: block;
+  margin-top: 8px;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: var(--bd-fg-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px;
+}
+.back-link:hover {
+  color: var(--bd-fg);
+}
+
+.round-next {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bd-primary);
+  color: var(--bd-primary-contrast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+.round-next:hover {
+  background: var(--bd-primary-strong);
+}
+.round-next:active {
+  transform: scale(0.94);
+}
+.round-next:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.round-next.done {
+  background: var(--bd-success, #16a34a);
+}
+.round-next:focus-visible {
+  outline: none;
+  box-shadow: var(--bd-focus-ring);
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}

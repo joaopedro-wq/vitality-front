@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ring-num {
+  font-size: 12px;
+  font-weight: 800;
+  fill: var(--bd-fg);
+}
+.ring-unit {
+  font-size: 7px;
+  fill: var(--bd-fg-muted);
+}
+
+.chips {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+}
+.chip {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 13px;
+}
+.chip .lbl {
+  color: var(--bd-fg-muted);
+  font-weight: 600;
+}
+.chip b {
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--bd-fg);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot.protein {
+  background: var(--bd-primary);
+}
+.dot.carb {
+  background: var(--bd-accent);
+}
+.dot.fat {
+  background: var(--fat);
+}
+
+// Variante grande (estado "configurado"): números maiores, chips em coluna.
+.summary.lg {
+  gap: 28px;
+}
+.summary.lg .ring-num {
+  font-size: 20px;
+}
+.summary.lg .ring-unit {
+  font-size: 9px;
+}
+.summary.lg .chips {
+  flex-direction: column;
+  gap: 10px;
+}
+.summary.lg .chip {
+  font-size: 13.5px;
+}
+.summary.lg .chip .lbl {
+  min-width: 84px;
+}
+.summary.lg .chip b {
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .summary {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .chips {
+    justify-content: center;
+  }
+}

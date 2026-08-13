@@ -1,0 +1,111 @@
+:host {
+  display: block;
+  // Cor de gordura nos gráficos de macro — não é --bd-*, é a terceira cor do
+  // mapeamento documentado no CLAUDE.md (proteína=primary, carbo=accent,
+  // gordura=esta). Herdada por `vtp-macro-summary` (custom property atravessa
+  // fronteira de componente). Ajusta pro tom escuro igual o resto dos tokens.
+  --fat: #6b8552;
+}
+@media (prefers-color-scheme: dark) {
+  :host-context(html:not([data-theme='light'])) {
+    --fat: #8fae76;
+  }
+}
+:host-context(html[data-theme='dark']) {
+  --fat: #8fae76;
+}
+
+.loading {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--bd-fg-muted);
+}
+
+.stage-solo {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pagehead h1 {
+  font-size: 22px;
+  margin: 0;
+}
+.pagehead p {
+  margin: 4px 0 0;
+  color: var(--bd-fg-muted);
+  font-size: 14px;
+}
+
+.panel-card {
+  background: var(--bd-surface);
+  border: 1px solid var(--bd-border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 560px) {
+  .panel-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .panel-actions {
+    justify-content: center;
+  }
+}
+
+// ---------- Quiz: layout de duas colunas ----------
+.layout {
+  max-width: 840px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.steps-col {
+  position: sticky;
+  top: 20px;
+  background: var(--bd-surface);
+  border: 1px solid var(--bd-border);
+  border-radius: 18px;
+  padding: 20px 16px;
+}
+
+.content-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.panel-strip {
+  background: var(--bd-surface);
+  border: 1px solid var(--bd-border);
+  border-radius: 16px;
+  padding: 14px 22px;
+}
+
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .steps-col {
+    position: static;
+    padding: 12px 14px;
+  }
+}
