@@ -5,8 +5,8 @@ import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../../../core/auth/auth.service';
 import type { Genero, User } from '../../../../../core/models/user.model';
-import { UserService } from '../../../../perfil/data/user.service';
-import { StepFooterComponent } from '../step-footer/step-footer.component';
+import { UserService } from '../../../../../services/user.service';
+import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 
 
 @Component({

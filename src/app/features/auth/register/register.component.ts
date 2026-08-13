@@ -6,7 +6,7 @@ import { BdAlertComponent, BdButtonComponent, BdFieldComponent, BdInputComponent
 import { ToastrService } from 'ngx-toastr';
 
 import { AuthService } from '../../../core/auth/auth.service';
-import { AuthPosterLayoutComponent } from '../../../shared/organisms/auth-poster-layout/auth-poster-layout.component';
+import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 
 type RegisterStatus = 'idle' | 'sending';
 

@@ -30,7 +30,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
-    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@lucide/angular": "^1.31.0",
     "bandeira-ui": "file:vendor/bandeira-ui-0.2.0.tgz",
     "ngx-toastr": "^19.1.0",
     "rxjs": "~7.8.0",

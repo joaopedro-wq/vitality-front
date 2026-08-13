@@ -21,91 +21,74 @@
   color: var(--bd-fg-muted);
 }
 
-.stage-solo {
-  max-width: 640px;
-  margin: 0 auto;
+// ---------- Estado "configurado": cabeçalho conectado ----------
+// Título+subtítulo e a ação principal vivem na mesma faixa (eco da topbar do
+// app-shell: rótulo à esquerda, botão à direita, uma linha só) — o card abaixo
+// não repete texto nem título, só o resultado. "Refazer metas" é a ação
+// secundária, separada da principal por peso visual (ghost) e por vir depois
+// do card.
+.hero-connected {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 28px;
 }
 
-.pagehead h1 {
-  font-size: 22px;
+.hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--bd-border);
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 56ch;
+}
+.eyebrow {
   margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bd-primary-strong);
 }
-.pagehead p {
-  margin: 4px 0 0;
+.hero-text h1 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.hero-desc {
+  margin: 0;
+  font-size: 14.5px;
   color: var(--bd-fg-muted);
-  font-size: 14px;
+  line-height: 1.6;
 }
 
-.panel-card {
+.hero-card {
   background: var(--bd-surface);
   border: 1px solid var(--bd-border);
   border-radius: 20px;
-  padding: 28px 32px;
+  padding: 36px 32px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 28px;
-  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.panel-actions {
+.hero-foot {
   display: flex;
-  gap: 8px;
-  flex-shrink: 0;
+  justify-content: center;
 }
 
-@media (max-width: 560px) {
-  .panel-card {
-    flex-direction: column;
+@media (max-width: 640px) {
+  .hero-row {
     align-items: stretch;
   }
-  .panel-actions {
-    justify-content: center;
-  }
-}
-
-// ---------- Quiz: layout de duas colunas ----------
-.layout {
-  max-width: 840px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 28px;
-  align-items: start;
-}
-
-.steps-col {
-  position: sticky;
-  top: 20px;
-  background: var(--bd-surface);
-  border: 1px solid var(--bd-border);
-  border-radius: 18px;
-  padding: 20px 16px;
-}
-
-.content-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.panel-strip {
-  background: var(--bd-surface);
-  border: 1px solid var(--bd-border);
-  border-radius: 16px;
-  padding: 14px 22px;
-}
-
-@media (max-width: 720px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
-  .steps-col {
-    position: static;
-    padding: 12px 14px;
+  .hero-row button[bdButton] {
+    align-self: flex-start;
   }
 }

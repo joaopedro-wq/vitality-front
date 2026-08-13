@@ -1,0 +1,39 @@
+<nav [attr.aria-label]="label()" class="flex flex-col">
+  @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
+    @let done = i < ativo();
+    @let active = i === ativo();
+    <div class="flex gap-3">
+      <div class="flex flex-col items-center shrink-0">
+        <button
+          type="button"
+          class="size-[30px] rounded-full border-2 text-[12px] font-extrabold grid place-items-center [font-family:inherit] cursor-pointer transition-colors disabled:cursor-default enabled:hover:border-primary enabled:hover:text-primary-strong focus-visible:outline-none focus-visible:[box-shadow:var(--bd-focus-ring)]"
+          [class]="
+            done
+              ? 'bg-primary border-primary text-primary-contrast'
+              : active
+                ? 'bg-surface border-primary text-primary-strong [box-shadow:0_0_0_4px_var(--bd-primary-soft)]'
+                : 'bg-surface border-border-strong text-fg-muted'
+          "
+          [disabled]="i > ativo()"
+          [attr.aria-current]="active ? 'step' : null"
+          (click)="stepClick.emit(i)"
+        >
+          @if (done) {
+            <svg lucideCheck size="14" aria-hidden="true"></svg>
+          } @else {
+            {{ i + 1 }}
+          }
+        </button>
+        @if (!last) {
+          <div class="w-0.5 flex-1 min-h-[28px]" [class.bg-primary]="done" [class.bg-border]="!done"></div>
+        }
+      </div>
+      <div class="min-w-0" [class.pb-6]="!last">
+        <b class="block text-[13.5px] font-bold" [class.text-primary-strong]="active">{{ s.titulo }}</b>
+        @if (s.descricao) {
+          <span class="block text-[11.5px] text-fg-muted">{{ s.descricao }}</span>
+        }
+      </div>
+    </div>
+  }
+</nav>

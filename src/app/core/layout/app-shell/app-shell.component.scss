@@ -68,9 +68,8 @@ nav {
   font-weight: 600;
   text-decoration: none;
 }
-.nav-item i {
-  width: 16px;
-  text-align: center;
+.nav-item svg {
+  flex-shrink: 0;
 }
 .nav-item:hover {
   background: var(--sidebar-bg-hover);

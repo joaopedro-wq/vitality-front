@@ -12,15 +12,31 @@ que uma decisão de arquitetura mudar ou o contrato da API for corrigido, atuali
 - **bandeira-ui** — biblioteca de componentes própria do autor. Não está publicada no npm apesar
   do que a documentação do pacote sugere; é instalada via tarball local em `vendor/bandeira-ui-*.tgz`
   (mesmo padrão do `portfolio-joaopedro`). Peer deps: `@angular/cdk` `>=20.0.0`.
-- **Tailwind v4** (CSS-first, sem `tailwind.config.js`) — suporte nativo do `@angular/build`,
-  basta `@use "tailwindcss";` no `styles.scss`. Usar `@use`, não `@import` (Sass deprecou `@import`
-  e gera warning de build).
+- **Tailwind v4** (CSS-first, sem `tailwind.config.js`) — `@use "tailwindcss";` no `styles.scss`
+  (`@use`, não `@import`: Sass deprecou `@import` e gera warning de build). **Exige
+  `.postcssrc.json`** na raiz do projeto (`{ "plugins": { "@tailwindcss/postcss": {} } }`) —
+  achado corrigindo 2026-08-13 (ver "Bug crítico" abaixo): sem esse arquivo, o `@angular/build`
+  não ativa o pipeline do PostCSS/Tailwind, e nenhuma classe utilitária é gerada (só o preflight
+  estático do pacote, copiado literalmente pelo Sass, sobrevive). **Preferir classe Tailwind a
+  CSS/SCSS próprio sempre que a classe existir** — utilitária direto (`flex`, `gap-4`, `rounded-
+  [20px]`), token do design system mapeado em `@theme` (`bg-surface`, `text-fg-muted`, `border-
+  primary`), ou arbitrária (`text-[11px]`, `grid-cols-[224px_minmax(0,1fr)_296px]`,
+  `group-[.active]:text-primary-strong`, `enabled:hover:border-primary`,
+  `focus-visible:[box-shadow:var(--bd-focus-ring)]`). SCSS de componente fica só pro que Tailwind
+  genuinamente não expressa — na prática, quase sempre `:host-context()`/custom property herdada
+  entre componentes (ver `metas-page.component.scss`, reduzido a só a variável `--fat`).
 - **ngx-toastr** `^19` (não a última major — `^20` exige Angular 21) + `@angular/animations`
   (`provideAnimations()`), configurados em `app.config.ts`, não em `main.ts`.
-- **Font Awesome Free** (`@fortawesome/fontawesome-free`, classes `fas fa-*`) para ícones —
-  mesma biblioteca usada no `portfolio-joaopedro`. CSS incluído via `angular.json > styles`
-  (não é peso pequeno: por isso o budget de produção foi ajustado para 700kB/1.2MB, igual ao
-  portfólio).
+- **Lucide** (`@lucide/angular`) para ícones — trocou o Font Awesome Free em 2026-08-13 (todo
+  ícone do sistema, sem exceção: menu lateral, topbar, tema claro/escuro, navegação do quiz de
+  Metas). Cada ícone é seu próprio componente standalone com seletor de atributo — estático
+  (`<svg lucideCheck aria-hidden="true"></svg>`, importa `LucideCheck` no `imports` do
+  componente) ou dinâmico quando o ícone varia por item de uma lista (`<svg [lucideIcon]="item.icon">`,
+  componente `LucideDynamicIcon`, usado no menu lateral — ver `app-shell.component.ts`). Sem
+  módulo global nem CSS: só entra no bundle o ícone realmente importado, ao contrário da folha
+  inteira do Font Awesome — trocar tirou **1.5MB** do bundle inicial (1.93MB → 418kB), por isso o
+  budget de produção voltou ao padrão do Angular (500kB/1MB) em vez do 700kB/1.2MB inflado que a
+  fonte de ícones antiga exigia.
 - **TypeScript strict** (o `tsconfig.json` gerado pelo `ng new` do Angular 20 já vem estrito o
   suficiente: `strict`, `noImplicitOverride`, `noPropertyAccessFromIndexSignature`,
   `strictTemplates`, `strictInjectionParameters`).
@@ -45,10 +61,12 @@ php artisan serve  # http://localhost:8000
 O `.env` do backend precisa ter `FRONTEND_URL=http://localhost:4200` (necessário para o CORS
 liberar o Angular — o `config/cors.php` do backend só aceita **uma** origin por vez).
 
-## Estrutura de pastas — Atomic Design + Features
+## Estrutura de pastas — Atomic Design + Features + Services
 
 Pastas por **feature** (área do produto) para tudo específico de uma tela; hierarquia **atômica**
-dentro de `shared/` para tudo reutilizável entre features.
+dentro de `components/` para tudo reutilizável; `services/` centraliza todo service que chama a
+API do backend, fora das features (mudou de `features/<nome>/data/` pra isso em 2026-08-13 — ver
+regras abaixo).
 
 ```
 src/app/
@@ -58,49 +76,76 @@ src/app/
     models/     user, alimento, refeicao, dieta, registro, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes
     layout/     app-shell/, theme.service.ts
-  shared/
+  components/
     atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
-    molecules/   combinações pequenas reutilizadas por 2+ features
-    organisms/   blocos grandes e compostos reutilizados por 2+ features
-                 (ex.: auth-poster-layout/ — chrome visual "Feira Vitality" das telas de auth)
+    molecules/   composições pequenas, presentation-only (sem service de feature injetado)
+                 macro-summary/  anel + chips de macro (sm/lg/xl) — usado no quiz e no painel
+                 step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
+                 step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
+                                 multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
+    organisms/   blocos grandes e compostos, presentation-only
+                 auth-poster-layout/  chrome visual "Feira Vitality" das telas de auth
     pipes/
-    utils/       nutrient-calc.util.ts (fator qtd_pivot/qtd_base, replica o cálculo do backend
-                 para preview client-side antes de salvar)
+    utils/       recomendacao-calc.util.ts (TMB/GET), nutrient-calc.util.ts (fator
+                 qtd_pivot/qtd_base, replica o cálculo do backend pra preview client-side)
+  services/
+    meta.service.ts
+    recomendacao.service.ts
+    user.service.ts
+    (todo service novo que fala com o backend entra aqui — ver regra abaixo)
   features/
     auth/{login,register}/
     dashboard/
-    diario/{diario-list,diario-form,data}/
-    alimentos/{alimentos-list,alimento-form,data}/
-    dietas/{dietas-list,dieta-form,data}/
+    diario/{diario-list,diario-form}/
+    alimentos/{alimentos-list,alimento-form}/
+    dietas/{dietas-list,dieta-form}/
     metas/
-      data/                        meta.service.ts
       metas-page/
-        metas-page.component.*     orquestrador — fase/passo/sugestão, navegação (bd-steps)
+        metas-page.component.*     orquestrador — fase/passo/sugestão, navegação (markup próprio)
         metas-step.scss            shell visual comum aos 4 passos (styleUrl compartilhado)
-        macro-summary/             anel + chips de macro (sm/lg), 3 usos dentro da feature
         steps/
-          step-footer/             rodapé padrão (voltar + botão circular) — usado pelos 4 passos
           perfil-step/             passo 1 — lógica e form próprios, injeta UserService direto
           atividade-step/          passo 2 — idem, calcula a sugestão a partir da própria resposta
           sugestao-step/           passo 3 — só apresentação, sem serviço
           revisar-step/            passo 4 — form + salva recomendação/meta, emite ao concluir
-    recomendacao/{data}/            (sem página própria — a UI virou o passo "Sugestão" do quiz)
-    perfil/{perfil-page,data}/
+    recomendacao/    (sem página própria — a UI virou o passo "Sugestão" do quiz)
+    perfil/perfil-page/
     ui-check/    smoke test visual da Fase 0 — remover quando o dashboard real existir
   app.routes.ts
   app.config.ts
 ```
 
-**Regra de promoção**: um componente nasce dentro da feature que o criou. Na hora em que uma
-**segunda** feature precisar dele, ele sobe para `shared/molecules` ou `shared/organisms` — nunca
-duplicar. Dentro de cada feature, componentes de uso único ficam soltos na própria pasta (sem
-sub-hierarquia atômica interna).
+**Regra pra componente (nasce em `components/` ou na feature?)**: decide pela *natureza* do
+componente, não por quantas features já usam — não espera uma segunda feature aparecer.
+Presentation-only (só `input()`/`output()`, sem injetar service de uma feature específica) nasce
+direto em `components/atoms|molecules|organisms`, mesmo que só uma feature use hoje — é o caso de
+`MacroSummaryComponent` e `StepFooterComponent`, que nasceram dentro de `features/metas` e foram
+promovidos assim que ficou claro que eram só apresentação. Componente com lógica/service da própria
+feature (os 4 `*-step` do quiz, por exemplo) fica na feature — não tem o que promover, ele *é*
+daquela feature. Dentro de cada feature, componentes de uso único ficam soltos na própria pasta
+(sem sub-hierarquia atômica interna).
 
-Cada `features/<nome>/data/<nome>.service.ts` é próprio da feature — não centralizar tudo em
-`core`.
+**Regra pra service**: todo service que chama a API do backend (`HttpClient`) entra em
+`services/<nome>.service.ts`, plano, sem pasta por feature — não mais `features/<nome>/data/`.
+Exceção: `core/auth/auth.service.ts` e `core/layout/theme.service.ts` continuam em `core/`, por
+serem infraestrutura acoplada a guards/interceptors/boot da aplicação, não service de feature.
 
 ## Decisões de arquitetura
 
+- **Bug crítico corrigido: Tailwind não gerava nenhuma classe utilitária** (2026-08-13, achado
+  migrando o SCSS de Metas pra Tailwind). Causa raiz: o `@angular/build` só ativa o pipeline do
+  PostCSS/Tailwind automaticamente se encontrar um `tailwind.config.{js,cjs,mjs,ts}` na raiz — e
+  este projeto é CSS-first, sem esse arquivo por decisão (ver Stack). Sem ele, `initPostcss()`
+  (em `@angular/build`) nunca roda o PostCSS, e o `@use "tailwindcss";` do `styles.scss` só faz o
+  Sass copiar o CSS estático do pacote (`@theme default` com a paleta default da lib + o preflight
+  — por isso a página nunca pareceu quebrada, só nunca teve as classes utilitárias de verdade).
+  Corrigido com `.postcssrc.json` na raiz (`{ "plugins": { "@tailwindcss/postcss": {} } }`) —
+  `@angular/build` também procura por esse arquivo (`postcss.config.json`/`.postcssrc.json`,
+  formato JSON puro) independente de `tailwind.config.*` existir. Verificado no CSS compilado
+  (`dist/.../styles.css`) que classes reais passaram a existir depois da correção. Como o bug era
+  silencioso (nenhum erro de build, só ausência de estilo), **qualquer suspeita de "classe
+  Tailwind não aplicou" deve primeiro conferir se `.postcssrc.json` existe e se o CSS compilado
+  realmente contém a classe** antes de desconfiar da classe em si.
 - **Tokens únicos**: `--bd-*` (definidos pela bandeira-ui) são a fonte de verdade visual.
   `src/styles.scss` sobrescreve os `--bd-*` default com a paleta do produto e o `@theme` do
   Tailwind aponta para os mesmos `--bd-*` — sem duplicar paleta em dois lugares. Tema controlado
@@ -135,10 +180,46 @@ Cada `features/<nome>/data/<nome>.service.ts` é próprio da feature — não ce
   reaproveitar esse token pra pintar um painel de chrome.
   Gaveta mobile (<900px) implementada à mão (sem a gaveta pronta da lib) — `mobileMenuOpen` signal
   + scrim + fecha em `Escape`. Falta ainda: foco preso dentro da gaveta enquanto aberta (Fase 9).
-- **Ícone de tema é SVG inline, não Font Awesome**: sol (raios) em dark / lua (crescente) em
-  light, linework fino (`stroke-width="2"`, `currentColor`) — estilo dos ícones do mockup "Cozinha
-  Quente", diferente do resto dos ícones do app (que usam Font Awesome `fas fa-*`). Se algum dia
-  todo o set de ícones migrar pra linework próprio, esse par de SVGs já está no padrão certo.
+- **Todo botão é pill (raio total), sem exceção**: decisão de produto (2026-08-13), não só do
+  quiz de Metas. `button[bdButton], a[bdButton] { border-radius: 999px !important; }` em
+  `src/styles.scss` — `!important` porque o raio do `bdButton` vem do host da própria lib
+  (`--bd-radius-sm`), token que também dá forma a chip/tab/skip-link; mexer nele quebraria essas
+  outras peças, então a sobrescrita mira só `[bdButton]`. Navegação de passo (voltar/avançar) vai
+  além do raio: é **sempre** um par de botões redondos só-ícone — nunca texto/link — avançar em
+  `--bd-primary` sólido, voltar em contorno neutro (`--bd-border-strong`, hover coral). Ver
+  `StepFooterComponent` (`.round-back`/`.round-next`) como referência do padrão.
+- **Painel inicial de Metas ("configurado") é "cabeçalho conectado"** (2026-08-13, escolhido entre
+  4 conceitos): título+subtítulo e a ação principal vivem na mesma faixa no topo (`.hero-row`),
+  ecoando a gramática da topbar do app-shell (rótulo à esquerda, botão à direita, uma linha só) —
+  substituiu o hero de duas colunas (texto vs. card) da passada anterior. O card abaixo
+  (`.hero-card`) não repete título nem texto, só o resultado (`vtp-macro-summary` tamanho `xl`).
+  "Refazer metas" é ação secundária de propósito: `bdButton variant="ghost"` (tom neutro do
+  design system, não a cor primária), centralizada abaixo do card — depois do resultado, não ao
+  lado da ação principal, pra não competir peso visual com "Ir para o painel".
+- **Ícone de emoji/caractere solto nunca é ícone** — sempre um ícone de verdade da lib (Lucide,
+  ver Stack). Achado revisando o quiz de Metas: `✓` e `→` como texto solto no template viraram
+  `<svg lucideCheck>`/`<svg lucideArrowRight>`.
+- **Todo ícone do sistema é Lucide, sem exceção** (2026-08-13) — inclusive o par sol/lua do botão
+  de tema e as setas do rodapé do quiz (`StepFooterComponent`), que antes eram SVG inline
+  desenhado à mão (linework fino, documentado como exceção "até o resto do app migrar pra esse
+  estilo"). Agora não é mais exceção: `LucideSun`/`LucideMoon`/`LucideArrowLeft`/
+  `LucideArrowRight`/`LucideCheck`, todos com o mesmo `stroke-width` padrão da lib — um set só,
+  em vez de dois estilos de ícone coexistindo. Rodapé do quiz usa seta reta
+  (`LucideArrowLeft`/`LucideArrowRight`), não chevron — decisão de estilo, não falta do ícone
+  certo. Estado final do botão de avançar (`ultimo()`, "Salvar") não tem cor própria — cai no
+  mesmo `--bd-primary` do botão padrão, nunca verde/`--bd-success` (isso já foi um bug: usar uma
+  cor semântica fora da paleta de marca num CTA que não é indicador de status).
+- **`card` — ver "Design tokens" abaixo.**
+- **Rodapé do quiz volta a ficar em fluxo normal — não trava mais posição** (2026-08-13, revertido
+  na mesma sessão): chegamos a implementar altura fixa no card + `.step-body` com `overflow-y:
+  auto` pra o rodapé nunca mudar de linha entre passos. Revertido depois de analisar
+  `step-accordion` do collab-creators-ui (`C:\Users\JP\collab-creators-ui\src\app\components\step\
+  step-accordion`, referência apontada pelo usuário como boa usabilidade): lá o rodapé **também**
+  muda de posição — o card do passo aberto (`step-content-panel`) só cresce/encolhe livre, sem
+  altura fixa nem scroll interno. A usabilidade boa não vem de rodapé imóvel, vem da lista de
+  passos rica ao lado (ver "Navegação em steps ricos" no roadmap, Fase 3). Lição: quando for buscar
+  referência externa, ler a implementação de verdade antes de copiar a *sensação* — a suposição
+  inicial (rodapé fixo = boa UX) não batia com o que a própria referência fazia.
 
 ## Design tokens — paleta "Cozinha Quente"
 
@@ -146,6 +227,19 @@ Fonte de verdade: `src/styles.scss` (`:root` e `:root[data-theme='dark']`). Qual
 mockup ou tela nova **usa exatamente estes valores** — não inventar tom novo "parecido". Se uma
 tela precisar de uma paleta deliberadamente diferente (caso da auth, ver acima), isso é exceção
 documentada, não a regra.
+
+**Classe `card`** (`@utility card` em `src/styles.scss`, Tailwind v4 custom utility — `class="card"`
+em qualquer template do projeto): primitivo de fundo pra **qualquer** tela do sistema com mais de
+uma sub-área visual (steps, painéis, cards internos) — não é específico de nenhuma feature, apesar
+de ter nascido resolvendo um bug no quiz de Metas. Tira o conteúdo de cima do `--bd-bg` da página e
+dá um plano próprio pra desenhar em cima. Só define o casco (`background-color: var(--bd-surface);
+border: 1px solid var(--bd-border); border-radius: 20px`) — **nunca** embute padding, porque o
+padding certo muda por contexto (painel lateral raso ≠ card de conteúdo principal). **Toda vez que
+aplicar `card`, somar padding junto** (`p-6`, `py-9 px-8`...) — nunca deixar um `card` pelado; foi
+exatamente isso que faltou quando a grade de 3 colunas do quiz de Metas virou `card` sem padding
+nenhum, e o conteúdo do meio encostou direto na borda externa, sem respiro. Cards podem aninhar
+(o quiz tem `card` externo + `card` em cada coluna interna) desde que cada nível tenha seu próprio
+padding entre a borda e o conteúdo/próximo card.
 
 | Token | Light | Dark | Uso |
 |---|---|---|---|
@@ -270,6 +364,51 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
    `StepFooterComponent` é o rodapé (voltar + botão circular) usado pelos 4; `MacroSummaryComponent`
    é o anel+chips usado nos 3 lugares que mostram macro (tira do quiz, painel "configurado", e
    reaproveitável no passo de sugestão se um dia precisar).
+   Quarta passada — layout "Painel Vivo" (2026-08-13): a tela não usava a largura do shell (card
+   único de 840px centralizado) e os 4 passos apareciam soltos, sem hierarquia. Virou grid de 3
+   colunas ocupando a largura toda: etapas categorizadas (`Você` · `Rotina & meta` · `Resultado`,
+   `categorias: CategoriaPasso[]` em `MetasPageComponent`) à esquerda, conteúdo do passo no meio,
+   e um painel de resumo fixo (`.summary-col`, sticky) à direita que reage ao progresso — anel e
+   chips saem de "—" pros valores reais assim que a sugestão é calculada, com uma frase de
+   contexto (`storyText` computed, muda por passo) entre o anel e os chips. A tira fina
+   (`.panel-strip`) que ficava em cima do form foi removida — o painel de resumo lateral substitui
+   ela. `bd-steps` foi trocado por markup próprio (`nav > .step-group > .step-item`) porque a lib
+   não suporta cabeçalho de grupo — mesma lição do menu lateral (CLAUDE.md, seção "Decisões de
+   arquitetura"): quando a estrutura da lib não bate com o layout, markup próprio reaproveitando só
+   os tokens, não a gambiarra de forçar o componente pronto. `MacroSummaryComponent` ganhou
+   `orientacao: 'row' | 'col'` (col = anel em cima, chips embaixo, pra caber na coluna estreita de
+   296px) e um `<ng-content>` entre o anel e os chips — é onde `storyText()` é projetado, sem a
+   frase virar responsabilidade do componente de anel.
+   Quinta passada (2026-08-13, mesmo dia): `MacroSummaryComponent` e `StepFooterComponent`
+   promovidos pra `components/molecules/` (eram presentation-only, não precisavam esperar uma 2ª
+   feature — ver "Estrutura de pastas"); `MetaService`/`RecomendacaoService`/`UserService` saíram
+   de `features/*/data/` pra `services/`, um nível só, sem pasta por feature.
+   Sexta passada — "navegação em steps ricos" (2026-08-13, mesmo dia): usuário apontou o
+   `step-accordion` do collab-creators-ui como referência de boa usabilidade. A 3ª coluna do
+   "Painel Vivo" (resumo ao vivo fixo) saiu — o resumo de macro continua existindo dentro do passo
+   "Sugestão" e no painel "configurado", só não fica mais grudado do lado do quiz o tempo todo. A
+   lista de passos deixou de ser um indicador minimalista (bolinha numerada + texto) e virou uma
+   lista de cards — cada item com badge circular grande (ícone Lucide próprio do passo:
+   `LucideUser`/`LucideActivity`/`LucideTarget`/`LucideClipboardCheck`, vira `LucideCheck` quando
+   concluído), rótulo "Passo N", título, descrição de uma linha, conector fino entre os itens, cor
+   de borda/fundo por estado (`group-[.active]:`/`group-[.done]:`, só tokens da paleta — sem
+   inventar verde de "sucesso"). Sem agrupamento por categoria (a referência não agrupa, é lista
+   plana). Abaixo de `md` (768px) a nav de passos some e um cabeçalho de uma linha ("Passo 2 de 4 ·
+   Atividade") aparece no lugar dela — mesma ideia do `step-mobile-header` da referência, versão
+   simples. Ver também a entrada sobre o rodapé do quiz não travar mais posição, na seção
+   "Decisões de arquitetura" — é a mesma passada, revertendo a "altura fixa + scroll interno" da
+   passada anterior depois de constatar que a própria referência não trava o rodapé.
+   Sétima passada — "trilha numerada" (2026-08-13, mesmo dia): os "steps ricos" da passada anterior
+   viraram 5 conceitos comparados num artefato, cada um baseado num padrão de UX já conhecido
+   (trilha com linha estilo GOV.UK/Stripe, stepper Material Design, sidebar de configurações,
+   progresso de checkout, checklist de status). Escolhida a trilha com linha — bolinha numerada
+   vira check quando concluída, ligada por linha vertical ao próximo passo; sem ícone próprio por
+   passo (os `LucideUser`/`LucideActivity`/etc. da passada anterior saíram). A trilha virou
+   `StepTrackComponent` (`components/molecules/step-track/`) — presentation-only de verdade (só
+   `steps`/`ativo`/`label` de input, `stepClick` de output, nada de Metas) — nasceu direto em
+   `components/` porque já foi desenhada pra servir qualquer fluxo multi-passo do produto, não só
+   o quiz de Metas (mesmo critério de promoção documentado em "Estrutura de pastas"). Botões
+   redondos de voltar/avançar do rodapé (`StepFooterComponent`) diminuíram de 48px pra 38px.
 4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).

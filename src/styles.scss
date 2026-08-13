@@ -110,6 +110,21 @@
   --font-mono: var(--bd-font-mono);
 }
 
+// "card": primitivo de fundo do sistema inteiro — não é de nenhuma feature
+// específica. Use em qualquer tela (não só formulário) que tenha mais de uma
+// sub-área visual: tira o conteúdo de cima do `--bd-bg` da página e dá um
+// plano próprio pra desenhar em cima. Só cuida do "casco" (fundo, borda,
+// raio) — cada uso soma seu próprio padding (`p-6`, `py-9 px-8`...) por cima,
+// porque o respiro interno muda por contexto; nunca usar `card` sem somar
+// padding junto (achado no quiz de Metas: a grade de 3 colunas virou `card`
+// sem padding nenhum e o conteúdo colou na borda). Ver CLAUDE.md, seção
+// "Design tokens".
+@utility card {
+  background-color: var(--bd-surface);
+  border: 1px solid var(--bd-border);
+  border-radius: 20px;
+}
+
 // Reset global mínimo
 *,
 *::before,
@@ -130,6 +145,12 @@ body {
   transition:
     background-color var(--bd-duration) var(--bd-ease),
     color var(--bd-duration) var(--bd-ease);
+}
+
+
+button[bdButton],
+a[bdButton] {
+  border-radius: 999px !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

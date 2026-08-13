@@ -1,0 +1,26 @@
+<div class="card-footer">
+  @if (mostrarVoltar()) {
+    <button class="round-back" type="button" aria-label="Voltar" (click)="voltar.emit()">
+      <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
+    </button>
+  } @else {
+    <span></span>
+  }
+
+  <button
+    class="round-next"
+    type="button"
+    [class.done]="ultimo()"
+    [attr.aria-label]="ultimo() ? 'Salvar' : 'Continuar'"
+    [disabled]="carregando()"
+    (click)="avancar.emit()"
+  >
+    @if (carregando()) {
+      <svg lucideLoaderCircle class="spin" size="15" aria-hidden="true"></svg>
+    } @else if (ultimo()) {
+      <svg lucideSave size="16" aria-hidden="true"></svg>
+    } @else {
+      <svg lucideArrowRight size="16" aria-hidden="true"></svg>
+    }
+  </button>
+</div>

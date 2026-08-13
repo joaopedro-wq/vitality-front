@@ -1,6 +1,4 @@
-// Shell visual comum aos 4 passos do quiz — cada `*-step.component.ts` aponta
-// `styleUrl` pra este arquivo, então o card fica idêntico nos quatro por
-// construção (mudar aqui muda os 4 de uma vez, não corre risco de divergir).
+
 
 :host {
   display: flex;
@@ -10,6 +8,7 @@
   border: 1px solid var(--bd-border);
   border-radius: 20px;
   padding: 30px 32px 24px;
+ 
 }
 
 h1 {

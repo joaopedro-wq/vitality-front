@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BdAlertComponent, BdButtonComponent, BdFieldComponent, BdInputComponent } from 'bandeira-ui';
 
 import { AuthService } from '../../../core/auth/auth.service';
-import { AuthPosterLayoutComponent } from '../../../shared/organisms/auth-poster-layout/auth-poster-layout.component';
+import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 
 type LoginStatus = 'idle' | 'sending';
 

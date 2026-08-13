@@ -7,15 +7,7 @@ export interface MacroValores {
   gordura: number;
 }
 
-/**
- * Anel de calorias + chips de macro (proteína/carbo/gordura), em dois
- * tamanhos. Usado na tira do quiz, no painel do estado "configurado" e no
- * passo de sugestão — um componente só, pra layout ficar uniforme por
- * construção em vez de cada tela desenhar o próprio anel "parecido".
- *
- * Cores seguem o mapeamento documentado no CLAUDE.md: proteína = --bd-primary,
- * carbo = --bd-accent, gordura = --fat (definida no :host do metas-page).
- */
+
 @Component({
   selector: 'vtp-macro-summary',
   standalone: true,
@@ -25,12 +17,12 @@ export interface MacroValores {
 })
 export class MacroSummaryComponent {
   readonly valores = input<MacroValores | null>(null);
-  readonly tamanho = input<'sm' | 'lg'>('sm');
-  /** Fração do anel preenchida (0–1) — decorativa, não representa consumo real ainda (Fase 5/6). */
+  readonly tamanho = input<'sm' | 'lg' | 'xl'>('sm');
   readonly progresso = input(0.7);
+  readonly orientacao = input<'row' | 'col'>('row');
 
-  protected readonly raio = computed(() => (this.tamanho() === 'lg' ? 48 : 25));
-  protected readonly espessura = computed(() => (this.tamanho() === 'lg' ? 11 : 8));
+  protected readonly raio = computed(() => ({ sm: 25, lg: 48, xl: 64 })[this.tamanho()]);
+  protected readonly espessura = computed(() => ({ sm: 8, lg: 11, xl: 14 })[this.tamanho()]);
   protected readonly viewBox = computed(() => {
     const r = this.raio();
     const e = this.espessura();

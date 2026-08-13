@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BdButtonComponent, BdStepsComponent, type BdStep } from 'bandeira-ui';
+import { BdButtonComponent } from 'bandeira-ui';
+import { LucideArrowRight } from '@lucide/angular';
 import { forkJoin } from 'rxjs';
 
-import type { SugestaoRecomendacao } from '../../../shared/utils/recomendacao-calc.util';
-import { RecomendacaoService } from '../../recomendacao/data/recomendacao.service';
-import { MetaService } from '../data/meta.service';
-import { MacroSummaryComponent } from './macro-summary/macro-summary.component';
+import type { SugestaoRecomendacao } from '../../../components/utils/recomendacao-calc.util';
+import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
+import { StepTrackComponent, type StepTrackItem } from '../../../components/molecules/step-track/step-track.component';
+import { RecomendacaoService } from '../../../services/recomendacao.service';
+import { MetaService } from '../../../services/meta.service';
 import { AtividadeStepComponent } from './steps/atividade-step/atividade-step.component';
 import { PerfilStepComponent } from './steps/perfil-step/perfil-step.component';
 import { RevisarStepComponent } from './steps/revisar-step/revisar-step.component';
@@ -14,11 +16,11 @@ import { SugestaoStepComponent } from './steps/sugestao-step/sugestao-step.compo
 
 type FaseCarregamento = 'carregando' | 'quiz' | 'configurado';
 
-const PASSOS: BdStep[] = [
-  { label: 'Seu perfil', hint: 'Peso, altura, idade e gênero' },
-  { label: 'Atividade', hint: 'Nível de atividade e objetivo' },
-  { label: 'Sugestão', hint: 'Calculada a partir do perfil' },
-  { label: 'Confirmar', hint: 'Revisar e salvar' },
+const PASSOS: StepTrackItem[] = [
+  { titulo: 'Seu perfil', descricao: 'Peso, altura, idade e gênero' },
+  { titulo: 'Atividade', descricao: 'Nível de atividade e objetivo' },
+  { titulo: 'Sugestão', descricao: 'Calculada a partir do perfil' },
+  { titulo: 'Confirmar', descricao: 'Revisar e salvar' },
 ];
 
 /**
@@ -26,14 +28,25 @@ const PASSOS: BdStep[] = [
  * própria lógica (form, validação, chamada de serviço); este componente só
  * guarda em que passo o usuário está, a sugestão calculada (compartilhada
  * entre os passos 3/4 e o painel) e navega entre eles.
+ *
+ * Navegação em "trilha numerada" (2026-08-13, sétima passada) — escolhida
+ * entre 5 conceitos comparados (artefato), cada um baseado num padrão de UX
+ * já conhecido. Essa é a mais próxima do que usuário já viu em qualquer
+ * formulário multi-etapa (GOV.UK step-by-step, checkout da Stripe): bolinha
+ * numerada vira check quando concluída, linha vertical conectando os passos.
+ * A trilha em si virou `StepTrackComponent`
+ * (`components/molecules/step-track/`) — presentation-only, sem nada de
+ * Metas — pra dar pra reaproveitar em qualquer outro fluxo multi-passo do
+ * produto (Dietas, Diário, etc.) sem duplicar a UI de novo.
  */
 @Component({
   selector: 'vtp-metas-page',
   standalone: true,
   imports: [
     BdButtonComponent,
-    BdStepsComponent,
+    LucideArrowRight,
     MacroSummaryComponent,
+    StepTrackComponent,
     PerfilStepComponent,
     AtividadeStepComponent,
     SugestaoStepComponent,

@@ -80,6 +80,46 @@
   margin-left: auto;
 }
 
+// Variante grande (hero do painel inicial "configurado"): números ainda maiores.
+.summary.xl {
+  gap: 32px;
+}
+.summary.xl .ring-num {
+  font-size: 26px;
+}
+.summary.xl .ring-unit {
+  font-size: 10px;
+}
+.summary.xl .chips {
+  flex-direction: column;
+  gap: 14px;
+}
+.summary.xl .chip {
+  font-size: 14.5px;
+}
+.summary.xl .chip .lbl {
+  min-width: 96px;
+}
+.summary.xl .chip b {
+  margin-left: auto;
+  font-size: 16px;
+}
+
+// Variante vertical (painel lateral do quiz): anel em cima, chips embaixo, tudo
+// centralizado — o texto de contexto projetado (ng-content) entra entre os dois.
+.summary.col {
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  gap: 16px;
+}
+.summary.col svg {
+  align-self: center;
+}
+.summary.col .chips {
+  width: 100%;
+}
+
 @media (max-width: 480px) {
   .summary {
     flex-wrap: wrap;

@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
-import { apiPaths } from '../../../core/http/api-paths';
-import type { ApiResponse } from '../../../core/models/api-response.model';
-import type { UpdateUserPayload, User } from '../../../core/models/user.model';
+import { apiPaths } from '../core/http/api-paths';
+import type { ApiResponse } from '../core/models/api-response.model';
+import type { UpdateUserPayload, User } from '../core/models/user.model';
 
 
 @Injectable({ providedIn: 'root' })

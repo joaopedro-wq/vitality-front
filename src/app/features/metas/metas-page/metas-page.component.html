@@ -1,47 +1,51 @@
 @switch (fase()) {
   @case ('carregando') {
-    <div class="loading">Carregando suas metas…</div>
+    <div class="py-15 text-center text-fg-muted">Carregando suas metas…</div>
   }
 
   @case ('configurado') {
-    <div class="stage-solo">
-      <div class="pagehead">
-        <div>
-          <h1>Metas</h1>
-          <p>Isso é o que vale hoje pro painel e pro diário.</p>
+    <div class="flex flex-col gap-7">
+      <div class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border">
+        <div class="flex flex-col gap-2 max-w-[56ch]">
+          <p class="m-0 text-[11px] font-extrabold tracking-[0.08em] uppercase text-primary-strong">Meta atual</p>
+          <h1 class="m-0 text-[28px] tracking-[-0.01em] text-balance">Sua meta diária está pronta</h1>
+          <p class="m-0 text-[14.5px] text-fg-muted leading-[1.6]">
+            Isso é o que vale hoje pro painel e pro diário — refaça o quiz sempre que sua rotina mudar.
+          </p>
         </div>
+        <button bdButton size="lg" class="max-[640px]:self-start" (click)="irParaDashboard()">
+          Ir para o painel <svg lucideArrowRight size="15" aria-hidden="true"></svg>
+        </button>
       </div>
 
-      <div class="panel-card">
-        <vtp-macro-summary [valores]="sugestao()" tamanho="lg" />
+      <div class="card py-9 px-8 flex justify-center">
+        <vtp-macro-summary [valores]="sugestao()" tamanho="xl" />
+      </div>
 
-        <div class="panel-actions">
-          <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
-          <button bdButton (click)="irParaDashboard()">Ir para o painel →</button>
-        </div>
+      <div class="flex justify-center">
+        <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
       </div>
     </div>
   }
 
   @case ('quiz') {
-    <div class="layout">
-      <aside class="steps-col">
-        <bd-steps
+    <div class="md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+      <div class="hidden md:block card p-6">
+        <vtp-step-track
           [steps]="passos"
-          [active]="passo()"
-          (stepChange)="irPara($event)"
-          variant="numbered"
-          orientation="vertical"
-          clickable
+          [ativo]="passo()"
           label="Etapas da configuração de metas"
+          (stepClick)="irPara($event)"
         />
-      </aside>
+      </div>
 
-      <div class="content-col">
-        <div class="panel-strip">
-          <vtp-macro-summary [valores]="sugestao()" tamanho="sm" />
-        </div>
+      <div class="flex md:hidden items-center gap-2 mb-3">
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle">Passo {{ passo() + 1 }} de {{ passos.length }}</span>
+        <span class="text-fg-subtle">·</span>
+        <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
+      </div>
 
+      <div class="min-w-0">
         @switch (passo()) {
           @case (0) {
             <vtp-perfil-step (concluido)="passo.set(1)" />

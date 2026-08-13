@@ -1,4 +1,4 @@
-<div class="summary" [class.lg]="tamanho() === 'lg'">
+<div class="summary" [class.lg]="tamanho() === 'lg'" [class.xl]="tamanho() === 'xl'" [class.col]="orientacao() === 'col'">
   <svg [attr.width]="raio() * 2 + espessura()" [attr.height]="raio() * 2 + espessura()" [attr.viewBox]="viewBox()">
     <circle [attr.cx]="centro()" [attr.cy]="centro()" [attr.r]="raio()" fill="none" stroke="var(--bd-border)" [attr.stroke-width]="espessura()" />
     @if (valores()) {
@@ -18,6 +18,8 @@
     <text [attr.x]="centro()" [attr.y]="centro() - 3" text-anchor="middle" class="ring-num">{{ valores()?.caloria ?? '—' }}</text>
     <text [attr.x]="centro()" [attr.y]="centro() + 13" text-anchor="middle" class="ring-unit">kcal</text>
   </svg>
+
+  <ng-content></ng-content>
 
   <div class="chips">
     <div class="chip"><span class="dot protein"></span><span class="lbl">Proteína</span><b>{{ valores()?.proteina ?? '—' }} g</b></div>

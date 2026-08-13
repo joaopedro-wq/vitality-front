@@ -1,6 +1,21 @@
 import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
+import {
+  LucideCarrot,
+  LucideClipboardList,
+  LucideDynamicIcon,
+  LucideHouse,
+  LucideLogOut,
+  LucideMenu,
+  LucideMoon,
+  LucidePlus,
+  LucideSun,
+  LucideTarget,
+  LucideUser,
+  LucideUtensils,
+  type LucideIcon,
+} from '@lucide/angular';
 
 import { AuthService } from '../../auth/auth.service';
 import { ThemeService } from '../theme.service';
@@ -8,23 +23,36 @@ import { ThemeService } from '../theme.service';
 interface NavItem {
   path: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/dashboard', label: 'Painel', icon: 'fas fa-house' },
-  { path: '/diario', label: 'Diário', icon: 'fas fa-utensils' },
-  { path: '/alimentos', label: 'Alimentos', icon: 'fas fa-carrot' },
-  { path: '/dietas', label: 'Dietas', icon: 'fas fa-clipboard-list' },
-  { path: '/metas', label: 'Metas', icon: 'fas fa-bullseye' },
-  { path: '/perfil', label: 'Perfil', icon: 'fas fa-user' },
+  { path: '/dashboard', label: 'Painel', icon: LucideHouse },
+  { path: '/diario', label: 'Diário', icon: LucideUtensils },
+  { path: '/alimentos', label: 'Alimentos', icon: LucideCarrot },
+  { path: '/dietas', label: 'Dietas', icon: LucideClipboardList },
+  { path: '/metas', label: 'Metas', icon: LucideTarget },
+  { path: '/perfil', label: 'Perfil', icon: LucideUser },
 ];
 
 
 @Component({
   selector: 'vtp-app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, BdAvatarComponent, BdButtonComponent, BdTooltipDirective],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    BdAvatarComponent,
+    BdButtonComponent,
+    BdTooltipDirective,
+    LucideDynamicIcon,
+    LucideMenu,
+    LucidePlus,
+    LucideLogOut,
+    LucideSun,
+    LucideMoon,
+  ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

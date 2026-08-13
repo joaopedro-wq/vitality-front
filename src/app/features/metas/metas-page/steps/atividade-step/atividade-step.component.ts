@@ -5,9 +5,9 @@ import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../../../core/auth/auth.service';
 import type { NivelAtividade, Objetivo } from '../../../../../core/models/user.model';
-import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../../../shared/utils/recomendacao-calc.util';
-import { UserService } from '../../../../perfil/data/user.service';
-import { StepFooterComponent } from '../step-footer/step-footer.component';
+import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../../../components/utils/recomendacao-calc.util';
+import { UserService } from '../../../../../services/user.service';
+import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 
 const ATIVIDADE_LABEL: Record<NivelAtividade, string> = {
   sedentario: 'Sedentário — quase não me exercito',

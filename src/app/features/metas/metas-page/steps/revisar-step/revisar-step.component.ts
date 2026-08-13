@@ -3,10 +3,10 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin } from 'rxjs';
 
-import type { SugestaoRecomendacao } from '../../../../../shared/utils/recomendacao-calc.util';
-import { RecomendacaoService } from '../../../../recomendacao/data/recomendacao.service';
-import { MetaService } from '../../../data/meta.service';
-import { StepFooterComponent } from '../step-footer/step-footer.component';
+import type { SugestaoRecomendacao } from '../../../../../components/utils/recomendacao-calc.util';
+import { RecomendacaoService } from '../../../../../services/recomendacao.service';
+import { MetaService } from '../../../../../services/meta.service';
+import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 
 
 @Component({
