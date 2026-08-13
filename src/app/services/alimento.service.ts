@@ -28,6 +28,11 @@ export class AlimentoService {
   list(filters: FoodFilters = {}): Observable<FoodPage> {
     return this.http.get<FoodPage>(apiPaths.alimentos(), { params: this.params(filters) });
   }
+  get(id: number): Observable<Alimento> {
+    return this.http
+      .get<{ data: Alimento }>(apiPaths.alimento(id))
+      .pipe(map((response) => response.data));
+  }
   favorite(id: number): Observable<Alimento> {
     return this.http
       .post<ApiResponse<Alimento>>(apiPaths.favoritoAlimento(id), {})
@@ -41,7 +46,9 @@ export class AlimentoService {
   }
   duplicates(descricao: string): Observable<Alimento[]> {
     return this.http
-      .get<{ data: Alimento[] }>(`${apiPaths.adminAlimentos()}/duplicates`, { params: { descricao } })
+      .get<{
+        data: Alimento[];
+      }>(`${apiPaths.adminAlimentos()}/duplicates`, { params: { descricao } })
       .pipe(map((response) => response.data));
   }
   create(payload: CreateAlimentoPayload): Observable<Alimento> {

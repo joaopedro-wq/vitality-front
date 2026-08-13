@@ -17,8 +17,14 @@
         <h2>{{ editing() ? 'Editar alimento' : 'Novo alimento manual' }}</h2>
       </div>
       <form [formGroup]="form" (ngSubmit)="save()">
-        <bd-field label="Nome" required><input bdInput formControlName="descricao" (blur)="verificarDuplicados()" /></bd-field>
-        @if (duplicados().length) { <div class="duplicates"><b>Possíveis duplicatas</b><span>{{ textoDuplicados() }}</span></div> }
+        <bd-field label="Nome" required
+          ><input bdInput formControlName="descricao" (blur)="verificarDuplicados()"
+        /></bd-field>
+        @if (duplicados().length) {
+          <div class="duplicates">
+            <b>Possíveis duplicatas</b><span>{{ textoDuplicados() }}</span>
+          </div>
+        }
         ><bd-field label="Grupo"
           ><input bdInput formControlName="grupo" placeholder="Ex.: Cereais e derivados"
         /></bd-field>
@@ -51,6 +57,7 @@
         /><select [value]="source()" (change)="source.set($any($event.target).value); filter()">
           <option value="">Todas as fontes</option>
           <option value="taco">TACO</option>
+          <option value="usda">USDA</option>
           <option value="manual">Manual</option>
           <option value="legado">Legado</option></select
         ><select [value]="status()" (change)="status.set($any($event.target).value); filter()">

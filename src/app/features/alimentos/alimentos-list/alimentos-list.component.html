@@ -56,7 +56,7 @@
         <article class="food-card card">
           <div class="food-card__top">
             <span class="source" [class.manual]="food.fonte === 'manual'">{{
-              food.fonte === 'taco' ? 'TACO' : 'Manual'
+              fonteLabel(food)
             }}</span
             ><button
               type="button"
@@ -124,13 +124,45 @@
   }
   @if (detalhe(); as food) {
     <div class="detail-backdrop" (click)="detalhe.set(null)">
-      <aside class="detail card" role="dialog" aria-modal="true" [attr.aria-label]="food.descricao" (click)="$event.stopPropagation()">
-        <button class="detail__close" type="button" aria-label="Fechar detalhes" (click)="detalhe.set(null)"><svg lucideX size="18"></svg></button>
-        <span class="source">{{ food.fonte === 'taco' ? 'TACO' : 'Manual' }}</span>
-        <h2>{{ food.descricao }}</h2><p>{{ food.grupo || 'Catálogo geral' }}</p>
-        <div class="detail__kcal">{{ food.caloria | number: '1.0-0' }} <small>kcal por {{ food.qtd | number: '1.0-0' }} g</small></div>
-        <dl><div><dt>Proteína</dt><dd>{{ food.proteina | number: '1.0-1' }} g</dd></div><div><dt>Carboidrato</dt><dd>{{ food.carbo | number: '1.0-1' }} g</dd></div><div><dt>Gordura</dt><dd>{{ food.gordura | number: '1.0-1' }} g</dd></div></dl>
-        <button bdButton variant="subtle" (click)="alternarFavorito(food)">{{ food.is_favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}</button>
+      <aside
+        class="detail card"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="food.descricao"
+        (click)="$event.stopPropagation()"
+      >
+        <button
+          class="detail__close"
+          type="button"
+          aria-label="Fechar detalhes"
+          (click)="detalhe.set(null)"
+        >
+          <svg lucideX size="18"></svg>
+        </button>
+        <span class="source">{{ fonteLabel(food) }}</span>
+        <h2>{{ food.descricao }}</h2>
+        <p>{{ food.grupo || 'Catálogo geral' }}</p>
+        <div class="detail__kcal">
+          {{ food.caloria | number: '1.0-0' }}
+          <small>kcal por {{ food.qtd | number: '1.0-0' }} g</small>
+        </div>
+        <dl>
+          <div>
+            <dt>Proteína</dt>
+            <dd>{{ food.proteina | number: '1.0-1' }} g</dd>
+          </div>
+          <div>
+            <dt>Carboidrato</dt>
+            <dd>{{ food.carbo | number: '1.0-1' }} g</dd>
+          </div>
+          <div>
+            <dt>Gordura</dt>
+            <dd>{{ food.gordura | number: '1.0-1' }} g</dd>
+          </div>
+        </dl>
+        <button bdButton variant="subtle" (click)="alternarFavorito(food)">
+          {{ food.is_favorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
+        </button>
       </aside>
     </div>
   }

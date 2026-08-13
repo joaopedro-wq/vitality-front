@@ -1,4 +1,4 @@
-export type FonteAlimento = 'taco' | 'manual' | 'legado';
+export type FonteAlimento = 'taco' | 'manual' | 'legado' | 'usda';
 export type StatusAlimento = 'ativo' | 'pendente' | 'arquivado';
 
 export interface Alimento {
@@ -15,6 +15,16 @@ export interface Alimento {
   status: StatusAlimento;
   is_favorite: boolean;
   updated_at: string | null;
+  nutrientes?: NutrienteAlimento[];
+}
+
+export interface NutrienteAlimento {
+  codigo: string;
+  nome: string;
+  unidade: string;
+  categoria: 'macro' | 'mineral' | 'vitamina' | 'lipidio' | 'outro';
+  valor: number;
+  tipo_dado: string | null;
 }
 
 export interface FoodPage {

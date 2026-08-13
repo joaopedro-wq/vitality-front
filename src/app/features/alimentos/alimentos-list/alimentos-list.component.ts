@@ -58,6 +58,9 @@ export class AlimentosListComponent {
     this.pagina.set(page);
     this.load();
   }
+  fonteLabel(food: Alimento): string {
+    return food.fonte === 'taco' ? 'TACO' : food.fonte === 'usda' ? 'USDA' : 'Manual';
+  }
 
   alternarFavorito(food: Alimento): void {
     const anterior = food.is_favorite;

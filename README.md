@@ -11,7 +11,8 @@ Este repositório é o **frontend** do produto: uma single-page application em A
 API do backend Laravel (`../vitality-Back`).
 
 Para preparar o catálogo no backend, execute `php artisan migrate --seed`; o seeder importa a TACO
-de forma idempotente. A primeira conta administrativa é promovida com
+de forma idempotente. Para enriquecer o catálogo com os nutrientes detalhados da base USDA
+Foundation Foods, execute também `php artisan foods:import-usda --dataset=foundation`. A primeira conta administrativa é promovida com
 `php artisan user:make-admin email@dominio.com`.
 
 ## O produto
@@ -25,8 +26,8 @@ de forma idempotente. A primeira conta administrativa é promovida com
 - 🍽️ **Diário alimentar** — o registro do que foi realmente comido, comparado contra a meta do dia.
 - 📋 **Dietas reutilizáveis** — planos de refeição montados uma vez, reaproveitados sempre que
   quiser sem remontar a lista de alimentos do zero.
-- 🥗 **Biblioteca de alimentos** — catálogo global curado, iniciado pela TACO, com favoritos pessoais
-  e administração restrita para manter dados nutricionais confiáveis.
+- 🥗 **Biblioteca de alimentos** — catálogo global curado, iniciado pela TACO e enriquecido com a
+  USDA Foundation Foods, com favoritos pessoais e administração restrita para manter dados nutricionais confiáveis.
 - 📊 **Painel de acompanhamento** — meta vs. consumido, num relance.
 - 👤 **Perfil em etapas** — identidade e avatar → corpo → rotina e confirmação. Cada avanço é salvo
   imediatamente, reduzindo perda de dados e mantendo a meta alinhada ao perfil atual.

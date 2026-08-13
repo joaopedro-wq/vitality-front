@@ -40,7 +40,7 @@ src/app/
     dashboard/
     diario/{diario-list,diario-form}/
     alimentos/
-      alimentos-list/             Biblioteca global: busca, TACO e favoritos pessoais
+      alimentos-list/             Biblioteca global: busca, fontes TACO/USDA e favoritos pessoais
       admin-foods/                gestão de catálogo protegida por adminGuard
     dietas/{dietas-list,dieta-form}/
     metas/
