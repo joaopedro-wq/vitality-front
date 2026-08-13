@@ -34,13 +34,19 @@ perfil completo — está em desenvolvimento incremental.
 
 ## Identidade visual
 
-Duas paletas convivem no produto, cada uma resolvendo um problema diferente de identidade:
+A identidade visual é única e acompanha a escolha de cada pessoa em todo o produto — área
+autenticada, login e cadastro. O seletor de paleta fica na topbar e a preferência é persistida no
+navegador; ela também é aplicada antes do Angular iniciar para evitar flash de cor incorreta.
 
-- **"Feira Vitality"** nas telas de autenticação — manga, ameixa e creme, evocando uma feira livre
-  de produtos frescos.
-- **"Cozinha Quente"** no restante da área autenticada — coral e mostarda sobre areia clara, uma
-  paleta de cozinha, quente e apetitosa, sem cair em clichê de "app de saúde" (verde-menta
-  genérico).
+- **Horta** (padrão) — primary verde, com menu/poster verde-floresta.
+- **Especiaria** — primary terracota, com menu/poster ameixa.
+- **Sálvia** — primary verde-sálvia, com menu/poster grafite quente.
+- **Ameixa Reversa** — primary ameixa, com menu/poster marrom-terra.
+
+As quatro paletas alteram somente o primary e o chrome do menu/pôster; mostarda, superfícies,
+bordas e texto continuam definidos pelo tema claro ou escuro. A topbar acompanha a responsividade:
+em desktop exibe o CTA por extenso, em tablet o compacta e, no mobile, transforma as ações —
+incluindo registrar refeição — em controles só de ícone com tooltips posicionadas abaixo do header.
 
 ## Stack técnica
 
