@@ -1,12 +1,8 @@
-<h1>Aqui está sua sugestão</h1>
-<p class="sub">Calculado a partir do que você respondeu — no próximo passo você pode ajustar.</p>
-
-<div class="flow">
-  <div class="flow-chip"><span class="n">{{ sugestao().tmb }}</span><span class="k">TMB</span></div>
-  <svg lucideArrowRight class="arrow" size="16" aria-hidden="true"></svg>
-  <div class="flow-chip"><span class="n">{{ sugestao().get }}</span><span class="k">GET</span></div>
-  <svg lucideArrowRight class="arrow" size="16" aria-hidden="true"></svg>
-  <div class="flow-chip final"><span class="n">{{ sugestao().caloria }}</span><span class="k">sugestão</span></div>
+<div class="flex flex-col items-center gap-2 text-center">
+  <h1 class="m-0 text-[20px] text-balance">Aqui está sua sugestão</h1>
+  <p class="text-[13.5px] text-fg-muted">Calculado a partir do que você respondeu — no próximo passo você pode ajustar.</p>
 </div>
+
+<vtp-meta-reveal [valores]="sugestao()" [animar]="true" />
 
 <vtp-step-footer (voltar)="voltar.emit()" (avancar)="continuar.emit()" />

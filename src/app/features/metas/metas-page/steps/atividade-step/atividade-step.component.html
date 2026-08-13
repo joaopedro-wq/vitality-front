@@ -1,30 +1,70 @@
-<h1>Atividade e objetivo</h1>
-<p class="sub">Isso ajusta seu gasto calórico total e a distribuição de macros.</p>
+<div class="flex flex-col items-center gap-2 text-center">
+  <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-fg-muted bg-surface-hover px-3 py-1.5 rounded-full">
+    Definindo seu estilo
+  </span>
+  <h1 class="m-0 text-[20px] text-balance">Atividade e objetivo</h1>
+  <p class="text-[13.5px] text-fg-muted">Isso ajusta seu gasto calórico total e a distribuição de macros.</p>
+</div>
 
-<form [formGroup]="form" class="options-grid">
-  <div class="options-block">
-    <p class="group-label">Nível de atividade</p>
-    <div class="options">
+<form [formGroup]="form" class="flex flex-col gap-5">
+  <div class="text-center">
+    <p class="m-0 mb-1.5 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Nível de atividade</p>
+    <div class="flex flex-wrap justify-center gap-2">
       @for (opt of ativididadeOptions; track opt[0]) {
-        <label class="opt" [class.selected]="form.controls.nivel_atividade.value === opt[0]">
-          <input type="radio" formControlName="nivel_atividade" [value]="opt[0]" />
+        <label
+          class="inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-[12.5px] font-bold cursor-pointer transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+          [class]="
+            form.controls.nivel_atividade.value === opt[0]
+              ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+              : 'border-border bg-surface text-fg hover:border-border-strong'
+          "
+        >
+          <input type="radio" formControlName="nivel_atividade" [value]="opt[0]" class="sr-only" />
+          <span class="flex gap-[3px]" [class.text-primary-strong]="form.controls.nivel_atividade.value === opt[0]" [class.text-border-strong]="form.controls.nivel_atividade.value !== opt[0]">
+            @for (ponto of pontosIntensidade; track ponto) {
+              <span
+                class="size-[5px] rounded-full"
+                [class.bg-current]="ponto <= intensidade[opt[0]]"
+                [class.bg-border]="ponto > intensidade[opt[0]]"
+              ></span>
+            }
+          </span>
+          {{ opt[1] }}
+        </label>
+      }
+    </div>
+    @if (form.controls.nivel_atividade.value; as nivel) {
+      <span class="mt-2 inline-flex items-center gap-1.5 text-[11.5px] font-bold text-primary-strong bg-primary-soft px-3.5 py-2 rounded-full animate-reveal">
+        {{ descricaoAtividade[nivel] }}
+      </span>
+    }
+  </div>
+
+  <div class="text-center">
+    <p class="m-0 mb-1.5 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Objetivo</p>
+    <div class="flex flex-wrap justify-center gap-2">
+      @for (opt of objetivoOptions; track opt[0]) {
+        <label
+          class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[12.5px] font-bold cursor-pointer transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+          [class]="
+            form.controls.objetivo.value === opt[0]
+              ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+              : 'border-border bg-surface text-fg hover:border-border-strong'
+          "
+        >
+          <input type="radio" formControlName="objetivo" [value]="opt[0]" class="sr-only" />
+          <svg [lucideIcon]="objetivoIcone[opt[0]]" size="14" aria-hidden="true"></svg>
           {{ opt[1] }}
         </label>
       }
     </div>
   </div>
 
-  <div class="options-block">
-    <p class="group-label">Objetivo</p>
-    <div class="options">
-      @for (opt of objetivoOptions; track opt[0]) {
-        <label class="opt" [class.selected]="form.controls.objetivo.value === opt[0]">
-          <input type="radio" formControlName="objetivo" [value]="opt[0]" />
-          {{ opt[1] }}
-        </label>
-      }
-    </div>
-  </div>
+  @if (form.controls.objetivo.value; as objetivo) {
+    <span class="self-center inline-flex items-center gap-1.5 text-[11.5px] font-bold text-primary-strong bg-primary-soft px-3.5 py-2 rounded-full animate-reveal">
+      {{ objetivoImpacto[objetivo] }}
+    </span>
+  }
 </form>
 
 <vtp-step-footer [carregando]="salvando()" (voltar)="voltar.emit()" (avancar)="confirmar()" />

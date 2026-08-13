@@ -125,6 +125,27 @@
   border-radius: 20px;
 }
 
+// "animate-reveal": entrada suave (fade + leve subida) pra conteúdo que
+// aparece depois de calculado/revelado — nasceu no momento de "build
+// desbloqueado" do quiz de Metas (passo Sugestão e o painel final), mas serve
+// qualquer resultado que apareça depois de um cálculo/espera em qualquer tela
+// do sistema. Sistema global de motion já reduz toda `animation-duration` a
+// 0.01ms sob `prefers-reduced-motion: reduce` (ver bloco abaixo) — não precisa
+// de guarda própria aqui.
+@utility animate-reveal {
+  animation: vtp-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes vtp-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // Reset global mínimo
 *,
 *::before,

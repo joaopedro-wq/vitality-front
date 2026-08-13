@@ -7,7 +7,7 @@ import { forkJoin } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../components/utils/recomendacao-calc.util';
-import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
+import { MetaRevealComponent } from '../../../components/molecules/meta-reveal/meta-reveal.component';
 import { StepTrackComponent, type StepTrackItem } from '../../../components/molecules/step-track/step-track.component';
 import { RecomendacaoService } from '../../../services/recomendacao.service';
 import { MetaService } from '../../../services/meta.service';
@@ -32,7 +32,7 @@ const PASSOS: StepTrackItem[] = [
   imports: [
     BdButtonComponent,
     LucideArrowRight,
-    MacroSummaryComponent,
+    MetaRevealComponent,
     StepTrackComponent,
     PerfilStepComponent,
     AtividadeStepComponent,

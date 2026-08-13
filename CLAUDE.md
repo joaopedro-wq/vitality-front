@@ -79,7 +79,10 @@ src/app/
   components/
     atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
-                 macro-summary/  anel + chips de macro (sm/lg/xl) — usado no quiz e no painel
+                 macro-summary/  anel + chips de macro (sm/lg/xl) — sem uso hoje, reserva pro
+                                 Dashboard (Fase 6)
+                 meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
+                                 → revelado) — usado no passo Sugestão e no painel "configurado"
                  step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
                  step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
                                  multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
@@ -102,7 +105,6 @@ src/app/
     metas/
       metas-page/
         metas-page.component.*     orquestrador — fase/passo/sugestão, navegação (markup próprio)
-        metas-step.scss            shell visual comum aos 4 passos (styleUrl compartilhado)
         steps/
           perfil-step/             passo 1 — lógica e form próprios, injeta UserService direto
           atividade-step/          passo 2 — idem, calcula a sugestão a partir da própria resposta
@@ -419,6 +421,44 @@ das fases, cada uma pequena e testável ponta a ponta contra o backend real:
    já tem peso/altura/idade/gênero/nível de atividade/objetivo salvos (ex.: de uma sessão anterior);
    se realmente faltar dado, mostra toast de erro e não navega, em vez de deixar o passo abrir em
    branco.
+   Nona passada — identidade de "quiz/jogo" (2026-08-13, mesmo dia): depois de comparar 5
+   referências de jogo/app (trivia, ficha de RPG, quiz de personalidade, mapa de fases, revelação
+   em odômetro) em artefato, escolhida uma combinação: cartões grandes tocáveis nas escolhas
+   (Perfil/Atividade) e um momento de revelação estilo RPG na Sugestão e no painel final. Nasceu
+   `MetaRevealComponent` (`components/molecules/meta-reveal/`) — anel + dígitos + barras de macro,
+   com dois modos: `animar` (nasce "calculando…", dígitos esmaecidos com `animate-pulse`, revela
+   sozinho depois de ~900ms — usado no passo Sugestão) e sem `animar` (já nasce revelado — usado no
+   painel "configurado", com `label="Build completo"` e um círculo de troféu acima). Reduz motion:
+   se `prefers-reduced-motion: reduce`, pula direto pro estado revelado, sem esperar o timeout.
+   `MacroSummaryComponent` ficou sem uso (nenhuma tela chama mais) — não foi apagado, é reserva pro
+   Dashboard (Fase 6, "meta vs. consumido"), que provavelmente vai querer um anel de macro
+   compacto igual a esse.
+   `metas-step.scss` (o SCSS compartilhado pelos 4 passos via `styleUrl`) foi apagado — cada passo
+   agora define o próprio "casco" de card via `host: { class: 'card flex flex-col gap-5 p-6
+   md:p-8' }` no `@Component`, e o resto é Tailwind direto no template (consistente com a regra
+   "sempre Tailwind", ver Stack). Nova utility global, `animate-reveal` (`src/styles.scss`, mesmo
+   padrão do `card`): fade + leve subida pra qualquer conteúdo que apareça depois de um
+   cálculo/espera — não é só do quiz de Metas, serve qualquer tela do sistema.
+   Perfil ganhou ícones Lucide nos campos e cartões de gênero com ícone (`LucideMars`/
+   `LucideVenus`/`LucideUsersRound`) no lugar do `<select>`. Atividade ganhou "pontos de
+   intensidade" (bolinhas, 1 a 5 conforme o nível) nos cartões e um chip de prévia de impacto que
+   aparece ao escolher o objetivo ("Isso empurra sua meta pra baixo ↓") — não revela número, só
+   alimenta curiosidade pro passo seguinte. Confirmar trocou os campos simples por barra estilo
+   atributo (preenchimento = valor atual, traço = onde estava a sugestão) por trás de cada input,
+   ainda editável. Botão final do rodapé (`StepFooterComponent`, estado `ultimo()`) ganhou um anel
+   de destaque (`box-shadow`, mesma linguagem do anel do `MetaRevealComponent`) — não virou botão
+   de texto (continua sendo o padrão de ícone redondo já documentado, só com glow a mais).
+   Décima passada (2026-08-13, mesmo dia): os cartões de Gênero/Nível de atividade/Objetivo
+   ficaram grandes demais esticando pra célula do `grid` — comparados 3 formatos de chip em
+   artefato (com ícone, só texto, segmented control) e escolhido "chip com ícone". Viraram
+   `inline-flex` num `flex flex-wrap` (largura no conteúdo, não mais `grid` esticado) — cada opção
+   só ocupa o espaço do próprio rótulo. Perdeu a descrição longa por baixo do rótulo da Atividade
+   (o que mais engordava o cartão antes) — os pontinhos de intensidade dentro do chip já comunicam
+   a escala sem precisar de texto extra. Seleção ganhou uma transição com easing de "mola"
+   (`cubic-bezier(0.34,1.56,0.64,1)`) + leve `scale-[1.03]` no chip selecionado — pequeno "pop" de
+   confirmação, no mesmo espírito de jogo do resto da tela. Os três grupos de chip (e o rótulo
+   "Gênero"/"Nível de atividade"/"Objetivo" acima deles) ficaram centralizados — o resto do passo
+   já é centralizado (badge, título, subtítulo), os grupos alinhados à esquerda destoavam.
 4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).

@@ -1,11 +1,75 @@
-<h1>Revisar e salvar</h1>
-<p class="sub">Já preenchido com a sugestão — ajuste o que quiser antes de salvar.</p>
+<div class="flex flex-col items-center gap-2 text-center">
+  <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-primary-strong bg-primary-soft px-3 py-1.5 rounded-full">
+    Build revisado
+  </span>
+  <h1 class="m-0 text-[20px] text-balance">Revisar e salvar</h1>
+  <p class="text-[13.5px] text-fg-muted">Já preenchido com a sugestão — ajuste o que quiser antes de salvar.</p>
+</div>
 
-<form [formGroup]="form" class="field-grid">
-  <label class="field"><span>Calorias</span><input type="number" formControlName="meta_calorias" /></label>
-  <label class="field"><span>Proteína (g)</span><input type="number" formControlName="meta_proteinas" /></label>
-  <label class="field"><span>Carboidrato (g)</span><input type="number" formControlName="meta_carboidratos" /></label>
-  <label class="field"><span>Gordura (g)</span><input type="number" formControlName="meta_gorduras" /></label>
+<form [formGroup]="form" class="flex flex-col gap-4">
+  <div class="flex flex-col gap-1.5">
+    <div class="flex items-baseline justify-between">
+      <span class="text-[11px] font-bold uppercase text-fg-muted">Calorias</span>
+      <span class="text-[10px] text-fg-subtle">sugestão: {{ sugestao().caloria }} kcal</span>
+    </div>
+    <input
+      type="number"
+      formControlName="meta_calorias"
+      class="h-10 rounded-lg border border-border bg-bg px-3 text-[15px] font-bold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+    />
+    <div class="relative h-[7px] rounded-full bg-surface-hover overflow-hidden">
+      <span class="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-300" [style.width.%]="pct('meta_calorias')"></span>
+      <span class="absolute -top-[3px] h-[13px] w-[2px] bg-fg/50 rounded-sm" [style.left.%]="pctSugestao('meta_calorias', sugestao().caloria)"></span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex items-baseline justify-between">
+      <span class="text-[11px] font-bold uppercase text-fg-muted">Proteína (g)</span>
+      <span class="text-[10px] text-fg-subtle">sugestão: {{ sugestao().proteina }}g</span>
+    </div>
+    <input
+      type="number"
+      formControlName="meta_proteinas"
+      class="h-10 rounded-lg border border-border bg-bg px-3 text-[15px] font-bold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+    />
+    <div class="relative h-[7px] rounded-full bg-surface-hover overflow-hidden">
+      <span class="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-300" [style.width.%]="pct('meta_proteinas')"></span>
+      <span class="absolute -top-[3px] h-[13px] w-[2px] bg-fg/50 rounded-sm" [style.left.%]="pctSugestao('meta_proteinas', sugestao().proteina)"></span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex items-baseline justify-between">
+      <span class="text-[11px] font-bold uppercase text-fg-muted">Carboidrato (g)</span>
+      <span class="text-[10px] text-fg-subtle">sugestão: {{ sugestao().carbo }}g</span>
+    </div>
+    <input
+      type="number"
+      formControlName="meta_carboidratos"
+      class="h-10 rounded-lg border border-border bg-bg px-3 text-[15px] font-bold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+    />
+    <div class="relative h-[7px] rounded-full bg-surface-hover overflow-hidden">
+      <span class="absolute inset-y-0 left-0 rounded-full bg-accent transition-[width] duration-300" [style.width.%]="pct('meta_carboidratos')"></span>
+      <span class="absolute -top-[3px] h-[13px] w-[2px] bg-fg/50 rounded-sm" [style.left.%]="pctSugestao('meta_carboidratos', sugestao().carbo)"></span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <div class="flex items-baseline justify-between">
+      <span class="text-[11px] font-bold uppercase text-fg-muted">Gordura (g)</span>
+      <span class="text-[10px] text-fg-subtle">sugestão: {{ sugestao().gordura }}g</span>
+    </div>
+    <input
+      type="number"
+      formControlName="meta_gorduras"
+      class="h-10 rounded-lg border border-border bg-bg px-3 text-[15px] font-bold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+    />
+    <div class="relative h-[7px] rounded-full bg-surface-hover overflow-hidden">
+      <span class="absolute inset-y-0 left-0 rounded-full [background-color:var(--fat)] transition-[width] duration-300" [style.width.%]="pct('meta_gorduras')"></span>
+      <span class="absolute -top-[3px] h-[13px] w-[2px] bg-fg/50 rounded-sm" [style.left.%]="pctSugestao('meta_gorduras', sugestao().gordura)"></span>
+    </div>
+  </div>
 </form>
 
 <vtp-step-footer [carregando]="salvando()" [ultimo]="true" (voltar)="voltar.emit()" (avancar)="confirmar()" />

@@ -1,18 +1,77 @@
-<h1>Vamos calcular sua meta ideal?</h1>
-<p class="sub">Alguns dados sobre você — usamos isso pra estimar seu gasto calórico.</p>
+<div class="flex flex-col items-center gap-3 text-center">
+  <span class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-fg-muted bg-surface-hover px-3 py-1.5 rounded-full">
+    Ficha iniciada
+  </span>
+  <div class="relative size-[72px] grid place-items-center rounded-full">
+    <span class="absolute inset-0 rounded-full border-[2.5px] border-dashed border-border-strong"></span>
+    <svg lucideUser size="28" class="text-fg-subtle" aria-hidden="true"></svg>
+  </div>
+</div>
 
-<form [formGroup]="form" class="field-grid">
-  <label class="field"><span>Peso (kg)</span><input type="number" formControlName="peso" /></label>
-  <label class="field"><span>Altura (cm)</span><input type="number" formControlName="altura" /></label>
-  <label class="field"><span>Idade</span><input type="number" formControlName="idade" /></label>
-  <label class="field">
-    <span>Gênero</span>
-    <select formControlName="genero">
-      <option value="M">Masculino</option>
-      <option value="F">Feminino</option>
-      <option value="O">Outro</option>
-    </select>
-  </label>
+<div class="text-center">
+  <h1 class="m-0 text-[20px] text-balance">Vamos calcular sua meta ideal?</h1>
+  <p class="mt-1 text-[13.5px] text-fg-muted">Alguns dados sobre você — usamos isso pra estimar seu gasto calórico.</p>
+</div>
+
+<form [formGroup]="form" class="flex flex-col gap-5">
+  <div class="flex flex-wrap justify-center gap-3">
+    <label class="flex flex-col items-center gap-1.5 w-[104px]">
+      <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase text-fg-muted">
+        <svg lucideScale size="11" aria-hidden="true"></svg>
+        Peso (kg)
+      </span>
+      <input
+        type="number"
+        formControlName="peso"
+        vtpSomenteNumero
+        class="h-9 w-full rounded-lg border border-border bg-bg px-2.5 text-center text-[14px] font-semibold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+      />
+    </label>
+    <label class="flex flex-col items-center gap-1.5 w-[104px]">
+      <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase text-fg-muted">
+        <svg lucideRuler size="11" aria-hidden="true"></svg>
+        Altura (cm)
+      </span>
+      <input
+        type="number"
+        formControlName="altura"
+        vtpSomenteNumero
+        class="h-9 w-full rounded-lg border border-border bg-bg px-2.5 text-center text-[14px] font-semibold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+      />
+    </label>
+    <label class="flex flex-col items-center gap-1.5 w-[104px]">
+      <span class="flex items-center gap-1.5 text-[10px] font-bold uppercase text-fg-muted">
+        <svg lucideCalendarDays size="11" aria-hidden="true"></svg>
+        Idade
+      </span>
+      <input
+        type="number"
+        formControlName="idade"
+        vtpSomenteNumero
+        class="h-9 w-full rounded-lg border border-border bg-bg px-2.5 text-center text-[14px] font-semibold text-fg focus-visible:outline-none focus-visible:border-primary focus-visible:[box-shadow:0_0_0_3px_var(--bd-primary-soft)]"
+      />
+    </label>
+  </div>
+
+  <div class="text-center">
+    <p class="m-0 mb-1.5 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Gênero</p>
+    <div class="flex flex-wrap justify-center gap-2">
+      @for (opt of generoOptions; track opt.valor) {
+        <label
+          class="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-[12.5px] font-bold cursor-pointer transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+          [class]="
+            form.controls.genero.value === opt.valor
+              ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+              : 'border-border bg-surface text-fg hover:border-border-strong'
+          "
+        >
+          <input type="radio" formControlName="genero" [value]="opt.valor" class="sr-only" />
+          <svg [lucideIcon]="opt.icone" size="14" aria-hidden="true"></svg>
+          {{ opt.label }}
+        </label>
+      }
+    </div>
+  </div>
 </form>
 
 <vtp-step-footer [mostrarVoltar]="false" [carregando]="salvando()" (avancar)="confirmar()" />

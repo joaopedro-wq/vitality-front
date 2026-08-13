@@ -2,7 +2,7 @@
   display: block;
   // Cor de gordura nos gráficos de macro — não é --bd-*, é a terceira cor do
   // mapeamento documentado no CLAUDE.md (proteína=primary, carbo=accent,
-  // gordura=esta). Herdada por `vtp-macro-summary` (custom property atravessa
+  // gordura=esta). Herdada por `vtp-meta-reveal` (custom property atravessa
   // fronteira de componente). Ajusta pro tom escuro igual o resto dos tokens.
   --fat: #6b8552;
 }
@@ -13,82 +13,4 @@
 }
 :host-context(html[data-theme='dark']) {
   --fat: #8fae76;
-}
-
-.loading {
-  padding: 60px 0;
-  text-align: center;
-  color: var(--bd-fg-muted);
-}
-
-// ---------- Estado "configurado": cabeçalho conectado ----------
-// Título+subtítulo e a ação principal vivem na mesma faixa (eco da topbar do
-// app-shell: rótulo à esquerda, botão à direita, uma linha só) — o card abaixo
-// não repete texto nem título, só o resultado. "Refazer metas" é a ação
-// secundária, separada da principal por peso visual (ghost) e por vir depois
-// do card.
-.hero-connected {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.hero-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--bd-border);
-}
-
-.hero-text {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 56ch;
-}
-.eyebrow {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--bd-primary-strong);
-}
-.hero-text h1 {
-  margin: 0;
-  font-size: 28px;
-  letter-spacing: -0.01em;
-  text-wrap: balance;
-}
-.hero-desc {
-  margin: 0;
-  font-size: 14.5px;
-  color: var(--bd-fg-muted);
-  line-height: 1.6;
-}
-
-.hero-card {
-  background: var(--bd-surface);
-  border: 1px solid var(--bd-border);
-  border-radius: 20px;
-  padding: 36px 32px;
-  display: flex;
-  justify-content: center;
-}
-
-.hero-foot {
-  display: flex;
-  justify-content: center;
-}
-
-@media (max-width: 640px) {
-  .hero-row {
-    align-items: stretch;
-  }
-  .hero-row button[bdButton] {
-    align-self: flex-start;
-  }
 }

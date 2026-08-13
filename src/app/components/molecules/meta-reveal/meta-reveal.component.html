@@ -1,0 +1,103 @@
+<div class="flex flex-col items-center text-center gap-4">
+  <span
+    class="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full transition-colors duration-300"
+    [class]="revelado() ? 'text-primary-strong bg-primary-soft' : 'text-fg-subtle bg-surface-hover'"
+  >
+    @if (!revelado()) {
+      <span class="size-1.5 rounded-full bg-fg-subtle animate-pulse"></span>
+    }
+    {{ revelado() ? label() : 'Calculando sua meta…' }}
+  </span>
+
+  @if (valores().tmb !== undefined && valores().get !== undefined) {
+    <div class="flex items-center justify-center gap-3">
+      <div
+        class="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-bg px-3.5 py-2 transition-opacity duration-300"
+        [class.opacity-40]="!revelado()"
+      >
+        <span class="text-[14px] font-extrabold tabular-nums" [class.text-fg-subtle]="!revelado()">{{
+          revelado() ? valores().tmb : '--'
+        }}</span>
+        <span class="text-[9px] uppercase text-fg-subtle">TMB</span>
+      </div>
+      <span class="text-fg-subtle text-base leading-none">+</span>
+      <div
+        class="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-bg px-3.5 py-2 transition-opacity duration-300"
+        [class.opacity-40]="!revelado()"
+      >
+        <span class="text-[14px] font-extrabold tabular-nums" [class.text-fg-subtle]="!revelado()">{{
+          revelado() ? valores().get : '--'
+        }}</span>
+        <span class="text-[9px] uppercase text-fg-subtle">GET</span>
+      </div>
+    </div>
+  }
+
+  <div
+    class="relative mx-auto grid place-items-center rounded-full"
+    [class]="tamanho() === 'lg' ? 'size-[190px]' : 'size-[150px]'"
+    style="background: radial-gradient(circle, var(--bd-primary-soft) 0%, transparent 70%);"
+  >
+    <span
+      class="absolute inset-[10px] rounded-full border-[3px] transition-colors duration-500"
+      [class]="revelado() ? 'border-primary [box-shadow:0_0_0_6px_var(--bd-primary-soft)]' : 'border-dashed border-border-strong'"
+    ></span>
+    <div class="relative flex flex-col items-center gap-1.5">
+      <div class="flex gap-1">
+        @for (d of digitos(); track $index) {
+          <span
+            class="rounded-lg bg-surface border border-border grid place-items-center font-black overflow-hidden"
+            [class]="tamanho() === 'lg' ? 'w-[30px] h-[42px] text-[22px]' : 'w-[26px] h-[36px] text-[19px]'"
+            [class.text-primary-strong]="revelado()"
+            [class.text-fg-subtle]="!revelado()"
+            [class.animate-pulse]="!revelado()"
+          >
+            {{ revelado() ? d : '–' }}
+          </span>
+        }
+      </div>
+      <span class="text-[10px] uppercase tracking-wide text-fg-muted">kcal / dia</span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3 w-full max-w-[300px]">
+    <div class="flex flex-col gap-1 text-left">
+      <div class="flex items-baseline justify-between text-[12px] font-bold">
+        <span>Proteína</span>
+        <span class="tabular-nums">{{ valores().proteina }}g</span>
+      </div>
+      <div class="h-[7px] rounded-full bg-surface-hover overflow-hidden">
+        <span
+          class="block h-full rounded-full bg-primary transition-[width] duration-700 ease-out"
+          [style.width.%]="revelado() ? macroPercentuais().proteina : 0"
+        ></span>
+      </div>
+    </div>
+    <div class="flex flex-col gap-1 text-left">
+      <div class="flex items-baseline justify-between text-[12px] font-bold">
+        <span>Carboidrato</span>
+        <span class="tabular-nums">{{ valores().carbo }}g</span>
+      </div>
+      <div class="h-[7px] rounded-full bg-surface-hover overflow-hidden">
+        <span
+          class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
+          [style.width.%]="revelado() ? macroPercentuais().carbo : 0"
+          style="transition-delay: 120ms"
+        ></span>
+      </div>
+    </div>
+    <div class="flex flex-col gap-1 text-left">
+      <div class="flex items-baseline justify-between text-[12px] font-bold">
+        <span>Gordura</span>
+        <span class="tabular-nums">{{ valores().gordura }}g</span>
+      </div>
+      <div class="h-[7px] rounded-full bg-surface-hover overflow-hidden">
+        <span
+          class="block h-full rounded-full [background-color:var(--fat)] transition-[width] duration-700 ease-out"
+          [style.width.%]="revelado() ? macroPercentuais().gordura : 0"
+          style="transition-delay: 240ms"
+        ></span>
+      </div>
+    </div>
+  </div>
+</div>

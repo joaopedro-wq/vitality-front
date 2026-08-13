@@ -59,6 +59,12 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+// Último passo (salvar) ganha um anel — mesma linguagem de "destaque" do anel
+// de revelação da meta (`MetaRevealComponent`), marcando que esse clique
+// encerra a jornada, não é só mais um "avançar".
+.round-next.done {
+  box-shadow: 0 0 0 5px var(--bd-primary-soft);
+}
 
 .spin {
   animation: spin 0.8s linear infinite;
