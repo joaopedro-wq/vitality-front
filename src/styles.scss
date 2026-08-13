@@ -1,84 +1,77 @@
-// ============================================================================
-// Vitality PLUS — estilos globais
-//
-// Fonte única de verdade de tokens: os --bd-* da bandeira-ui. Não criamos uma
-// camada extra de nomes (--bg/--primary) como no portfólio — aqui sobrescrevemos
-// os tokens da lib diretamente com a paleta do produto, e o Tailwind aponta
-// para os mesmos --bd-* via @theme. Ver CLAUDE.md > Decisões de arquitetura.
-// ============================================================================
+
 
 @use 'bandeira-ui/styles';
 @use 'tailwindcss';
 
 :root {
-  // Paleta "saúde/nutrição" — verde-menta (vitalidade) + laranja (energia)
-  --bd-bg: #f6f9f7;
-  --bd-bg-elevated: #ffffff;
-  --bd-surface: #ffffff;
-  --bd-surface-hover: #eef4f0;
-  --bd-border: #dde6e0;
-  --bd-border-strong: #c2d1c9;
+ 
+  --bd-bg: #f7f1e4;
+  --bd-bg-elevated: #fffdf7;
+  --bd-surface: #fffdf7;
+  --bd-surface-hover: #f2e9d4;
+  --bd-border: #eae0c8;
+  --bd-border-strong: #d9c9a0;
 
-  --bd-fg: #10241c;
-  --bd-fg-muted: #4d5f56;
-  --bd-fg-subtle: #7a8d83;
+  --bd-fg: #2b2417;
+  --bd-fg-muted: #786d54;
+  --bd-fg-subtle: #a99d7e;
 
-  --bd-primary: #12946f;
-  --bd-primary-strong: #0b7657;
-  --bd-primary-soft: rgba(18, 148, 111, 0.12);
-  --bd-primary-contrast: #ffffff;
+  --bd-primary: #e2694b;
+  --bd-primary-strong: #c94f32;
+  --bd-primary-soft: rgba(226, 105, 75, 0.14);
+  --bd-primary-contrast: #fff8f2;
 
-  --bd-accent: #ff8b4d;
-  --bd-accent-soft: rgba(255, 139, 77, 0.14);
-  --bd-accent-contrast: #2b1200;
+  --bd-accent: #d9a441;
+  --bd-accent-soft: rgba(217, 164, 65, 0.16);
+  --bd-accent-contrast: #3e2f0e;
 
-  --bd-gradient: linear-gradient(120deg, #12946f 0%, #3fb88f 45%, #ff8b4d 100%);
+  --bd-gradient: linear-gradient(120deg, #e2694b 0%, #d9a441 60%, #52803f 130%);
 
   --bd-radius: 0.875rem;
 }
 
 :root[data-theme='dark'] {
-  --bd-bg: #0a1410;
-  --bd-bg-elevated: #0f1c16;
-  --bd-surface: #13221b;
-  --bd-surface-hover: #1a2e24;
-  --bd-border: #223c30;
-  --bd-border-strong: #2f5240;
+  --bd-bg: #171410;
+  --bd-bg-elevated: #201c14;
+  --bd-surface: #201c14;
+  --bd-surface-hover: #29241a;
+  --bd-border: #362f22;
+  --bd-border-strong: #4a4030;
 
-  --bd-fg: #eef7f2;
-  --bd-fg-muted: #a3b8ac;
-  --bd-fg-subtle: #6f8579;
+  --bd-fg: #f3eedf;
+  --bd-fg-muted: #b3a88f;
+  --bd-fg-subtle: #7d735c;
 
-  --bd-primary: #34d399;
-  --bd-primary-strong: #22b586;
-  --bd-primary-soft: rgba(52, 211, 153, 0.16);
-  --bd-primary-contrast: #04140d;
+  --bd-primary: #f2895f;
+  --bd-primary-strong: #ef7248;
+  --bd-primary-soft: rgba(242, 137, 95, 0.18);
+  --bd-primary-contrast: #2b0f00;
 
-  --bd-accent: #ffab73;
-  --bd-accent-soft: rgba(255, 171, 115, 0.16);
+  --bd-accent: #e8be5d;
+  --bd-accent-soft: rgba(232, 190, 93, 0.18);
   --bd-accent-contrast: #2b1200;
 
-  --bd-gradient: linear-gradient(120deg, #34d399 0%, #5eead4 45%, #ffab73 100%);
+  --bd-gradient: linear-gradient(120deg, #f2895f 0%, #e8be5d 60%, #6fae57 130%);
 }
 
 // Segue a preferência do sistema quando o usuário não fixou um tema
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']):not([data-theme='dark']) {
-    --bd-bg: #0a1410;
-    --bd-bg-elevated: #0f1c16;
-    --bd-surface: #13221b;
-    --bd-surface-hover: #1a2e24;
-    --bd-border: #223c30;
-    --bd-border-strong: #2f5240;
-    --bd-fg: #eef7f2;
-    --bd-fg-muted: #a3b8ac;
-    --bd-fg-subtle: #6f8579;
-    --bd-primary: #34d399;
-    --bd-primary-strong: #22b586;
-    --bd-primary-soft: rgba(52, 211, 153, 0.16);
-    --bd-accent: #ffab73;
-    --bd-accent-soft: rgba(255, 171, 115, 0.16);
-    --bd-gradient: linear-gradient(120deg, #34d399 0%, #5eead4 45%, #ffab73 100%);
+    --bd-bg: #171410;
+    --bd-bg-elevated: #201c14;
+    --bd-surface: #201c14;
+    --bd-surface-hover: #29241a;
+    --bd-border: #362f22;
+    --bd-border-strong: #4a4030;
+    --bd-fg: #f3eedf;
+    --bd-fg-muted: #b3a88f;
+    --bd-fg-subtle: #7d735c;
+    --bd-primary: #f2895f;
+    --bd-primary-strong: #ef7248;
+    --bd-primary-soft: rgba(242, 137, 95, 0.18);
+    --bd-accent: #e8be5d;
+    --bd-accent-soft: rgba(232, 190, 93, 0.18);
+    --bd-gradient: linear-gradient(120deg, #f2895f 0%, #e8be5d 60%, #6fae57 130%);
   }
 }
 

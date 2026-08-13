@@ -91,11 +91,14 @@ Cada `features/<nome>/data/<nome>.service.ts` é próprio da feature — não ce
 ## Decisões de arquitetura
 
 - **Tokens únicos**: `--bd-*` (definidos pela bandeira-ui) são a fonte de verdade visual.
-  `src/styles.scss` sobrescreve os `--bd-*` default com a paleta "saúde/nutrição" do produto
-  (verde-menta = vitalidade, laranja = energia/caloria) e o `@theme` do Tailwind aponta para os
-  mesmos `--bd-*` — sem duplicar paleta em dois lugares. Tema controlado via `data-theme` no
-  `documentElement` (`ThemeService` em `core/layout/theme.service.ts`), persistido em
-  `localStorage`, com script anti-flash no `index.html`.
+  `src/styles.scss` sobrescreve os `--bd-*` default com a paleta do produto e o `@theme` do
+  Tailwind aponta para os mesmos `--bd-*` — sem duplicar paleta em dois lugares. Tema controlado
+  via `data-theme` no `documentElement` (`ThemeService` em `core/layout/theme.service.ts`),
+  persistido em `localStorage`, com script anti-flash no `index.html`.
+- **Paleta "Cozinha Quente"** (2026-08-13, escolhida entre 5 mockups de menu/topbar): coral
+  (`--bd-primary`) + mostarda (`--bd-accent`) sobre areia clara — substituiu a paleta original
+  "saúde/nutrição" (verde-menta/laranja) da Fase 0. É a paleta de TODA a área autenticada (cards,
+  botões, badges), não só do menu.
 - **Auth via Bearer token puro** (Sanctum), sem cookies/CSRF — mesmo com
   `supports_credentials: true` no CORS do backend, não é necessário `withCredentials`.
 - **`authInterceptor`** só anexa `Authorization` em requests para `environment.apiBaseUrl` — nunca
@@ -106,12 +109,21 @@ Cada `features/<nome>/data/<nome>.service.ts` é próprio da feature — não ce
 - **Sessão restaurada no boot**: `provideAppInitializer` chama `AuthService.restoreSession()`
   antes da primeira navegação, para um refresh de página não deslogar quem já tinha token válido.
 - **Identidade visual "Feira Vitality" nas telas de auth**: login/registro têm uma paleta própria
-  (pôster de feira livre — manga/ameixa/creme), diferente do resto do app (verde-menta/laranja).
+  (pôster de feira livre — manga/ameixa/creme), diferente do resto do app ("Cozinha Quente").
   Em vez de duplicar layout, `shared/organisms/auth-poster-layout/` sobrescreve os tokens `--bd-*`
   só no próprio `:host` (custom properties herdam pela árvore do DOM, independente de view
   encapsulation) — os componentes `bd-field`/`bdInput`/`bdButton` projetados dentro saem retemados
   sem tocar no tema global. Esse é o padrão a seguir sempre que uma tela precisar de uma paleta
   isolada sem reescrever os componentes da lib.
+- **Menu lateral não usa `BdAppShellComponent`**: o layout desejado (sidebar de altura cheia +
+  topbar só na coluna de conteúdo) não bate com a estrutura fixa da lib (header full-width acima
+  de tudo). `core/layout/app-shell/` é markup próprio, reaproveitando só os átomos da lib
+  (`bd-avatar`, `bdButton`, `bdTooltip`). A cor de fundo do menu (`--sidebar-bg`, oliva escuro) é
+  uma variável local do componente, **não** um token `--bd-*` global — mesma lição do bug de
+  contraste da Fase 1: `--bd-bg` é lido pelo `bd-input` como o próprio fundo de campo, então nunca
+  reaproveitar esse token pra pintar um painel de chrome.
+  Gaveta mobile (<900px) implementada à mão (sem a gaveta pronta da lib) — `mobileMenuOpen` signal
+  + scrim + fecha em `Escape`. Falta ainda: foco preso dentro da gaveta enquanto aberta (Fase 9).
 
 ## Contrato da API (backend em `../vitality-Back`)
 

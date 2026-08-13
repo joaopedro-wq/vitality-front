@@ -29,8 +29,8 @@ import { ThemeService } from '../../core/layout/theme.service';
         </div>
 
         <p class="text-fg-muted">
-          Se as cores acima refletem a paleta verde-menta/laranja e o botão muda de tema sem
-          recarregar, tokens + Tailwind + bandeira-ui estão integrados.
+          Se as cores acima refletem a paleta coral/mostarda ("Cozinha Quente") e o botão muda de
+          tema sem recarregar, tokens + Tailwind + bandeira-ui estão integrados.
         </p>
 
         <button bdButton>Botão primário</button>

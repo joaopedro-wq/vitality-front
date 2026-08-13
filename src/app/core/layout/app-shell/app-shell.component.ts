@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { BdAppShellComponent, BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
+import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 
 import { AuthService } from '../../auth/auth.service';
 import { ThemeService } from '../theme.service';
@@ -20,20 +20,13 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/perfil', label: 'Perfil', icon: 'fas fa-user' },
 ];
 
-/** Layout autenticado: navegação, tema, avatar e logout — Fase 2 do Plano B. */
+
 @Component({
   selector: 'vtp-app-shell',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    BdAppShellComponent,
-    BdAvatarComponent,
-    BdButtonComponent,
-    BdTooltipDirective,
-  ],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, BdAvatarComponent, BdButtonComponent, BdTooltipDirective],
   templateUrl: './app-shell.component.html',
+  styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppShellComponent {
@@ -42,6 +35,31 @@ export class AppShellComponent {
   private readonly router = inject(Router);
 
   protected readonly navItems = NAV_ITEMS;
+
+  /** Gaveta da sidebar no mobile (<900px) — some por padrão, some ao navegar. */
+  protected readonly mobileMenuOpen = signal(false);
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen.update((open) => !open);
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen.set(false);
+  }
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    this.closeMobileMenu();
+  }
+
+  protected readonly primeiroNome = computed(() => this.auth.currentUser()?.name?.split(' ')[0] ?? '');
+
+  protected readonly saudacao = computed(() => {
+    const hora = new Date().getHours();
+    const periodo = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    const nome = this.primeiroNome();
+    return nome ? `${periodo}, ${nome}` : periodo;
+  });
 
   logout(): void {
     this.auth.logout().subscribe(() => this.router.navigateByUrl('/login'));
