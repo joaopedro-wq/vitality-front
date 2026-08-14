@@ -13,14 +13,16 @@ import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandei
 import {
   LucideCarrot,
   LucideClipboardList,
-  LucideShieldCheck,
   LucideDynamicIcon,
+  LucideEllipsis,
   LucideHouse,
   LucideLogOut,
-  LucideMenu,
   LucideMoon,
   LucidePalette,
+  LucidePanelLeft,
+  LucidePanelTop,
   LucidePlus,
+  LucideShieldCheck,
   LucideSun,
   LucideTarget,
   LucideUser,
@@ -28,10 +30,11 @@ import {
   type LucideIcon,
 } from '@lucide/angular';
 
+import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
 import { AuthService } from '../../auth/auth.service';
+import { NavigationLayoutService } from '../navigation-layout.service';
 import { PaletteService, type PaletteId } from '../palette.service';
 import { ThemeService } from '../theme.service';
-import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
 
 interface NavItem {
   path: string;
@@ -61,12 +64,14 @@ const NAV_ITEMS: NavItem[] = [
     BdButtonComponent,
     BdTooltipDirective,
     LucideDynamicIcon,
-    LucideMenu,
+    LucideEllipsis,
     LucidePlus,
     LucideLogOut,
     LucideSun,
     LucideMoon,
     LucidePalette,
+    LucidePanelLeft,
+    LucidePanelTop,
     PalettePickerComponent,
   ],
   templateUrl: './app-shell.component.html',
@@ -77,24 +82,37 @@ export class AppShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly theme = inject(ThemeService);
   protected readonly palette = inject(PaletteService);
+  protected readonly navigationLayout = inject(NavigationLayoutService);
   private readonly router = inject(Router);
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
-  protected readonly navItems = NAV_ITEMS;
   protected readonly navItemsVisiveis = computed(() =>
     NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin),
   );
+  protected readonly mobileNavItems = computed(() =>
+    this.navItemsVisiveis().filter(
+      (item) => !['/dietas', '/perfil', '/admin/alimentos'].includes(item.path),
+    ),
+  );
+  protected readonly mobileMoreItems = computed(() =>
+    this.navItemsVisiveis().filter((item) =>
+      ['/dietas', '/perfil', '/admin/alimentos'].includes(item.path),
+    ),
+  );
 
-  /** Gaveta da sidebar no mobile (<900px) — some por padrão, some ao navegar. */
-  protected readonly mobileMenuOpen = signal(false);
+  protected readonly mobileMoreOpen = signal(false);
   protected readonly paletaMenuAberto = signal(false);
 
-  toggleMobileMenu(): void {
-    this.mobileMenuOpen.update((open) => !open);
+  toggleMobileMore(): void {
+    this.mobileMoreOpen.update((open) => !open);
   }
 
-  closeMobileMenu(): void {
-    this.mobileMenuOpen.set(false);
+  closeMobileMore(): void {
+    this.mobileMoreOpen.set(false);
+  }
+
+  isMobileMoreActive(): boolean {
+    return this.mobileMoreItems().some((item) => this.router.url.startsWith(item.path));
   }
 
   togglePaletaMenu(): void {
@@ -108,7 +126,7 @@ export class AppShellComponent {
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
-    this.closeMobileMenu();
+    this.closeMobileMore();
     this.paletaMenuAberto.set(false);
   }
 

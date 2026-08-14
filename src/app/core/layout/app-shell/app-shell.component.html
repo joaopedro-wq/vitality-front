@@ -1,78 +1,54 @@
-<div class="shell">
-  <aside class="sidebar" [class.open]="mobileMenuOpen()">
-    <a routerLink="/dashboard" class="logo" (click)="closeMobileMenu()">
-      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-        <circle
-          cx="13"
-          cy="13"
-          r="11"
-          stroke="var(--sidebar-accent)"
-          stroke-width="1.6"
-          opacity="0.5"
+<div class="shell" [class.sidebar-layout]="navigationLayout.layout() === 'sidebar'">
+  @if (navigationLayout.layout() === 'sidebar') {
+    <aside class="sidebar">
+      <a routerLink="/dashboard" class="logo">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+          <circle
+            cx="13"
+            cy="13"
+            r="11"
+            stroke="var(--sidebar-accent)"
+            stroke-width="1.6"
+            opacity="0.5"
+          />
+          <path d="M13 6c2.5 2.5 2.5 6 0 8.5-2.5-2.5-2.5-6 0-8.5Z" fill="var(--bd-primary)" />
+          <path
+            d="M9 18l1.6-6M12 18l0.5-4M15 18l-1-5"
+            stroke="var(--sidebar-accent)"
+            stroke-width="1.4"
+            stroke-linecap="round"
+          />
+        </svg>
+        <span class="word">vitality<span>+</span></span>
+      </a>
+      <div class="grain" aria-hidden="true"></div>
+
+      <nav aria-label="Navegação principal">
+        @for (item of navItemsVisiveis(); track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active" class="nav-item">
+            <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+
+      <a routerLink="/perfil" class="sidebar-foot" bdTooltip="Editar perfil">
+        <bd-avatar
+          [name]="auth.currentUser()?.name ?? '?'"
+          [src]="auth.currentUser()?.avatar ?? ''"
+          size="sm"
         />
-        <path d="M13 6c2.5 2.5 2.5 6 0 8.5-2.5-2.5-2.5-6 0-8.5Z" fill="var(--bd-primary)" />
-        <path
-          d="M9 18l1.6-6M12 18l0.5-4M15 18l-1-5"
-          stroke="var(--sidebar-accent)"
-          stroke-width="1.4"
-          stroke-linecap="round"
-        />
-      </svg>
-      <span class="word">vitality<span>+</span></span>
-    </a>
-    <div class="grain" aria-hidden="true"></div>
-
-    <nav aria-label="Navegação principal">
-      @for (item of navItemsVisiveis(); track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          class="nav-item"
-          (click)="closeMobileMenu()"
-        >
-          <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
-          {{ item.label }}
-        </a>
-      }
-    </nav>
-
-    <a
-      routerLink="/perfil"
-      class="sidebar-foot"
-      bdTooltip="Editar perfil"
-      (click)="closeMobileMenu()"
-    >
-      <bd-avatar
-        [name]="auth.currentUser()?.name ?? '?'"
-        [src]="auth.currentUser()?.avatar ?? ''"
-        size="sm"
-      />
-      <span class="txt">
-        <b>{{ auth.currentUser()?.name ?? 'Minha conta' }}</b>
-        Ver perfil
-      </span>
-    </a>
-  </aside>
-
-  @if (mobileMenuOpen()) {
-    <button class="scrim" aria-label="Fechar menu" (click)="closeMobileMenu()"></button>
+        <span class="txt">
+          <b>{{ auth.currentUser()?.name ?? 'Minha conta' }}</b>
+          Ver perfil
+        </span>
+      </a>
+    </aside>
   }
 
   <div class="main">
     <header class="topbar">
       <div class="topbar-leading">
-        <button
-          class="menu-toggle"
-          bdButton
-          variant="ghost"
-          size="sm"
-          iconOnly
-          aria-label="Abrir menu"
-          (click)="toggleMobileMenu()"
-        >
-          <svg lucideMenu size="18" aria-hidden="true"></svg>
-        </button>
-
         <div class="greeting">
           <span class="greeting-full">{{ saudacao() }}</span>
           <span class="greeting-compact">{{ saudacaoPeriodo() }}</span>
@@ -81,6 +57,28 @@
       </div>
 
       <div class="top-actions">
+        <button
+          class="layout-toggle"
+          bdButton
+          variant="ghost"
+          size="sm"
+          iconOnly
+          [bdTooltip]="
+            navigationLayout.layout() === 'sidebar' ? 'Usar menu horizontal' : 'Usar menu lateral'
+          "
+          placement="bottom"
+          [attr.aria-label]="
+            navigationLayout.layout() === 'sidebar' ? 'Usar menu horizontal' : 'Usar menu lateral'
+          "
+          (click)="navigationLayout.toggle()"
+        >
+          @if (navigationLayout.layout() === 'sidebar') {
+            <svg lucidePanelTop size="16" aria-hidden="true"></svg>
+          } @else {
+            <svg lucidePanelLeft size="16" aria-hidden="true"></svg>
+          }
+        </button>
+
         <div #paletteControl class="palette-control">
           <button
             bdButton
@@ -96,7 +94,6 @@
           >
             <svg lucidePalette size="16" aria-hidden="true"></svg>
           </button>
-
           @if (paletaMenuAberto()) {
             <vtp-palette-picker
               [paletas]="palette.paletas"
@@ -150,8 +147,60 @@
       </div>
     </header>
 
-    <main class="content">
-      <router-outlet />
-    </main>
+    @if (navigationLayout.layout() === 'horizontal') {
+      <nav class="horizontal-nav" aria-label="Navegação principal">
+        <div class="horizontal-nav__inner">
+          @for (item of navItemsVisiveis(); track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="active" class="horizontal-nav__item">
+              <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
+              {{ item.label }}
+            </a>
+          }
+        </div>
+      </nav>
+    }
+
+    <main class="content"><router-outlet /></main>
   </div>
+
+  @if (mobileMoreOpen()) {
+    <button
+      class="mobile-scrim"
+      aria-label="Fechar mais opções"
+      (click)="closeMobileMore()"
+    ></button>
+    <section class="mobile-more-sheet" role="dialog" aria-modal="true" aria-label="Mais opções">
+      <div class="mobile-more-sheet__header">
+        <span>Mais opções</span>
+        <button bdButton variant="ghost" size="sm" (click)="closeMobileMore()">Fechar</button>
+      </div>
+      <nav aria-label="Mais opções de navegação">
+        @for (item of mobileMoreItems(); track item.path) {
+          <a [routerLink]="item.path" class="mobile-more-sheet__item" (click)="closeMobileMore()">
+            <svg [lucideIcon]="item.icon" size="18" aria-hidden="true"></svg>
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+    </section>
+  }
+
+  <nav class="mobile-nav" aria-label="Navegação principal">
+    @for (item of mobileNavItems(); track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav__item">
+        <svg [lucideIcon]="item.icon" size="19" aria-hidden="true"></svg>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+    <button
+      class="mobile-nav__item"
+      [class.active]="mobileMoreOpen() || isMobileMoreActive()"
+      [attr.aria-expanded]="mobileMoreOpen()"
+      aria-haspopup="dialog"
+      (click)="toggleMobileMore()"
+    >
+      <svg lucideEllipsis size="19" aria-hidden="true"></svg>
+      <span>Mais</span>
+    </button>
+  </nav>
 </div>
