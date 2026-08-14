@@ -1,0 +1,33 @@
+<aside class="card flex flex-col gap-6 p-5">
+  <div class="flex items-center justify-between">
+    <p class="m-0 text-[13px] font-bold text-fg">Filtros</p>
+    @if (temFiltroAtivo()) {
+      <button
+        type="button"
+        class="inline-flex items-center gap-1 text-[11px] font-bold text-fg-subtle underline decoration-dotted underline-offset-2 hover:text-fg"
+        (click)="limpar.emit()"
+      >
+        <svg lucideX size="12" aria-hidden="true"></svg>
+        Limpar
+      </button>
+    }
+  </div>
+
+  <vtp-facet-checkbox-list
+    label="Grupo alimentar"
+    [options]="opcoesGrupo()"
+    [selected]="grupoSelecionado()"
+    [loading]="grupoLoading()"
+    (selectedChange)="grupoSelecionadoChange.emit($event)"
+  />
+
+  <vtp-range-slider
+    label="Calorias por porção"
+    [min]="caloriaBounds()[0]"
+    [max]="caloriaBounds()[1]"
+    [step]="10"
+    [value]="caloriaRange()"
+    [formatValue]="formatKcal"
+    (valueChange)="caloriaRangeChange.emit($event)"
+  />
+</aside>

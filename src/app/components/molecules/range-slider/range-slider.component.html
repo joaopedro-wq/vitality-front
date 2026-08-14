@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <p class="m-0 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
+      {{ label() }}
+    </p>
+  }
+  <div class="relative h-4 flex items-center">
+    <div class="absolute inset-x-0 h-1 rounded-full bg-border-strong"></div>
+    <div
+      class="absolute h-1 rounded-full bg-primary"
+      [style.left.%]="pctMin()"
+      [style.right.%]="100 - pctMax()"
+    ></div>
+    <input
+      class="range-thumb"
+      type="range"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [value]="value()[0]"
+      [attr.aria-label]="label() ? label() + ' — mínimo' : 'Valor mínimo'"
+      (input)="onMinInput($event)"
+    />
+    <input
+      class="range-thumb"
+      type="range"
+      [min]="min()"
+      [max]="max()"
+      [step]="step()"
+      [value]="value()[1]"
+      [attr.aria-label]="label() ? label() + ' — máximo' : 'Valor máximo'"
+      (input)="onMaxInput($event)"
+    />
+  </div>
+  <div class="flex items-center justify-between text-[11px] font-bold text-fg-muted">
+    <span>{{ formatValue()(value()[0]) }}</span>
+    <span>{{ formatValue()(value()[1]) }}</span>
+  </div>
+</div>

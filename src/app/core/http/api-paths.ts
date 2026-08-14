@@ -27,6 +27,7 @@ export const apiPaths = {
 
   alimentos: () => `${environment.apiBaseUrl}/foods`,
   alimento: (id: number | string) => `${environment.apiBaseUrl}/foods/${id}`,
+  gruposAlimentos: () => `${environment.apiBaseUrl}/foods/groups`,
   favoritoAlimento: (id: number | string) => `${environment.apiBaseUrl}/foods/${id}/favorite`,
   adminAlimentos: () => `${environment.apiBaseUrl}/admin/foods`,
   adminAlimento: (id: number | string) => `${environment.apiBaseUrl}/admin/foods/${id}`,

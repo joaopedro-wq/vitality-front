@@ -419,7 +419,78 @@ md:p-8' }` no `@Component`, e o resto é Tailwind direto no template (consistent
    fade+leve-subida já usada em partes do fluxo — ver nona passada) no próprio `host` do card —
    cada passo agora "entra" ao ser exibido, reforçando a identidade de jogo pedida
    ("jogo traz isso") em vez de só o conteúdo interno animar.
-4. Alimentos (CRUD) — valida o padrão lista+form antes de dietas/registro.
+4. Alimentos (catálogo) — ✅ feito (2026-08-13), sidebar facetada + alternância Cards/Tabela.
+   `AlimentosListComponent` era só busca + abas Todos/Favoritos; ganhou uma sidebar de filtro
+   (`grupo` alimentar via checkbox com contagem, faixa de calorias via slider de dois cursores)
+   e um toggle Cards/Tabela — direção validada em 3 rodadas de artefato antes de virar código
+   (comparação de 5 conceitos de tela inteira, detalhamento sidebar+toggle, layouts de card
+   inspirados no `p-dataview`/`p-card` do PrimeNG — na hora, biblioteca não usada, só referência
+   de padrão, adaptada aos tokens Horta; virou dependência real na passada seguinte, ver abaixo.
+   Facet de Fonte (TACO/Manual) foi cogitado e cortado —
+   só Grupo alimentar entrou.
+   Máxima componentização, porque Diário (Fase 5) e Dietas (Fase 7) também vão precisar
+   escolher/exibir alimentos: `components/molecules/food-tile/` (card denso com anel cônico de
+   3 cores proteína/carbo/gordura, fita de favorito só quando `is_favorite`, sem tag de
+   fonte/TACO — presentation-only, mesma categoria de `MacroSummaryComponent`),
+   `components/molecules/facet-checkbox-list/` e `components/molecules/range-slider/` (ambos
+   genéricos, sem noção de "alimento" — reusam `bd-checkbox` da lib; o slider é dois
+   `<input type="range">` sobrepostos, porque a bandeira-ui não tem primitivo de range),
+   `components/molecules/view-mode-toggle/` (segmentado genérico, não usa `bd-tabs` de
+   propósito — aqui é o mesmo dado em duas visões, não painéis de conteúdo diferente). Só a
+   composição "Grupo alimentar + faixa de calorias" ficou na feature
+   (`features/alimentos/alimentos-filtros/`), por carregar conhecimento de domínio.
+   **Limitação real do `bd-table` descoberta implementando**: colunas só aceitam
+   `value: (row) => string|number`, sem template por célula — o anel colorido e o favorito
+   clicável dos mockups não cabem numa linha de tabela. Resolvido assim: modo Tabela é texto
+   puro (descrição/grupo/kcal/macros), `(rowClick)` abre o mesmo painel de detalhe lateral que
+   o modo Cards já tinha, onde favoritar continua possível — perda de riqueza visual aceita,
+   não um bug a corrigir depois.
+   `--fat` (oliva, cor de gordura no mapeamento de macro) era uma custom property local de
+   `metas-page.component.scss`, só herdada por quem estava na árvore de DOM de Metas —
+   promovida pra `:root`/dark em `src/styles.scss` (mesmos hex) e mapeada em `--color-fat` no
+   `@theme`, porque Alimentos não está debaixo de Metas e `var(--fat)` resolveria pra nada ali.
+   A fórmula de percentual por macro (kcal de cada macro / kcal total) também saiu do
+   `MetaRevealComponent` (estava inline) pra `components/utils/macro-percent.util.ts`,
+   compartilhada com `FoodTileComponent` em vez de escrita uma terceira vez.
+   Backend (`vitality-Back`): `GET /api/foods/groups` (novo, `FoodController::groups()`) —
+   grupos distintos do catálogo ativo com contagem, `{data, success}` sem paginação (poucas
+   dezenas de linhas, diferente do `/foods` normal). Precisou entrar **antes** de
+   `GET /foods/{food}` em `routes/api.php`, senão o binding implícito do Laravel tenta resolver
+   `{food}` com o literal `"groups"`. `FoodController::index` ganhou `grupo` (array,
+   `grupo[]=...`) e `caloria_min`/`caloria_max` como filtros adicionais, validados com
+   `caloria_max` exigindo `gte:caloria_min` (testado ponta a ponta: filtro combinado retorna
+   só o grupo pedido dentro da faixa, e `caloria_max < caloria_min` dá 422 real). `grupo` é
+   string livre vinda do CSV do TACO/USDA, sem normalização — o facet reflete a base como está;
+   virou item de backlog (não desta rodada) uma coluna `grupo_normalizado`, no mesmo espírito do
+   `nome_normalizado` que a busca já usa.
+   Segunda passada (mesmo dia): modo Tabela trocou o `bd-table` da bandeira-ui por `p-table` de
+   verdade do **PrimeNG**, pedido explícito — a limitação de célula-só-texto descrita acima
+   nasceu do `bd-table`, mas a troca não resolveu isso (`p-table` também só projeta template por
+   `#header`/`#body`/`#emptymessage` — refs locais, não mais o antigo `pTemplate="..."` — e cada
+   `<td>` que a gente escreve é texto puro do mesmo jeito; a diferença real foi ganhar
+   `pSortableColumn` nas 6 colunas). **Armadilha real**: `primeng@^20.5.0` é a faixa **LTS paga**
+   (banner vermelho de licença inválida em runtime) — a série livre pra Angular 20 para em
+   `20.4.0`, por isso a versão no `package.json` está **fixada sem `^`** (`"primeng": "20.4.0"`),
+   de propósito, pra um `npm install`/`npm update` não escorregar pra LTS sozinho. Tema veio de
+   `@primeuix/themes` direto (não `@primeng/themes`, descontinuado — reexportava daqui mesmo).
+   Ordenação é sempre resolvida no backend (`FoodController::index` ganhou `sort_field`
+   com whitelist dos 6 campos e `sort_order` asc/desc), nunca no cliente — `p-table` roda em
+   `[lazy]="true"` `[lazyLoadOnInit]="false"`, clicar num cabeçalho só emite `(onLazyLoad)` e o
+   componente rebusca. `providePrimeNG` **não** entra em `app.config.ts` — o motor de tema
+   (`@primeuix/themes`) sozinho estourava o budget de bundle inicial (500kB) em +107kB se
+   carregado toda página; vive isolado em `features/alimentos/alimentos.routes.ts` via
+   `loadChildren` (não `loadComponent` direto em `app.routes.ts` — declarar o provider ali ainda
+   avalia a fábrica no momento em que o array de rotas raiz é montado, que é sempre eager;
+   só uma sub-árvore via `loadChildren` isola de verdade). `core/layout/primeng-preset.ts` faz a
+   ponte: em vez da paleta verde padrão do Aura, os tokens semânticos (`primary`, `content`,
+   `text`, `highlight`) apontam pra `var(--bd-*)` — só o esquema `light` do preset é
+   sobrescrito (`darkModeSelector: false`), porque quem decide claro/escuro é `data-theme` no
+   `documentElement`, não a classe de dark mode do PrimeNG, e os `--bd-*` já mudam de valor
+   sozinhos por causa disso. `styleClass` no `<p-table>` está `@deprecated since v20.0.0` — usar
+   `class` normal.
+   `AlimentoService.params()` foi reescrito (não só
+   estendido) pra serializar array via `.append()` — o `.set(key, String(value))` anterior
+   virava `"a,b"` numa query string, que o backend não entende como array.
 5. Diário/Registro — feature central do produto.
 6. Dashboard (meta vs. consumido).
 7. Dietas (planos reutilizáveis).

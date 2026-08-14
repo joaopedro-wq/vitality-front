@@ -1,10 +1,7 @@
-
-
 @use 'bandeira-ui/styles';
 @use 'tailwindcss';
 
 :root {
- 
   --bd-bg: #f7f1e4;
   --bd-bg-elevated: #fffdf7;
   --bd-surface: #fffdf7;
@@ -19,6 +16,8 @@
   --bd-accent: #d9a441;
   --bd-accent-soft: rgba(217, 164, 65, 0.16);
   --bd-accent-contrast: #3e2f0e;
+
+  --fat: #6b8552;
 
   --bd-gradient: linear-gradient(120deg, var(--bd-primary) 0%, var(--bd-accent) 100%);
 
@@ -40,6 +39,8 @@
   --bd-accent: #e8be5d;
   --bd-accent-soft: rgba(232, 190, 93, 0.18);
   --bd-accent-contrast: #2b1200;
+
+  --fat: #8fae76;
 }
 
 // Segue a preferência do sistema quando o usuário não fixou um tema
@@ -56,6 +57,7 @@
     --bd-fg-subtle: #7d735c;
     --bd-accent: #e8be5d;
     --bd-accent-soft: rgba(232, 190, 93, 0.18);
+    --fat: #8fae76;
   }
 }
 
@@ -197,6 +199,7 @@
   --color-success: var(--bd-success);
   --color-warning: var(--bd-warning);
   --color-danger: var(--bd-danger);
+  --color-fat: var(--fat);
 
   --radius-DEFAULT: var(--bd-radius);
   --radius-sm: var(--bd-radius-sm);
@@ -264,12 +267,10 @@ body {
     color var(--bd-duration) var(--bd-ease);
 }
 
-
 button[bdButton],
 a[bdButton] {
   border-radius: 999px !important;
 }
-
 
 // bd-button--lg/--md ficam grandes demais em telas estreitas -- reduz pro
 // tamanho de bd-button--sm nesse breakpoint em vez de trocar o size no

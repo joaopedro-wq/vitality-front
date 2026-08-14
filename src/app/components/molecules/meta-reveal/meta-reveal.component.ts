@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
 
+import { calcularPercentuaisMacro } from '../../utils/macro-percent.util';
+
 export interface MetaRevealValores {
   tmb?: number;
   get?: number;
@@ -9,22 +11,6 @@ export interface MetaRevealValores {
   gordura: number;
 }
 
-/**
- * Anel + dígitos + barras de macro no visual de "build" do quiz de Metas —
- * presentation-only, sem nada de feature. Dois modos:
- * - `animar` true: nasce em estado "calculando" (dígitos e macros esmaecidos,
- *   badge neutro) e revela sozinho depois de um instante — é o momento de
- *   payoff do passo Sugestão.
- * - `animar` false (padrão): já nasce revelado — uso em telas de resultado
- *   (o painel "configurado" de Metas).
- * Respeita `prefers-reduced-motion`: pula direto pro estado revelado.
- *
- * @example
- * ```html
- * <vtp-meta-reveal [valores]="sugestao()" animar tamanho="md" />
- * <vtp-meta-reveal [valores]="metaAtual()" tamanho="lg" />
- * ```
- */
 @Component({
   selector: 'vtp-meta-reveal',
   standalone: true,
@@ -43,15 +29,7 @@ export class MetaRevealComponent {
 
   protected readonly digitos = computed(() => String(this.valores().caloria).split(''));
 
-  protected readonly macroPercentuais = computed(() => {
-    const v = this.valores();
-    const totalCal = v.caloria || 1;
-    return {
-      proteina: Math.min(100, Math.round(((v.proteina * 4) / totalCal) * 100)),
-      carbo: Math.min(100, Math.round(((v.carbo * 4) / totalCal) * 100)),
-      gordura: Math.min(100, Math.round(((v.gordura * 9) / totalCal) * 100)),
-    };
-  });
+  protected readonly macroPercentuais = computed(() => calcularPercentuaisMacro(this.valores()));
 
   constructor() {
     effect((onCleanup) => {

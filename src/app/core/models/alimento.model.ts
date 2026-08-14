@@ -32,6 +32,11 @@ export interface FoodPage {
   meta: { current_page: number; last_page: number; total: number };
 }
 
+export interface AlimentoGrupo {
+  grupo: string;
+  total: number;
+}
+
 export type CreateAlimentoPayload = Pick<
   Alimento,
   'descricao' | 'proteina' | 'gordura' | 'carbo' | 'caloria' | 'qtd' | 'grupo'

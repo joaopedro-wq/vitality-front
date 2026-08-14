@@ -31,8 +31,10 @@
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
     "@lucide/angular": "^1.31.0",
+    "@primeuix/themes": "^1.2.5",
     "bandeira-ui": "file:vendor/bandeira-ui-0.2.0.tgz",
     "ngx-toastr": "^19.1.0",
+    "primeng": "20.4.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

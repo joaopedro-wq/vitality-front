@@ -1,0 +1,22 @@
+<div class="flex flex-col gap-2">
+  @if (label()) {
+    <p class="m-0 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
+      {{ label() }}
+    </p>
+  }
+
+  @if (loading()) {
+    <p class="m-0 text-[12px] text-fg-muted">Carregando…</p>
+  } @else if (options().length === 0) {
+    <p class="m-0 text-[12px] text-fg-muted">{{ emptyLabel() }}</p>
+  } @else {
+    @for (opt of options(); track opt.value) {
+      <div class="flex items-center justify-between gap-2 py-0.5 text-[12.5px] text-fg">
+        <bd-checkbox [checked]="isSelected(opt.value)" (checkedChange)="toggle(opt.value, $event)">
+          {{ opt.label }}
+        </bd-checkbox>
+        <span class="text-[10.5px] text-fg-subtle tabular-nums">{{ opt.count }}</span>
+      </div>
+    }
+  }
+</div>

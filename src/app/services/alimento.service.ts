@@ -6,6 +6,7 @@ import { apiPaths } from '../core/http/api-paths';
 import type { ApiResponse } from '../core/models/api-response.model';
 import type {
   Alimento,
+  AlimentoGrupo,
   CreateAlimentoPayload,
   FoodPage,
   FonteAlimento,
@@ -19,6 +20,11 @@ export interface FoodFilters {
   page?: number;
   fonte?: FonteAlimento;
   status?: StatusAlimento;
+  grupo?: string[];
+  caloria_min?: number;
+  caloria_max?: number;
+  sort_field?: 'descricao' | 'grupo' | 'caloria' | 'proteina' | 'carbo' | 'gordura';
+  sort_order?: 'asc' | 'desc';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +33,12 @@ export class AlimentoService {
 
   list(filters: FoodFilters = {}): Observable<FoodPage> {
     return this.http.get<FoodPage>(apiPaths.alimentos(), { params: this.params(filters) });
+  }
+
+  groups(): Observable<AlimentoGrupo[]> {
+    return this.http
+      .get<{ data: AlimentoGrupo[] }>(apiPaths.gruposAlimentos())
+      .pipe(map((response) => response.data));
   }
   get(id: number): Observable<Alimento> {
     return this.http
@@ -80,10 +92,15 @@ export class AlimentoService {
   }
 
   private params(filters: FoodFilters): HttpParams {
-    return Object.entries(filters).reduce(
-      (params, [key, value]) =>
-        value === undefined || value === '' ? params : params.set(key, String(value)),
-      new HttpParams(),
-    );
+    let params = new HttpParams();
+    for (const [key, value] of Object.entries(filters)) {
+      if (value === undefined || value === '') continue;
+      if (Array.isArray(value)) {
+        for (const item of value) params = params.append(`${key}[]`, String(item));
+      } else {
+        params = params.set(key, String(value));
+      }
+    }
+    return params;
   }
 }
