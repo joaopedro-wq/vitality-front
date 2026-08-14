@@ -1,0 +1,177 @@
+<button class="composer-backdrop" aria-label="Fechar lançamento" (click)="closed.emit()"></button>
+<section
+  class="composer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Registrar refeição"
+  (keydown.escape)="closed.emit()"
+  tabindex="-1"
+>
+  <header class="composer__header">
+    <div>
+      <p>{{ entry() ? 'Ajustar lançamento' : 'Novo lançamento' }}</p>
+      <h2>{{ labels[step()] }}</h2>
+    </div>
+    <button type="button" class="icon-button" aria-label="Fechar" (click)="closed.emit()">
+      <svg lucideX size="18"></svg>
+    </button>
+  </header>
+
+  <ol class="steps" aria-label="Etapas do lançamento">
+    @for (label of labels; track label; let index = $index) {
+      <li [class.active]="step() === index" [class.done]="step() > index">
+        <span>{{ index + 1 }}</span
+        >{{ label }}
+      </li>
+    }
+  </ol>
+
+  <div class="composer__body">
+    @switch (step()) {
+      @case (0) {
+        <div class="intro">
+          <span>Passo 1 de 3</span>
+          <h3>Qual momento você quer registrar?</h3>
+          <p>Escolha o checkpoint e ajuste o horário real do consumo.</p>
+        </div>
+        <div class="meal-options">
+          @for (meal of meals(); track meal.id) {
+            <button
+              type="button"
+              [class.selected]="mealId() === meal.id"
+              (click)="selectMeal(meal.id)"
+            >
+              <b>{{ meal.descricao }}</b
+              ><small>{{ meal.horario }}</small>
+            </button>
+          }
+        </div>
+        <label class="field"
+          >Horário do consumo<input
+            type="datetime-local"
+            [value]="consumedAt()"
+            (input)="setTime($any($event.target).value)"
+        /></label>
+      }
+      @case (1) {
+        <div class="intro">
+          <span>Passo 2 de 3</span>
+          <h3>O que entrou no prato?</h3>
+          <p>Seus favoritos aparecem primeiro. Você pode registrar vários alimentos.</p>
+        </div>
+        <label class="search"
+          ><svg lucideSearch size="17"></svg
+          ><input
+            #searchInput
+            type="search"
+            placeholder="Buscar arroz, banana, frango…"
+            [value]="query()"
+            (input)="search(searchInput.value)"
+        /></label>
+        <div class="food-results">
+          @if (loadingFoods()) {
+            <p>Buscando alimentos…</p>
+          }
+          @for (food of foods(); track food.id) {
+            <button type="button" (click)="addFood(food)">
+              <span
+                ><b>{{ food.descricao }}</b
+                ><small
+                  >{{ food.caloria | number: '1.0-0' }} kcal · base
+                  {{ food.qtd | number: '1.0-0' }} g</small
+                ></span
+              ><svg lucidePlus size="16"></svg>
+            </button>
+          } @empty {
+            @if (!loadingFoods()) {
+              <p>Nenhum alimento encontrado. Tente outra busca.</p>
+            }
+          }
+        </div>
+        @if (items().length) {
+          <p class="selection-note">
+            {{ items().length }}
+            {{ items().length === 1 ? 'alimento escolhido' : 'alimentos escolhidos' }} · revise as
+            porções no próximo passo.
+          </p>
+        }
+      }
+      @case (2) {
+        <div class="intro">
+          <span>Passo 3 de 3</span>
+          <h3>Pronto para confirmar?</h3>
+          <p>{{ selectedMeal()?.descricao }} · {{ consumedAt() | date: 'dd/MM · HH:mm' }}</p>
+        </div>
+        <div class="draft-items">
+          @for (item of items(); track item.foodId) {
+            <article>
+              <div>
+                <b>{{ item.descricao }}</b
+                ><small
+                  >{{ macroFor(item, 'caloria') | number: '1.0-0' }} kcal · P
+                  {{ macroFor(item, 'proteina') | number: '1.0-1' }} g</small
+                >
+              </div>
+              <div class="quantity">
+                <button
+                  type="button"
+                  aria-label="Diminuir"
+                  (click)="adjustQuantity(item.foodId, -10)"
+                >
+                  <svg lucideMinus size="14"></svg></button
+                ><input
+                  type="number"
+                  min="1"
+                  [value]="item.quantity"
+                  (input)="setQuantity(item.foodId, $any($event.target).valueAsNumber)"
+                /><span>g</span
+                ><button
+                  type="button"
+                  aria-label="Aumentar"
+                  (click)="adjustQuantity(item.foodId, 10)"
+                >
+                  <svg lucidePlus size="14"></svg></button
+                ><button
+                  type="button"
+                  class="remove"
+                  aria-label="Remover"
+                  (click)="removeFood(item.foodId)"
+                >
+                  <svg lucideTrash2 size="14"></svg>
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+        <section class="review-total">
+          <span>Este lançamento soma</span
+          ><strong>{{ totals().caloria | number: '1.0-0' }} kcal</strong>
+          <p>
+            P {{ totals().proteina | number: '1.0-1' }} g · C
+            {{ totals().carbo | number: '1.0-1' }} g · G {{ totals().gordura | number: '1.0-1' }} g
+          </p>
+        </section>
+      }
+    }
+  </div>
+
+  <footer class="composer__footer">
+    @if (step() > 0) {
+      <button bdButton variant="ghost" type="button" (click)="back()">
+        <svg lucideArrowLeft size="16"></svg> Voltar
+      </button>
+    } @else {
+      <span></span>
+    }
+    @if (step() < 2) {
+      <button bdButton type="button" (click)="next()">
+        Continuar <svg lucideArrowRight size="16"></svg>
+      </button>
+    } @else {
+      <button bdButton type="button" [disabled]="saving() || !items().length" (click)="save()">
+        <svg lucideCheck size="16"></svg
+        >{{ saving() ? 'Salvando…' : entry() ? 'Salvar ajustes' : 'Registrar refeição' }}
+      </button>
+    }
+  </footer>
+</section>

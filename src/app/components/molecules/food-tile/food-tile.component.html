@@ -1,53 +1,50 @@
 <article
-  class="relative flex cursor-pointer flex-col gap-2 rounded-xl border border-border bg-surface p-3 transition-colors hover:border-border-strong"
-  [class.border-primary]="food().is_favorite"
+  class="food-tile"
+  [class.food-tile--favorite]="food().is_favorite"
   tabindex="0"
   role="button"
   [attr.aria-label]="food().descricao"
   (click)="tileClick.emit(food())"
   (keydown.enter)="tileClick.emit(food())"
 >
-  @if (food().is_favorite) {
-    <span
-      class="absolute right-2.5 top-0 inline-flex items-center gap-1 rounded-b-md bg-primary px-1.5 py-[3px] text-[8.5px] font-extrabold uppercase tracking-wide text-primary-contrast"
-    >
-      <svg lucideHeart size="9" fill="currentColor" aria-hidden="true"></svg>
-      Favorito
-    </span>
-  } @else {
-    <button
-      type="button"
-      class="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded-full text-fg-subtle hover:bg-surface-hover hover:text-danger"
-      aria-label="Favoritar"
-      (click)="onFavorite($event)"
-    >
-      <svg lucideHeart size="14" aria-hidden="true"></svg>
-    </button>
-  }
+  <button
+    type="button"
+    class="food-tile__favorite"
+    [class.food-tile__favorite--active]="food().is_favorite"
+    [attr.aria-label]="food().is_favorite ? 'Remover dos favoritos' : 'Favoritar'"
+    (click)="onFavorite($event)"
+  >
+    <svg
+      lucideHeart
+      size="14"
+      [attr.fill]="food().is_favorite ? 'currentColor' : 'none'"
+      aria-hidden="true"
+    ></svg>
+  </button>
 
-  <div class="flex items-center gap-2.5" [class.pt-2]="food().is_favorite">
-    <div class="size-9 flex-none rounded-full" [style.background]="ringGradient()"></div>
-    <p class="m-0 min-h-[2.4em] text-[11.5px] font-bold leading-[1.3] text-fg">
-      {{ food().descricao }}
-    </p>
+  <div class="food-tile__top">
+    @if (food().image_url && !imageErrored()) {
+      <img
+        class="food-tile__image"
+        [src]="food().image_url"
+        [alt]="food().descricao"
+        loading="lazy"
+        (error)="onImageError()"
+      />
+    } @else {
+      <div class="food-tile__ring" [style.background]="ringGradient()" aria-hidden="true"></div>
+    }
+    <p class="food-tile__name">{{ food().descricao }}</p>
   </div>
 
-  <div class="text-[13.5px] font-extrabold text-primary-strong">
-    {{ food().caloria | number: '1.0-0' }}
-    <small class="text-[9px] font-bold text-fg-muted"
-      >kcal/{{ food().qtd | number: '1.0-0' }}g</small
-    >
+  <div class="food-tile__energy">
+    <strong>{{ food().caloria | number: '1.0-0' }} <small>kcal</small></strong>
+    <span>por {{ food().qtd | number: '1.0-0' }}g</span>
   </div>
 
-  <div class="flex flex-wrap gap-2 border-t border-border pt-1.5">
-    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-fg-muted">
-      <i class="size-1.5 rounded-full bg-primary"></i>{{ food().proteina | number: '1.0-1' }}g
-    </span>
-    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-fg-muted">
-      <i class="size-1.5 rounded-full bg-accent"></i>{{ food().carbo | number: '1.0-1' }}g
-    </span>
-    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-fg-muted">
-      <i class="size-1.5 rounded-full bg-fat"></i>{{ food().gordura | number: '1.0-1' }}g
-    </span>
+  <div class="food-tile__macros">
+    <span><i class="protein"></i><b>P</b>{{ food().proteina | number: '1.0-1' }}g</span>
+    <span><i class="carbo"></i><b>C</b>{{ food().carbo | number: '1.0-1' }}g</span>
+    <span><i class="fat"></i><b>G</b>{{ food().gordura | number: '1.0-1' }}g</span>
   </div>
 </article>

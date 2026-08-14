@@ -10,13 +10,15 @@ src/app/
   core/
     auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, admin.guard.ts, auth.interceptor.ts, token.storage.ts
     http/       error.interceptor.ts, api-paths.ts
-    models/     user, alimento, refeicao, dieta, registro, meta-diaria,
+    models/     user, alimento, refeicao, dieta, registro, diary, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes
     layout/     app-shell/, theme.service.ts, palette.service.ts
   components/
     atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
-                 macro-summary/  anel + chips de macro (sm/lg/xl) — reserva pro Dashboard
+                 macro-summary/  anel + chips de macro (sm/lg/xl) — Metas, Diário e Dashboard
+                 diary-day-summary/ resumo de meta vs. consumido para uma jornada diária
+                 daily-checkpoint-track/ checkpoints de refeições, presentation-only
                  meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
                                  → revelado) — usado no passo Sugestão e no painel "configurado"
                  step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
@@ -38,7 +40,10 @@ src/app/
   features/
     auth/{login,register}/
     dashboard/
-    diario/{diario-list,diario-form}/
+    diario/
+      diario-list/      jornada do dia, data, checkpoints e lançamentos
+      entry-composer/   mini-quiz local de criar/editar um lançamento
+      meal-manager/     organizar nomes, horários e arquivamento das refeições
     alimentos/
       alimentos-list/             Biblioteca global: busca, fontes TACO/USDA e favoritos pessoais
       admin-foods/                gestão de catálogo protegida por adminGuard

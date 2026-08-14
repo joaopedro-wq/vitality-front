@@ -14,6 +14,7 @@ export interface Alimento {
   grupo: string | null;
   status: StatusAlimento;
   is_favorite: boolean;
+  image_url: string | null;
   updated_at: string | null;
   nutrientes?: NutrienteAlimento[];
 }

@@ -23,7 +23,8 @@ Foundation Foods, execute também `php artisan foods:import-usda --dataset=found
   de progresso navegável a qualquer momento. O cálculo usa a fórmula de Mifflin-St Jeor (TMB) mais
   fator de atividade — a mesma base científica usada por nutricionistas, sem exigir que o usuário
   saiba o que isso significa.
-- 🍽️ **Diário alimentar** — o registro do que foi realmente comido, comparado contra a meta do dia.
+- 🍽️ **Diário alimentar** — uma jornada diária de checkpoints: registra refeições num mini-quiz de
+  momento → prato → porções, compara com a meta e mantém o histórico editável.
 - 📋 **Dietas reutilizáveis** — planos de refeição montados uma vez, reaproveitados sempre que
   quiser sem remontar a lista de alimentos do zero.
 - 🥗 **Biblioteca de alimentos** — catálogo global curado, iniciado pela TACO e enriquecido com a
@@ -33,8 +34,8 @@ Foundation Foods, execute também `php artisan foods:import-usda --dataset=found
   imediatamente, reduzindo perda de dados e mantendo a meta alinhada ao perfil atual.
 
 Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
-metas/recomendação nutricional e perfil completo (dados pessoais, rotina e avatar). O restante do
-roadmap — alimentos, diário, dietas e dashboard — está em desenvolvimento incremental.
+metas/recomendação nutricional, perfil completo (dados pessoais, rotina e avatar) e Diário Alimentar.
+Dietas e dashboard seguem em desenvolvimento incremental.
 
 ## Identidade visual
 

@@ -1,0 +1,24 @@
+.filter-search {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 999px;
+  color: var(--bd-fg-muted);
+}
+
+.filter-search:focus-within {
+  border-color: var(--bd-primary);
+  box-shadow: var(--bd-focus-ring);
+}
+
+.filter-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--bd-fg);
+  font: inherit;
+  font-size: 0.84rem;
+}

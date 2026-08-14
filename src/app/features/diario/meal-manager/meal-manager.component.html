@@ -1,0 +1,58 @@
+<button class="manager-backdrop" aria-label="Fechar organização" (click)="closed.emit()"></button>
+<section
+  class="manager card"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Organizar meu dia"
+  (keydown.escape)="closed.emit()"
+  tabindex="-1"
+>
+  <header>
+    <div>
+      <p>Seu ritmo</p>
+      <h2>Organizar meu dia</h2>
+      <span>Personalize os checkpoints que aparecem no Diário.</span>
+    </div>
+    <button type="button" aria-label="Fechar" (click)="closed.emit()">
+      <svg lucideX size="18"></svg>
+    </button>
+  </header>
+  <div class="meal-list">
+    @for (meal of meals(); track meal.id) {
+      <div class="meal-row">
+        <input #description [value]="meal.descricao" aria-label="Nome da refeição" /><input
+          #time
+          type="time"
+          [value]="meal.horario"
+          aria-label="Horário"
+        /><input #order type="number" min="0" [value]="meal.ordem" aria-label="Ordem" /><button
+          type="button"
+          aria-label="Salvar"
+          (click)="saveExisting(meal, description.value, time.value, order.valueAsNumber)"
+        >
+          <svg lucideSave size="15"></svg></button
+        ><button type="button" class="archive" aria-label="Arquivar" (click)="archive(meal)">
+          <svg lucideArchive size="15"></svg>
+        </button>
+      </div>
+    }
+  </div>
+  @if (adding()) {
+    <div class="new-meal">
+      <input
+        #newDescriptionInput
+        placeholder="Ex.: Pré-treino"
+        (input)="newDescription.set(newDescriptionInput.value)"
+      /><input
+        #newTimeInput
+        type="time"
+        [value]="newTime()"
+        (input)="newTime.set(newTimeInput.value)"
+      /><button bdButton type="button" [disabled]="saving()" (click)="add()">Salvar</button>
+    </div>
+  } @else {
+    <button bdButton variant="ghost" type="button" (click)="adding.set(true)">
+      <svg lucidePlus size="16"></svg> Nova refeição
+    </button>
+  }
+</section>

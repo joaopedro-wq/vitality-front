@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { LucideHeart } from '@lucide/angular';
 
 import type { Alimento } from '../../../core/models/alimento.model';
@@ -10,6 +10,7 @@ import { calcularPercentuaisMacro } from '../../utils/macro-percent.util';
   standalone: true,
   imports: [DecimalPipe, LucideHeart],
   templateUrl: './food-tile.component.html',
+  styleUrl: './food-tile.component.scss',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -18,6 +19,7 @@ export class FoodTileComponent {
 
   readonly favoriteClick = output<Alimento>();
   readonly tileClick = output<Alimento>();
+  protected readonly imageErrored = signal(false);
 
   protected readonly percentuais = computed(() => calcularPercentuaisMacro(this.food()));
   protected readonly ringGradient = computed(() => {
@@ -30,5 +32,9 @@ export class FoodTileComponent {
   protected onFavorite(event: Event): void {
     event.stopPropagation();
     this.favoriteClick.emit(this.food());
+  }
+
+  protected onImageError(): void {
+    this.imageErrored.set(true);
   }
 }

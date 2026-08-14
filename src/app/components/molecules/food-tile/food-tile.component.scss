@@ -1,0 +1,146 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.food-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 16px;
+  background: var(--bd-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--bd-duration) var(--bd-ease),
+    transform var(--bd-duration) var(--bd-ease);
+}
+.food-tile:hover {
+  border-color: var(--bd-border-strong);
+  transform: translateY(-1px);
+}
+.food-tile--favorite {
+  border-color: var(--bd-primary);
+}
+.food-tile__favorite {
+  position: absolute;
+  z-index: 1;
+  top: 0.45rem;
+  right: 0.45rem;
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bd-surface) 88%, transparent);
+  color: var(--bd-fg-subtle);
+  cursor: pointer;
+}
+.food-tile__favorite:hover,
+.food-tile__favorite--active {
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
+.food-tile__top {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.55rem;
+}
+.food-tile__image,
+.food-tile__ring {
+  width: 50px;
+  height: 50px;
+  flex: none;
+  border-radius: 14px;
+  object-fit: cover;
+}
+.food-tile__ring {
+  border-radius: 999px;
+}
+.food-tile__name {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--bd-fg);
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.food-tile__energy {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  color: var(--bd-primary-strong);
+}
+.food-tile__energy strong {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.food-tile__energy small,
+.food-tile__energy span {
+  color: var(--bd-fg-muted);
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+.food-tile__macros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--bd-border);
+  color: var(--bd-fg-muted);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.food-tile__macros span {
+  min-width: 0;
+  white-space: nowrap;
+}
+.food-tile__macros b {
+  margin-right: 2px;
+  color: var(--bd-fg);
+}
+.food-tile__macros i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 3px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.food-tile__macros .protein {
+  background: var(--bd-primary);
+}
+.food-tile__macros .carbo {
+  background: var(--bd-accent);
+}
+.food-tile__macros .fat {
+  background: var(--fat);
+}
+
+@media (max-width: 359px) {
+  .food-tile {
+    padding: 0.6rem;
+  }
+  .food-tile__image,
+  .food-tile__ring {
+    width: 40px;
+    height: 40px;
+  }
+  .food-tile__macros {
+    gap: 0.2rem;
+    font-size: 0.55rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .food-tile {
+    transition: none;
+  }
+}

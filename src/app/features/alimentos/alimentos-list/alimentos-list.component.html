@@ -7,35 +7,53 @@
     </div>
     @if (auth.currentUser()?.is_admin) {
       <a bdButton routerLink="/admin/alimentos"
-        ><svg lucideShieldCheck size="16" aria-hidden="true"></svg> Gerenciar catálogo</a
+        ><svg lucideShieldCheck size="16" aria-hidden="true"></svg
+        ><span>Gerenciar catálogo</span></a
       >
     }
   </header>
 
-  <div class="card food-library__layout p-6 md:p-8">
-    <vtp-alimentos-filtros
-      [grupos]="grupos()"
-      [grupoSelecionado]="grupoSelecionado()"
-      [grupoLoading]="grupoLoading()"
-      [caloriaRange]="caloriaRange()"
-      [caloriaBounds]="caloriaBounds"
-      (grupoSelecionadoChange)="onGrupoChange($event)"
-      (caloriaRangeChange)="onCaloriaRangeChange($event)"
-      (limpar)="limparFiltros()"
-    />
+  <div class="food-library__layout">
+    <div class="desktop-filters">
+      <vtp-alimentos-filtros
+        [mostrarBusca]="true"
+        [busca]="busca()"
+        [grupos]="grupos()"
+        [grupoSelecionado]="grupoSelecionado()"
+        [grupoLoading]="grupoLoading()"
+        [caloriaRange]="caloriaRange()"
+        [caloriaBounds]="caloriaBounds"
+        (buscaChange)="atualizarBusca($event)"
+        (grupoSelecionadoChange)="onGrupoChange($event)"
+        (caloriaRangeChange)="onCaloriaChange($event)"
+        (limpar)="limparFiltros()"
+      />
+    </div>
 
-    <div class="min-w-0">
-      <section class="food-library__controls card">
-        <label class="search"
+    <div class="food-library__results">
+      <section class="discovery-bar card">
+        <label class="toolbar-search"
           ><svg lucideSearch size="17" aria-hidden="true"></svg
           ><input
             #termo
             type="search"
-            placeholder="Buscar arroz, banana, frango…"
+            placeholder="Buscar alimento"
             [value]="busca()"
-            (input)="buscar(termo.value)"
+            (input)="atualizarBusca(termo.value)"
         /></label>
-        <div class="tabs" role="tablist" aria-label="Filtros de alimentos">
+        <button
+          class="filter-trigger"
+          bdButton
+          variant="ghost"
+          type="button"
+          (click)="abrirFiltros()"
+        >
+          <svg lucideFilter size="16" aria-hidden="true"></svg>Filtros
+          @if (filtrosAtivos()) {
+            <span>{{ filtrosAtivos() }}</span>
+          }
+        </button>
+        <div class="tabs" role="tablist" aria-label="Exibir alimentos">
           <button type="button" [class.active]="tab() === 'all'" (click)="selecionarTab('all')">
             Todos
           </button>
@@ -44,8 +62,52 @@
             [class.active]="tab() === 'favorites'"
             (click)="selecionarTab('favorites')"
           >
-            Meus favoritos
+            <svg lucideHeart size="13" aria-hidden="true"></svg>Favoritos
           </button>
+        </div>
+        <div class="sort-control">
+          <button
+            class="sort-criterion"
+            type="button"
+            [attr.aria-expanded]="ordenacaoAberta()"
+            aria-haspopup="menu"
+            (click)="toggleOrdenacao()"
+          >
+            <span>Ordenar</span><b>{{ ordenacaoAtual().label }}</b
+            ><svg lucideChevronDown size="14" aria-hidden="true"></svg>
+          </button>
+          <button
+            class="sort-direction"
+            type="button"
+            [attr.aria-label]="direcaoOrdenacao()"
+            [attr.title]="direcaoOrdenacao()"
+            (click)="inverterOrdenacao()"
+          >
+            @if (sortOrder() === 1) {
+              <svg lucideArrowUp size="16" aria-hidden="true"></svg>
+            } @else {
+              <svg lucideArrowDown size="16" aria-hidden="true"></svg>
+            }
+          </button>
+          @if (ordenacaoAberta()) {
+            <div class="sort-options" role="menu" aria-label="Ordenar alimentos por">
+              <p>Ordenar por</p>
+              @for (option of sortOptions; track option.field) {
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  [attr.aria-checked]="sortField() === option.field"
+                  [class.active]="sortField() === option.field"
+                  (click)="selecionarOrdenacao(option.field)"
+                >
+                  {{ option.label }}
+                  @if (sortField() === option.field) {
+                    <span>{{ direcaoOrdenacao() }}</span>
+                  }
+                </button>
+              }
+            </div>
+          }
         </div>
         <vtp-view-mode-toggle
           [options]="viewModeOptions"
@@ -54,8 +116,16 @@
         />
       </section>
 
+      <div class="results-meta">
+        <span>{{ totalRegistros() }} alimentos encontrados</span>
+      </div>
+
       @if (carregando()) {
-        <p class="state">Carregando catálogo…</p>
+        <div class="food-grid" aria-label="Carregando alimentos">
+          @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+            <div class="food-skeleton"></div>
+          }
+        </div>
       } @else if (vazio()) {
         <section class="empty card">
           <svg lucideHeart size="24" aria-hidden="true"></svg>
@@ -66,36 +136,38 @@
             {{
               tab() === 'favorites'
                 ? 'Use o coração em qualquer alimento para montar sua lista rápida.'
-                : 'Tente outro termo ou ajuste os filtros ao lado.'
+                : 'Tente outro termo ou ajuste os filtros.'
             }}
           </p>
         </section>
       } @else if (viewMode() === 'cards') {
-        <vtp-auto-grid class="mt-4" aria-label="Resultados do catálogo">
+        <div class="food-grid" aria-label="Resultados do catálogo">
           @for (food of alimentos(); track food.id) {
             <vtp-food-tile
               [food]="food"
               (favoriteClick)="alternarFavorito($event)"
-              (tileClick)="detalhe.set($event)"
+              (tileClick)="abrirDetalhe($event)"
             />
           }
-        </vtp-auto-grid>
+        </div>
       } @else {
-        <vtp-data-table
-          [value]="alimentos()"
-          [cols]="tableColumns"
-          [loading]="carregando()"
-          [sortField]="sortField()"
-          [sortOrder]="sortOrder()"
-          [stateKey]="tableStateKey()"
-          (lazyLoad)="onLazyLoad($event)"
-          (rowClick)="detalhe.set($event)"
-        />
+        <div class="table-scroll">
+          <vtp-data-table
+            [value]="alimentos()"
+            [cols]="tableColumns"
+            [loading]="carregando()"
+            [sortField]="sortField() ?? null"
+            [sortOrder]="sortOrder()"
+            [stateKey]="tableStateKey()"
+            (lazyLoad)="onLazyLoad($event)"
+            (rowClick)="abrirDetalhe($event)"
+          />
+        </div>
       }
 
       @if (!carregando() && !vazio()) {
         <bd-pagination
-          class="mt-4 block"
+          class="mt-5 block"
           [total]="totalRegistros()"
           [page]="pagina() - 1"
           (paginate)="irParaPagina($event)"
@@ -103,4 +175,115 @@
       }
     </div>
   </div>
+
+  @if (filtrosAbertos()) {
+    <button class="overlay-scrim" aria-label="Fechar filtros" (click)="fecharFiltros()"></button>
+    <aside
+      class="filter-drawer"
+      cdkTrapFocus
+      role="dialog"
+      aria-modal="true"
+      aria-label="Filtros de alimentos"
+    >
+      <div class="filter-drawer__handle" aria-hidden="true"></div>
+      <div class="filter-drawer__header">
+        <h2>Filtros</h2>
+        <button
+          bdButton
+          variant="ghost"
+          size="sm"
+          iconOnly
+          aria-label="Fechar filtros"
+          (click)="fecharFiltros()"
+        >
+          <svg lucideX size="18" aria-hidden="true"></svg>
+        </button>
+      </div>
+      <vtp-alimentos-filtros
+        [grupos]="grupos()"
+        [grupoSelecionado]="grupoSelecionado()"
+        [grupoLoading]="grupoLoading()"
+        [caloriaRange]="caloriaRange()"
+        [caloriaBounds]="caloriaBounds"
+        (grupoSelecionadoChange)="onGrupoChange($event)"
+        (caloriaRangeChange)="onCaloriaChange($event)"
+        (limpar)="limparFiltros()"
+      />
+    </aside>
+  }
+
+  @if (detalhe(); as food) {
+    <button
+      class="overlay-scrim detail-scrim"
+      aria-label="Fechar detalhes"
+      (click)="fecharDetalhe()"
+    ></button>
+    <aside
+      class="food-detail"
+      cdkTrapFocus
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="food.descricao"
+    >
+      <div class="food-detail__handle" aria-hidden="true"></div>
+      <button
+        class="food-detail__close"
+        bdButton
+        variant="ghost"
+        size="sm"
+        iconOnly
+        aria-label="Fechar detalhes"
+        (click)="fecharDetalhe()"
+      >
+        <svg lucideX size="18" aria-hidden="true"></svg>
+      </button>
+      @if (detalheCarregando()) {
+        <div class="detail-loading">Carregando detalhes…</div>
+      } @else {
+        <div class="food-detail__hero">
+          @if (food.image_url && !detalheImagemComErro()) {
+            <img [src]="food.image_url" [alt]="food.descricao" (error)="onDetalheImagemErro()" />
+          } @else {
+            <div class="food-detail__fallback">
+              <svg lucideHeart size="28" aria-hidden="true"></svg>
+            </div>
+          }
+          <div>
+            <span>{{ food.grupo || 'Catálogo geral' }}</span>
+            <h2>{{ food.descricao }}</h2>
+            <p>{{ food.fonte | uppercase }}</p>
+          </div>
+        </div>
+        <div class="food-detail__kcal">
+          {{ food.caloria | number: '1.0-0' }}
+          <small>kcal / {{ food.qtd | number: '1.0-0' }}g</small>
+        </div>
+        <dl class="food-detail__macros">
+          <div>
+            <dt>Proteína</dt>
+            <dd>{{ food.proteina | number: '1.0-1' }}g</dd>
+          </div>
+          <div>
+            <dt>Carboidrato</dt>
+            <dd>{{ food.carbo | number: '1.0-1' }}g</dd>
+          </div>
+          <div>
+            <dt>Gordura</dt>
+            <dd>{{ food.gordura | number: '1.0-1' }}g</dd>
+          </div>
+        </dl>
+        @if (food.nutrientes?.length) {
+          <section class="food-detail__nutrients">
+            <h3>Nutrientes</h3>
+            @for (nutriente of food.nutrientes; track nutriente.codigo) {
+              <div>
+                <span>{{ nutriente.nome }}</span
+                ><b>{{ nutriente.valor | number: '1.0-2' }} {{ nutriente.unidade }}</b>
+              </div>
+            }
+          </section>
+        }
+      }
+    </aside>
+  }
 </div>

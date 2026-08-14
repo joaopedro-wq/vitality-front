@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { LucideX } from '@lucide/angular';
+import { LucideSearch, LucideX } from '@lucide/angular';
 
 import {
   FacetCheckboxListComponent,
@@ -11,8 +11,9 @@ import type { AlimentoGrupo } from '../../../core/models/alimento.model';
 @Component({
   selector: 'vtp-alimentos-filtros',
   standalone: true,
-  imports: [FacetCheckboxListComponent, RangeSliderComponent, LucideX],
+  imports: [FacetCheckboxListComponent, RangeSliderComponent, LucideSearch, LucideX],
   templateUrl: './alimentos-filtros.component.html',
+  styleUrl: './alimentos-filtros.component.scss',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,9 +23,12 @@ export class AlimentosFiltrosComponent {
   readonly grupoLoading = input(false);
   readonly caloriaRange = input.required<[number, number]>();
   readonly caloriaBounds = input<[number, number]>([0, 900]);
+  readonly busca = input('');
+  readonly mostrarBusca = input(false);
 
   readonly grupoSelecionadoChange = output<string[]>();
   readonly caloriaRangeChange = output<[number, number]>();
+  readonly buscaChange = output<string>();
   readonly limpar = output<void>();
 
   protected readonly opcoesGrupo = computed<FacetOption[]>(() =>

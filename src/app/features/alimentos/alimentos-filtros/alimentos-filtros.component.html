@@ -13,6 +13,19 @@
     }
   </div>
 
+  @if (mostrarBusca()) {
+    <label class="filter-search">
+      <svg lucideSearch size="16" aria-hidden="true"></svg>
+      <input
+        #termo
+        type="search"
+        placeholder="Buscar alimento"
+        [value]="busca()"
+        (input)="buscaChange.emit(termo.value)"
+      />
+    </label>
+  }
+
   <vtp-facet-checkbox-list
     label="Grupo alimentar"
     [options]="opcoesGrupo()"
