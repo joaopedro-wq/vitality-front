@@ -71,7 +71,7 @@
           </p>
         </section>
       } @else if (viewMode() === 'cards') {
-        <section class="food-grid" aria-label="Resultados do catálogo">
+        <vtp-auto-grid class="mt-4" aria-label="Resultados do catálogo">
           @for (food of alimentos(); track food.id) {
             <vtp-food-tile
               [food]="food"
@@ -79,7 +79,7 @@
               (tileClick)="detalhe.set($event)"
             />
           }
-        </section>
+        </vtp-auto-grid>
       } @else {
         <vtp-data-table
           [value]="alimentos()"
@@ -87,6 +87,7 @@
           [loading]="carregando()"
           [sortField]="sortField()"
           [sortOrder]="sortOrder()"
+          [stateKey]="tableStateKey()"
           (lazyLoad)="onLazyLoad($event)"
           (rowClick)="detalhe.set($event)"
         />

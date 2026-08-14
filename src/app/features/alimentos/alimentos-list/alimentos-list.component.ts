@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import type { TableLazyLoadEvent } from 'primeng/table';
 import { Subject, debounceTime, finalize } from 'rxjs';
 
+import { AutoGridComponent } from '../../../components/molecules/auto-grid/auto-grid.component';
 import {
   DataTableComponent,
   type DataTableColumn,
@@ -32,17 +33,39 @@ const VIEW_MODE_OPTIONS: ViewModeOption[] = [
   { value: 'tabela', label: 'Tabela', icon: LucideTable },
 ];
 const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
-  { field: 'descricao', header: 'Alimento' },
+  { field: 'descricao', header: 'Alimento', width: '260px', frozen: true },
   {
     field: 'grupo',
     header: 'Grupo',
     secondary: true,
+    width: '180px',
     value: (row) => row.grupo || 'Catálogo geral',
   },
-  { field: 'caloria', header: 'Kcal', align: 'end', decimals: 0 },
-  { field: 'proteina', header: 'Prot. (g)', align: 'end', decimals: 1, secondary: true },
-  { field: 'carbo', header: 'Carbo (g)', align: 'end', decimals: 1, secondary: true },
-  { field: 'gordura', header: 'Gord. (g)', align: 'end', decimals: 1, secondary: true },
+  { field: 'caloria', header: 'Kcal', align: 'end', decimals: 0, width: '110px' },
+  {
+    field: 'proteina',
+    header: 'Prot. (g)',
+    align: 'end',
+    decimals: 1,
+    secondary: true,
+    width: '110px',
+  },
+  {
+    field: 'carbo',
+    header: 'Carbo (g)',
+    align: 'end',
+    decimals: 1,
+    secondary: true,
+    width: '110px',
+  },
+  {
+    field: 'gordura',
+    header: 'Gord. (g)',
+    align: 'end',
+    decimals: 1,
+    secondary: true,
+    width: '110px',
+  },
 ];
 
 @Component({
@@ -52,6 +75,7 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     RouterLink,
     BdButtonComponent,
     BdPaginationComponent,
+    AutoGridComponent,
     DataTableComponent,
     LucideHeart,
     LucideSearch,
@@ -92,6 +116,12 @@ export class AlimentosListComponent {
   protected readonly sortField = signal<string | null>(null);
   protected readonly sortOrder = signal<number>(1);
   protected readonly tableColumns = TABLE_COLUMNS;
+  // Escopado por usuário — cada conta guarda seu próprio ajuste de largura de
+  // coluna; sem usuário carregado ainda, undefined desliga a persistência.
+  protected readonly tableStateKey = computed(() => {
+    const userId = this.auth.currentUser()?.id;
+    return userId ? `vtp-alimentos-table-cols-${userId}` : undefined;
+  });
 
   constructor() {
     this.loadGrupos();

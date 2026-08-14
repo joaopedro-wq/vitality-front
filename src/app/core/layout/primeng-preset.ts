@@ -43,4 +43,18 @@ export const VitalityPrimeNgPreset = definePreset(Aura, {
       },
     },
   },
+  components: {
+    datatable: {
+      row: {
+        hoverBackground: 'var(--bd-primary-soft)',
+      },
+      headerCell: {
+        hoverBackground: 'var(--bd-surface-hover)',
+      },
+      sortIcon: {
+        color: 'var(--bd-fg-muted)',
+        hoverColor: 'var(--bd-primary)',
+      },
+    },
+  },
 });

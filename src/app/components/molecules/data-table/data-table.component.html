@@ -6,19 +6,32 @@
   [sortField]="sortField()"
   [sortOrder]="sortOrder()"
   [dataKey]="dataKey()"
+  [scrollable]="true"
+  [resizableColumns]="true"
+  columnResizeMode="expand"
+  stateStorage="local"
+  [stateKey]="stateKey()"
   stripedRows
   showGridlines
   size="small"
-  responsiveLayout="scroll"
   (onLazyLoad)="lazyLoad.emit($event)"
 >
+  <ng-template #colgroup>
+    <colgroup>
+      @for (col of cols(); track col.field) {
+        <col [style.width]="col.width" />
+      }
+    </colgroup>
+  </ng-template>
   <ng-template #header>
     <tr>
       @for (col of cols(); track col.field) {
         <th
+          pResizableColumn
+          pFrozenColumn
+          [frozen]="col.frozen ?? false"
           [pSortableColumn]="col.field"
           [pSortableColumnDisabled]="col.sortable === false"
-          [class.text-right]="col.align === 'end'"
           [class.data-table__secondary]="col.secondary"
         >
           {{ col.header }}
@@ -33,7 +46,9 @@
     <tr class="cursor-pointer" (click)="rowClick.emit(row)">
       @for (col of cols(); track col.field) {
         <td
-          [class.text-right]="col.align === 'end'"
+          pFrozenColumn
+          [frozen]="col.frozen ?? false"
+          [style.text-align]="col.align === 'end' ? 'right' : null"
           [class.tabular-nums]="col.decimals !== undefined"
           [class.data-table__secondary]="col.secondary"
         >

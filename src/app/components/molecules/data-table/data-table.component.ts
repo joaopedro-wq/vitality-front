@@ -2,21 +2,14 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { TableModule, type TableLazyLoadEvent } from 'primeng/table';
 
 export interface DataTableColumn<T> {
-  /** Chave da coluna — também usada como campo de ordenação (`sort_field`
-   * enviado ao backend) e, sem `value`, como acessor (`row[field]`). */
   field: string;
   header: string;
-  /** `true` por padrão — a maioria das tabelas do sistema ordena em todos
-   * os campos; desligar caso a caso quando não fizer sentido. */
   sortable?: boolean;
   align?: 'start' | 'end';
-  /** Some abaixo de 720px — reserva pra colunas acessórias. */
   secondary?: boolean;
-  /** Dígitos decimais quando o valor é numérico (`toFixed`). Ignorado se
-   * `value` já devolver string pronta. */
   decimals?: number;
-  /** Acesso/formatação customizada — sobrepõe `row[field]` cru (ex.: um
-   * fallback de texto quando o campo vem vazio). */
+  width?: string;
+  frozen?: boolean;
   value?: (row: T) => string | number | null | undefined;
 }
 
@@ -36,6 +29,10 @@ export class DataTableComponent<T extends object = Record<string, unknown>> {
   readonly sortField = input<string | null>(null);
   readonly sortOrder = input<number>(1);
   readonly dataKey = input('id');
+  /** Chave de persistência das larguras de coluna (localStorage). Sem valor,
+   * o resize não é salvo — quem consome monta a chave (ex. escopada por
+   * usuário logado). */
+  readonly stateKey = input<string | undefined>(undefined);
 
   readonly lazyLoadOnInit = input(false);
 

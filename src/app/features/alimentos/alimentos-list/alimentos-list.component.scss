@@ -94,14 +94,6 @@
   box-shadow: var(--bd-shadow-sm);
 }
 
-.food-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.85rem;
-  margin-top: 1rem;
-}
-
-
 .state,
 .empty {
   margin-top: 1rem;
@@ -220,8 +212,5 @@
   }
   .tabs button {
     flex: 1;
-  }
-  .food-grid {
-    grid-template-columns: 1fr;
   }
 }
