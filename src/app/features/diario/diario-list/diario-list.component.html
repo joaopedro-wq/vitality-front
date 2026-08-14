@@ -1,131 +1,126 @@
 @if (loading()) {
-  <p class="state">Preparando sua jornada de hoje…</p>
+  <p class="px-1 py-10 text-center text-[14px] text-fg-muted">Preparando seu diário…</p>
 } @else {
-  <section class="diary animate-reveal">
-    <header class="diary__header">
-      <div>
-        <p class="eyebrow">Diário alimentar</p>
-        <h1>Seu dia, passo a passo</h1>
-        <p>Registre o que comeu e acompanhe seu caminho sem pressão.</p>
-      </div>
-      <div class="header-actions">
-        <button bdButton variant="ghost" type="button" (click)="managerOpen.set(true)">
-          <svg lucideSettings2 size="16"></svg> Organizar meu dia
+  <section class="mx-auto flex max-w-[1140px] flex-col gap-4 animate-reveal">
+    <header class="flex flex-wrap items-center gap-3">
+      <div class="flex items-center gap-1">
+        <button
+          class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+          type="button"
+          aria-label="Dia anterior"
+          (click)="previousDay()"
+        >
+          <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
         </button>
-        <button bdButton type="button" (click)="openComposer()">
-          <svg lucideCirclePlus size="16"></svg> Registrar refeição
+
+        <span class="px-2">
+          <b class="block text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
+          <small class="text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
+            selectedDate() === today ? 'Hoje' : selectedDate()
+          }}</small>
+        </span>
+
+        <button
+          class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
+          type="button"
+          aria-label="Próximo dia"
+          [disabled]="!canGoNext()"
+          (click)="nextDay()"
+        >
+          <svg lucideArrowRight size="16" aria-hidden="true"></svg>
         </button>
+
+        @if (selectedDate() !== today) {
+          <button
+            class="ml-1 rounded-full border border-border px-3 py-1 text-[12px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+            type="button"
+            (click)="goToday()"
+          >
+            Hoje
+          </button>
+        }
       </div>
+
+      <button
+        class="ml-auto"
+        bdButton
+        variant="ghost"
+        type="button"
+        (click)="managerOpen.set(true)"
+      >
+        <svg lucideSettings2 size="16"></svg>
+        Organizar refeições
+      </button>
     </header>
 
-    <section class="day-control card">
-      <button type="button" aria-label="Dia anterior" (click)="previousDay()">
-        <svg lucideArrowLeft size="18"></svg>
-      </button>
-      <div>
-        <svg lucideCalendarDays size="16"></svg><strong>{{ dateLabel() }}</strong
-        ><small>{{ selectedDate() === today ? 'Hoje' : selectedDate() }}</small>
-      </div>
-      <button type="button" aria-label="Próximo dia" [disabled]="!canGoNext()" (click)="nextDay()">
-        <svg lucideArrowRight size="18"></svg>
-      </button>
-      @if (selectedDate() !== today) {
-        <button class="today" type="button" (click)="goToday()">Hoje</button>
-      }
-    </section>
+    <vtp-macro-goal-strip [totals]="totals()" [meta]="meta()" />
 
-    <div class="diary__overview">
-      <vtp-diary-day-summary [totals]="totals()" [meta]="meta()" />
-      <section class="journey card">
-        <p>Jornada do dia</p>
-        <vtp-daily-checkpoint-track
-          [meals]="meals()"
-          [entries]="day()?.entries ?? []"
-          (choose)="openComposer($event)"
+    <div class="grid items-start gap-4 md:grid-cols-[330px_minmax(0,1fr)]">
+      <div
+        class="card px-3 py-5 md:block"
+        [class.hidden]="modo() === 'compor'"
+        style="
+          background:
+            radial-gradient(90% 55% at 50% 0%, var(--bd-primary-soft) 0%, transparent 55%),
+            radial-gradient(70% 45% at 40% 100%, var(--bd-accent-soft) 0%, transparent 60%),
+            var(--bd-surface);
+        "
+      >
+        <vtp-journey-map
+          [fases]="fases()"
+          [selecionada]="faseSelecionada()"
+          [preenchendo]="modo() === 'compor'"
+          [carimbo]="carimbo()"
+          [dica]="modo() === 'compor' ? 'Registrando aqui' : 'Escolha a fase'"
+          (faseClick)="selecionarFase($event)"
+          (bandeiraClick)="revelacaoAberta.set(true)"
+          (carimboFim)="carimbo.set(null)"
         />
-      </section>
-    </div>
+      </div>
 
-    <section class="meal-list" aria-label="Refeições do dia">
-      @for (meal of meals(); track meal.id) {
-        <article class="meal card" [class.meal--done]="entriesFor(meal.id).length">
-          <header>
-            <div>
-              <span class="meal__status">
-                @if (entriesFor(meal.id).length) {
-                  <svg lucideCheckCircle2 size="15"></svg>
-                } @else {
-                  <svg lucideCirclePlus size="15"></svg>
-                }
-              </span>
-              <div>
-                <p>{{ meal.horario }}</p>
-                <h2>{{ meal.descricao }}</h2>
-              </div>
-            </div>
-            <button bdButton variant="ghost" size="sm" type="button" (click)="openComposer(meal)">
-              <svg lucideCirclePlus size="15"></svg> Adicionar
-            </button>
-          </header>
-          @if (entriesFor(meal.id).length) {
-            <div class="entry-list">
-              @for (entry of entriesFor(meal.id); track entry.id) {
-                <article class="entry">
-                  <time>{{ formatTime(entry.consumed_at) }}</time>
-                  <div class="entry__copy">
-                    <b>{{ entryDescription(entry) }}</b
-                    ><span
-                      >{{ entry.items.length }}
-                      {{ entry.items.length === 1 ? 'alimento' : 'alimentos' }} · P
-                      {{ entry.totals.proteina | number: '1.0-1' }} g</span
-                    >
-                  </div>
-                  <strong>{{ entry.totals.caloria | number: '1.0-0' }} <small>kcal</small></strong>
-                  <div class="entry__actions">
-                    <button
-                      type="button"
-                      aria-label="Editar lançamento"
-                      (click)="openComposer(meal, entry)"
-                    >
-                      <svg lucideEdit3 size="15"></svg></button
-                    ><button
-                      type="button"
-                      aria-label="Excluir lançamento"
-                      (click)="deleteEntry(entry)"
-                    >
-                      <svg lucideTrash2 size="15"></svg>
-                    </button>
-                  </div>
-                </article>
-              }
-            </div>
-          } @else {
-            <div class="meal__empty">
-              <span>Próximo passo</span>
-              <p>Este checkpoint ainda está aberto. Registre quando fizer sentido para você.</p>
-            </div>
-          }
-        </article>
-      } @empty {
-        <section class="empty card">
-          <h2>Vamos preparar seu dia?</h2>
-          <p>Suas refeições aparecerão aqui assim que forem configuradas.</p>
-        </section>
+      @if (modo() === 'compor' && mealAtual(); as meal) {
+        <vtp-entry-composer
+          [meal]="meal"
+          [meals]="meals()"
+          [date]="selectedDate()"
+          [entry]="entryEmEdicao()"
+          (cancelado)="cancelarComposer()"
+          (salvo)="onEntrySaved()"
+          (trocarMeal)="trocarDestino($event)"
+        />
+      } @else if (faseAtual(); as fase) {
+        <vtp-diary-phase-card
+          [fase]="fase"
+          [indice]="faseSelecionada()"
+          [totalFases]="fases().length"
+          [fasesRestantes]="fasesRestantes()"
+          [mensagemVazia]="mensagemVazia()"
+          [flash]="flash()"
+          [removendo]="removendo()"
+          (adicionar)="abrirComposerDaFase()"
+          (removerItem)="removerItem($event)"
+          (editarLancamento)="editarLancamento($event)"
+        />
+      } @else {
+        <div class="card p-6 text-[13.5px] text-fg-muted">
+          Organize suas refeições para começar a registrar.
+        </div>
       }
-    </section>
+    </div>
   </section>
 }
 
-@if (composerOpen() && meals().length) {
-  <vtp-entry-composer
-    [meals]="meals()"
-    [date]="selectedDate()"
-    [initialMeal]="selectedMeal()"
-    [entry]="editingEntry()"
-    (closed)="closeComposer()"
-    (saved)="onEntrySaved()"
+@if (revelacaoAberta()) {
+  <vtp-day-reveal-overlay
+    [totals]="totals()"
+    [meta]="meta()"
+    [completo]="fasesRestantes() === 0"
+    [titulo]="fasesRestantes() === 0 ? 'Dia fechado' : 'Como está seu dia'"
+    [label]="fasesRestantes() === 0 ? 'Dia completo' : 'Parcial de hoje'"
+    (fechar)="revelacaoAberta.set(false)"
   />
 }
+
 @if (managerOpen()) {
   <vtp-meal-manager
     [meals]="meals()"

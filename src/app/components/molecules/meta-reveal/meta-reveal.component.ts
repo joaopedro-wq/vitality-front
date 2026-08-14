@@ -21,9 +21,10 @@ export class MetaRevealComponent {
   readonly valores = input.required<MetaRevealValores>();
   readonly animar = input(false);
   readonly tamanho = input<'md' | 'lg'>('md');
-  /** Texto do badge quando já revelado — muda o tom conforme o contexto
-   * (recém-calculado vs. meta já salva de antes). */
+
   readonly label = input('Build desbloqueado');
+
+  readonly labelCalculando = input('Calculando sua meta…');
 
   protected readonly revelado = signal(false);
 

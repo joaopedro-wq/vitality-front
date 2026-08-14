@@ -1,0 +1,68 @@
+<section
+  class="card flex flex-wrap items-center gap-x-7 gap-y-4 px-5 py-4"
+  aria-label="Macros do dia"
+>
+  <div class="flex min-w-[190px] flex-1 flex-col gap-1.5">
+    <div class="flex items-baseline gap-2">
+      <strong class="text-[24px] font-extrabold leading-none tracking-tight tabular-nums">{{
+        totals().caloria | number: '1.0-0'
+      }}</strong>
+      @if (meta(); as m) {
+        <span class="text-[12px] text-fg-muted tabular-nums"
+          >/ {{ m.meta_calorias | number: '1.0-0' }} kcal</span
+        >
+      } @else {
+        <span class="text-[12px] text-fg-muted">kcal registradas</span>
+      }
+      @let falta = restante();
+      @if (falta !== null) {
+        <span
+          class="ml-auto rounded-full px-2.5 py-1 text-[11px] font-bold tabular-nums"
+          [class]="falta >= 0 ? 'bg-primary-soft text-primary-strong' : 'bg-accent-soft text-fg'"
+        >
+          {{ falta >= 0 ? 'restam ' : 'acima ' }}{{ absoluto(falta) | number: '1.0-0' }} kcal
+        </span>
+      }
+    </div>
+
+    <div class="h-2.5 overflow-hidden rounded-full bg-surface-hover">
+      <span
+        class="block h-full rounded-full transition-[width] duration-700 ease-out"
+        style="background: linear-gradient(90deg, var(--bd-primary), var(--bd-accent))"
+        [style.width.%]="progressoCalorias()"
+      ></span>
+    </div>
+  </div>
+
+  <div class="flex flex-[2] flex-wrap items-center gap-x-6 gap-y-3">
+    @for (medidor of medidores(); track medidor.label) {
+      <div class="flex min-w-[122px] flex-1 flex-col gap-1.5">
+        <div class="flex items-baseline justify-between gap-2 text-[11.5px]">
+          <span class="font-bold">{{ medidor.label }}</span>
+          <span class="text-fg-muted tabular-nums">
+            {{ medidor.valor | number: '1.0-0' }}
+            @if (medidor.alvo) {
+              <span> / {{ medidor.alvo | number: '1.0-0' }}</span>
+            }
+            g
+          </span>
+        </div>
+        <div class="h-[6px] overflow-hidden rounded-full bg-surface-hover">
+          <span
+            class="block h-full rounded-full transition-[width] duration-700 ease-out"
+            [style.background-color]="medidor.cor"
+            [style.width.%]="medidor.progresso"
+          ></span>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (!meta()) {
+    <a
+      class="text-[12px] font-bold text-primary-strong underline decoration-dotted underline-offset-4"
+      routerLink="/metas"
+      >Definir minha meta</a
+    >
+  }
+</section>

@@ -500,6 +500,57 @@ md:p-8' }` no `@Component`, e o resto é Tailwind direto no template (consistent
    abre como drawer no desktop e fullscreen no mobile. A topbar usa `/diario?registrar=1` para abrir
    diretamente a escolha de refeição; `daily-checkpoint-track` e `diary-day-summary` ficam em
    `components/molecules/` porque são presentation-only e reutilizáveis.
+   Segunda passada — "Jornada do dia: mapa de fases + quiz" (2026-08-14, mesmo dia): a tela original
+   virou confusa na prática — cinco entradas diferentes para "registrar" (botão do topo, botão da
+   refeição focada, estado vazio, botão flutuante, composer sempre aberto na 3ª coluna), acoplamento
+   invisível entre clicar numa refeição e o destino do lançamento, e o modelo de "refeição focada"
+   escondia o dia inteiro. Prototipados 10 conceitos de game/quiz em artefatos (missão do dia, ficha
+   de personagem, quiz do prato, mapa de fases, baralho de cartas) — escolhida a combinação **mapa de
+   fases + quiz do prato**, depois ajustada em 3 rodadas de teste do próprio protótipo até a versão
+   final aprovada ("Jornada em dois passos").
+   O dia virou um caminho: `JourneyMapComponent` (`components/organisms/journey-map/`) desenha uma
+   trilha serpentina em SVG com um disco por refeição (concluída = carimbo verde, atual = balançando
+   em `--bd-accent`, aberta = tracejada) e uma bandeira de fim de dia. A curva é paramétrica
+   (`journey-path.util.ts`, `trilhaSerpentina(n)`) — o protótipo tinha 5 fases fixas, mas o
+   `meal-manager` deixa criar/arquivar refeições, então pra `n === 5` a função devolve os valores
+   exatos do protótipo (fidelidade é requisito) e pra outro `n` gera a serpentina algoritmicamente.
+   `diario-list` (orquestrador) alterna a coluna direita entre `DiaryPhaseCardComponent` (leitura da
+   fase selecionada) e `EntryComposerComponent` (registro) via um `modo: 'cartao' | 'compor'` — nunca
+   os dois ao mesmo tempo, e a coluna do mapa só some nesse modo em telas &lt;900px.
+   **Composer virou tela única, sem trilha de passos** (pedido explícito, revertendo a ideia inicial
+   de "quiz do prato" com 3 passos): a refeição já foi escolhida no clique do mapa, então vira faixa
+   fixa de destino (`DiaryDestinationBandComponent`, "Registrando em X" com "Trocar" atrás de um
+   botão) em vez de uma pergunta repetida. Navegação é só o par de botões redondos do
+   `StepFooterComponent` — voltar cancela, avançar grava — que ganhou um input `desabilitado` pra
+   travar o avançar com o prato vazio, sem misturar com o estado `carregando`.
+   **Revelação do dia é sob demanda, não só no fim**: clicar na bandeira do mapa abre
+   `DayRevealOverlayComponent` a qualquer hora do dia, reusando o `MetaRevealComponent` do quiz de
+   Metas (mesmo anel + odômetro + barras de macro). Foi preciso arredondar os totais antes de passar
+   — o componente nasceu pra metas inteiras e `digitos()` quebra `1.482,3` em dígitos soltos com um
+   float — e adicionar `labelCalculando` (input novo, default preserva Metas) porque o badge "não
+   revelado" tinha o texto "Calculando sua meta…" fixo no template.
+   **Macros sempre visíveis**: `MacroGoalStripComponent` é uma faixa fixa no topo com kcal + P + C + G
+   (consumido/meta), porque o pedido era ver a composição do dia a qualquer momento, não só ao fechar.
+   **Alimento é a unidade visual, lançamento é o modelo da API**: `diary-day.util.ts` achata
+   `entries[].items[]` em `FaseItem[]` (guardando o `entryId` de origem) pra cada card mostrar
+   alimentos soltos, do jeito que a pessoa pensa. Remover um alimento regrava o lançamento sem ele
+   (`payloadSemItem`); quando ele era o único item, a operação vira `deleteEntry` (não um PATCH com
+   lista vazia, que não é comportamento definido no backend) — só esse caso pede `window.confirm`.
+   **Chip de porção (pouco/normal/bastante) nunca é o estado**: `quantity` em gramas é sempre a fonte
+   de verdade; o chip só escreve nela. Item vindo do catálogo tem `porcaoBase = Alimento.qtd`; item
+   de um lançamento salvo não tem essa referência (a API não devolve o `qtd` do catálogo), e resolver
+   isso busca em cascata (memória → `AlimentoService.get(id)`) — se o alimento foi arquivado, a linha
+   simplesmente esconde os chips e mostra só o campo em gramas, nunca chuta a base errada.
+   **Risco tratado à parte**: o backend recusa consumo no futuro. Como cada fase sugere o próprio
+   horário, abrir o jantar de tarde cairia num 422 — a sugestão de horário nunca passa da hora atual
+   quando o dia selecionado é hoje.
+   `FoodPickCardComponent` (grade de escolha no composer) não reaproveita o `FoodTileComponent` do
+   catálogo — este último carrega favoritar/imagem grande, que não cabe numa grade densa de escolha
+   rápida — mas os dois passam a compartilhar `calcularProporcaoMacro` (`macro-percent.util.ts`, nova
+   função): a fórmula antiga (`calcularPercentuaisMacro`) normaliza pelo campo `caloria` do alimento,
+   que no TACO nem sempre bate com 4/4/9 dos macros, deixando buraco numa barra tri-macro contígua.
+   `daily-checkpoint-track` e `diary-day-summary` (linha anterior) foram removidos — órfãos depois da
+   reescrita, substituídos por `journey-map` e `macro-goal-strip`.
 6. Dashboard (meta vs. consumido).
 7. Dietas (planos reutilizáveis).
 8. Perfil (dados pessoais + avatar) — ✅ feito. É um quiz de 3 etapas: identidade e avatar,

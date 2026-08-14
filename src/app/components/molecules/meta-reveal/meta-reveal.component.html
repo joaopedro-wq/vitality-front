@@ -6,7 +6,7 @@
     @if (!revelado()) {
       <span class="size-1.5 rounded-full bg-fg-subtle animate-pulse"></span>
     }
-    {{ revelado() ? label() : 'Calculando sua meta…' }}
+    {{ revelado() ? label() : labelCalculando() }}
   </span>
 
   @if (valores().tmb !== undefined && valores().get !== undefined) {
@@ -15,9 +15,11 @@
         class="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-bg px-3.5 py-2 transition-opacity duration-300"
         [class.opacity-40]="!revelado()"
       >
-        <span class="text-[14px] font-extrabold tabular-nums" [class.text-fg-subtle]="!revelado()">{{
-          revelado() ? valores().tmb : '--'
-        }}</span>
+        <span
+          class="text-[14px] font-extrabold tabular-nums"
+          [class.text-fg-subtle]="!revelado()"
+          >{{ revelado() ? valores().tmb : '--' }}</span
+        >
         <span class="text-[9px] uppercase text-fg-subtle">TMB</span>
       </div>
       <span class="text-fg-subtle text-base leading-none">+</span>
@@ -25,9 +27,11 @@
         class="flex flex-col items-center gap-0.5 rounded-xl border border-border bg-bg px-3.5 py-2 transition-opacity duration-300"
         [class.opacity-40]="!revelado()"
       >
-        <span class="text-[14px] font-extrabold tabular-nums" [class.text-fg-subtle]="!revelado()">{{
-          revelado() ? valores().get : '--'
-        }}</span>
+        <span
+          class="text-[14px] font-extrabold tabular-nums"
+          [class.text-fg-subtle]="!revelado()"
+          >{{ revelado() ? valores().get : '--' }}</span
+        >
         <span class="text-[9px] uppercase text-fg-subtle">GET</span>
       </div>
     </div>
@@ -36,18 +40,24 @@
   <div
     class="relative mx-auto grid place-items-center rounded-full"
     [class]="tamanho() === 'lg' ? 'size-[190px]' : 'size-[150px]'"
-    style="background: radial-gradient(circle, var(--bd-primary-soft) 0%, transparent 70%);"
+    style="background: radial-gradient(circle, var(--bd-primary-soft) 0%, transparent 70%)"
   >
     <span
       class="absolute inset-[10px] rounded-full border-[3px] transition-colors duration-500"
-      [class]="revelado() ? 'border-primary [box-shadow:0_0_0_6px_var(--bd-primary-soft)]' : 'border-dashed border-border-strong'"
+      [class]="
+        revelado()
+          ? 'border-primary [box-shadow:0_0_0_6px_var(--bd-primary-soft)]'
+          : 'border-dashed border-border-strong'
+      "
     ></span>
     <div class="relative flex flex-col items-center gap-1.5">
       <div class="flex gap-1">
         @for (d of digitos(); track $index) {
           <span
             class="rounded-lg bg-surface border border-border grid place-items-center font-black overflow-hidden"
-            [class]="tamanho() === 'lg' ? 'w-[30px] h-[42px] text-[22px]' : 'w-[26px] h-[36px] text-[19px]'"
+            [class]="
+              tamanho() === 'lg' ? 'w-[30px] h-[42px] text-[22px]' : 'w-[26px] h-[36px] text-[19px]'
+            "
             [class.text-primary-strong]="revelado()"
             [class.text-fg-subtle]="!revelado()"
             [class.animate-pulse]="!revelado()"

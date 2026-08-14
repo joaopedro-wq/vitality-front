@@ -32,7 +32,7 @@
         (error)="onImageError()"
       />
     } @else {
-      <div class="food-tile__ring" [style.background]="ringGradient()" aria-hidden="true"></div>
+      <vtp-food-illustration class="food-tile__illustration" [illustrationKey]="food().illustration_key" />
     }
     <p class="food-tile__name">{{ food().descricao }}</p>
   </div>

@@ -12,7 +12,7 @@
     type="button"
     [class.done]="ultimo()"
     [attr.aria-label]="ultimo() ? 'Salvar' : 'Continuar'"
-    [disabled]="carregando()"
+    [disabled]="carregando() || desabilitado()"
     (click)="avancar.emit()"
   >
     @if (carregando()) {

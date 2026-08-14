@@ -11,6 +11,7 @@ import type {
   SaveDiaryEntryPayload,
   SaveDiaryMealPayload,
 } from '../core/models/diary.model';
+import type { Alimento } from '../core/models/alimento.model';
 
 @Injectable({ providedIn: 'root' })
 export class DiarioService {
@@ -21,6 +22,14 @@ export class DiarioService {
       .get<
         ApiResponse<DiaryDay>
       >(apiPaths.diaryDay(), { params: new HttpParams().set('date', date) })
+      .pipe(map((response) => response.data));
+  }
+
+  recentFoods(limit = 8): Observable<Alimento[]> {
+    return this.http
+      .get<ApiResponse<Alimento[]>>(apiPaths.diaryRecentFoods(), {
+        params: new HttpParams().set('limit', String(limit)),
+      })
       .pipe(map((response) => response.data));
   }
 

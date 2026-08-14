@@ -1,22 +1,23 @@
-import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
-import {
-  LucideArrowLeft,
-  LucideArrowRight,
-  LucideCalendarDays,
-  LucideCheckCircle2,
-  LucideCirclePlus,
-  LucideEdit3,
-  LucideSettings2,
-  LucideTrash2,
-} from '@lucide/angular';
+import { LucideArrowLeft, LucideArrowRight, LucideSettings2 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, forkJoin } from 'rxjs';
+import { finalize, forkJoin, type Observable } from 'rxjs';
 
-import { DailyCheckpointTrackComponent } from '../../../components/molecules/daily-checkpoint-track/daily-checkpoint-track.component';
-import { DiaryDaySummaryComponent } from '../../../components/molecules/diary-day-summary/diary-day-summary.component';
+import { MacroGoalStripComponent } from '../../../components/molecules/macro-goal-strip/macro-goal-strip.component';
+import { JourneyMapComponent } from '../../../components/organisms/journey-map/journey-map.component';
+import { DayRevealOverlayComponent } from '../../../components/organisms/day-reveal-overlay/day-reveal-overlay.component';
+import { DiaryPhaseCardComponent } from '../../../components/molecules/diary-phase-card/diary-phase-card.component';
+import {
+  chaveDoItem,
+  montarFases,
+  payloadSemItem,
+  proximaFaseAberta,
+  type FaseDiario,
+  type FaseItem,
+} from '../../../components/utils/diary-day.util';
 import type {
   DiaryDay,
   DiaryEntry,
@@ -31,27 +32,32 @@ import { MealManagerComponent } from '../meal-manager/meal-manager.component';
 
 const EMPTY_TOTALS: DiaryMacros = { caloria: 0, proteina: 0, carbo: 0, gordura: 0, quantidade: 0 };
 
+type Modo = 'cartao' | 'compor';
+
+/**
+ * Orquestrador do Diário — "Jornada do dia".
+ *
+ * O dia é um mapa de fases (uma por refeição). A fase selecionada aparece na
+ * coluna direita, que alterna entre o cartão de leitura (`modo: 'cartao'`) e o
+ * composer de registro (`modo: 'compor'`) — nunca os dois ao mesmo tempo, e o
+ * composer nunca pergunta de novo a refeição: ela já veio do clique no mapa.
+ */
 @Component({
   selector: 'vtp-diario-list',
   standalone: true,
   imports: [
-    DecimalPipe,
     BdButtonComponent,
-    DailyCheckpointTrackComponent,
-    DiaryDaySummaryComponent,
+    MacroGoalStripComponent,
+    JourneyMapComponent,
+    DiaryPhaseCardComponent,
+    DayRevealOverlayComponent,
     EntryComposerComponent,
     MealManagerComponent,
     LucideArrowLeft,
     LucideArrowRight,
-    LucideCalendarDays,
-    LucideCheckCircle2,
-    LucideCirclePlus,
-    LucideEdit3,
     LucideSettings2,
-    LucideTrash2,
   ],
   templateUrl: './diario-list.component.html',
-  styleUrl: './diario-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiarioListComponent {
@@ -67,11 +73,36 @@ export class DiarioListComponent {
   protected readonly meals = signal<DiaryMeal[]>([]);
   protected readonly meta = signal<MetaDiaria | null>(null);
   protected readonly loading = signal(true);
-  protected readonly composerOpen = signal(false);
   protected readonly managerOpen = signal(false);
-  protected readonly selectedMeal = signal<DiaryMeal | null>(null);
-  protected readonly editingEntry = signal<DiaryEntry | null>(null);
+  protected readonly revelacaoAberta = signal(false);
+
+  protected readonly modo = signal<Modo>('cartao');
+  protected readonly faseSelecionada = signal(0);
+  protected readonly entryEmEdicao = signal<DiaryEntry | null>(null);
+  protected readonly carimbo = signal<number | null>(null);
+  protected readonly flash = signal<string | null>(null);
+  protected readonly removendo = signal<string | null>(null);
+
   protected readonly totals = computed(() => this.day()?.totals ?? EMPTY_TOTALS);
+  protected readonly fases = computed(() => montarFases(this.day(), this.meals()));
+  protected readonly faseAtual = computed<FaseDiario | null>(
+    () => this.fases()[this.faseSelecionada()] ?? null,
+  );
+  protected readonly mealAtual = computed<DiaryMeal | null>(() => {
+    const fase = this.faseAtual();
+    return fase ? (this.meals().find((meal) => meal.id === fase.mealId) ?? null) : null;
+  });
+  protected readonly fasesRestantes = computed(
+    () => this.fases().filter((fase) => fase.estado !== 'concluida').length,
+  );
+  protected readonly mensagemVazia = computed(() => {
+    const alvo = this.meta()?.meta_calorias;
+    const restante = alvo ? alvo - this.totals().caloria : null;
+    if (restante !== null && restante > 0) {
+      return `Nada registrado aqui ainda. Sobram ${Math.round(restante).toLocaleString('pt-BR')} kcal para o seu dia.`;
+    }
+    return 'Nada registrado aqui ainda. Escolha o que entrou no prato para concluir esta fase.';
+  });
   protected readonly canGoNext = computed(() => this.selectedDate() < this.today);
   protected readonly dateLabel = computed(() => {
     const date = new Date(`${this.selectedDate()}T12:00:00`);
@@ -84,8 +115,8 @@ export class DiarioListComponent {
 
   constructor() {
     this.load();
-    this.route.queryParamMap.subscribe((params) => {
-      if (params.get('registrar') === '1') this.composerOpen.set(true);
+    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+      if (params.get('registrar') === '1') this.abrirComposerDaFase();
     });
   }
 
@@ -103,34 +134,90 @@ export class DiarioListComponent {
     this.load();
   }
 
-  protected entriesFor(mealId: number): DiaryEntry[] {
-    return this.day()?.entries.filter((entry) => entry.meal.id === mealId) ?? [];
+  protected selecionarFase(indice: number): void {
+    this.faseSelecionada.set(indice);
+    if (this.modo() === 'compor') this.entryEmEdicao.set(null);
   }
 
-  protected openComposer(meal: DiaryMeal | null = null, entry: DiaryEntry | null = null): void {
-    this.selectedMeal.set(
-      meal ?? (entry ? (this.meals().find((item) => item.id === entry.meal.id) ?? null) : null),
-    );
-    this.editingEntry.set(entry);
-    this.composerOpen.set(true);
+  protected abrirComposerDaFase(): void {
+    if (!this.faseAtual()) return;
+    this.entryEmEdicao.set(null);
+    this.modo.set('compor');
   }
 
-  protected closeComposer(): void {
-    this.composerOpen.set(false);
-    this.selectedMeal.set(null);
-    this.editingEntry.set(null);
-    if (this.route.snapshot.queryParamMap.has('registrar')) {
-      this.router.navigate([], {
-        queryParams: { registrar: null },
-        queryParamsHandling: 'merge',
-        replaceUrl: true,
-      });
-    }
+  protected editarLancamento(entryId: number): void {
+    const entry = this.day()?.entries.find((item) => item.id === entryId) ?? null;
+    if (!entry) return;
+
+    const indiceFase = this.fases().findIndex((fase) => fase.mealId === entry.meal.id);
+    if (indiceFase !== -1) this.faseSelecionada.set(indiceFase);
+
+    this.entryEmEdicao.set(entry);
+    this.modo.set('compor');
+  }
+
+  protected trocarDestino(meal: DiaryMeal): void {
+    const indice = this.fases().findIndex((fase) => fase.mealId === meal.id);
+    if (indice === -1) return;
+    this.faseSelecionada.set(indice);
+    // Trocar de destino sempre volta a criar um lançamento novo na fase de
+    // chegada — editar um lançamento existente noutra refeição não faz sentido.
+    this.entryEmEdicao.set(null);
+  }
+
+  protected cancelarComposer(): void {
+    this.modo.set('cartao');
+    this.entryEmEdicao.set(null);
+    this.limparQueryParamRegistrar();
   }
 
   protected onEntrySaved(): void {
-    this.closeComposer();
+    const fase = this.faseAtual();
+    this.modo.set('cartao');
+    this.entryEmEdicao.set(null);
+    this.limparQueryParamRegistrar();
+    if (fase) {
+      this.carimbo.set(fase.mealId);
+      this.flash.set(`Fase atualizada · registrado em ${fase.descricao.toLowerCase()}.`);
+    }
     this.loadDay();
+  }
+
+  /**
+   * A API guarda lançamentos, não alimentos soltos: tirar um alimento é regravar
+   * o lançamento sem ele. Quando era o último item, regravar com lista vazia não
+   * é comportamento definido no backend — aí a operação certa é apagar o
+   * lançamento, e só esse caso pede confirmação.
+   */
+  protected removerItem(item: FaseItem): void {
+    const entry = this.day()?.entries.find((registro) => registro.id === item.entryId);
+    if (!entry) return;
+
+    const payload = payloadSemItem(entry, item.foodId);
+    if (
+      !payload &&
+      !window.confirm(
+        `"${item.descricao}" é o único alimento deste lançamento. Remover apaga o lançamento inteiro. Continuar?`,
+      )
+    ) {
+      return;
+    }
+
+    const chave = chaveDoItem(item);
+    this.removendo.set(chave);
+    this.flash.set(null);
+
+    const requisicao: Observable<unknown> = payload
+      ? this.diaryService.updateEntry(entry.id, payload)
+      : this.diaryService.deleteEntry(entry.id);
+
+    requisicao.pipe(finalize(() => this.removendo.set(null))).subscribe({
+      next: () => {
+        this.toastr.success(`${item.descricao} removido.`);
+        this.loadDay();
+      },
+      error: () => this.toastr.error('Não foi possível remover este alimento agora.'),
+    });
   }
 
   protected onMealsChanged(): void {
@@ -138,25 +225,19 @@ export class DiarioListComponent {
     this.loadMeals();
   }
 
-  protected deleteEntry(entry: DiaryEntry): void {
-    if (!window.confirm('Excluir este lançamento? Essa ação não pode ser desfeita.')) return;
-    this.diaryService.deleteEntry(entry.id).subscribe({
-      next: () => {
-        this.toastr.success('Lançamento removido.');
-        this.loadDay();
-      },
-      error: () => this.toastr.error('Não foi possível remover o lançamento.'),
-    });
+  private sincronizarFase(): void {
+    const proxima = proximaFaseAberta(this.fases());
+    this.faseSelecionada.set(proxima === -1 ? 0 : proxima);
   }
 
-  protected formatTime(value: string): string {
-    return new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(
-      new Date(value),
-    );
-  }
-
-  protected entryDescription(entry: DiaryEntry): string {
-    return entry.items.map((item) => item.descricao).join(' · ');
+  private limparQueryParamRegistrar(): void {
+    if (this.route.snapshot.queryParamMap.has('registrar')) {
+      this.router.navigate([], {
+        queryParams: { registrar: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    }
   }
 
   private changeDay(days: number): void {
@@ -186,6 +267,7 @@ export class DiarioListComponent {
               metas[0] ??
               null,
           );
+          this.sincronizarFase();
         },
         error: () => this.toastr.error('Não foi possível carregar seu Diário agora.'),
       });
@@ -200,7 +282,10 @@ export class DiarioListComponent {
 
   private loadMeals(): void {
     this.diaryService.meals().subscribe({
-      next: (meals) => this.meals.set(meals),
+      next: (meals) => {
+        this.meals.set(meals);
+        this.sincronizarFase();
+      },
       error: () => this.toastr.error('Não foi possível atualizar as refeições.'),
     });
   }

@@ -1,14 +1,14 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { LucideHeart } from '@lucide/angular';
 
 import type { Alimento } from '../../../core/models/alimento.model';
-import { calcularPercentuaisMacro } from '../../utils/macro-percent.util';
+import { FoodIllustrationComponent } from '../../atoms/food-illustration/food-illustration.component';
 
 @Component({
   selector: 'vtp-food-tile',
   standalone: true,
-  imports: [DecimalPipe, LucideHeart],
+  imports: [DecimalPipe, FoodIllustrationComponent, LucideHeart],
   templateUrl: './food-tile.component.html',
   styleUrl: './food-tile.component.scss',
   host: { class: 'block' },
@@ -20,14 +20,6 @@ export class FoodTileComponent {
   readonly favoriteClick = output<Alimento>();
   readonly tileClick = output<Alimento>();
   protected readonly imageErrored = signal(false);
-
-  protected readonly percentuais = computed(() => calcularPercentuaisMacro(this.food()));
-  protected readonly ringGradient = computed(() => {
-    const { proteina, carbo } = this.percentuais();
-    const fimProteina = proteina;
-    const fimCarbo = proteina + carbo;
-    return `conic-gradient(var(--bd-primary) 0 ${fimProteina}%, var(--bd-accent) 0 ${fimCarbo}%, var(--fat) 0 100%)`;
-  });
 
   protected onFavorite(event: Event): void {
     event.stopPropagation();

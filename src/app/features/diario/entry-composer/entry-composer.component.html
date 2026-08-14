@@ -1,177 +1,106 @@
-<button class="composer-backdrop" aria-label="Fechar lançamento" (click)="closed.emit()"></button>
 <section
-  class="composer"
-  role="dialog"
-  aria-modal="true"
-  aria-label="Registrar refeição"
-  (keydown.escape)="closed.emit()"
-  tabindex="-1"
+  class="card flex min-h-[520px] flex-col p-5 animate-reveal"
+  aria-label="Registrar alimentos"
 >
-  <header class="composer__header">
-    <div>
-      <p>{{ entry() ? 'Ajustar lançamento' : 'Novo lançamento' }}</p>
-      <h2>{{ labels[step()] }}</h2>
-    </div>
-    <button type="button" class="icon-button" aria-label="Fechar" (click)="closed.emit()">
-      <svg lucideX size="18"></svg>
-    </button>
+  <header class="mb-3">
+    <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
+      {{ entry() ? 'Ajustando lançamento' : 'Novo registro' }}
+    </p>
+
+    <vtp-diary-destination-band
+      [meal]="meal()"
+      [meals]="meals()"
+      [aberto]="trocaAberta()"
+      (alternarTroca)="trocaAberta.set(!trocaAberta())"
+      (selecionar)="trocarMeal.emit($event)"
+    />
   </header>
 
-  <ol class="steps" aria-label="Etapas do lançamento">
-    @for (label of labels; track label; let index = $index) {
-      <li [class.active]="step() === index" [class.done]="step() > index">
-        <span>{{ index + 1 }}</span
-        >{{ label }}
-      </li>
-    }
-  </ol>
+  <label
+    class="mb-3 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+  >
+    <svg lucideSearch size="16" aria-hidden="true"></svg>
+    <span class="sr-only">Buscar alimento no catálogo</span>
+    <input
+      class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+      type="search"
+      placeholder="Buscar no catálogo TACO"
+      (input)="buscar($any($event.target).value)"
+    />
+  </label>
 
-  <div class="composer__body">
-    @switch (step()) {
-      @case (0) {
-        <div class="intro">
-          <span>Passo 1 de 3</span>
-          <h3>Qual momento você quer registrar?</h3>
-          <p>Escolha o checkpoint e ajuste o horário real do consumo.</p>
-        </div>
-        <div class="meal-options">
-          @for (meal of meals(); track meal.id) {
-            <button
-              type="button"
-              [class.selected]="mealId() === meal.id"
-              (click)="selectMeal(meal.id)"
-            >
-              <b>{{ meal.descricao }}</b
-              ><small>{{ meal.horario }}</small>
-            </button>
-          }
-        </div>
-        <label class="field"
-          >Horário do consumo<input
-            type="datetime-local"
-            [value]="consumedAt()"
-            (input)="setTime($any($event.target).value)"
-        /></label>
-      }
-      @case (1) {
-        <div class="intro">
-          <span>Passo 2 de 3</span>
-          <h3>O que entrou no prato?</h3>
-          <p>Seus favoritos aparecem primeiro. Você pode registrar vários alimentos.</p>
-        </div>
-        <label class="search"
-          ><svg lucideSearch size="17"></svg
-          ><input
-            #searchInput
-            type="search"
-            placeholder="Buscar arroz, banana, frango…"
-            [value]="query()"
-            (input)="search(searchInput.value)"
-        /></label>
-        <div class="food-results">
-          @if (loadingFoods()) {
-            <p>Buscando alimentos…</p>
-          }
-          @for (food of foods(); track food.id) {
-            <button type="button" (click)="addFood(food)">
-              <span
-                ><b>{{ food.descricao }}</b
-                ><small
-                  >{{ food.caloria | number: '1.0-0' }} kcal · base
-                  {{ food.qtd | number: '1.0-0' }} g</small
-                ></span
-              ><svg lucidePlus size="16"></svg>
-            </button>
-          } @empty {
-            @if (!loadingFoods()) {
-              <p>Nenhum alimento encontrado. Tente outra busca.</p>
-            }
-          }
-        </div>
-        @if (items().length) {
-          <p class="selection-note">
-            {{ items().length }}
-            {{ items().length === 1 ? 'alimento escolhido' : 'alimentos escolhidos' }} · revise as
-            porções no próximo passo.
-          </p>
-        }
-      }
-      @case (2) {
-        <div class="intro">
-          <span>Passo 3 de 3</span>
-          <h3>Pronto para confirmar?</h3>
-          <p>{{ selectedMeal()?.descricao }} · {{ consumedAt() | date: 'dd/MM · HH:mm' }}</p>
-        </div>
-        <div class="draft-items">
-          @for (item of items(); track item.foodId) {
-            <article>
-              <div>
-                <b>{{ item.descricao }}</b
-                ><small
-                  >{{ macroFor(item, 'caloria') | number: '1.0-0' }} kcal · P
-                  {{ macroFor(item, 'proteina') | number: '1.0-1' }} g</small
-                >
-              </div>
-              <div class="quantity">
-                <button
-                  type="button"
-                  aria-label="Diminuir"
-                  (click)="adjustQuantity(item.foodId, -10)"
-                >
-                  <svg lucideMinus size="14"></svg></button
-                ><input
-                  type="number"
-                  min="1"
-                  [value]="item.quantity"
-                  (input)="setQuantity(item.foodId, $any($event.target).valueAsNumber)"
-                /><span>g</span
-                ><button
-                  type="button"
-                  aria-label="Aumentar"
-                  (click)="adjustQuantity(item.foodId, 10)"
-                >
-                  <svg lucidePlus size="14"></svg></button
-                ><button
-                  type="button"
-                  class="remove"
-                  aria-label="Remover"
-                  (click)="removeFood(item.foodId)"
-                >
-                  <svg lucideTrash2 size="14"></svg>
-                </button>
-              </div>
-            </article>
-          }
-        </div>
-        <section class="review-total">
-          <span>Este lançamento soma</span
-          ><strong>{{ totals().caloria | number: '1.0-0' }} kcal</strong>
-          <p>
-            P {{ totals().proteina | number: '1.0-1' }} g · C
-            {{ totals().carbo | number: '1.0-1' }} g · G {{ totals().gordura | number: '1.0-1' }} g
-          </p>
-        </section>
-      }
+  <div class="flex-1">
+    @if (!query()) {
+      <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
+        Seus alimentos de sempre
+      </p>
     }
+
+    @if (carregandoFoods()) {
+      <p class="py-6 text-center text-[13px] text-fg-muted">Buscando alimentos…</p>
+    } @else if (catalogo().length) {
+      <div class="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
+        @for (food of catalogo(); track food.id) {
+          <vtp-food-pick-card
+            [food]="food"
+            [selecionado]="estaNoPrato(food)"
+            (pick)="escolher($event)"
+          />
+        }
+      </div>
+    } @else {
+      <p class="py-6 text-center text-[13px] text-fg-muted">
+        {{
+          query()
+            ? 'Nenhum alimento com esse nome.'
+            : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
+        }}
+      </p>
+    }
+
+    <div class="mt-4 rounded-[13px] border border-border bg-bg p-3">
+      <h3
+        class="mb-1.5 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-muted"
+      >
+        No prato
+        <span
+          class="ml-auto text-[12.5px] font-bold normal-case tracking-normal text-fg tabular-nums"
+        >
+          {{ totais().caloria | number: '1.0-0' }} kcal
+        </span>
+      </h3>
+
+      @if (itens().length) {
+        @for (item of itens(); track item.foodId) {
+          <vtp-plate-row
+            [item]="item"
+            (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
+            (remover)="tirar(item.foodId)"
+          />
+        }
+      } @else {
+        <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
+      }
+    </div>
+
+    <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
+      <label for="hora-consumo">Horário</label>
+      <input
+        id="hora-consumo"
+        class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
+        type="time"
+        [value]="hora()"
+        (change)="hora.set($any($event.target).value)"
+      />
+      <span>· sugerido por esta fase</span>
+    </div>
   </div>
 
-  <footer class="composer__footer">
-    @if (step() > 0) {
-      <button bdButton variant="ghost" type="button" (click)="back()">
-        <svg lucideArrowLeft size="16"></svg> Voltar
-      </button>
-    } @else {
-      <span></span>
-    }
-    @if (step() < 2) {
-      <button bdButton type="button" (click)="next()">
-        Continuar <svg lucideArrowRight size="16"></svg>
-      </button>
-    } @else {
-      <button bdButton type="button" [disabled]="saving() || !items().length" (click)="save()">
-        <svg lucideCheck size="16"></svg
-        >{{ saving() ? 'Salvando…' : entry() ? 'Salvar ajustes' : 'Registrar refeição' }}
-      </button>
-    }
-  </footer>
+  <vtp-step-footer
+    [carregando]="salvando()"
+    [desabilitado]="!itens().length"
+    [ultimo]="true"
+    (voltar)="cancelado.emit()"
+    (avancar)="salvar()"
+  />
 </section>

@@ -1,0 +1,145 @@
+<article class="card flex min-h-[520px] flex-col overflow-hidden animate-reveal">
+  <header class="flex flex-wrap items-start gap-3 border-b border-border px-5 py-4">
+    <span
+      class="grid size-10 flex-none place-items-center rounded-[14px] bg-primary-soft text-primary-strong"
+    >
+      <svg [lucideIcon]="icone()" size="18" aria-hidden="true"></svg>
+    </span>
+
+    <div class="min-w-0 flex-1">
+      <p
+        class="flex items-center gap-1.5 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle"
+      >
+        <svg lucideFlag size="12" aria-hidden="true"></svg>
+        Fase {{ indice() + 1 }} de {{ totalFases() }} · {{ rotuloEstado() }}
+      </p>
+      <h2 class="mt-0.5 text-[20px] font-bold tracking-tight">{{ fase().descricao }}</h2>
+      <p class="text-[12.5px] text-fg-muted">{{ fase().horario }}</p>
+    </div>
+
+    <div class="text-right">
+      <strong class="block text-[21px] font-extrabold leading-none tracking-tight tabular-nums">
+        {{ concluida() ? (fase().totais.caloria | number: '1.0-0') : '—' }}
+      </strong>
+      <span class="text-[11px] text-fg-muted">kcal</span>
+    </div>
+  </header>
+
+  <div class="flex-1 px-5 py-4">
+    @if (flash(); as texto) {
+      <p
+        class="mb-3 flex items-center gap-2 rounded-xl bg-primary-soft px-3 py-2.5 text-[13px] font-semibold text-primary-strong animate-reveal"
+      >
+        <svg lucidePlus size="14" aria-hidden="true"></svg>
+        {{ texto }}
+      </p>
+    }
+
+    @if (concluida()) {
+      <div class="mb-3.5 flex flex-wrap gap-2">
+        <span
+          class="rounded-full bg-surface-hover px-3.5 py-1.5 text-[12px] font-semibold tabular-nums"
+        >
+          {{ fase().totais.caloria | number: '1.0-0' }} kcal
+        </span>
+        <span
+          class="rounded-full bg-primary-soft px-3.5 py-1.5 text-[12px] font-semibold tabular-nums text-primary-strong"
+        >
+          {{ fase().totais.proteina | number: '1.0-1' }} g proteína
+        </span>
+        <span
+          class="rounded-full bg-accent-soft px-3.5 py-1.5 text-[12px] font-semibold tabular-nums text-fg"
+        >
+          {{ fase().totais.carbo | number: '1.0-1' }} g carbo
+        </span>
+        <span
+          class="rounded-full px-3.5 py-1.5 text-[12px] font-semibold tabular-nums"
+          style="
+            background-color: color-mix(in oklab, var(--fat), transparent 84%);
+            color: var(--fat);
+          "
+        >
+          {{ fase().totais.gordura | number: '1.0-1' }} g gordura
+        </span>
+      </div>
+
+      <ul class="flex list-none flex-col gap-1.5 p-0">
+        @for (item of fase().itens; track chaveDoItem(item)) {
+          @let chave = chaveDoItem(item);
+          <li class="group flex items-center gap-3 rounded-xl border border-border px-3 py-2.5">
+            <span
+              class="grid size-7 flex-none place-items-center overflow-hidden rounded-[9px] bg-primary-soft"
+            >
+              <vtp-food-illustration [illustrationKey]="item.illustrationKey" />
+            </span>
+
+            <b class="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{{ item.descricao }}</b>
+
+            <small class="whitespace-nowrap text-[12px] tabular-nums text-fg-muted">
+              {{ item.quantity | number: '1.0-0' }} g ·
+              {{ item.macros.caloria | number: '1.0-0' }} kcal
+            </small>
+
+            <span
+              class="flex flex-none gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+            >
+              <button
+                class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-primary-soft hover:text-primary-strong"
+                type="button"
+                [attr.aria-label]="'Editar o lançamento de ' + item.descricao"
+                (click)="editarLancamento.emit(item.entryId)"
+              >
+                <svg lucideEdit3 size="14" aria-hidden="true"></svg>
+              </button>
+              <button
+                class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-danger/10 hover:text-danger disabled:opacity-40"
+                type="button"
+                [disabled]="removendo() === chave"
+                [attr.aria-label]="'Remover ' + item.descricao"
+                (click)="removerItem.emit(item)"
+              >
+                <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+              </button>
+            </span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <div class="flex flex-col items-center gap-2.5 px-3 py-5 text-center">
+        <span class="grid size-[52px] place-items-center rounded-full bg-accent-soft text-accent">
+          <svg [lucideIcon]="icone()" size="23" aria-hidden="true"></svg>
+        </span>
+        <p class="max-w-[34ch] text-[13.5px] text-fg-muted">{{ mensagemVazia() }}</p>
+      </div>
+    }
+  </div>
+
+  <footer class="border-t border-border px-5 py-4">
+    <p
+      class="mb-3 flex items-center gap-2.5 rounded-[14px] border border-dashed border-border-strong px-3.5 py-2.5 text-[12.5px] text-fg-muted"
+    >
+      <span
+        class="grid size-[30px] flex-none place-items-center rounded-full bg-accent-soft text-accent"
+      >
+        <svg [lucideIcon]="iconeRecompensa()" size="15" aria-hidden="true"></svg>
+      </span>
+      @if (fasesRestantes() === 0) {
+        <span>Você chegou à bandeira. <b class="text-fg">Dia completo.</b></span>
+      } @else {
+        <span
+          >Faltam <b class="text-fg">{{ fasesRestantes() }}</b>
+          {{ fasesRestantes() === 1 ? 'fase' : 'fases' }} para a bandeira de fim de dia.</span
+        >
+      }
+    </p>
+
+    <button
+      class="inline-flex items-center gap-2.5 rounded-full bg-primary px-5 py-2.5 text-[14px] font-bold text-primary-contrast [box-shadow:0_0_0_4px_var(--bd-primary-soft)] transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04]"
+      type="button"
+      (click)="adicionar.emit()"
+    >
+      <svg lucidePlus size="16" aria-hidden="true"></svg>
+      {{ concluida() ? 'Adicionar aqui' : 'Preencher esta fase' }}
+    </button>
+  </footer>
+</article>

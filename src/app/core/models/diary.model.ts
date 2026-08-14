@@ -16,6 +16,8 @@ export interface DiaryNutrient {
 export interface DiaryEntryItem {
   food_id: number;
   descricao: string;
+  illustration_key: string | null;
+  image_url: string | null;
   quantity: number;
   macros: DiaryMacros;
   nutrientes: DiaryNutrient[];

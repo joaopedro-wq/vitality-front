@@ -17,21 +17,43 @@ src/app/
     atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
                  macro-summary/  anel + chips de macro (sm/lg/xl) — Metas, Diário e Dashboard
-                 diary-day-summary/ resumo de meta vs. consumido para uma jornada diária
-                 daily-checkpoint-track/ checkpoints de refeições, presentation-only
                  meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
-                                 → revelado) — usado no passo Sugestão e no painel "configurado"
-                 step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar)
+                                 → revelado) — usado no passo Sugestão, no painel "configurado" de
+                                 Metas e no `day-reveal-overlay` do Diário
+                 step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar);
+                                 `desabilitado` trava o avançar por regra de negócio (ex.: prato
+                                 vazio no Diário), separado de `carregando`
                  step-track/     trilha numerada com linha conectora — nav de qualquer fluxo
                                  multi-passo (usada hoje só no quiz de Metas, pronta pra outros)
                  palette-picker/ seletor presentation-only de paleta (swatch + opção ativa)
                  profile-photo-card/ apresentação reutilizável da foto de perfil
+                 macro-goal-strip/ faixa fina de kcal/P/C/G do dia (consumido/meta) — Diário
+                 diary-phase-card/ cartão de leitura de uma fase (refeição) do Diário — itens
+                                 achatados, macros, e a ação de registro daquela fase
+                 diary-destination-band/ faixa "Registrando em X" do composer do Diário, com
+                                 troca de destino opcional atrás de um botão
+                 plate-row/      linha de um alimento no prato sendo montado — chips de porção
+                                 (pouco/normal/bastante) só quando a porção de referência do
+                                 catálogo é conhecida; gramas livre é sempre a fonte de verdade
+                 food-pick-card/ card denso de escolha rápida de alimento (grade do composer),
+                                 com barra tri-macro — não confundir com food-tile (catálogo)
     organisms/   blocos grandes e compostos, presentation-only
                  auth-poster-layout/  chrome visual das telas de auth, herdando a paleta ativa
+                 journey-map/    mapa de fases do Diário — trilha serpentina SVG (`journey-
+                                 path.util.ts` gera a curva pra N fases), discos com estados
+                                 concluída/atual/selecionada, carimbo ao registrar, bandeira de
+                                 fim de dia
+                 day-reveal-overlay/ overlay de revelação do dia (aberto pela bandeira do mapa),
+                                 reusa `meta-reveal` arredondando os totais antes de passar
     directives/  diretivas presentation-only reusáveis (ex.: somente-numero.directive.ts)
     pipes/
     utils/       recomendacao-calc.util.ts (TMB/GET), nutrient-calc.util.ts (fator
                  qtd_pivot/qtd_base, replica o cálculo do backend pra preview client-side)
+                 diary-day.util.ts (achata entries[].items[] em fases/itens do Diário, payload de
+                 remoção de item, heurística de momento da refeição)
+                 journey-path.util.ts (curva serpentina do mapa de fases, paramétrica em N)
+                 macro-percent.util.ts (calcularPercentuaisMacro por caloria total,
+                 calcularProporcaoMacro por soma dos macros — pra barras contíguas sem buraco)
   services/
     meta.service.ts
     recomendacao.service.ts
@@ -41,8 +63,11 @@ src/app/
     auth/{login,register}/
     dashboard/
     diario/
-      diario-list/      jornada do dia, data, checkpoints e lançamentos
-      entry-composer/   mini-quiz local de criar/editar um lançamento
+      diario-list/      orquestrador da "Jornada do dia" — mapa de fases + faixa de macros;
+                        alterna a coluna direita entre `diary-phase-card` (leitura) e
+                        `entry-composer` (registro), nunca os dois ao mesmo tempo
+      entry-composer/   registro em tela única (sem trilha de passos) — a fase já vem decidida
+                        do mapa; navegação só pelos botões do `step-footer`
       meal-manager/     organizar nomes, horários e arquivamento das refeições
     alimentos/
       alimentos-list/             Biblioteca global: busca, fontes TACO/USDA e favoritos pessoais

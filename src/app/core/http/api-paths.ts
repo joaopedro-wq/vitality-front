@@ -47,6 +47,7 @@ export const apiPaths = {
   registro: (id: number | string) => `${environment.apiBaseUrl}/registro/${id}`,
 
   diaryDay: () => `${environment.apiBaseUrl}/diary/day`,
+  diaryRecentFoods: () => `${environment.apiBaseUrl}/diary/recent-foods`,
   diaryEntries: () => `${environment.apiBaseUrl}/diary/entries`,
   diaryEntry: (id: number | string) => `${environment.apiBaseUrl}/diary/entries/${id}`,
   diaryMeals: () => `${environment.apiBaseUrl}/diary/meals`,

@@ -1,0 +1,95 @@
+@if (dica()) {
+  <p class="mb-1.5 text-center text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle">
+    {{ dica() }}
+  </p>
+}
+
+<div
+  class="relative mx-auto w-full max-w-[310px]"
+  [style.aspect-ratio]="trilha().proporcao"
+  role="tablist"
+  aria-label="Fases do dia"
+>
+  <svg
+    class="absolute inset-0 h-full w-full"
+    [attr.viewBox]="trilha().viewBox"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    @for (segmento of trilha().segmentos; track $index) {
+      @let andado = andou($index);
+      <path
+        [attr.d]="segmento"
+        fill="none"
+        stroke-width="7"
+        stroke-linecap="round"
+        [attr.stroke]="andado ? 'var(--bd-primary)' : 'var(--bd-border-strong)'"
+        [attr.opacity]="andado ? 0.55 : 1"
+        [attr.stroke-dasharray]="andado ? null : '2 16'"
+      ></path>
+    }
+  </svg>
+
+  @for (no of nos(); track no.fase.mealId) {
+    <button
+      class="absolute flex w-[92px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 bg-transparent"
+      [style.left.%]="no.x"
+      [style.top.%]="no.y"
+      type="button"
+      role="tab"
+      [attr.aria-selected]="no.selecionada"
+      [attr.aria-label]="
+        no.fase.descricao +
+        (no.concluida ? ', concluída' : no.atual ? ', fase atual' : ', em aberto')
+      "
+      (click)="faseClick.emit(no.indice)"
+    >
+      <span
+        class="disco grid size-[52px] place-items-center rounded-full border-2 transition-[transform,background-color,border-color,color] duration-[240ms]"
+        [class]="no.classesDisco"
+        [class.is-bob]="no.balanca"
+        [class.is-beat]="no.pulsa"
+        [class.is-stamp]="no.carimba"
+        [style.box-shadow]="no.sombra"
+        (animationend)="aoTerminarAnimacao($event)"
+      >
+        <svg [lucideIcon]="no.icone" size="21" aria-hidden="true"></svg>
+      </span>
+
+      <span
+        class="text-center text-[11.5px] font-semibold leading-tight"
+        [class.text-primary-strong]="no.selecionada"
+        >{{ no.fase.descricao }}</span
+      >
+
+      <span class="text-[10.5px] tabular-nums text-fg-subtle">
+        @if (legenda(no.fase); as texto) {
+          {{ texto }}
+        } @else {
+          {{ no.fase.totais.caloria | number: '1.0-0' }} kcal
+        }
+      </span>
+    </button>
+  }
+
+  <button
+    class="absolute bottom-0 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 bg-transparent text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle transition-colors hover:text-primary-strong"
+    type="button"
+    [attr.aria-label]="
+      chegou() ? 'Ver o resumo do dia completo' : 'Ver como está seu dia até agora'
+    "
+    (click)="bandeiraClick.emit()"
+  >
+    <span
+      class="grid size-[38px] place-items-center rounded-full border-2 transition-[transform,background-color,border-color,color] duration-300"
+      [class]="
+        chegou()
+          ? 'border-accent bg-accent-soft text-accent scale-[1.08]'
+          : 'border-dashed border-border-strong bg-surface text-fg-subtle'
+      "
+    >
+      <svg lucideFlag size="17" aria-hidden="true"></svg>
+    </span>
+    Fim do dia
+  </button>
+</div>

@@ -12,6 +12,7 @@ export interface Alimento {
   fonte: FonteAlimento;
   source_reference: string | null;
   grupo: string | null;
+  illustration_key: string | null;
   status: StatusAlimento;
   is_favorite: boolean;
   image_url: string | null;

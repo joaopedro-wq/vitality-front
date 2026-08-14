@@ -1,0 +1,45 @@
+<div class="flex items-center gap-3 rounded-[15px] border border-primary bg-primary-soft px-3.5 py-3">
+  <span class="grid size-[34px] flex-none place-items-center rounded-xl bg-primary text-primary-contrast">
+    <svg [lucideIcon]="icone()" size="16" aria-hidden="true"></svg>
+  </span>
+
+  <span class="min-w-0 flex-1">
+    <span class="block text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong">
+      Registrando em
+    </span>
+    <b class="text-[14.5px] font-bold">{{ meal().descricao }}</b>
+    <small class="text-[13px] font-medium text-fg-muted"> · {{ meal().horario }}</small>
+  </span>
+
+  <button
+    class="inline-flex flex-none items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3 py-1.5 text-[12px] text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+    type="button"
+    [attr.aria-expanded]="aberto()"
+    (click)="alternarTroca.emit()"
+  >
+    <svg lucideArrowLeftRight size="13" aria-hidden="true"></svg>
+    Trocar
+  </button>
+</div>
+
+@if (aberto()) {
+  <div class="flex flex-wrap gap-2 px-0.5 pt-2.5 animate-reveal">
+    <p class="w-full text-[11.5px] text-fg-subtle">Ou toque direto em outra fase no mapa.</p>
+    @for (opcao of meals(); track opcao.id) {
+      <button
+        class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12.5px] transition-[transform,border-color,background-color,color] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+        [class]="
+          opcao.id === meal().id
+            ? 'border-primary bg-primary-soft font-bold text-primary-strong scale-[1.03]'
+            : 'border-border bg-surface text-fg hover:border-border-strong'
+        "
+        type="button"
+        [attr.aria-pressed]="opcao.id === meal().id"
+        (click)="selecionar.emit(opcao)"
+      >
+        <svg [lucideIcon]="iconeDe(opcao)" size="13" aria-hidden="true"></svg>
+        {{ opcao.descricao }}
+      </button>
+    }
+  </div>
+}
