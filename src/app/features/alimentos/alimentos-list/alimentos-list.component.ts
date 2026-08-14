@@ -1,4 +1,4 @@
-import { DecimalPipe, UpperCasePipe } from '@angular/common';
+import { DecimalPipe, DOCUMENT, UpperCasePipe } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import {
   ChangeDetectionStrategy,
@@ -8,12 +8,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { BdButtonComponent, BdPaginationComponent, type BdPageEvent } from 'bandeira-ui';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { BdButtonComponent } from 'bandeira-ui';
 import {
   LucideArrowDown,
   LucideArrowUp,
   LucideChevronDown,
+  LucideChevronLeft,
+  LucideChevronRight,
   LucideFilter,
   LucideHeart,
   LucideLayoutGrid,
@@ -24,7 +26,7 @@ import {
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import type { TableLazyLoadEvent } from 'primeng/table';
-import { Subject, debounceTime, finalize } from 'rxjs';
+import { Subject, debounceTime, finalize, skip } from 'rxjs';
 
 import {
   DataTableComponent,
@@ -41,6 +43,7 @@ import { AlimentoService, type FoodFilters } from '../../../services/alimento.se
 import { AlimentosFiltrosComponent } from '../alimentos-filtros/alimentos-filtros.component';
 
 const CALORIA_BOUNDS: [number, number] = [0, 900];
+const PAGE_SIZE = 20;
 type FoodSortField = NonNullable<FoodFilters['sort_field']>;
 interface FoodSortOption {
   field: FoodSortField;
@@ -102,11 +105,12 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     UpperCasePipe,
     RouterLink,
     BdButtonComponent,
-    BdPaginationComponent,
     DataTableComponent,
     LucideArrowDown,
     LucideArrowUp,
     LucideChevronDown,
+    LucideChevronLeft,
+    LucideChevronRight,
     LucideFilter,
     LucideHeart,
     LucideSearch,
@@ -122,6 +126,9 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
 })
 export class AlimentosListComponent {
   private readonly alimentosService = inject(AlimentoService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
   protected readonly auth = inject(AuthService);
   private readonly toastr = inject(ToastrService);
   private readonly buscaChange$ = new Subject<string>();
@@ -142,6 +149,7 @@ export class AlimentosListComponent {
   protected readonly filtrosAtivos = computed(() => {
     const [min, max] = this.caloriaRange();
     return (
+      Number(this.tab() === 'favorites') +
       this.grupoSelecionado().length +
       Number(min !== CALORIA_BOUNDS[0] || max !== CALORIA_BOUNDS[1])
     );
@@ -152,6 +160,15 @@ export class AlimentosListComponent {
   protected readonly pagina = signal(1);
   protected readonly totalRegistros = signal(0);
   protected readonly vazio = computed(() => !this.carregando() && this.alimentos().length === 0);
+  protected readonly totalPaginas = computed(() => Math.ceil(this.totalRegistros() / PAGE_SIZE));
+  protected readonly intervaloResultados = computed(() => {
+    const total = this.totalRegistros();
+    const inicio = total ? (this.pagina() - 1) * PAGE_SIZE + 1 : 0;
+    return { inicio, fim: Math.min(this.pagina() * PAGE_SIZE, total) };
+  });
+  protected readonly itensPaginacao = computed(() =>
+    this.criarItensPaginacao(this.pagina(), this.totalPaginas()),
+  );
 
   protected readonly detalhe = signal<Alimento | null>(null);
   protected readonly detalheCarregando = signal(false);
@@ -175,16 +192,27 @@ export class AlimentosListComponent {
   });
 
   constructor() {
+    const paginaUrl = Number(this.route.snapshot.queryParamMap.get('page'));
+    if (Number.isInteger(paginaUrl) && paginaUrl > 1) this.pagina.set(paginaUrl);
+
     this.loadGrupos();
     this.load();
+    this.route.queryParamMap.pipe(skip(1)).subscribe((params) => {
+      const paginaUrl = Number(params.get('page'));
+      const proximaPagina = Number.isInteger(paginaUrl) && paginaUrl > 1 ? paginaUrl : 1;
+      if (proximaPagina === this.pagina()) return;
+      this.pagina.set(proximaPagina);
+      this.rolarParaResultados();
+      this.load();
+    });
     this.buscaChange$.pipe(debounceTime(300)).subscribe((busca) => {
       this.busca.set(busca);
-      this.pagina.set(1);
+      this.reiniciarPaginacao();
       this.load();
     });
     this.caloriaRangeChange$.pipe(debounceTime(300)).subscribe((range) => {
       this.caloriaRange.set(range);
-      this.pagina.set(1);
+      this.reiniciarPaginacao();
       this.load();
     });
   }
@@ -202,7 +230,7 @@ export class AlimentosListComponent {
 
   selecionarTab(tab: 'all' | 'favorites'): void {
     this.tab.set(tab);
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.load();
   }
 
@@ -216,21 +244,25 @@ export class AlimentosListComponent {
 
   selecionarOrdenacao(field: FoodSortField): void {
     this.sortField.set(field);
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.fecharOrdenacao();
     this.load();
   }
 
   inverterOrdenacao(): void {
     this.sortOrder.update((order) => (order === 1 ? -1 : 1));
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.load();
   }
 
   onGrupoChange(grupos: string[]): void {
     this.grupoSelecionado.set(grupos);
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.load();
+  }
+
+  onSomenteFavoritosChange(somenteFavoritos: boolean): void {
+    this.selecionarTab(somenteFavoritos ? 'favorites' : 'all');
   }
 
   onCaloriaChange(range: [number, number]): void {
@@ -246,14 +278,19 @@ export class AlimentosListComponent {
   }
 
   limparFiltros(): void {
+    this.tab.set('all');
     this.grupoSelecionado.set([]);
     this.caloriaRange.set(CALORIA_BOUNDS);
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.load();
   }
 
-  irParaPagina(evento: BdPageEvent): void {
-    this.pagina.set(evento.page + 1);
+  irParaPagina(pagina: number): void {
+    if (pagina < 1 || pagina > this.totalPaginas() || pagina === this.pagina() || this.carregando())
+      return;
+    this.pagina.set(pagina);
+    this.sincronizarPaginaNaUrl();
+    this.rolarParaResultados();
     this.load();
   }
 
@@ -301,12 +338,58 @@ export class AlimentosListComponent {
     const field = Array.isArray(event.sortField) ? event.sortField[0] : event.sortField;
     this.sortField.set((field as FoodFilters['sort_field']) ?? 'descricao');
     this.sortOrder.set(event.sortOrder === -1 ? -1 : 1);
-    this.pagina.set(1);
+    this.reiniciarPaginacao();
     this.load();
   }
 
   protected onDetalheImagemErro(): void {
     this.detalheImagemComErro.set(true);
+  }
+
+  private reiniciarPaginacao(): void {
+    this.pagina.set(1);
+    this.sincronizarPaginaNaUrl();
+    this.rolarParaResultados();
+  }
+
+  private sincronizarPaginaNaUrl(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: this.pagina() > 1 ? this.pagina() : null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  private rolarParaResultados(): void {
+    requestAnimationFrame(() => {
+      this.document
+        .getElementById('food-results')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  private criarItensPaginacao(
+    paginaAtual: number,
+    totalPaginas: number,
+  ): Array<number | 'ellipsis'> {
+    if (totalPaginas <= 7) return Array.from({ length: totalPaginas }, (_, index) => index + 1);
+
+    const paginas = new Set([1, totalPaginas]);
+    for (
+      let pagina = Math.max(2, paginaAtual - 1);
+      pagina <= Math.min(totalPaginas - 1, paginaAtual + 1);
+      pagina++
+    ) {
+      paginas.add(pagina);
+    }
+
+    const itens: Array<number | 'ellipsis'> = [];
+    for (const pagina of [...paginas].sort((a, b) => a - b)) {
+      const anterior = itens.at(-1);
+      if (typeof anterior === 'number' && pagina - anterior > 1) itens.push('ellipsis');
+      itens.push(pagina);
+    }
+    return itens;
   }
 
   private loadGrupos(): void {

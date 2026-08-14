@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { BdSwitchComponent } from 'bandeira-ui';
 import { LucideSearch, LucideX } from '@lucide/angular';
 
 import {
@@ -11,7 +12,13 @@ import type { AlimentoGrupo } from '../../../core/models/alimento.model';
 @Component({
   selector: 'vtp-alimentos-filtros',
   standalone: true,
-  imports: [FacetCheckboxListComponent, RangeSliderComponent, LucideSearch, LucideX],
+  imports: [
+    BdSwitchComponent,
+    FacetCheckboxListComponent,
+    RangeSliderComponent,
+    LucideSearch,
+    LucideX,
+  ],
   templateUrl: './alimentos-filtros.component.html',
   styleUrl: './alimentos-filtros.component.scss',
   host: { class: 'block' },
@@ -25,10 +32,13 @@ export class AlimentosFiltrosComponent {
   readonly caloriaBounds = input<[number, number]>([0, 900]);
   readonly busca = input('');
   readonly mostrarBusca = input(false);
+  readonly mostrarFavoritos = input(false);
+  readonly somenteFavoritos = input(false);
 
   readonly grupoSelecionadoChange = output<string[]>();
   readonly caloriaRangeChange = output<[number, number]>();
   readonly buscaChange = output<string>();
+  readonly somenteFavoritosChange = output<boolean>();
   readonly limpar = output<void>();
 
   protected readonly opcoesGrupo = computed<FacetOption[]>(() =>
@@ -38,7 +48,12 @@ export class AlimentosFiltrosComponent {
   protected readonly temFiltroAtivo = computed(() => {
     const [min, max] = this.caloriaRange();
     const [boundMin, boundMax] = this.caloriaBounds();
-    return this.grupoSelecionado().length > 0 || min !== boundMin || max !== boundMax;
+    return (
+      this.somenteFavoritos() ||
+      this.grupoSelecionado().length > 0 ||
+      min !== boundMin ||
+      max !== boundMax
+    );
   });
 
   protected formatKcal = (v: number): string => `${v} kcal`;

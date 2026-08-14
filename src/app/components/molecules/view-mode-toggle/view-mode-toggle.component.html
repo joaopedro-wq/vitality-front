@@ -2,15 +2,16 @@
   @for (opt of options(); track opt.value) {
     <button
       type="button"
-      class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11.5px] font-bold transition-colors"
+      class="inline-flex size-8 items-center justify-center rounded-full transition-colors"
       [class]="
         opt.value === value() ? 'bg-primary text-primary-contrast' : 'text-fg-muted hover:text-fg'
       "
       [attr.aria-pressed]="opt.value === value()"
+      [attr.aria-label]="opt.label"
+      [attr.title]="opt.label"
       (click)="valueChange.emit(opt.value)"
     >
-      <svg [lucideIcon]="opt.icon" size="13" aria-hidden="true"></svg>
-      {{ opt.label }}
+      <svg [lucideIcon]="opt.icon" size="15" aria-hidden="true"></svg>
     </button>
   }
 </div>

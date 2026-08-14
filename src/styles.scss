@@ -272,6 +272,214 @@ a[bdButton] {
   border-radius: 999px !important;
 }
 
+.sort-and-view {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.sort-control {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.sort-criterion,
+.sort-direction {
+  min-height: 38px;
+  border: 1px solid var(--bd-border);
+  background: var(--bd-surface);
+  color: var(--bd-fg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.sort-criterion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.45rem 0 0.7rem;
+  border-radius: 999px 0 0 999px;
+}
+.sort-criterion span {
+  color: var(--bd-fg-muted);
+  font-weight: 600;
+}
+.sort-criterion b {
+  font-weight: 800;
+}
+.sort-direction {
+  display: grid;
+  width: 38px;
+  place-items: center;
+  margin-left: -1px;
+  border-radius: 0 999px 999px 0;
+  color: var(--bd-primary-strong);
+}
+.sort-criterion:hover,
+.sort-direction:hover {
+  background: var(--bd-surface-hover);
+}
+.sort-criterion:focus-visible,
+.sort-direction:focus-visible,
+.sort-options button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: none;
+  box-shadow: var(--bd-focus-ring);
+}
+.sort-options {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 80;
+  display: grid;
+  min-width: 190px;
+  padding: 0.4rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 14px;
+  background: var(--bd-surface);
+  box-shadow: var(--bd-shadow-lg);
+}
+.sort-options p {
+  margin: 0.25rem 0.45rem 0.4rem;
+  color: var(--bd-fg-muted);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sort-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  padding: 0.45rem 0.55rem;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--bd-fg);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: left;
+}
+.sort-options button:hover,
+.sort-options button.active {
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
+.sort-options button span {
+  color: var(--bd-fg-muted);
+  font-size: 0.67rem;
+}
+.sort-scrim {
+  display: none;
+}
+
+.food-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 20px;
+  background: var(--bd-surface);
+  transition: opacity var(--bd-duration) var(--bd-ease);
+}
+.food-pagination--loading {
+  pointer-events: none;
+  opacity: 0.55;
+}
+.food-pagination__summary span {
+  color: var(--bd-primary-strong);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.food-pagination__summary p {
+  margin: 0.18rem 0 0;
+  color: var(--bd-fg-muted);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+.food-pagination__summary b {
+  color: var(--bd-fg);
+}
+.food-pagination__navigation {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.food-pagination__step,
+.food-pagination__pages button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  border: 1px solid var(--bd-border);
+  border-radius: 999px;
+  background: var(--bd-surface);
+  color: var(--bd-fg-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  transition:
+    background var(--bd-duration) var(--bd-ease),
+    border-color var(--bd-duration) var(--bd-ease),
+    color var(--bd-duration) var(--bd-ease);
+}
+.food-pagination__step {
+  gap: 0.3rem;
+  padding: 0 0.65rem;
+}
+.food-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.food-pagination__pages button {
+  min-width: 36px;
+  padding: 0 0.4rem;
+}
+.food-pagination__pages > span {
+  padding: 0 0.25rem;
+  color: var(--bd-fg-subtle);
+}
+.food-pagination__step:not(:disabled):hover,
+.food-pagination__pages button:not(:disabled):hover {
+  border-color: var(--bd-primary);
+  color: var(--bd-primary-strong);
+}
+.food-pagination__pages button.active {
+  border-color: var(--bd-primary);
+  background: var(--bd-primary);
+  color: var(--bd-primary-contrast);
+}
+.food-pagination__step:disabled,
+.food-pagination__pages button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.food-pagination__step:focus-visible,
+.food-pagination__pages button:focus-visible {
+  outline: none;
+  box-shadow: var(--bd-focus-ring);
+}
+.food-pagination__status {
+  display: none;
+  color: var(--bd-fg-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 // bd-button--lg/--md ficam grandes demais em telas estreitas -- reduz pro
 // tamanho de bd-button--sm nesse breakpoint em vez de trocar o size no
 // template (util pra qualquer bdButton do sistema, nao so o da tela de
@@ -286,6 +494,88 @@ a[bdButton] {
     min-height: 38px !important;
     padding: 0.45rem 0.95rem !important;
     font-size: var(--bd-text-sm, 0.875rem) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .food-library .toolbar-search {
+    order: 1;
+  }
+  .food-library .filter-trigger,
+  .food-library .sort-and-view {
+    order: 2;
+  }
+  .food-library .sort-and-view {
+    gap: 0.35rem;
+    margin-left: 0;
+  }
+  .food-library .sort-criterion {
+    padding-left: 0.6rem;
+  }
+  .food-library .sort-criterion > span {
+    display: none;
+  }
+  .sort-scrim {
+    position: fixed;
+    z-index: 70;
+    inset: 0;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.42);
+    cursor: pointer;
+  }
+  .sort-options {
+    position: fixed;
+    right: 0;
+    bottom: calc(68px + env(safe-area-inset-bottom));
+    left: 0;
+    z-index: 75;
+    min-width: 0;
+    padding: 0.85rem 1rem 1rem;
+    border: 0;
+    border-radius: 22px 22px 0 0;
+    box-shadow: var(--bd-shadow-lg);
+  }
+  .sort-options p {
+    margin: 0.1rem 0.35rem 0.6rem;
+    font-size: 0.7rem;
+  }
+  .sort-options button {
+    min-height: 44px;
+    padding-inline: 0.7rem;
+    font-size: 0.85rem;
+  }
+  .food-pagination {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 0.9rem;
+  }
+  .food-pagination__summary {
+    text-align: center;
+  }
+  .food-pagination__summary p {
+    font-size: 0.76rem;
+  }
+  .food-pagination__navigation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.45rem;
+  }
+  .food-pagination__pages {
+    display: none;
+  }
+  .food-pagination__status {
+    display: block;
+    align-self: center;
+  }
+  .food-pagination__step {
+    min-height: 42px;
+    padding-inline: 0.55rem;
+  }
+  .food-pagination__step--next {
+    grid-column: 3;
   }
 }
 

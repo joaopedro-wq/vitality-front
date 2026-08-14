@@ -26,6 +26,21 @@
     </label>
   }
 
+  @if (mostrarFavoritos()) {
+    <section class="favorite-filter">
+      <div>
+        <p>Favoritos</p>
+        <span>Exibir apenas seus alimentos salvos</span>
+      </div>
+      <bd-switch
+        [checked]="somenteFavoritos()"
+        (checkedChange)="somenteFavoritosChange.emit($event)"
+      >
+        <span class="sr-only">Somente favoritos</span>
+      </bd-switch>
+    </section>
+  }
+
   <vtp-facet-checkbox-list
     label="Grupo alimentar"
     [options]="opcoesGrupo()"
