@@ -42,6 +42,21 @@
             }
           </div>
         </fieldset>
+        <fieldset class="plan-tags">
+          <legend>Compatibilidade revisada para restrições</legend>
+          <p>Marque somente após confirmar ingredientes e possível contaminação cruzada.</p>
+          <div>
+            @for (restriction of restrictions(); track restriction.slug) {
+              <button
+                type="button"
+                [class.selected]="selectedRestrictions().includes(restriction.slug)"
+                (click)="toggleRestriction(restriction.slug)"
+              >
+                {{ restriction.label }}
+              </button>
+            }
+          </div>
+        </fieldset>
         <div class="numbers">
           <bd-field label="Calorias" required
             ><input bdInput type="number" formControlName="caloria" /></bd-field

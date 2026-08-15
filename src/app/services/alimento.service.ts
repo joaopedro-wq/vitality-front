@@ -13,6 +13,7 @@ import type {
   StatusAlimento,
   UpdateAlimentoPayload,
   FoodPlanTag,
+  FoodRestriction,
 } from '../core/models/alimento.model';
 
 export interface FoodFilters {
@@ -99,6 +100,16 @@ export class AlimentoService {
   updatePlanTags(id: number, slugs: string[]): Observable<Alimento> {
     return this.http
       .put<ApiResponse<Alimento>>(apiPaths.adminFoodPlanTagsFor(id), { slugs })
+      .pipe(map((response) => response.data));
+  }
+  restrictions(): Observable<FoodRestriction[]> {
+    return this.http
+      .get<ApiResponse<FoodRestriction[]>>(apiPaths.adminFoodRestrictions())
+      .pipe(map((response) => response.data));
+  }
+  updateRestrictions(id: number, slugs: string[]): Observable<Alimento> {
+    return this.http
+      .put<ApiResponse<Alimento>>(apiPaths.adminFoodRestrictionsFor(id), { slugs })
       .pipe(map((response) => response.data));
   }
 

@@ -18,6 +18,7 @@ export interface Alimento {
   image_url: string | null;
   updated_at: string | null;
   plan_tags?: Array<{ slug: string; label: string }>;
+  restrictions?: FoodRestriction[];
   nutrientes?: NutrienteAlimento[];
 }
 
@@ -44,6 +45,12 @@ export interface FoodPlanTag {
   id: number;
   slug: string;
   label: string;
+}
+
+export interface FoodRestriction {
+  slug: string;
+  label: string;
+  type: 'diet' | 'intolerance' | 'allergy';
 }
 
 export type CreateAlimentoPayload = Pick<

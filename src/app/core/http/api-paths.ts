@@ -39,6 +39,9 @@ export const apiPaths = {
   adminFoodPlanTags: () => `${environment.apiBaseUrl}/admin/food-plan-tags`,
   adminFoodPlanTagsFor: (id: number | string) =>
     `${environment.apiBaseUrl}/admin/foods/${id}/plan-tags`,
+  adminFoodRestrictions: () => `${environment.apiBaseUrl}/admin/food-restrictions`,
+  adminFoodRestrictionsFor: (id: number | string) =>
+    `${environment.apiBaseUrl}/admin/foods/${id}/restrictions`,
 
   refeicoes: () => `${environment.apiBaseUrl}/refeicao`,
   refeicao: (id: number | string) => `${environment.apiBaseUrl}/refeicao/${id}`,
@@ -47,6 +50,8 @@ export const apiPaths = {
   dieta: (id: number | string) => `${environment.apiBaseUrl}/dieta/${id}`,
 
   mealPlans: () => `${environment.apiBaseUrl}/meal-plans`,
+  mealPlanProfile: () => `${environment.apiBaseUrl}/meal-plan-profile`,
+  mealPlanRestrictions: () => `${environment.apiBaseUrl}/meal-plan-restrictions`,
   mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
   mealPlanMealPreview: (position: number) =>
     `${environment.apiBaseUrl}/meal-plans/preview/meal/${position}`,

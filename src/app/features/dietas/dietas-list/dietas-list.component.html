@@ -141,6 +141,48 @@
         </div>
       </fieldset>
       <fieldset>
+        <legend>Qual alimentação combina com você?</legend>
+        <div class="mt-3 flex flex-wrap gap-2">
+          @for (
+            option of [
+              { value: 'onivora', label: 'Onívora' },
+              { value: 'vegetariana', label: 'Vegetariana' },
+              { value: 'vegana', label: 'Vegana' },
+            ];
+            track option.value
+          ) {
+            <button
+              class="choice"
+              [class.choice-active]="dietType() === option.value"
+              type="button"
+              (click)="setDietType(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>
+          Restrições e intolerâncias <span class="font-normal text-fg-muted">(opcional)</span>
+        </legend>
+        <p class="m-0 mt-2 text-sm text-fg-muted">
+          Só usamos alimentos revisados como compatíveis com as restrições selecionadas.
+        </p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          @for (restriction of restrictionOptions(); track restriction.slug) {
+            <button
+              class="choice"
+              [class.choice-active]="hasRestriction(restriction.slug)"
+              type="button"
+              (click)="toggleRestriction(restriction.slug)"
+            >
+              {{ restriction.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
         <legend>
           Alimentos que você prefere evitar
           <span class="font-normal text-fg-muted">(opcional)</span>
@@ -191,6 +233,9 @@
       {{ plan.totals.caloria | number: '1.0-0' }} kcal ·
       {{ plan.totals.proteina | number: '1.0-0' }} g de proteína
     </p>
+    @if (plan.summary) {
+      <p class="plan-warning">{{ plan.summary }}</p>
+    }
     @if (plan.warning) {
       <p class="plan-warning">{{ plan.warning }}</p>
     }
@@ -208,6 +253,9 @@
               <li>{{ item.descricao }} · {{ item.quantity | number: '1.0-0' }} g</li>
             }
           </ul>
+          @if (meal.explanation) {
+            <p class="m-0 mt-3 text-sm text-fg-muted">{{ meal.explanation }}</p>
+          }
           <button
             class="mt-3 text-sm font-bold text-primary-strong underline"
             type="button"
@@ -222,6 +270,10 @@
       }
     </div>
     <div class="mt-7 rounded-[22px] bg-primary-soft p-5">
+      <p class="m-0 mb-4 text-sm text-fg-muted">
+        Sugestão geral de alimentação; não substitui orientação de nutricionista, especialmente em
+        condições clínicas.
+      </p>
       <label class="block text-sm font-bold" for="plan-title">Nome do plano</label
       ><input
         id="plan-title"

@@ -9,6 +9,7 @@ import type {
   MealPlan,
   MealPlanDraft,
   MealPlanPreferences,
+  FoodRestrictionOption,
 } from '../core/models/meal-plan.model';
 
 @Injectable({ providedIn: 'root' })
@@ -27,15 +28,10 @@ export class MealPlanService {
       .pipe(map((res) => res.data));
   }
 
-  regenerateMeal(
-    preferences: MealPlanPreferences,
-    position: number,
-    avoidFoodIds: number[],
-  ): Observable<MealPlanDraft> {
+  regenerateMeal(draftId: string, position: number): Observable<MealPlanDraft> {
     return this.http
       .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanMealPreview(position), {
-        ...preferences,
-        avoid_food_ids: avoidFoodIds,
+        draft_id: draftId,
       })
       .pipe(map((res) => res.data));
   }
@@ -44,8 +40,26 @@ export class MealPlanService {
     return this.http
       .post<ApiResponse<MealPlan>>(apiPaths.mealPlans(), {
         titulo: payload.titulo,
-        ...payload.preferences,
+        draft_id: payload.draft_id,
       })
+      .pipe(map((res) => res.data));
+  }
+
+  profile(): Observable<MealPlanPreferences> {
+    return this.http
+      .get<ApiResponse<MealPlanPreferences>>(apiPaths.mealPlanProfile())
+      .pipe(map((res) => res.data));
+  }
+
+  saveProfile(profile: MealPlanPreferences): Observable<MealPlanPreferences> {
+    return this.http
+      .put<ApiResponse<MealPlanPreferences>>(apiPaths.mealPlanProfile(), profile)
+      .pipe(map((res) => res.data));
+  }
+
+  restrictions(): Observable<FoodRestrictionOption[]> {
+    return this.http
+      .get<ApiResponse<FoodRestrictionOption[]>>(apiPaths.mealPlanRestrictions())
       .pipe(map((res) => res.data));
   }
 
