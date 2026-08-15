@@ -2,55 +2,61 @@
   <p class="px-1 py-10 text-center text-[14px] text-fg-muted">Preparando seu diário…</p>
 } @else {
   <section class="mx-auto flex max-w-[1140px] flex-col gap-4 animate-reveal">
-    <header class="flex flex-wrap items-center gap-3">
-      <div class="flex items-center gap-1">
-        <button
-          class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
-          type="button"
-          aria-label="Dia anterior"
-          (click)="previousDay()"
-        >
-          <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
-        </button>
-
-        <span class="px-2">
-          <b class="block text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
-          <small class="text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
-            selectedDate() === today ? 'Hoje' : selectedDate()
-          }}</small>
-        </span>
-
-        <button
-          class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
-          type="button"
-          aria-label="Próximo dia"
-          [disabled]="!canGoNext()"
-          (click)="nextDay()"
-        >
-          <svg lucideArrowRight size="16" aria-hidden="true"></svg>
-        </button>
-
-        @if (selectedDate() !== today) {
-          <button
-            class="ml-1 rounded-full border border-border px-3 py-1 text-[12px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
-            type="button"
-            (click)="goToday()"
-          >
-            Hoje
-          </button>
-        }
+    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+      <div class="max-w-[56ch]">
+        <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+          Diário
+        </p>
+        <h1 class="m-0 mt-1 text-[24px] tracking-[-0.02em] text-balance">Diário alimentar</h1>
+        <p class="m-0 mt-2 text-[13.5px] leading-[1.55] text-fg-muted">
+          Registre suas refeições e acompanhe a composição do seu dia.
+        </p>
       </div>
 
-      <button
-        class="ml-auto"
-        bdButton
-        variant="ghost"
-        type="button"
-        (click)="managerOpen.set(true)"
-      >
-        <svg lucideSettings2 size="16"></svg>
-        Organizar refeições
-      </button>
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-1">
+          <button
+            class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+            type="button"
+            aria-label="Dia anterior"
+            (click)="previousDay()"
+          >
+            <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
+          </button>
+
+          <span class="px-2">
+            <b class="block text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
+            <small class="text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
+              selectedDate() === today ? 'Hoje' : selectedDate()
+            }}</small>
+          </span>
+
+          <button
+            class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
+            type="button"
+            aria-label="Próximo dia"
+            [disabled]="!canGoNext()"
+            (click)="nextDay()"
+          >
+            <svg lucideArrowRight size="16" aria-hidden="true"></svg>
+          </button>
+
+          @if (selectedDate() !== today) {
+            <button
+              class="ml-1 rounded-full border border-border px-3 py-1 text-[12px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+              type="button"
+              (click)="goToday()"
+            >
+              Hoje
+            </button>
+          }
+        </div>
+
+        <button bdButton variant="ghost" type="button" (click)="managerOpen.set(true)">
+          <svg lucideSettings2 size="16"></svg>
+          Organizar refeições
+        </button>
+      </div>
     </header>
 
     <vtp-macro-goal-strip [totals]="totals()" [meta]="meta()" />
@@ -59,6 +65,7 @@
       <div
         class="card px-3 py-5 md:block"
         [class.hidden]="modo() === 'compor'"
+        [class.max-md:hidden]="faseMobileAberta()"
         style="
           background:
             radial-gradient(90% 55% at 50% 0%, var(--bd-primary-soft) 0%, transparent 55%),
@@ -89,18 +96,29 @@
           (trocarMeal)="trocarDestino($event)"
         />
       } @else if (faseAtual(); as fase) {
-        <vtp-diary-phase-card
-          [fase]="fase"
-          [indice]="faseSelecionada()"
-          [totalFases]="fases().length"
-          [fasesRestantes]="fasesRestantes()"
-          [mensagemVazia]="mensagemVazia()"
-          [flash]="flash()"
-          [removendo]="removendo()"
-          (adicionar)="abrirComposerDaFase()"
-          (removerItem)="removerItem($event)"
-          (editarLancamento)="editarLancamento($event)"
-        />
+        <div class="md:block" [class.max-md:hidden]="!faseMobileAberta()">
+          <button
+            class="mb-2 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-fg-muted transition-colors hover:text-primary-strong md:hidden"
+            type="button"
+            (click)="fecharFaseMobile()"
+          >
+            <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
+            Voltar ao mapa
+          </button>
+
+          <vtp-diary-phase-card
+            [fase]="fase"
+            [indice]="faseSelecionada()"
+            [totalFases]="fases().length"
+            [fasesRestantes]="fasesRestantes()"
+            [mensagemVazia]="mensagemVazia()"
+            [flash]="flash()"
+            [removendo]="removendo()"
+            (adicionar)="abrirComposerDaFase()"
+            (removerItem)="removerItem($event)"
+            (editarLancamento)="editarLancamento($event)"
+          />
+        </div>
       } @else {
         <div class="card p-6 text-[13.5px] text-fg-muted">
           Organize suas refeições para começar a registrar.

@@ -20,6 +20,8 @@ src/app/
                  meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
                                  → revelado) — usado no passo Sugestão, no painel "configurado" de
                                  Metas e no `day-reveal-overlay` do Diário
+                 nutrition-reveal/ composição reutilizável da revelação (macros e, opcionalmente,
+                                  micronutrientes) — bandeira do Diário e revisão da refeição
                  step-footer/    rodapé padrão de wizard (voltar + botão circular de avançar);
                                  `desabilitado` trava o avançar por regra de negócio (ex.: prato
                                  vazio no Diário), separado de `carregando`
@@ -47,8 +49,8 @@ src/app/
                                  reusa `meta-reveal` arredondando os totais antes de passar
     directives/  diretivas presentation-only reusáveis (ex.: somente-numero.directive.ts)
     pipes/
-    utils/       recomendacao-calc.util.ts (TMB/GET), nutrient-calc.util.ts (fator
-                 qtd_pivot/qtd_base, replica o cálculo do backend pra preview client-side)
+    utils/       recomendacao-calc.util.ts (TMB/GET), meal-nutrition.util.ts (soma o detalhe
+                 nutricional do catálogo proporcionalmente ao rascunho da refeição)
                  diary-day.util.ts (achata entries[].items[] em fases/itens do Diário, payload de
                  remoção de item, heurística de momento da refeição)
                  journey-path.util.ts (curva serpentina do mapa de fases, paramétrica em N)
@@ -65,8 +67,9 @@ src/app/
     diario/
       diario-list/      orquestrador da "Jornada do dia" — mapa de fases + faixa de macros;
                         alterna a coluna direita entre `diary-phase-card` (leitura) e
-                        `entry-composer` (registro), nunca os dois ao mesmo tempo
-      entry-composer/   registro em tela única (sem trilha de passos) — a fase já vem decidida
+                        `entry-composer` (registro), nunca os dois ao mesmo tempo; no mobile o
+                        mapa é a visão inicial e a fase abre sob demanda
+      entry-composer/   registro em dois passos (montagem e revisão) — a fase já vem decidida
                         do mapa; navegação só pelos botões do `step-footer`
       meal-manager/     organizar nomes, horários e arquivamento das refeições
     alimentos/

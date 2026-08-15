@@ -75,6 +75,7 @@ export class DiarioListComponent {
   protected readonly loading = signal(true);
   protected readonly managerOpen = signal(false);
   protected readonly revelacaoAberta = signal(false);
+  protected readonly faseMobileAberta = signal(false);
 
   protected readonly modo = signal<Modo>('cartao');
   protected readonly faseSelecionada = signal(0);
@@ -136,7 +137,12 @@ export class DiarioListComponent {
 
   protected selecionarFase(indice: number): void {
     this.faseSelecionada.set(indice);
+    this.faseMobileAberta.set(true);
     if (this.modo() === 'compor') this.entryEmEdicao.set(null);
+  }
+
+  protected fecharFaseMobile(): void {
+    this.faseMobileAberta.set(false);
   }
 
   protected abrirComposerDaFase(): void {
@@ -168,6 +174,7 @@ export class DiarioListComponent {
   protected cancelarComposer(): void {
     this.modo.set('cartao');
     this.entryEmEdicao.set(null);
+    this.faseMobileAberta.set(false);
     this.limparQueryParamRegistrar();
   }
 
@@ -175,6 +182,7 @@ export class DiarioListComponent {
     const fase = this.faseAtual();
     this.modo.set('cartao');
     this.entryEmEdicao.set(null);
+    this.faseMobileAberta.set(false);
     this.limparQueryParamRegistrar();
     if (fase) {
       this.carimbo.set(fase.mealId);
@@ -183,12 +191,6 @@ export class DiarioListComponent {
     this.loadDay();
   }
 
-  /**
-   * A API guarda lançamentos, não alimentos soltos: tirar um alimento é regravar
-   * o lançamento sem ele. Quando era o último item, regravar com lista vazia não
-   * é comportamento definido no backend — aí a operação certa é apagar o
-   * lançamento, e só esse caso pede confirmação.
-   */
   protected removerItem(item: FaseItem): void {
     const entry = this.day()?.entries.find((registro) => registro.id === item.entryId);
     if (!entry) return;
@@ -267,6 +269,7 @@ export class DiarioListComponent {
               metas[0] ??
               null,
           );
+          this.faseMobileAberta.set(false);
           this.sincronizarFase();
         },
         error: () => this.toastr.error('Não foi possível carregar seu Diário agora.'),

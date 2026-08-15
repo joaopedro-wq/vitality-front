@@ -32,7 +32,7 @@
 
   @for (no of nos(); track no.fase.mealId) {
     <button
-      class="absolute flex w-[92px] -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1.5 bg-transparent"
+      class="absolute flex w-[92px] -translate-x-1/2 -translate-y-1/2 cursor-pointer flex-col items-center gap-1.5 bg-transparent"
       [style.left.%]="no.x"
       [style.top.%]="no.y"
       type="button"
@@ -73,7 +73,7 @@
   }
 
   <button
-    class="absolute bottom-0 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 bg-transparent text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle transition-colors hover:text-primary-strong"
+    class="absolute bottom-0 left-1/2 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 bg-transparent text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle transition-colors hover:text-primary-strong"
     type="button"
     [attr.aria-label]="
       chegou() ? 'Ver o resumo do dia completo' : 'Ver como está seu dia até agora'

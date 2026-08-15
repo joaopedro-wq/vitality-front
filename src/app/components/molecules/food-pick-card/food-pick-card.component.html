@@ -1,9 +1,7 @@
 <button
-  class="relative flex w-full flex-col gap-1.5 rounded-[13px] border bg-surface p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:border-primary"
+  class="relative flex h-[138px] w-full cursor-pointer flex-col justify-between rounded-[13px] border bg-surface p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:border-primary"
   [class]="
-    selecionado()
-      ? 'border-primary [box-shadow:0_0_0_3px_var(--bd-primary-soft)]'
-      : 'border-border'
+    selecionado() ? 'border-primary [box-shadow:0_0_0_3px_var(--bd-primary-soft)]' : 'border-border'
   "
   type="button"
   [attr.aria-pressed]="selecionado()"
@@ -17,22 +15,38 @@
     </span>
   }
 
-  <span class="flex items-center gap-2">
-    <span class="grid size-[26px] flex-none place-items-center overflow-hidden rounded-lg bg-primary-soft">
+  <span class="flex items-start gap-2">
+    <span
+      class="grid size-[26px] flex-none place-items-center overflow-hidden rounded-lg bg-primary-soft"
+    >
       <vtp-food-illustration [illustrationKey]="food().illustration_key" />
     </span>
     <span class="min-w-0">
-      <b class="block text-[12.5px] font-semibold leading-tight">{{ food().descricao }}</b>
+      <b class="block h-[30px] overflow-hidden text-[12.5px] font-semibold leading-tight">{{
+        food().descricao
+      }}</b>
       <small class="text-[11px] tabular-nums text-fg-muted">
         {{ food().caloria | number: '1.0-0' }} kcal / {{ food().qtd | number: '1.0-0' }} g
       </small>
     </span>
   </span>
 
-  <span
-    class="flex h-[5px] overflow-hidden rounded-full bg-surface-hover"
-    aria-hidden="true"
-  >
+  <span class="grid grid-cols-3 gap-1 text-[10.5px] font-semibold tabular-nums text-fg-muted">
+    <span class="flex items-center gap-1">
+      <i class="size-1.5 rounded-full bg-primary" aria-hidden="true"></i>
+      P {{ food().proteina | number: '1.0-1' }}g
+    </span>
+    <span class="flex items-center gap-1">
+      <i class="size-1.5 rounded-full bg-accent" aria-hidden="true"></i>
+      C {{ food().carbo | number: '1.0-1' }}g
+    </span>
+    <span class="flex items-center gap-1">
+      <i class="size-1.5 rounded-full" style="background-color: var(--fat)" aria-hidden="true"></i>
+      G {{ food().gordura | number: '1.0-1' }}g
+    </span>
+  </span>
+
+  <span class="flex h-[5px] overflow-hidden rounded-full bg-surface-hover" aria-hidden="true">
     <i class="block h-full bg-primary" [style.width.%]="proporcao().proteina"></i>
     <i class="block h-full bg-accent" [style.width.%]="proporcao().carbo"></i>
     <i

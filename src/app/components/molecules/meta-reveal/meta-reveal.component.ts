@@ -25,6 +25,7 @@ export class MetaRevealComponent {
   readonly label = input('Build desbloqueado');
 
   readonly labelCalculando = input('Calculando sua meta…');
+  readonly calorieLabel = input('kcal / dia');
 
   protected readonly revelado = signal(false);
 

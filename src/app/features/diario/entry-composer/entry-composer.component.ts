@@ -20,19 +20,19 @@ import {
   type PlateItem,
 } from '../../../components/molecules/plate-row/plate-row.component';
 import { StepFooterComponent } from '../../../components/molecules/step-footer/step-footer.component';
+import { NutritionRevealComponent } from '../../../components/molecules/nutrition-reveal/nutrition-reveal.component';
 import { escalarMacros, somarMacros } from '../../../components/utils/diary-day.util';
+import { somarNutrientesDaRefeicao } from '../../../components/utils/meal-nutrition.util';
 import type { Alimento } from '../../../core/models/alimento.model';
-import type { DiaryEntry, DiaryMacros, DiaryMeal } from '../../../core/models/diary.model';
+import type {
+  DiaryEntry,
+  DiaryMacros,
+  DiaryMeal,
+  DiaryNutrient,
+} from '../../../core/models/diary.model';
 import { AlimentoService } from '../../../services/alimento.service';
 import { DiarioService } from '../../../services/diario.service';
 
-/**
- * Registrar em uma tela só.
- *
- * Não há passos: a refeição já foi escolhida ao tocar a fase no mapa — por isso
- * ela aparece como faixa de destino no topo, e não como pergunta — e a navegação
- * é só o par de botões redondos do rodapé: voltar cancela, avançar grava.
- */
 @Component({
   selector: 'vtp-entry-composer',
   standalone: true,
@@ -42,6 +42,7 @@ import { DiarioService } from '../../../services/diario.service';
     FoodPickCardComponent,
     PlateRowComponent,
     StepFooterComponent,
+    NutritionRevealComponent,
     LucideSearch,
   ],
   templateUrl: './entry-composer.component.html',
@@ -52,7 +53,6 @@ export class EntryComposerComponent implements OnDestroy {
   readonly meal = input.required<DiaryMeal>();
   readonly meals = input.required<DiaryMeal[]>();
   readonly date = input.required<string>();
-  /** Presente = editando um lançamento existente em vez de criar um novo. */
   readonly entry = input<DiaryEntry | null>(null);
 
   readonly cancelado = output<void>();
@@ -63,6 +63,7 @@ export class EntryComposerComponent implements OnDestroy {
   private readonly diary = inject(DiarioService);
   private readonly buscas = new Subject<string>();
   private readonly destruido = new Subject<void>();
+  private requisicaoDeNutrientes = 0;
 
   protected readonly query = signal('');
   protected readonly foods = signal<Alimento[]>([]);
@@ -72,6 +73,9 @@ export class EntryComposerComponent implements OnDestroy {
   protected readonly salvando = signal(false);
   protected readonly trocaAberta = signal(false);
   protected readonly hora = signal('12:00');
+  protected readonly passo = signal<'selecionar' | 'revisar'>('selecionar');
+  protected readonly nutrientes = signal<DiaryNutrient[]>([]);
+  protected readonly carregandoNutrientes = signal(false);
 
   protected readonly catalogo = computed(() => (this.query() ? this.foods() : this.atalhos()));
 
@@ -99,6 +103,10 @@ export class EntryComposerComponent implements OnDestroy {
       const date = this.date();
 
       this.trocaAberta.set(false);
+      this.passo.set('selecionar');
+      this.nutrientes.set([]);
+      this.carregandoNutrientes.set(false);
+      this.requisicaoDeNutrientes += 1;
 
       if (entry) {
         this.hora.set(new Date(entry.consumed_at).toTimeString().slice(0, 5));
@@ -171,6 +179,25 @@ export class EntryComposerComponent implements OnDestroy {
     this.itens.update((itens) => itens.filter((item) => item.foodId !== foodId));
   }
 
+  protected voltar(): void {
+    if (this.passo() === 'revisar') {
+      this.requisicaoDeNutrientes += 1;
+      this.carregandoNutrientes.set(false);
+      this.passo.set('selecionar');
+      return;
+    }
+    this.cancelado.emit();
+  }
+
+  protected avancar(): void {
+    if (this.passo() === 'selecionar') {
+      if (!this.itens().length) return;
+      this.abrirRevisao();
+      return;
+    }
+    this.salvar();
+  }
+
   protected salvar(): void {
     const itens = this.itens();
     if (!itens.length) return;
@@ -199,11 +226,35 @@ export class EntryComposerComponent implements OnDestroy {
     });
   }
 
-  /**
-   * O backend recusa consumo no futuro. Como cada fase sugere o próprio horário,
-   * abrir o jantar no meio da tarde cairia direto num 422 — então, no dia de
-   * hoje, a sugestão nunca passa da hora atual.
-   */
+  private abrirRevisao(): void {
+    const itens = this.itens();
+    const requisicaoAtual = ++this.requisicaoDeNutrientes;
+    this.nutrientes.set([]);
+    this.carregandoNutrientes.set(true);
+    this.passo.set('revisar');
+
+    forkJoin(
+      itens.map((item) => this.foodsService.get(item.foodId).pipe(catchError(() => of(null)))),
+    )
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => {
+          if (requisicaoAtual === this.requisicaoDeNutrientes) {
+            this.carregandoNutrientes.set(false);
+          }
+        }),
+      )
+      .subscribe((alimentos) => {
+        if (requisicaoAtual !== this.requisicaoDeNutrientes) return;
+        this.nutrientes.set(
+          somarNutrientesDaRefeicao(
+            itens,
+            alimentos.filter((alimento): alimento is Alimento => alimento !== null),
+          ),
+        );
+      });
+  }
+
   private horaSugerida(meal: DiaryMeal, date: string): string {
     const daRefeicao = meal.horario.slice(0, 5);
     const agora = new Date();
@@ -245,12 +296,6 @@ export class EntryComposerComponent implements OnDestroy {
       });
   }
 
-  /**
-   * Um item já lançado não traz a porção de referência do catálogo, e sem ela os
-   * chips de porção não significam nada. Procura primeiro no que já está em
-   * memória e só busca na API o que faltar; alimento arquivado simplesmente fica
-   * sem chips, em vez de inventar uma base errada.
-   */
   private resolverPorcoesBase(foodIds: number[]): void {
     const bases = new Map<number, number>(
       [...this.atalhos(), ...this.foods()].map((food) => [food.id, food.qtd]),

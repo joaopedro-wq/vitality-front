@@ -16,91 +16,115 @@
     />
   </header>
 
-  <label
-    class="mb-3 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
-  >
-    <svg lucideSearch size="16" aria-hidden="true"></svg>
-    <span class="sr-only">Buscar alimento no catálogo</span>
-    <input
-      class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
-      type="search"
-      placeholder="Buscar no catálogo TACO"
-      (input)="buscar($any($event.target).value)"
-    />
-  </label>
+  @if (passo() === 'selecionar') {
+    <label
+      class="mb-3 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+    >
+      <svg lucideSearch size="16" aria-hidden="true"></svg>
+      <span class="sr-only">Buscar alimento no catálogo</span>
+      <input
+        class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+        type="search"
+        placeholder="Buscar no catálogo TACO"
+        (input)="buscar($any($event.target).value)"
+      />
+    </label>
 
-  <div class="flex-1">
-    @if (!query()) {
-      <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
-        Seus alimentos de sempre
-      </p>
-    }
+    <div class="flex-1">
+      @if (!query()) {
+        <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
+          Seus alimentos de sempre
+        </p>
+      }
 
-    @if (carregandoFoods()) {
-      <p class="py-6 text-center text-[13px] text-fg-muted">Buscando alimentos…</p>
-    } @else if (catalogo().length) {
-      <div class="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
-        @for (food of catalogo(); track food.id) {
-          <vtp-food-pick-card
-            [food]="food"
-            [selecionado]="estaNoPrato(food)"
-            (pick)="escolher($event)"
-          />
+      @if (carregandoFoods()) {
+        <p class="py-6 text-center text-[13px] text-fg-muted">Buscando alimentos…</p>
+      } @else if (catalogo().length) {
+        <div class="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
+          @for (food of catalogo(); track food.id) {
+            <vtp-food-pick-card
+              [food]="food"
+              [selecionado]="estaNoPrato(food)"
+              (pick)="escolher($event)"
+            />
+          }
+        </div>
+      } @else {
+        <p class="py-6 text-center text-[13px] text-fg-muted">
+          {{
+            query()
+              ? 'Nenhum alimento com esse nome.'
+              : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
+          }}
+        </p>
+      }
+
+      <div class="mt-4 rounded-[13px] border border-border bg-bg p-3">
+        <h3
+          class="mb-1.5 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-muted"
+        >
+          No prato
+          <span
+            class="ml-auto text-[12.5px] font-bold normal-case tracking-normal text-fg tabular-nums"
+          >
+            {{ totais().caloria | number: '1.0-0' }} kcal
+          </span>
+        </h3>
+
+        @if (itens().length) {
+          @for (item of itens(); track item.foodId) {
+            <vtp-plate-row
+              [item]="item"
+              (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
+              (remover)="tirar(item.foodId)"
+            />
+          }
+        } @else {
+          <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
         }
       </div>
-    } @else {
-      <p class="py-6 text-center text-[13px] text-fg-muted">
-        {{
-          query()
-            ? 'Nenhum alimento com esse nome.'
-            : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
-        }}
+
+      <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
+        <label for="hora-consumo">Horário</label>
+        <input
+          id="hora-consumo"
+          class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
+          type="time"
+          [value]="hora()"
+          (change)="hora.set($any($event.target).value)"
+        />
+        <span>· sugerido por esta fase</span>
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-1 flex-col items-center py-4">
+      <p class="mb-1 text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong">
+        Revisão da refeição
       </p>
-    }
+      <h2 class="m-0 text-[19px] font-bold tracking-tight text-balance">Confira antes de salvar</h2>
+      <p class="mb-5 mt-1 text-center text-[13px] text-fg-muted">
+        Os valores consideram as quantidades que você escolheu.
+      </p>
 
-    <div class="mt-4 rounded-[13px] border border-border bg-bg p-3">
-      <h3
-        class="mb-1.5 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-muted"
-      >
-        No prato
-        <span
-          class="ml-auto text-[12.5px] font-bold normal-case tracking-normal text-fg tabular-nums"
-        >
-          {{ totais().caloria | number: '1.0-0' }} kcal
-        </span>
-      </h3>
-
-      @if (itens().length) {
-        @for (item of itens(); track item.foodId) {
-          <vtp-plate-row
-            [item]="item"
-            (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
-            (remover)="tirar(item.foodId)"
-          />
-        }
-      } @else {
-        <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
-      }
-    </div>
-
-    <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
-      <label for="hora-consumo">Horário</label>
-      <input
-        id="hora-consumo"
-        class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
-        type="time"
-        [value]="hora()"
-        (change)="hora.set($any($event.target).value)"
+      <vtp-nutrition-reveal
+        [totals]="totais()"
+        [nutrients]="nutrientes()"
+        [carregandoNutrientes]="carregandoNutrientes()"
+        [mostrarNutrientes]="true"
+        [animar]="true"
+        tamanho="lg"
+        label="Sua refeição"
+        labelCalculando="Somando sua refeição…"
+        calorieLabel="kcal na refeição"
       />
-      <span>· sugerido por esta fase</span>
     </div>
-  </div>
+  }
 
   <vtp-step-footer
     [carregando]="salvando()"
-    [desabilitado]="!itens().length"
-    [ultimo]="true"
-    (voltar)="cancelado.emit()"
-    (avancar)="salvar()"
+    [desabilitado]="passo() === 'selecionar' && !itens().length"
+    [ultimo]="passo() === 'revisar'"
+    (voltar)="voltar()"
+    (avancar)="avancar()"
   />
 </section>

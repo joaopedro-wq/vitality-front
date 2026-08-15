@@ -21,13 +21,6 @@ const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
   ceia: LucideMoon,
 };
 
-/**
- * Faixa fixa dizendo em que refeição o registro vai cair.
- *
- * Existe para matar a pergunta duplicada: o destino já foi escolhido ao tocar a
- * fase no mapa, então ele vira estado visível e permanente, não uma etapa do
- * formulário. Trocar é exceção — fica atrás de um botão, e não custa um passo.
- */
 @Component({
   selector: 'vtp-diary-destination-band',
   standalone: true,

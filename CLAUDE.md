@@ -516,13 +516,14 @@ md:p-8' }` no `@Component`, e o resto é Tailwind direto no template (consistent
    exatos do protótipo (fidelidade é requisito) e pra outro `n` gera a serpentina algoritmicamente.
    `diario-list` (orquestrador) alterna a coluna direita entre `DiaryPhaseCardComponent` (leitura da
    fase selecionada) e `EntryComposerComponent` (registro) via um `modo: 'cartao' | 'compor'` — nunca
-   os dois ao mesmo tempo, e a coluna do mapa só some nesse modo em telas &lt;900px.
-   **Composer virou tela única, sem trilha de passos** (pedido explícito, revertendo a ideia inicial
-   de "quiz do prato" com 3 passos): a refeição já foi escolhida no clique do mapa, então vira faixa
-   fixa de destino (`DiaryDestinationBandComponent`, "Registrando em X" com "Trocar" atrás de um
-   botão) em vez de uma pergunta repetida. Navegação é só o par de botões redondos do
-   `StepFooterComponent` — voltar cancela, avançar grava — que ganhou um input `desabilitado` pra
-   travar o avançar com o prato vazio, sem misturar com o estado `carregando`.
+   os dois ao mesmo tempo. No desktop, mapa e cartão ficam lado a lado; abaixo de 900px o mapa é a
+   tela inicial e tocar uma fase revela o cartão, que oferece o retorno explícito ao mapa.
+   **Composer tem dois passos curtos**: a refeição já foi escolhida no clique do mapa, então vira
+   faixa fixa de destino (`DiaryDestinationBandComponent`, "Registrando em X" com "Trocar" atrás de
+   um botão) em vez de uma pergunta repetida. Primeiro monta-se o prato e, ao avançar, a revisão
+   confirma macros e micronutrientes antes de salvar; voltar preserva o rascunho. A navegação é só o
+   par de botões redondos do `StepFooterComponent` — na montagem avançar fica travado com o prato
+   vazio, e na revisão vira Salvar sem misturar regra de negócio com o estado `carregando`.
    **Revelação do dia é sob demanda, não só no fim**: clicar na bandeira do mapa abre
    `DayRevealOverlayComponent` a qualquer hora do dia, reusando o `MetaRevealComponent` do quiz de
    Metas (mesmo anel + odômetro + barras de macro). Foi preciso arredondar os totais antes de passar

@@ -29,9 +29,7 @@ export class DataTableComponent<T extends object = Record<string, unknown>> {
   readonly sortField = input<string | null>(null);
   readonly sortOrder = input<number>(1);
   readonly dataKey = input('id');
-  /** Chave de persistência das larguras de coluna (localStorage). Sem valor,
-   * o resize não é salvo — quem consome monta a chave (ex. escopada por
-   * usuário logado). */
+
   readonly stateKey = input<string | undefined>(undefined);
 
   readonly lazyLoadOnInit = input(false);

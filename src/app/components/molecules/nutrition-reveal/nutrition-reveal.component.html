@@ -1,0 +1,42 @@
+<div class="flex w-full flex-col items-center gap-5 text-center">
+  <vtp-meta-reveal
+    [valores]="valores()"
+    [animar]="animar()"
+    [tamanho]="tamanho()"
+    [label]="label()"
+    [labelCalculando]="labelCalculando()"
+    [calorieLabel]="calorieLabel()"
+  />
+
+  @if (mostrarNutrientes()) {
+    <section
+      class="w-full max-w-[420px] rounded-[14px] border border-border bg-bg p-3.5 text-left"
+      aria-live="polite"
+    >
+      <h3 class="m-0 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-muted">
+        Micronutrientes
+      </h3>
+
+      @if (carregandoNutrientes()) {
+        <p class="mb-0 mt-3 text-[13px] text-fg-muted">Calculando os micronutrientes…</p>
+      } @else if (nutrients().length) {
+        <dl class="mb-0 mt-3 grid gap-2 sm:grid-cols-2">
+          @for (nutriente of nutrients(); track nutriente.codigo + nutriente.unidade) {
+            <div
+              class="flex items-baseline justify-between gap-3 border-b border-border pb-2 text-[12.5px] last:border-b-0 sm:[&:nth-last-child(2):nth-child(odd)]:border-b-0"
+            >
+              <dt class="min-w-0 text-fg-muted">{{ nutriente.nome }}</dt>
+              <dd class="m-0 shrink-0 font-bold tabular-nums text-fg">
+                {{ nutriente.valor | number: '1.0-2' }} {{ nutriente.unidade }}
+              </dd>
+            </div>
+          }
+        </dl>
+      } @else {
+        <p class="mb-0 mt-3 text-[13px] text-fg-muted">
+          Não há micronutrientes detalhados disponíveis para os alimentos selecionados.
+        </p>
+      }
+    </section>
+  }
+</div>

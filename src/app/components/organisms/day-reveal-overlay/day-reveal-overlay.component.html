@@ -32,8 +32,8 @@
 
       <h2 class="text-[19px] font-bold tracking-tight text-balance">{{ titulo() }}</h2>
 
-      <vtp-meta-reveal
-        [valores]="valores()"
+      <vtp-nutrition-reveal
+        [totals]="totals()"
         [animar]="true"
         tamanho="lg"
         [label]="label()"
@@ -42,7 +42,7 @@
 
       @if (meta(); as alvo) {
         <p class="text-[13px] text-fg-muted">
-          <b class="text-fg tabular-nums">{{ valores().caloria | number: '1.0-0' }}</b> de
+          <b class="text-fg tabular-nums">{{ totals().caloria | number: '1.0-0' }}</b> de
           <span class="tabular-nums">{{ alvo.meta_calorias | number: '1.0-0' }} kcal</span>
           @if (progresso(); as pct) {
             · <span class="tabular-nums">{{ pct }}%</span> da sua meta
