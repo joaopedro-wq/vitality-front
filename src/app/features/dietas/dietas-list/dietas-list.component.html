@@ -1,0 +1,237 @@
+@if (loading()) {
+  <div class="py-16 text-center text-fg-muted">Carregando seu plano alimentar…</div>
+} @else if (!hasMeta()) {
+  <section
+    class="mx-auto grid max-w-2xl place-items-center gap-5 rounded-[28px] border border-border bg-surface p-8 text-center shadow-sm"
+  >
+    <div class="grid h-14 w-14 place-items-center rounded-2xl bg-primary-soft text-primary">
+      <svg lucideSparkles size="28" aria-hidden="true"></svg>
+    </div>
+    <div>
+      <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
+        Plano alimentar
+      </p>
+      <h1 class="m-0 mt-2 text-2xl">Primeiro, vamos definir sua meta</h1>
+      <p class="m-0 mt-2 max-w-md text-fg-muted">
+        Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.
+      </p>
+    </div>
+    <button bdButton (click)="openGenerator()">Definir minhas metas</button>
+  </section>
+} @else if (mode() === 'list') {
+  <section class="mx-auto max-w-5xl">
+    <header class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
+          Plano alimentar
+        </p>
+        <h1 class="m-0 mt-1 text-3xl tracking-tight">Uma rotina que cabe no seu dia</h1>
+        <p class="m-0 mt-2 text-fg-muted">
+          Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.
+        </p>
+      </div>
+      <button bdButton (click)="openGenerator()">
+        <svg lucidePlus size="18" aria-hidden="true"></svg> Gerar novo plano
+      </button>
+    </header>
+    @if (!plans().length) {
+      <div
+        class="mt-8 rounded-[28px] border border-dashed border-primary/40 bg-primary-soft/35 p-8 text-center"
+      >
+        <h2 class="m-0 text-xl">Sem plano salvo ainda</h2>
+        <p class="m-0 mt-2 text-fg-muted">
+          Conte como é a sua rotina e a gente monta o primeiro dia.
+        </p>
+        <button class="mt-5" bdButton (click)="openGenerator()">Montar meu plano</button>
+      </div>
+    } @else {
+      <div class="mt-8 grid gap-5 md:grid-cols-2">
+        @for (plan of plans(); track plan.id) {
+          <article class="rounded-[24px] border border-border bg-surface p-5 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <span
+                  class="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary"
+                  >{{ formatStyle(plan.preferences.style) }}</span
+                >
+                <h2 class="m-0 mt-3 text-xl">{{ plan.titulo }}</h2>
+              </div>
+              <span class="text-right text-sm font-bold text-fg-muted"
+                >{{ plan.totals.caloria | number: '1.0-0' }} kcal</span
+              >
+            </div>
+            <p class="m-0 mt-3 text-sm text-fg-muted">
+              {{ plan.meals.length }} refeições · {{ plan.totals.proteina | number: '1.0-0' }} g
+              proteína
+            </p>
+            <div class="mt-5 grid gap-2">
+              @for (meal of plan.meals; track meal.position; let index = $index) {
+                <button class="meal-row" type="button" (click)="useMeal(plan, index)">
+                  <span
+                    ><strong>{{ meal.descricao }}</strong
+                    ><small
+                      >{{ meal.horario }} · {{ meal.totals.caloria | number: '1.0-0' }} kcal</small
+                    ></span
+                  ><span>Usar no diário</span>
+                </button>
+              }
+            </div>
+            <button
+              class="mt-4 text-sm text-fg-muted underline"
+              type="button"
+              (click)="archive(plan)"
+            >
+              Arquivar plano
+            </button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+} @else if (mode() === 'form') {
+  <section class="mx-auto max-w-3xl">
+    <button
+      class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
+      type="button"
+      (click)="backToList()"
+    >
+      <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Voltar
+    </button>
+    <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">Novo plano</p>
+    <h1 class="m-0 mt-1 text-3xl">Como é o seu dia?</h1>
+    <p class="m-0 mt-2 text-fg-muted">
+      Usaremos sua meta de {{ meta()!.meta_calorias | number: '1.0-0' }} kcal como referência.
+    </p>
+    <div class="mt-7 grid gap-6 rounded-[28px] border border-border bg-surface p-6 shadow-sm">
+      <fieldset>
+        <legend>Quantas refeições você costuma fazer?</legend>
+        <div class="mt-3 flex gap-2">
+          @for (count of [3, 4, 5]; track count) {
+            <button
+              class="choice"
+              [class.choice-active]="mealCount() === count"
+              type="button"
+              (click)="setMealCount(count)"
+            >
+              {{ count }} refeições
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Qual estilo ajuda mais na sua rotina?</legend>
+        <div class="mt-3 flex flex-wrap gap-2">
+          @for (
+            option of [
+              { value: 'rapido', label: 'Rápido' },
+              { value: 'caseiro', label: 'Caseiro' },
+              { value: 'economico', label: 'Econômico' },
+            ];
+            track option.value
+          ) {
+            <button
+              class="choice"
+              [class.choice-active]="style() === option.value"
+              type="button"
+              (click)="setStyle(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>
+          Alimentos que você prefere evitar
+          <span class="font-normal text-fg-muted">(opcional)</span>
+        </legend>
+        <input
+          class="plan-input mt-3"
+          [value]="foodSearch()"
+          placeholder="Busque um alimento"
+          (input)="searchFoods($any($event.target).value)"
+        />
+        @if (foodResults().length) {
+          <div class="food-results">
+            @for (food of foodResults(); track food.id) {
+              <button type="button" (click)="addExcluded(food)">{{ food.descricao }}</button>
+            }
+          </div>
+        }
+        @if (excluded().length) {
+          <div class="mt-3 flex flex-wrap gap-2">
+            @for (food of excluded(); track food.id) {
+              <button class="excluded-chip" type="button" (click)="removeExcluded(food.id)">
+                {{ food.descricao }} ×
+              </button>
+            }
+          </div>
+        }
+      </fieldset>
+      <button bdButton [disabled]="generating()" (click)="generate()">
+        <svg lucideSparkles size="18" aria-hidden="true"></svg>
+        {{ generating() ? 'Montando…' : 'Gerar meu plano' }}
+      </button>
+    </div>
+  </section>
+} @else if (draft(); as plan) {
+  <section class="mx-auto max-w-4xl">
+    <button
+      class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
+      type="button"
+      (click)="mode.set('form')"
+    >
+      <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Ajustar preferências
+    </button>
+    <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
+      Prévia do plano
+    </p>
+    <h1 class="m-0 mt-1 text-3xl">Seu dia, de um jeito mais simples</h1>
+    <p class="m-0 mt-2 text-fg-muted">
+      {{ plan.totals.caloria | number: '1.0-0' }} kcal ·
+      {{ plan.totals.proteina | number: '1.0-0' }} g de proteína
+    </p>
+    @if (plan.warning) {
+      <p class="plan-warning">{{ plan.warning }}</p>
+    }
+    <div class="mt-6 grid gap-4">
+      @for (meal of plan.meals; track meal.position) {
+        <article class="rounded-[22px] border border-border bg-surface p-5">
+          <div class="flex justify-between gap-3">
+            <h2 class="m-0 text-lg">
+              {{ meal.descricao }} <small>{{ meal.horario }}</small>
+            </h2>
+            <strong>{{ meal.totals.caloria | number: '1.0-0' }} kcal</strong>
+          </div>
+          <ul class="m-0 mt-3 grid gap-1 pl-5 text-fg-muted">
+            @for (item of meal.items; track item.food_id) {
+              <li>{{ item.descricao }} · {{ item.quantity | number: '1.0-0' }} g</li>
+            }
+          </ul>
+          <button
+            class="mt-3 text-sm font-bold text-primary-strong underline"
+            type="button"
+            [disabled]="regeneratingMeal() !== null"
+            (click)="regenerateMeal(meal.position)"
+          >
+            {{
+              regeneratingMeal() === meal.position ? 'Trocando sugestão…' : 'Trocar esta refeição'
+            }}
+          </button>
+        </article>
+      }
+    </div>
+    <div class="mt-7 rounded-[22px] bg-primary-soft p-5">
+      <label class="block text-sm font-bold" for="plan-title">Nome do plano</label
+      ><input
+        id="plan-title"
+        class="plan-input mt-2"
+        [value]="title()"
+        (input)="title.set($any($event.target).value)"
+      /><button class="mt-4" bdButton [disabled]="saving()" (click)="save()">
+        <svg lucideCheck size="18" aria-hidden="true"></svg>
+        {{ saving() ? 'Salvando…' : 'Salvar plano' }}
+      </button>
+    </div>
+  </section>
+}

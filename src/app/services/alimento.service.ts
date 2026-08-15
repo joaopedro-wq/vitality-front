@@ -12,6 +12,7 @@ import type {
   FonteAlimento,
   StatusAlimento,
   UpdateAlimentoPayload,
+  FoodPlanTag,
 } from '../core/models/alimento.model';
 
 export interface FoodFilters {
@@ -88,6 +89,16 @@ export class AlimentoService {
       .post<
         ApiResponse<{ created: number; updated: number; skipped: number }>
       >(apiPaths.adminImportarTaco(), {})
+      .pipe(map((response) => response.data));
+  }
+  planTags(): Observable<FoodPlanTag[]> {
+    return this.http
+      .get<ApiResponse<FoodPlanTag[]>>(apiPaths.adminFoodPlanTags())
+      .pipe(map((response) => response.data));
+  }
+  updatePlanTags(id: number, slugs: string[]): Observable<Alimento> {
+    return this.http
+      .put<ApiResponse<Alimento>>(apiPaths.adminFoodPlanTagsFor(id), { slugs })
       .pipe(map((response) => response.data));
   }
 

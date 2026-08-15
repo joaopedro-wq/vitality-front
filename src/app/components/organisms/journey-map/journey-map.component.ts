@@ -1,28 +1,10 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import {
-  LucideApple,
-  LucideCheck,
-  LucideDynamicIcon,
-  LucideFlag,
-  LucideMoon,
-  LucideSun,
-  LucideSunrise,
-  LucideUtensils,
-  type LucideIcon,
-} from '@lucide/angular';
+import { LucideCheck, LucideDynamicIcon, LucideFlag, type LucideIcon } from '@lucide/angular';
 
-import type { FaseDiario, MomentoRefeicao } from '../../utils/diary-day.util';
-import { diaCompleto } from '../../utils/diary-day.util';
+import type { FaseDiario } from '../../utils/diary-day.util';
+import { ICONE_POR_MOMENTO, diaCompleto } from '../../utils/diary-day.util';
 import { trilhaSerpentina } from '../../utils/journey-path.util';
-
-const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
-  manha: LucideSunrise,
-  almoco: LucideSun,
-  lanche: LucideApple,
-  jantar: LucideUtensils,
-  ceia: LucideMoon,
-};
 
 interface NoTrilha {
   fase: FaseDiario;
@@ -67,6 +49,11 @@ export class JourneyMapComponent {
   /** `mealId` que acabou de receber lançamento; dispara a animação de carimbo. */
   readonly carimbo = input<number | null>(null);
   readonly dica = input('');
+  /** % da meta calórica (0–100), já calculado por quem monta a tela — vira o
+   * anel em volta da bandeira. `null` quando não há meta definida ainda. */
+  readonly progresso = input<number | null>(null);
+  /** Legenda curta sob "Fim do dia" (ex.: "1.240 / 2.100 kcal"). `null` some. */
+  readonly resumoBandeira = input<string | null>(null);
 
   readonly faseClick = output<number>();
   readonly bandeiraClick = output<void>();
@@ -74,6 +61,16 @@ export class JourneyMapComponent {
 
   protected readonly trilha = computed(() => trilhaSerpentina(this.fases().length));
   protected readonly chegou = computed(() => diaCompleto(this.fases()));
+
+  /** `conic-gradient` do anel da bandeira — só existe enquanto há `progresso`
+   * pra mostrar; sem meta definida a bandeira volta ao estado tracejado
+   * simples de antes, sem anel nenhum. */
+  protected readonly anelBandeira = computed(() => {
+    const pct = this.progresso();
+    if (pct === null) return null;
+    const clamped = Math.min(100, Math.max(0, pct));
+    return `conic-gradient(var(--bd-primary) ${clamped}%, var(--bd-border) 0)`;
+  });
 
   protected readonly nos = computed<NoTrilha[]>(() => {
     const nodes = this.trilha().nodes;

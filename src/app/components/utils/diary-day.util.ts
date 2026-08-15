@@ -1,3 +1,12 @@
+import {
+  LucideApple,
+  LucideMoon,
+  LucideSun,
+  LucideSunrise,
+  LucideUtensils,
+  type LucideIcon,
+} from '@lucide/angular';
+
 import type {
   DiaryDay,
   DiaryEntry,
@@ -7,6 +16,15 @@ import type {
 } from '../../core/models/diary.model';
 
 export type MomentoRefeicao = 'manha' | 'almoco' | 'lanche' | 'jantar' | 'ceia';
+
+
+export const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
+  manha: LucideSunrise,
+  almoco: LucideSun,
+  lanche: LucideApple,
+  jantar: LucideUtensils,
+  ceia: LucideMoon,
+};
 
 export type EstadoFase = 'concluida' | 'atual' | 'aberta';
 

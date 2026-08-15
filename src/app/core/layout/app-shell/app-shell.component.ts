@@ -47,7 +47,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/dashboard', label: 'Painel', icon: LucideHouse },
   { path: '/diario', label: 'Diário', icon: LucideUtensils },
   { path: '/alimentos', label: 'Alimentos', icon: LucideCarrot },
-  { path: '/dietas', label: 'Dietas', icon: LucideClipboardList },
+  { path: '/dietas', label: 'Plano alimentar', icon: LucideClipboardList },
   { path: '/metas', label: 'Metas', icon: LucideTarget },
   { path: '/perfil', label: 'Perfil', icon: LucideUser },
   { path: '/admin/alimentos', label: 'Catálogo', icon: LucideShieldCheck, adminOnly: true },

@@ -17,6 +17,7 @@ export interface Alimento {
   is_favorite: boolean;
   image_url: string | null;
   updated_at: string | null;
+  plan_tags?: Array<{ slug: string; label: string }>;
   nutrientes?: NutrienteAlimento[];
 }
 
@@ -37,6 +38,12 @@ export interface FoodPage {
 export interface AlimentoGrupo {
   grupo: string;
   total: number;
+}
+
+export interface FoodPlanTag {
+  id: number;
+  slug: string;
+  label: string;
 }
 
 export type CreateAlimentoPayload = Pick<

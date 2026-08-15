@@ -76,20 +76,32 @@
     class="absolute bottom-0 left-1/2 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 bg-transparent text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle transition-colors hover:text-primary-strong"
     type="button"
     [attr.aria-label]="
-      chegou() ? 'Ver o resumo do dia completo' : 'Ver como está seu dia até agora'
+      (chegou() ? 'Dia completo. ' : 'Ver como está seu dia até agora. ') + (resumoBandeira() ?? '')
     "
     (click)="bandeiraClick.emit()"
   >
     <span
-      class="grid size-[38px] place-items-center rounded-full border-2 transition-[transform,background-color,border-color,color] duration-300"
-      [class]="
-        chegou()
-          ? 'border-accent bg-accent-soft text-accent scale-[1.08]'
-          : 'border-dashed border-border-strong bg-surface text-fg-subtle'
-      "
+      class="anel-bandeira grid size-[42px] place-items-center rounded-full p-[3px]"
+      [style.background]="anelBandeira()"
     >
-      <svg lucideFlag size="17" aria-hidden="true"></svg>
+      <span
+        class="grid size-full place-items-center rounded-full border-2 transition-[transform,background-color,border-color,color] duration-300"
+        [class]="
+          chegou()
+            ? 'border-accent bg-accent-soft text-accent scale-[1.08]'
+            : 'border-dashed border-border-strong bg-surface text-fg-subtle'
+        "
+      >
+        <svg lucideFlag size="16" aria-hidden="true"></svg>
+      </span>
     </span>
     Fim do dia
+    @if (resumoBandeira(); as resumo) {
+      <span
+        class="text-[10px] font-semibold normal-case tracking-normal tabular-nums text-fg-muted"
+      >
+        {{ resumo }}
+      </span>
+    }
   </button>
 </div>

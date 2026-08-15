@@ -589,3 +589,259 @@ a[bdButton] {
     scroll-behavior: auto !important;
   }
 }
+
+.illustration--egg-raw,
+.illustration--egg-fried,
+.illustration--egg-boiled,
+.illustration--egg-white,
+.illustration--egg-yolk,
+.illustration--egg-omelette,
+.illustration--egg-quail,
+.illustration--egg-carton {
+  background-image: url('/images/food-eggs-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--egg-raw {
+  background-position: 0 0;
+}
+.illustration--egg-fried {
+  background-position: 50% 0;
+}
+.illustration--egg-boiled,
+.illustration--egg-white,
+.illustration--egg-yolk {
+  background-position: 100% 0;
+}
+.illustration--egg-omelette {
+  background-position: 0 100%;
+}
+.illustration--egg-quail {
+  background-position: 50% 100%;
+}
+.illustration--egg-carton {
+  background-position: 100% 100%;
+}
+
+.illustration--misc-coffee,
+.illustration--misc-cappuccino,
+.illustration--misc-baking-powder,
+.illustration--misc-yeast,
+.illustration--misc-gelatin,
+.illustration--misc-salt {
+  background-image: url('/images/food-misc-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--misc-coffee {
+  background-position: 0 0;
+}
+.illustration--misc-cappuccino {
+  background-position: 50% 0;
+}
+.illustration--misc-baking-powder {
+  background-position: 100% 0;
+}
+.illustration--misc-yeast {
+  background-position: 0 100%;
+}
+.illustration--misc-gelatin {
+  background-position: 50% 100%;
+}
+.illustration--misc-salt {
+  background-position: 100% 100%;
+}
+
+.illustration--industrial-black-olive,
+.illustration--industrial-green-olive,
+.illustration--industrial-whipped-cream,
+.illustration--industrial-coconut-milk,
+.illustration--industrial-mayonnaise,
+.illustration--industrialized {
+  background-image: url('/images/food-industrialized-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--industrial-black-olive {
+  background-position: 0 0;
+}
+.illustration--industrial-green-olive {
+  background-position: 50% 0;
+}
+.illustration--industrial-whipped-cream {
+  background-position: 100% 0;
+}
+.illustration--industrial-coconut-milk {
+  background-position: 0 100%;
+}
+.illustration--industrial-mayonnaise {
+  background-position: 50% 100%;
+}
+.illustration--industrialized {
+  background-position: 100% 100%;
+}
+
+.illustration--sweet-chocolate,
+.illustration--sweet-sugar,
+.illustration--sweet-cocada,
+.illustration--sweet-pumpkin-jam,
+.illustration--sweet-dulce-de-leche,
+.illustration--sweet-rapadura {
+  background-image: url('/images/food-sweets-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--sweet-chocolate {
+  background-position: 0 0;
+}
+.illustration--sweet-sugar {
+  background-position: 50% 0;
+}
+.illustration--sweet-cocada {
+  background-position: 100% 0;
+}
+.illustration--sweet-pumpkin-jam {
+  background-position: 0 100%;
+}
+.illustration--sweet-dulce-de-leche {
+  background-position: 50% 100%;
+}
+.illustration--sweet-rapadura {
+  background-position: 100% 100%;
+}
+
+.illustration--vegetable-lettuce,
+.illustration--vegetable-kale,
+.illustration--vegetable-cabbage,
+.illustration--vegetable-eggplant,
+.illustration--vegetable-pepper,
+.illustration--vegetable-spinach {
+  background-image: url('/images/food-greens-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--vegetable-lettuce {
+  background-position: 0 0;
+}
+.illustration--vegetable-kale {
+  background-position: 50% 0;
+}
+.illustration--vegetable-cabbage {
+  background-position: 100% 0;
+}
+.illustration--vegetable-eggplant {
+  background-position: 0 100%;
+}
+.illustration--vegetable-pepper {
+  background-position: 50% 100%;
+}
+.illustration--vegetable-spinach {
+  background-position: 100% 100%;
+}
+
+.illustration--prepared-salad,
+.illustration--prepared-soup,
+.illustration--prepared-stew,
+.illustration--prepared-yakisoba,
+.illustration--prepared-acaraje,
+.illustration--prepared-vatapa {
+  background-image: url('/images/food-prepared-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--prepared-salad {
+  background-position: 0 0;
+}
+.illustration--prepared-soup {
+  background-position: 50% 0;
+}
+.illustration--prepared-stew {
+  background-position: 100% 0;
+}
+.illustration--prepared-yakisoba {
+  background-position: 0 100%;
+}
+.illustration--prepared-acaraje {
+  background-position: 50% 100%;
+}
+.illustration--prepared-vatapa {
+  background-position: 100% 100%;
+}
+
+.illustration--meat-burger,
+.illustration--meat-sausage,
+.illustration--meat-ham,
+.illustration--meat-salami,
+.illustration--meat-kibbeh,
+.illustration--meat-meatball {
+  background-image: url('/images/food-meats-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--meat-burger {
+  background-position: 0 0;
+}
+.illustration--meat-sausage {
+  background-position: 50% 0;
+}
+.illustration--meat-ham {
+  background-position: 100% 0;
+}
+.illustration--meat-salami {
+  background-position: 0 100%;
+}
+.illustration--meat-kibbeh {
+  background-position: 50% 100%;
+}
+.illustration--meat-meatball {
+  background-position: 100% 100%;
+}
+
+.illustration--cereal-flour,
+.illustration--cereal-corn,
+.illustration--cereal-cookie,
+.illustration--cereal-cake,
+.illustration--cereal-breakfast,
+.illustration--cereal-popcorn {
+  background-image: url('/images/food-cereals-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--cereal-flour {
+  background-position: 0 0;
+}
+.illustration--cereal-corn {
+  background-position: 50% 0;
+}
+.illustration--cereal-cookie {
+  background-position: 100% 0;
+}
+.illustration--cereal-cake {
+  background-position: 0 100%;
+}
+.illustration--cereal-breakfast {
+  background-position: 50% 100%;
+}
+.illustration--cereal-popcorn {
+  background-position: 100% 100%;
+}
+
+.illustration--prepared-cuscuz,
+.illustration--prepared-feijoada,
+.illustration--prepared-stroganoff,
+.illustration--prepared-tapioca,
+.illustration--prepared-carreteiro,
+.illustration--prepared-tacaca {
+  background-image: url('/images/food-prepared-brazilian-cartoon-v1.png');
+  background-size: 300% 200%;
+}
+.illustration--prepared-cuscuz {
+  background-position: 0 0;
+}
+.illustration--prepared-feijoada {
+  background-position: 50% 0;
+}
+.illustration--prepared-stroganoff {
+  background-position: 100% 0;
+}
+.illustration--prepared-tapioca {
+  background-position: 0 100%;
+}
+.illustration--prepared-carreteiro {
+  background-position: 50% 100%;
+}
+.illustration--prepared-tacaca {
+  background-position: 100% 100%;
+}

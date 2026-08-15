@@ -83,6 +83,7 @@ export class DiarioListComponent {
   protected readonly carimbo = signal<number | null>(null);
   protected readonly flash = signal<string | null>(null);
   protected readonly removendo = signal<string | null>(null);
+  private pendingPlanMeal: number | null = null;
 
   protected readonly totals = computed(() => this.day()?.totals ?? EMPTY_TOTALS);
   protected readonly fases = computed(() => montarFases(this.day(), this.meals()));
@@ -104,6 +105,23 @@ export class DiarioListComponent {
     }
     return 'Nada registrado aqui ainda. Escolha o que entrou no prato para concluir esta fase.';
   });
+  /** Mesma fórmula do `day-reveal-overlay` — vira o anel de progresso em volta
+   * da bandeira do mapa, pra não exigir o clique nela pra ver como o dia está. */
+  protected readonly progressoMeta = computed(() => {
+    const alvo = this.meta()?.meta_calorias;
+    if (!alvo || alvo <= 0) return null;
+    return Math.round((this.totals().caloria / alvo) * 100);
+  });
+
+  /** Legenda curta sob a bandeira — só aparece quando há algo pra contar
+   * (consumo registrado ou meta definida), pra não poluir um dia zerado. */
+  protected readonly resumoBandeira = computed(() => {
+    const consumido = Math.round(this.totals().caloria);
+    const alvo = this.meta()?.meta_calorias;
+    if (!alvo) return consumido > 0 ? `${consumido.toLocaleString('pt-BR')} kcal` : null;
+    return `${consumido.toLocaleString('pt-BR')} / ${Math.round(alvo).toLocaleString('pt-BR')} kcal`;
+  });
+
   protected readonly canGoNext = computed(() => this.selectedDate() < this.today);
   protected readonly dateLabel = computed(() => {
     const date = new Date(`${this.selectedDate()}T12:00:00`);
@@ -117,7 +135,10 @@ export class DiarioListComponent {
   constructor() {
     this.load();
     this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      if (params.get('registrar') === '1') this.abrirComposerDaFase();
+      if (params.get('registrar') !== '1') return;
+      const planMeal = Number(params.get('planMeal'));
+      this.pendingPlanMeal = Number.isInteger(planMeal) && planMeal >= 0 ? planMeal : null;
+      this.abrirSolicitado();
     });
   }
 
@@ -271,6 +292,7 @@ export class DiarioListComponent {
           );
           this.faseMobileAberta.set(false);
           this.sincronizarFase();
+          this.abrirSolicitado();
         },
         error: () => this.toastr.error('Não foi possível carregar seu Diário agora.'),
       });
@@ -281,6 +303,15 @@ export class DiarioListComponent {
       next: (day) => this.day.set(day),
       error: () => this.toastr.error('Não foi possível atualizar os lançamentos.'),
     });
+  }
+
+  private abrirSolicitado(): void {
+    if (!this.fases().length) return;
+    if (this.pendingPlanMeal !== null && this.pendingPlanMeal < this.fases().length) {
+      this.faseSelecionada.set(this.pendingPlanMeal);
+    }
+    this.pendingPlanMeal = null;
+    this.abrirComposerDaFase();
   }
 
   private loadMeals(): void {

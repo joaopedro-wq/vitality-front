@@ -62,7 +62,48 @@ h1 {
   gap: 0.8rem;
   margin-top: 1rem;
 }
-.duplicates{display:grid;gap:.25rem;padding:.65rem;border-radius:var(--bd-radius-sm);background:var(--bd-primary-soft);color:var(--bd-primary-strong);font-size:.72rem}.duplicates span{color:var(--bd-fg-muted)}
+.duplicates {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.65rem;
+  border-radius: var(--bd-radius-sm);
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+  font-size: 0.72rem;
+}
+.duplicates span {
+  color: var(--bd-fg-muted);
+}
+.plan-tags {
+  margin: 0.9rem 0;
+  border: 0;
+  padding: 0;
+}
+.plan-tags legend {
+  margin-bottom: 0.45rem;
+  color: var(--bd-fg-muted);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.plan-tags div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.plan-tags button {
+  border: 1px solid var(--bd-border);
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.3rem 0.5rem;
+  color: var(--bd-fg-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.plan-tags button.selected {
+  border-color: var(--bd-primary);
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
 .numbers {
   display: grid;
   grid-template-columns: 1fr 1fr;

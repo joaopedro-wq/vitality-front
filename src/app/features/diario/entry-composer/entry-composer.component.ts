@@ -32,6 +32,7 @@ import type {
 } from '../../../core/models/diary.model';
 import { AlimentoService } from '../../../services/alimento.service';
 import { DiarioService } from '../../../services/diario.service';
+import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
 
 @Component({
   selector: 'vtp-entry-composer',
@@ -61,6 +62,7 @@ export class EntryComposerComponent implements OnDestroy {
 
   private readonly foodsService = inject(AlimentoService);
   private readonly diary = inject(DiarioService);
+  private readonly planDraft = inject(MealPlanDiaryDraftService);
   private readonly buscas = new Subject<string>();
   private readonly destruido = new Subject<void>();
   private requisicaoDeNutrientes = 0;
@@ -127,7 +129,22 @@ export class EntryComposerComponent implements OnDestroy {
       }
 
       this.hora.set(this.horaSugerida(meal, date));
-      this.itens.set([]);
+      const planDraft = this.planDraft.takeFor(meal.id);
+      if (!planDraft) {
+        this.itens.set([]);
+        return;
+      }
+      this.itens.set(
+        planDraft.items.map((item) => ({
+          foodId: item.food_id,
+          descricao: item.descricao,
+          illustrationKey: null,
+          quantity: item.quantity,
+          qtdRef: item.quantity,
+          macrosRef: item.macros,
+        })),
+      );
+      this.resolverPorcoesBase(planDraft.items.map((item) => item.food_id));
     });
   }
 

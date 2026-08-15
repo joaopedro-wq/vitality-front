@@ -1,66 +1,41 @@
-<div
-  class="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-5"
-  style="background: color-mix(in oklab, var(--bd-fg), transparent 40%)"
-  (click)="fechar.emit()"
->
-  <div
-    class="card relative w-full max-w-[400px] px-6 py-7 animate-reveal"
-    role="dialog"
-    aria-modal="true"
-    [attr.aria-label]="titulo()"
-    cdkTrapFocus
-    [cdkTrapFocusAutoCapture]="true"
-    (click)="$event.stopPropagation()"
-  >
+<bd-modal [open]="true" (openChange)="onOpenChange($event)" [title]="titulo()" ariaLabel="Seu dia">
+  <div class="flex flex-col items-center gap-4 text-center">
+    @if (completo()) {
+      <span
+        class="grid size-16 place-items-center rounded-full bg-accent-soft text-accent [box-shadow:0_0_0_8px_var(--bd-accent-soft)]"
+      >
+        <svg lucideTrophy size="27" aria-hidden="true"></svg>
+      </span>
+    }
+
+    <vtp-nutrition-reveal
+      [totals]="totals()"
+      [animar]="true"
+      tamanho="lg"
+      [label]="label()"
+      labelCalculando="Somando seu dia…"
+    />
+
+    @if (meta(); as alvo) {
+      <p class="text-[13px] text-fg-muted">
+        <b class="text-fg tabular-nums">{{ totals().caloria | number: '1.0-0' }}</b> de
+        <span class="tabular-nums">{{ alvo.meta_calorias | number: '1.0-0' }} kcal</span>
+        @if (progresso(); as pct) {
+          · <span class="tabular-nums">{{ pct }}%</span> da sua meta
+        }
+      </p>
+    } @else {
+      <p class="text-[13px] text-fg-muted">
+        Sem meta definida ainda — os números acima são só o que você registrou hoje.
+      </p>
+    }
+
     <button
-      class="absolute right-4 top-4 grid size-8 place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+      class="rounded-full border border-border px-5 py-2 text-[13px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
       type="button"
-      aria-label="Fechar"
       (click)="fechar.emit()"
     >
-      <svg lucideX size="15" aria-hidden="true"></svg>
+      Voltar ao diário
     </button>
-
-    <div class="flex flex-col items-center gap-4 text-center">
-      @if (completo()) {
-        <span
-          class="grid size-16 place-items-center rounded-full bg-accent-soft text-accent [box-shadow:0_0_0_8px_var(--bd-accent-soft)]"
-        >
-          <svg lucideTrophy size="27" aria-hidden="true"></svg>
-        </span>
-      }
-
-      <h2 class="text-[19px] font-bold tracking-tight text-balance">{{ titulo() }}</h2>
-
-      <vtp-nutrition-reveal
-        [totals]="totals()"
-        [animar]="true"
-        tamanho="lg"
-        [label]="label()"
-        labelCalculando="Somando seu dia…"
-      />
-
-      @if (meta(); as alvo) {
-        <p class="text-[13px] text-fg-muted">
-          <b class="text-fg tabular-nums">{{ totals().caloria | number: '1.0-0' }}</b> de
-          <span class="tabular-nums">{{ alvo.meta_calorias | number: '1.0-0' }} kcal</span>
-          @if (progresso(); as pct) {
-            · <span class="tabular-nums">{{ pct }}%</span> da sua meta
-          }
-        </p>
-      } @else {
-        <p class="text-[13px] text-fg-muted">
-          Sem meta definida ainda — os números acima são só o que você registrou hoje.
-        </p>
-      }
-
-      <button
-        class="rounded-full border border-border px-5 py-2 text-[13px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
-        type="button"
-        (click)="fechar.emit()"
-      >
-        Voltar ao diário
-      </button>
-    </div>
   </div>
-</div>
+</bd-modal>

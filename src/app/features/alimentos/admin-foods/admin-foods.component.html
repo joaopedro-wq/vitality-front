@@ -28,6 +28,20 @@
         ><bd-field label="Grupo"
           ><input bdInput formControlName="grupo" placeholder="Ex.: Cereais e derivados"
         /></bd-field>
+        <fieldset class="plan-tags">
+          <legend>Classificações para plano alimentar</legend>
+          <div>
+            @for (tag of planTags(); track tag.id) {
+              <button
+                type="button"
+                [class.selected]="selectedPlanTags().includes(tag.slug)"
+                (click)="togglePlanTag(tag.slug)"
+              >
+                {{ tag.label }}
+              </button>
+            }
+          </div>
+        </fieldset>
         <div class="numbers">
           <bd-field label="Calorias" required
             ><input bdInput type="number" formControlName="caloria" /></bd-field

@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  padding: 2rem;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+legend {
+  font-weight: 750;
+}
+.choice,
+.excluded-chip {
+  border: 1px solid var(--bd-border);
+  border-radius: 999px;
+  background: transparent;
+  padding: 0.55rem 0.85rem;
+  font-weight: 700;
+}
+.choice-active {
+  border-color: var(--bd-primary);
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
+.plan-input {
+  width: 100%;
+  border: 1px solid var(--bd-border);
+  border-radius: 0.8rem;
+  background: var(--bd-surface);
+  padding: 0.7rem 0.8rem;
+}
+.food-results {
+  overflow: hidden;
+  margin-top: 0.5rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 0.8rem;
+}
+.food-results button {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+}
+.food-results button:hover {
+  background: var(--bd-primary-soft);
+}
+.excluded-chip {
+  font-size: 0.8rem;
+}
+.meal-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--bd-border);
+  border-radius: 0.85rem;
+  background: transparent;
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+}
+.meal-row span:first-child {
+  display: grid;
+  gap: 0.1rem;
+}
+.meal-row small {
+  color: var(--bd-fg-muted);
+}
+.meal-row span:last-child {
+  color: var(--bd-primary-strong);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+.plan-warning {
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--bd-accent) 20%, transparent);
+  padding: 0.8rem;
+}
+@media (max-width: 640px) {
+  :host {
+    padding: 1rem;
+  }
+}

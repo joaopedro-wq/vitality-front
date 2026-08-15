@@ -10,6 +10,15 @@ banana usam `banana`, e preparos com cenoura usam `vegetable-carrot`.
 - frutas possuem ilustrações específicas por fruta;
 - hortaliças: cenoura, tomate, brócolis, pepino, abóbora e beterraba possuem sprite próprio;
 - básicos: arroz, pão, massa, batata, mandioca e aveia possuem sprite próprio;
+- ovos: ovo cru, frito, cozido, omelete, codorna e cartela possuem sprite próprio;
+- miscelâneas: café, capuccino, fermentos, gelatina e sal possuem sprite próprio;
+- outros industrializados: azeitonas, chantilly, leite de coco, maionese e conserva possuem sprite próprio;
+- produtos açucarados: chocolate, açúcar, cocada, doce de abóbora, doce de leite e rapadura possuem sprite próprio;
+- verduras e hortaliças: alface, couve, repolho, berinjela, pimentão e espinafre possuem sprite próprio, além dos vegetais já cobertos;
+- alimentos preparados: salada, sopa, ensopado, yakisoba, acarajé e vatapá possuem sprite próprio;
+- derivados de carne: hambúrguer, linguiça, presunto, salame, quibe e almôndega possuem sprite próprio;
+- derivados de cereais: farinha, milho, biscoito, bolo, cereal matinal e pipoca possuem sprite próprio;
+- preparos brasileiros: cuscuz, feijoada, estrogonofe, tapioca, arroz carreteiro e tacacá possuem sprite próprio;
 - os demais grupos usam um fallback semântico (proteína, lácteo, bebida, gordura, doce ou refeição).
 
 ## Convenção para novas ilustrações

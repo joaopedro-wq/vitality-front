@@ -36,12 +36,21 @@ export const apiPaths = {
   adminRestaurarAlimento: (id: number | string) =>
     `${environment.apiBaseUrl}/admin/foods/${id}/restore`,
   adminImportarTaco: () => `${environment.apiBaseUrl}/admin/foods/import-taco`,
+  adminFoodPlanTags: () => `${environment.apiBaseUrl}/admin/food-plan-tags`,
+  adminFoodPlanTagsFor: (id: number | string) =>
+    `${environment.apiBaseUrl}/admin/foods/${id}/plan-tags`,
 
   refeicoes: () => `${environment.apiBaseUrl}/refeicao`,
   refeicao: (id: number | string) => `${environment.apiBaseUrl}/refeicao/${id}`,
 
   dietas: () => `${environment.apiBaseUrl}/dieta`,
   dieta: (id: number | string) => `${environment.apiBaseUrl}/dieta/${id}`,
+
+  mealPlans: () => `${environment.apiBaseUrl}/meal-plans`,
+  mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
+  mealPlanMealPreview: (position: number) =>
+    `${environment.apiBaseUrl}/meal-plans/preview/meal/${position}`,
+  mealPlanArchive: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}/archive`,
 
   registros: () => `${environment.apiBaseUrl}/registro`,
   registro: (id: number | string) => `${environment.apiBaseUrl}/registro/${id}`,

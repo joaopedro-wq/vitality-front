@@ -7,7 +7,12 @@ import { LucideArchive, LucideArrowLeft, LucidePlus, LucideRefreshCw } from '@lu
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
-import type { Alimento, FonteAlimento, StatusAlimento } from '../../../core/models/alimento.model';
+import type {
+  Alimento,
+  FoodPlanTag,
+  FonteAlimento,
+  StatusAlimento,
+} from '../../../core/models/alimento.model';
 import { AlimentoService } from '../../../services/alimento.service';
 
 @Component({
@@ -42,7 +47,13 @@ export class AdminFoodsComponent {
   protected readonly search = signal('');
   protected readonly editing = signal<Alimento | null>(null);
   protected readonly duplicados = signal<Alimento[]>([]);
-  protected readonly textoDuplicados = computed(() => this.duplicados().map((item) => item.descricao).join(' · '));
+  protected readonly planTags = signal<FoodPlanTag[]>([]);
+  protected readonly selectedPlanTags = signal<string[]>([]);
+  protected readonly textoDuplicados = computed(() =>
+    this.duplicados()
+      .map((item) => item.descricao)
+      .join(' · '),
+  );
   protected readonly form = this.fb.nonNullable.group({
     descricao: ['', Validators.required],
     grupo: [''],
@@ -54,6 +65,7 @@ export class AdminFoodsComponent {
   });
   constructor() {
     this.load();
+    this.service.planTags().subscribe({ next: (tags) => this.planTags.set(tags) });
   }
   filter(): void {
     this.load();
@@ -69,6 +81,7 @@ export class AdminFoodsComponent {
       caloria: 0,
       qtd: 100,
     });
+    this.selectedPlanTags.set([]);
   }
   edit(food: Alimento): void {
     this.editing.set(food);
@@ -81,11 +94,25 @@ export class AdminFoodsComponent {
       caloria: food.caloria,
       qtd: food.qtd,
     });
+    this.selectedPlanTags.set(food.plan_tags?.map((tag) => tag.slug) ?? []);
+  }
+  togglePlanTag(slug: string): void {
+    this.selectedPlanTags.update((selected) =>
+      selected.includes(slug) ? selected.filter((item) => item !== slug) : [...selected, slug],
+    );
   }
   verificarDuplicados(): void {
     const descricao = this.form.controls.descricao.value.trim();
-    if (descricao.length < 3 || this.editing()) { this.duplicados.set([]); return; }
-    this.service.duplicates(descricao).subscribe({ next: (foods) => this.duplicados.set(foods), error: () => this.duplicados.set([]) });
+    if (descricao.length < 3 || this.editing()) {
+      this.duplicados.set([]);
+      return;
+    }
+    this.service
+      .duplicates(descricao)
+      .subscribe({
+        next: (foods) => this.duplicados.set(foods),
+        error: () => this.duplicados.set([]),
+      });
   }
   save(): void {
     if (this.form.invalid || this.saving()) {
@@ -98,7 +125,14 @@ export class AdminFoodsComponent {
     (editing ? this.service.update(editing.id, payload) : this.service.create(payload))
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
-        next: () => {
+        next: (saved) => {
+          this.service.updatePlanTags(saved.id, this.selectedPlanTags()).subscribe({
+            next: () => undefined,
+            error: () =>
+              this.toastr.error(
+                'O alimento foi salvo, mas não foi possível atualizar suas classificações.',
+              ),
+          });
           this.toastr.success(editing ? 'Alimento atualizado.' : 'Alimento criado.');
           this.openCreate();
           this.load();

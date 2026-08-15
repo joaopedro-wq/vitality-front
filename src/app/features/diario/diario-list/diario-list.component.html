@@ -79,6 +79,8 @@
           [preenchendo]="modo() === 'compor'"
           [carimbo]="carimbo()"
           [dica]="modo() === 'compor' ? 'Registrando aqui' : 'Escolha a fase'"
+          [progresso]="progressoMeta()"
+          [resumoBandeira]="resumoBandeira()"
           (faseClick)="selecionarFase($event)"
           (bandeiraClick)="revelacaoAberta.set(true)"
           (carimboFim)="carimbo.set(null)"

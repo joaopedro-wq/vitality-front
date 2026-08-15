@@ -1,7 +1,7 @@
-import { A11yModule } from '@angular/cdk/a11y';
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { LucideTrophy, LucideX } from '@lucide/angular';
+import { BdModalComponent } from 'bandeira-ui';
+import { LucideTrophy } from '@lucide/angular';
 
 import { NutritionRevealComponent } from '../../molecules/nutrition-reveal/nutrition-reveal.component';
 import type { DiaryMacros } from '../../../core/models/diary.model';
@@ -10,10 +10,9 @@ import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
 @Component({
   selector: 'vtp-day-reveal-overlay',
   standalone: true,
-  imports: [A11yModule, DecimalPipe, NutritionRevealComponent, LucideTrophy, LucideX],
+  imports: [DecimalPipe, BdModalComponent, NutritionRevealComponent, LucideTrophy],
   templateUrl: './day-reveal-overlay.component.html',
   styles: [':host { display: contents; }'],
-  host: { '(document:keydown.escape)': 'fechar.emit()' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DayRevealOverlayComponent {
@@ -30,4 +29,10 @@ export class DayRevealOverlayComponent {
     if (!alvo || alvo <= 0) return null;
     return Math.round((this.totals().caloria / alvo) * 100);
   });
+
+  /** `bd-modal` já fecha sozinho no Esc/clique no fundo/X — isso só repassa
+   * pro pai, que decide destruir o componente (`@if (revelacaoAberta())`). */
+  protected onOpenChange(open: boolean): void {
+    if (!open) this.fechar.emit();
+  }
 }

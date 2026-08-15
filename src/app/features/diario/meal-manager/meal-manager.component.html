@@ -1,58 +1,106 @@
-<button class="manager-backdrop" aria-label="Fechar organização" (click)="closed.emit()"></button>
-<section
-  class="manager card"
-  role="dialog"
-  aria-modal="true"
-  aria-label="Organizar meu dia"
-  (keydown.escape)="closed.emit()"
-  tabindex="-1"
+<bd-modal
+  [open]="true"
+  (openChange)="onOpenChange($event)"
+  title="Organizar minha trilha"
+  ariaLabel="Organizar minha trilha"
 >
-  <header>
-    <div>
-      <p>Seu ritmo</p>
-      <h2>Organizar meu dia</h2>
-      <span>Personalize os checkpoints que aparecem no Diário.</span>
-    </div>
-    <button type="button" aria-label="Fechar" (click)="closed.emit()">
-      <svg lucideX size="18"></svg>
-    </button>
-  </header>
-  <div class="meal-list">
+  <p class="m-0 mb-4 text-[13px] text-fg-muted">
+    Cada estação abaixo é um disco no mapa do seu dia.
+  </p>
+
+  <div class="flex flex-col gap-2">
     @for (meal of meals(); track meal.id) {
-      <div class="meal-row">
-        <input #description [value]="meal.descricao" aria-label="Nome da refeição" /><input
-          #time
-          type="time"
-          [value]="meal.horario"
-          aria-label="Horário"
-        /><input #order type="number" min="0" [value]="meal.ordem" aria-label="Ordem" /><button
-          type="button"
-          aria-label="Salvar"
-          (click)="saveExisting(meal, description.value, time.value, order.valueAsNumber)"
+      <div
+        class="flex items-center gap-3 rounded-[14px] border border-border bg-surface px-3 py-2.5"
+      >
+        <span
+          class="grid size-[34px] flex-none place-items-center rounded-full border-2 border-primary bg-primary-soft text-primary-strong [box-shadow:0_3px_0_0_var(--bd-primary-strong)]"
         >
-          <svg lucideSave size="15"></svg></button
-        ><button type="button" class="archive" aria-label="Arquivar" (click)="archive(meal)">
-          <svg lucideArchive size="15"></svg>
-        </button>
+          <svg [lucideIcon]="iconePorMomento(meal)" size="16" aria-hidden="true"></svg>
+        </span>
+
+        <div class="min-w-0 flex-1">
+          <input
+            #description
+            [value]="meal.descricao"
+            aria-label="Nome da refeição"
+            class="w-full min-w-0 border-0 bg-transparent p-0 text-[14px] font-bold text-fg outline-none"
+          />
+          <div class="mt-0.5 flex items-center gap-1.5 text-[11.5px] text-fg-muted">
+            <input
+              #time
+              type="time"
+              [value]="meal.horario"
+              aria-label="Horário"
+              class="rounded-md border border-border bg-bg px-1.5 py-0.5 text-[11px] text-fg outline-none focus-visible:border-primary"
+            />
+            <span>· ordem</span>
+            <input
+              #order
+              type="number"
+              min="0"
+              [value]="meal.ordem"
+              aria-label="Ordem"
+              class="w-10 rounded-md border border-border bg-bg px-1 py-0.5 text-center text-[11px] text-fg outline-none focus-visible:border-primary"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-none gap-1.5">
+          <button
+            class="grid size-8 place-items-center rounded-full border border-border bg-surface text-primary-strong transition-colors hover:border-primary"
+            type="button"
+            aria-label="Salvar"
+            (click)="saveExisting(meal, description.value, time.value, order.valueAsNumber)"
+          >
+            <svg lucideCheck size="14" aria-hidden="true"></svg>
+          </button>
+          <button
+            class="grid size-8 place-items-center rounded-full border border-border bg-surface text-fg-muted transition-colors hover:border-danger hover:text-danger"
+            type="button"
+            aria-label="Arquivar"
+            (click)="archive(meal)"
+          >
+            <svg lucideArchive size="14" aria-hidden="true"></svg>
+          </button>
+        </div>
       </div>
     }
   </div>
+
   @if (adding()) {
-    <div class="new-meal">
-      <input
-        #newDescriptionInput
-        placeholder="Ex.: Pré-treino"
-        (input)="newDescription.set(newDescriptionInput.value)"
-      /><input
-        #newTimeInput
-        type="time"
-        [value]="newTime()"
-        (input)="newTime.set(newTimeInput.value)"
-      /><button bdButton type="button" [disabled]="saving()" (click)="add()">Salvar</button>
+    <div
+      class="mt-4 flex items-center gap-3 rounded-[14px] border border-dashed border-border-strong bg-bg px-3 py-2.5"
+    >
+      <span
+        class="grid size-[34px] flex-none place-items-center rounded-full border-2 border-dashed border-border-strong text-fg-subtle"
+      >
+        <svg lucidePlus size="16" aria-hidden="true"></svg>
+      </span>
+      <div class="flex min-w-0 flex-1 items-center gap-2">
+        <input
+          #newDescriptionInput
+          placeholder="Ex.: Pré-treino"
+          (input)="newDescription.set(newDescriptionInput.value)"
+          class="min-w-0 flex-1 border-0 bg-transparent p-0 text-[13.5px] font-semibold text-fg outline-none placeholder:text-fg-subtle"
+        />
+        <input
+          #newTimeInput
+          type="time"
+          [value]="newTime()"
+          (input)="newTime.set(newTimeInput.value)"
+          class="rounded-md border border-border bg-surface px-1.5 py-1 text-[11px] text-fg outline-none focus-visible:border-primary"
+        />
+      </div>
+      <button bdButton type="button" [disabled]="saving()" (click)="add()">Salvar</button>
     </div>
   } @else {
-    <button bdButton variant="ghost" type="button" (click)="adding.set(true)">
-      <svg lucidePlus size="16"></svg> Nova refeição
+    <button
+      class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border border-dashed border-border-strong px-4 py-2.5 text-[13px] font-bold text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+      type="button"
+      (click)="adding.set(true)"
+    >
+      <svg lucidePlus size="15" aria-hidden="true"></svg> Nova estação
     </button>
   }
-</section>
+</bd-modal>

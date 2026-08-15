@@ -1,18 +1,26 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
-import { BdButtonComponent } from 'bandeira-ui';
-import { LucideArchive, LucidePlus, LucideSave, LucideX } from '@lucide/angular';
+import { BdButtonComponent, BdModalComponent } from 'bandeira-ui';
+import { LucideArchive, LucideCheck, LucideDynamicIcon, LucidePlus } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
+import { ICONE_POR_MOMENTO, momentoDaRefeicao } from '../../../components/utils/diary-day.util';
 import type { DiaryMeal } from '../../../core/models/diary.model';
 import { DiarioService } from '../../../services/diario.service';
 
 @Component({
   selector: 'vtp-meal-manager',
   standalone: true,
-  imports: [BdButtonComponent, LucideArchive, LucidePlus, LucideSave, LucideX],
+  imports: [
+    BdButtonComponent,
+    BdModalComponent,
+    LucideArchive,
+    LucideCheck,
+    LucideDynamicIcon,
+    LucidePlus,
+  ],
   templateUrl: './meal-manager.component.html',
-  styleUrl: './meal-manager.component.scss',
+  styles: [':host { display: contents; }'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MealManagerComponent {
@@ -26,6 +34,18 @@ export class MealManagerComponent {
   protected readonly saving = signal(false);
   protected readonly newDescription = signal('');
   protected readonly newTime = signal('12:00');
+
+  /** Mesmo ícone que o disco da fase usa na trilha — a estação aqui é o mesmo
+   * dado, só num modo de edição, não uma tela à parte. */
+  protected iconePorMomento(meal: DiaryMeal) {
+    return ICONE_POR_MOMENTO[momentoDaRefeicao(meal.descricao)];
+  }
+
+  /** `bd-modal` fecha sozinho no Esc/clique no fundo/X — isso só repassa pro
+   * pai, que é quem decide destruir o componente (`@if (managerOpen())`). */
+  protected onOpenChange(open: boolean): void {
+    if (!open) this.closed.emit();
+  }
 
   protected saveExisting(meal: DiaryMeal, description: string, time: string, order: number): void {
     this.saving.set(true);
