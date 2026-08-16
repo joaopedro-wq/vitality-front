@@ -9,6 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import {
@@ -160,6 +161,7 @@ export class DietaFormComponent {
   protected readonly excluded = signal<Alimento[]>([]);
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
+  protected readonly swapFailureMessage = signal<string | null>(null);
   protected readonly pratoAberto = signal<number | null>(null);
   protected readonly passo = signal(0);
   protected readonly passosForm = PASSOS_FORM;
@@ -245,6 +247,7 @@ export class DietaFormComponent {
     this.pratoAberto.set(position);
     this.swapTarget.set(null);
     this.suggestions.set([]);
+    this.swapFailureMessage.set(null);
   }
 
   protected mealAnterior(): void {
@@ -350,6 +353,7 @@ export class DietaFormComponent {
         next: (replacement) => {
           this.draft.set(replacement);
           this.swapTarget.set(null);
+          this.swapFailureMessage.set(null);
           this.dirty.set(true);
           this.toastr.success('Refeição reorganizada com uma nova combinação.');
         },
@@ -360,11 +364,13 @@ export class DietaFormComponent {
   protected openItemSwap(meal: MealPlanMeal, item: MealPlanItem): void {
     this.swapTarget.set({ meal, item });
     this.suggestions.set([]);
+    this.swapFailureMessage.set(null);
   }
 
   protected closeSwap(): void {
     this.swapTarget.set(null);
     this.suggestions.set([]);
+    this.swapFailureMessage.set(null);
   }
 
   protected loadSuggestions(): void {
@@ -372,12 +378,13 @@ export class DietaFormComponent {
     const target = this.swapTarget();
     if (!draft || !target || this.suggesting()) return;
     this.suggesting.set(true);
+    this.swapFailureMessage.set(null);
     this.plansService
       .itemSuggestions(draft.draft_id, target.meal.position, target.item.food_id)
       .pipe(finalize(() => this.suggesting.set(false)))
       .subscribe({
         next: (suggestions) => this.suggestions.set(suggestions),
-        error: () => undefined,
+        error: (error) => this.swapFailureMessage.set(this.extractSwapFailureMessage(error)),
       });
   }
 
@@ -404,6 +411,18 @@ export class DietaFormComponent {
         },
         error: () => undefined,
       });
+  }
+
+  private extractSwapFailureMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      const errors = error.error?.errors as Record<string, string[] | string> | undefined;
+      const first = errors ? Object.values(errors)[0] : null;
+      const message = Array.isArray(first) ? first[0] : first;
+      if (message) return message;
+      if (typeof error.error?.message === 'string') return error.error.message;
+    }
+
+    return 'Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente.';
   }
 
   protected recreateDay(): void {

@@ -28,6 +28,7 @@ import type {
 export class MealDrawerComponent {
   readonly meal = input.required<MealPlanMeal>();
   readonly suggestions = input<MealPlanItemSuggestion[]>([]);
+  readonly swapFailureMessage = input<string | null>(null);
   readonly swapTarget = input<MealPlanItem | null>(null);
   readonly suggesting = input(false);
   readonly applyingChange = input(false);
