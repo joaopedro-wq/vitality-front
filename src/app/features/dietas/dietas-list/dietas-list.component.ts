@@ -32,7 +32,7 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
     PageTitleComponent,
   ],
   templateUrl: './dietas-list.component.html',
-  host: { class: 'block p-8 max-sm:p-4' },
+  host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DietasListComponent {

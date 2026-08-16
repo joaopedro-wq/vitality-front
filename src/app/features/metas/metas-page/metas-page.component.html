@@ -6,7 +6,7 @@
 } @else {
   @switch (fase()) {
     @case ('configurado') {
-      <div class="flex flex-col gap-7">
+      <div class="page-shell-wide flex flex-col gap-7">
         <div
           class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border"
         >
@@ -36,7 +36,9 @@
     }
 
     @case ('quiz') {
-      <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+      <div
+        class="page-shell-wide card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start"
+      >
         <div class="hidden md:block">
           <vtp-step-track
             [steps]="passos"

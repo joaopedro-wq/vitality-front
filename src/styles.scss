@@ -224,13 +224,22 @@
   border-radius: 20px;
 }
 
-// "animate-reveal": entrada suave (fade + leve subida) pra conteúdo que
-// aparece depois de calculado/revelado — nasceu no momento de "build
-// desbloqueado" do quiz de Metas (passo Sugestão e o painel final), mas serve
-// qualquer resultado que apareça depois de um cálculo/espera em qualquer tela
-// do sistema. Sistema global de motion já reduz toda `animation-duration` a
-// 0.01ms sob `prefers-reduced-motion: reduce` (ver bloco abaixo) — não precisa
-// de guarda própria aqui.
+@utility page-shell {
+  width: 100%;
+  max-width: 72rem; // 1152px
+  margin-inline: auto;
+}
+@utility page-shell-wide {
+  width: 100%;
+  max-width: 87.5rem; // 1400px
+  margin-inline: auto;
+}
+@utility page-shell-narrow {
+  width: 100%;
+  max-width: 48rem; // 768px
+  margin-inline: auto;
+}
+
 @utility animate-reveal {
   animation: vtp-reveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }

@@ -4,7 +4,7 @@
     descricao="Buscando sua meta e suas preferências."
   />
 } @else if (mode() === 'form') {
-  <section class="mx-auto max-w-3xl">
+  <section class="page-shell-wide">
     <button
       class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
       type="button"
@@ -22,52 +22,54 @@
       />
     </header>
 
-    <vtp-step-track
-      class="mt-7 block"
-      [steps]="passosForm"
-      [ativo]="passo()"
-      orientacao="horizontal"
-      label="Etapas do novo plano"
-      (stepClick)="irParaPasso($event)"
-    />
+    <div class="page-shell-narrow">
+      <vtp-step-track
+        class="mt-7 block"
+        [steps]="passosForm"
+        [ativo]="passo()"
+        orientacao="horizontal"
+        label="Etapas do novo plano"
+        (stepClick)="irParaPasso($event)"
+      />
 
-    <div class="mt-6">
-      @switch (passo()) {
-        @case (0) {
-          <vtp-refeicoes-step
-            [valorInicial]="mealCount()"
-            (concluido)="onRefeicoesConcluido($event)"
-          />
+      <div class="mt-6">
+        @switch (passo()) {
+          @case (0) {
+            <vtp-refeicoes-step
+              [valorInicial]="mealCount()"
+              (concluido)="onRefeicoesConcluido($event)"
+            />
+          }
+          @case (1) {
+            <vtp-estilo-step
+              [valorInicial]="style()"
+              (voltar)="irParaPasso(0)"
+              (concluido)="onEstiloConcluido($event)"
+            />
+          }
+          @case (2) {
+            <vtp-evitar-step
+              [excluidosIniciais]="excluded()"
+              (voltar)="irParaPasso(1)"
+              (concluido)="onEvitarConcluido($event)"
+            />
+          }
+          @case (3) {
+            <vtp-revisar-step
+              [mealCount]="mealCount()"
+              [style]="style()"
+              [excluded]="excluded()"
+              [gerando]="generating()"
+              (voltar)="irParaPasso(2)"
+              (gerar)="generate()"
+            />
+          }
         }
-        @case (1) {
-          <vtp-estilo-step
-            [valorInicial]="style()"
-            (voltar)="irParaPasso(0)"
-            (concluido)="onEstiloConcluido($event)"
-          />
-        }
-        @case (2) {
-          <vtp-evitar-step
-            [excluidosIniciais]="excluded()"
-            (voltar)="irParaPasso(1)"
-            (concluido)="onEvitarConcluido($event)"
-          />
-        }
-        @case (3) {
-          <vtp-revisar-step
-            [mealCount]="mealCount()"
-            [style]="style()"
-            [excluded]="excluded()"
-            [gerando]="generating()"
-            (voltar)="irParaPasso(2)"
-            (gerar)="generate()"
-          />
-        }
-      }
+      </div>
     </div>
   </section>
 } @else if (draft(); as plan) {
-  <section class="mx-auto max-w-4xl">
+  <section class="page-shell-wide">
     <button
       class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
       type="button"
@@ -91,18 +93,51 @@
           >
             Nome do plano
           </label>
-          <div
-            class="mt-1.5 flex items-center gap-2 border-b-2 border-transparent pb-1 focus-within:border-primary"
-          >
-            <svg lucidePencil size="15" class="shrink-0 text-fg-subtle" aria-hidden="true"></svg>
-            <input
-              id="plan-title"
-              class="w-full min-w-0 truncate border-0 bg-transparent p-0 text-[17px] font-bold text-fg outline-none placeholder:text-fg-subtle placeholder:font-normal"
-              placeholder="Dê um nome para esse plano"
-              [value]="title()"
-              (input)="onTituloChange($any($event.target).value)"
-            />
-          </div>
+
+          @if (editandoNome()) {
+            <div class="mt-1.5 flex items-center gap-1.5">
+              <input
+                #inputNome
+                id="plan-title"
+                class="w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
+                aria-label="Nome do plano"
+                [value]="rascunhoNome()"
+                (input)="rascunhoNome.set($any($event.target).value)"
+                (keydown)="onNomeKeydown($event)"
+              />
+              <button
+                class="flex size-9 shrink-0 items-center justify-center rounded-full text-primary-strong enabled:hover:bg-primary-soft"
+                type="button"
+                aria-label="Confirmar nome"
+                (click)="confirmarNome()"
+              >
+                <svg lucideCheck size="16" aria-hidden="true"></svg>
+              </button>
+              <button
+                class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-muted enabled:hover:bg-surface-hover"
+                type="button"
+                aria-label="Cancelar edição do nome"
+                (click)="cancelarEdicaoNome()"
+              >
+                <svg lucideX size="16" aria-hidden="true"></svg>
+              </button>
+            </div>
+          } @else {
+            <div class="mt-1.5 flex items-center gap-1.5">
+              <p class="m-0 min-w-0 truncate text-[17px] font-bold text-fg" [attr.title]="title()">
+                {{ title() }}
+              </p>
+              <button
+                class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-subtle enabled:hover:bg-surface-hover enabled:hover:text-fg"
+                type="button"
+                id="plan-title"
+                aria-label="Editar nome do plano"
+                (click)="iniciarEdicaoNome()"
+              >
+                <svg lucidePencil size="15" aria-hidden="true"></svg>
+              </button>
+            </div>
+          }
         </div>
 
         <div class="flex shrink-0 items-center gap-3">

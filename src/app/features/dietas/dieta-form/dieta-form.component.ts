@@ -1,5 +1,14 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import {
@@ -17,6 +26,7 @@ import {
   LucideSunset,
   LucideUtensils,
   LucideUtensilsCrossed,
+  LucideX,
   type LucideIcon,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
@@ -111,6 +121,7 @@ const PASSOS_FORM: StepTrackItem[] = [
     LucideCheck,
     LucideInfo,
     LucidePencil,
+    LucideX,
     PlateLoaderComponent,
     LoadingStateComponent,
     MacroSummaryComponent,
@@ -125,7 +136,7 @@ const PASSOS_FORM: StepTrackItem[] = [
     RevisarStepComponent,
   ],
   templateUrl: './dieta-form.component.html',
-  host: { class: 'block p-8 max-sm:p-4' },
+  host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DietaFormComponent {
@@ -169,6 +180,10 @@ export class DietaFormComponent {
    * só ganhou feedback de estado pendente/salvo em volta dele.
    */
   protected readonly dirty = signal(false);
+  /** Modo de edição do nome — padrão é só leitura; digitar é uma ação explícita. */
+  protected readonly editandoNome = signal(false);
+  protected readonly rascunhoNome = signal('');
+  private readonly inputNomeRef = viewChild<ElementRef<HTMLInputElement>>('inputNome');
 
   protected readonly pratoAtivo = computed(() => {
     const aberto = this.pratoAberto();
@@ -204,6 +219,41 @@ export class DietaFormComponent {
 
   constructor() {
     this.iniciar();
+
+    effect(() => {
+      if (this.editandoNome()) {
+        const input = this.inputNomeRef()?.nativeElement;
+        input?.focus();
+        input?.select();
+      }
+    });
+  }
+
+  protected iniciarEdicaoNome(): void {
+    this.rascunhoNome.set(this.title());
+    this.editandoNome.set(true);
+  }
+
+  protected confirmarNome(): void {
+    const valor = this.rascunhoNome().trim();
+    if (valor) {
+      this.onTituloChange(valor);
+    }
+    this.editandoNome.set(false);
+  }
+
+  protected cancelarEdicaoNome(): void {
+    this.editandoNome.set(false);
+  }
+
+  protected onNomeKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.confirmarNome();
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      this.cancelarEdicaoNome();
+    }
   }
 
   protected selecionarPrato(position: number): void {
