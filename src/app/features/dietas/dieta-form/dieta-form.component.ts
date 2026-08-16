@@ -33,6 +33,7 @@ import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin, switchMap } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
 import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
@@ -104,12 +105,6 @@ const PASSOS_FORM: StepTrackItem[] = [
   { titulo: 'Revisar', descricao: 'Confere antes de gerar' },
 ];
 
-/**
- * Gerar/editar um plano — quiz de preferências (trilha horizontal) seguido da
- * prévia (fila de pratos + gaveta de ingredientes). Vive na própria rota
- * (`/dietas/novo`, com `?planoId=` para editar um plano salvo) porque é um
- * fluxo autocontido demais para continuar dividindo `mode` com a lista.
- */
 @Component({
   selector: 'vtp-dieta-form',
   standalone: true,
@@ -123,6 +118,7 @@ const PASSOS_FORM: StepTrackItem[] = [
     LucidePencil,
     LucideX,
     PlateLoaderComponent,
+    BackButtonComponent,
     LoadingStateComponent,
     MacroSummaryComponent,
     MealPlateComponent,
@@ -470,10 +466,6 @@ export class DietaFormComponent {
     this.router.navigate(['/diario'], {
       queryParams: { registrar: 1, planMeal: mealIndex >= 0 ? mealIndex : null },
     });
-  }
-
-  protected voltarParaLista(): void {
-    this.router.navigateByUrl('/dietas');
   }
 
   private iniciar(): void {

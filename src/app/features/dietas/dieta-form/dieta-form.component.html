@@ -5,13 +5,7 @@
   />
 } @else if (mode() === 'form') {
   <section class="page-shell-wide">
-    <button
-      class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
-      type="button"
-      (click)="voltarParaLista()"
-    >
-      <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Voltar
-    </button>
+    <vtp-back-button class="mb-5" fallbackRota="/dietas" />
     <header class="border-b border-border pb-6">
       <vtp-page-title
         contexto="Novo plano"

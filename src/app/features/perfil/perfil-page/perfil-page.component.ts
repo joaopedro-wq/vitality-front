@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { BdButtonComponent } from 'bandeira-ui';
 
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { ProfilePhotoCardComponent } from '../../../components/molecules/profile-photo-card/profile-photo-card.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
@@ -25,6 +26,7 @@ const PASSOS: StepTrackItem[] = [
   standalone: true,
   imports: [
     BdButtonComponent,
+    BackButtonComponent,
     ProfilePhotoCardComponent,
     PageTitleComponent,
     StepTrackComponent,

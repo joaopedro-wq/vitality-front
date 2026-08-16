@@ -6,6 +6,7 @@ import { LucidePlus, LucideSparkles } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin } from 'rxjs';
 
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
@@ -14,12 +15,6 @@ import { MetaService } from '../../../services/meta.service';
 import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
 import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.model';
 
-/**
- * Tela inicial de Dietas — só a prateleira de planos salvos. Gerar/editar um
- * plano vive em `features/dietas/dieta-form/` (rota `/dietas/novo`), fluxo
- * autocontido demais (quiz + prévia) pra continuar dividindo estado com a
- * lista.
- */
 @Component({
   selector: 'vtp-dietas-list',
   standalone: true,
@@ -28,6 +23,7 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
     BdButtonComponent,
     LucidePlus,
     LucideSparkles,
+    BackButtonComponent,
     LoadingStateComponent,
     PageTitleComponent,
   ],

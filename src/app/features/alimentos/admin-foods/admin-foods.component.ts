@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { BdButtonComponent, BdFieldComponent, BdInputComponent } from 'bandeira-ui';
-import { LucideArchive, LucideArrowLeft, LucidePlus, LucideRefreshCw } from '@lucide/angular';
+import { LucideArchive, LucidePlus, LucideRefreshCw } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
@@ -16,6 +15,7 @@ import type {
 } from '../../../core/models/alimento.model';
 import { AlimentoService } from '../../../services/alimento.service';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
@@ -33,15 +33,14 @@ const MENSAGENS_IMPORTACAO: string[] = [
   imports: [
     DecimalPipe,
     ReactiveFormsModule,
-    RouterLink,
     BdButtonComponent,
     BdFieldComponent,
     BdInputComponent,
     LucideArchive,
-    LucideArrowLeft,
     LucidePlus,
     LucideRefreshCw,
     PlateLoaderComponent,
+    BackButtonComponent,
     LoadingStateComponent,
     PageTitleComponent,
     LoadingOverlayComponent,

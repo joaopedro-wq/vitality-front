@@ -34,6 +34,7 @@ import {
 } from '../../../components/molecules/data-table/data-table.component';
 import { FoodTileComponent } from '../../../components/molecules/food-tile/food-tile.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
@@ -124,6 +125,7 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     ViewModeToggleComponent,
     AlimentosFiltrosComponent,
     PlateLoaderComponent,
+    BackButtonComponent,
     LoadingStateComponent,
     PageTitleComponent,
   ],

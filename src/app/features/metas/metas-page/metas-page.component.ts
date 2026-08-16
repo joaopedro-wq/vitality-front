@@ -11,6 +11,7 @@ import {
   type SugestaoRecomendacao,
 } from '../../../components/utils/recomendacao-calc.util';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { MetaRevealComponent } from '../../../components/molecules/meta-reveal/meta-reveal.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
@@ -40,6 +41,7 @@ const PASSOS: StepTrackItem[] = [
   imports: [
     BdButtonComponent,
     LucideArrowRight,
+    BackButtonComponent,
     LoadingStateComponent,
     MetaRevealComponent,
     PageTitleComponent,

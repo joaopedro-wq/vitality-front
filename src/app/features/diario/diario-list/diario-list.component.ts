@@ -29,6 +29,7 @@ import { DiarioService } from '../../../services/diario.service';
 import { MetaService } from '../../../services/meta.service';
 import { EntryComposerComponent } from '../entry-composer/entry-composer.component';
 import { MealManagerComponent } from '../meal-manager/meal-manager.component';
+import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
@@ -51,6 +52,7 @@ type Modo = 'cartao' | 'compor';
     LucideArrowLeft,
     LucideArrowRight,
     LucideSettings2,
+    BackButtonComponent,
     LoadingStateComponent,
     PageTitleComponent,
   ],

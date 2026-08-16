@@ -7,6 +7,7 @@
   @switch (fase()) {
     @case ('configurado') {
       <div class="page-shell-wide flex flex-col gap-7">
+        <vtp-back-button />
         <div
           class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border"
         >
@@ -36,49 +37,57 @@
     }
 
     @case ('quiz') {
-      <div
-        class="page-shell-wide card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start"
-      >
-        <div class="hidden md:block">
-          <vtp-step-track
-            [steps]="passos"
-            [ativo]="passo()"
-            label="Etapas da configuração de metas"
-            (stepClick)="irPara($event)"
-          />
-        </div>
+      <div class="page-shell-wide">
+        <vtp-back-button class="mb-5" />
+        <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+          <div class="hidden md:block">
+            <vtp-step-track
+              [steps]="passos"
+              [ativo]="passo()"
+              label="Etapas da configuração de metas"
+              (stepClick)="irPara($event)"
+            />
+          </div>
 
-        <div class="flex md:hidden items-center gap-2 mb-3">
-          <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
-            >Passo {{ passo() + 1 }} de {{ passos.length }}</span
-          >
-          <span class="text-fg-subtle">·</span>
-          <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
-        </div>
+          <div class="flex md:hidden items-center gap-2 mb-3">
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+              >Passo {{ passo() + 1 }} de {{ passos.length }}</span
+            >
+            <span class="text-fg-subtle">·</span>
+            <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
+          </div>
 
-        <div class="min-w-0">
-          @switch (passo()) {
-            @case (0) {
-              <vtp-perfil-step (concluido)="passo.set(1)" />
-            }
-            @case (1) {
-              <vtp-atividade-step (voltar)="irPara(0)" (concluido)="onSugestaoCalculada($event)" />
-            }
-            @case (2) {
-              @if (sugestao(); as s) {
-                <vtp-sugestao-step [sugestao]="s" (voltar)="irPara(1)" (continuar)="passo.set(3)" />
+          <div class="min-w-0">
+            @switch (passo()) {
+              @case (0) {
+                <vtp-perfil-step (concluido)="passo.set(1)" />
               }
-            }
-            @case (3) {
-              @if (sugestao(); as s) {
-                <vtp-revisar-step
-                  [sugestao]="s"
-                  (voltar)="irPara(2)"
-                  (salvo)="fase.set('configurado')"
+              @case (1) {
+                <vtp-atividade-step
+                  (voltar)="irPara(0)"
+                  (concluido)="onSugestaoCalculada($event)"
                 />
               }
+              @case (2) {
+                @if (sugestao(); as s) {
+                  <vtp-sugestao-step
+                    [sugestao]="s"
+                    (voltar)="irPara(1)"
+                    (continuar)="passo.set(3)"
+                  />
+                }
+              }
+              @case (3) {
+                @if (sugestao(); as s) {
+                  <vtp-revisar-step
+                    [sugestao]="s"
+                    (voltar)="irPara(2)"
+                    (salvo)="fase.set('configurado')"
+                  />
+                }
+              }
             }
-          }
+          </div>
         </div>
       </div>
     }
