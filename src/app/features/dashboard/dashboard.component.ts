@@ -8,8 +8,8 @@ import { PageTitleComponent } from '../../components/molecules/page-title/page-t
   standalone: true,
   imports: [BackButtonComponent, PageTitleComponent],
   template: `
+    <vtp-back-button class="page-shell-wide" />
     <div class="page-shell-wide">
-      <vtp-back-button />
       <vtp-page-title titulo="Dashboard" subtitulo="Fase 6 do plano ainda não implementada." />
     </div>
   `,
