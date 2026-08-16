@@ -76,30 +76,119 @@
       <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Ajustar preferências
     </button>
     <header class="border-b border-border pb-6">
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-        <div class="min-w-0">
-          <vtp-page-title contexto="Prévia do plano" titulo="Monte o seu prato" />
-          <p
-            class="m-0 mt-2 max-w-[42ch] truncate text-[15px] font-bold text-fg"
-            [attr.title]="title()"
-          >
-            {{ title() }}
-          </p>
-        </div>
-        <vtp-macro-summary
-          class="shrink-0"
-          [valores]="macroValores()"
-          [progresso]="progressoCalorias()"
-          tamanho="sm"
-        />
-      </div>
+      <vtp-page-title contexto="Prévia do plano" titulo="Monte o seu prato" />
     </header>
     @if (plan.summary && !editando()) {
       <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.summary }}</p>
     }
-    @if (plan.warning) {
-      <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.warning }}</p>
-    }
+
+    <section class="card animate-reveal mt-6 flex flex-col gap-5 p-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div class="min-w-0 flex-1">
+          <label
+            class="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
+            for="plan-title"
+          >
+            Nome do plano
+          </label>
+          <div
+            class="mt-1.5 flex items-center gap-2 border-b-2 border-transparent pb-1 focus-within:border-primary"
+          >
+            <svg lucidePencil size="15" class="shrink-0 text-fg-subtle" aria-hidden="true"></svg>
+            <input
+              id="plan-title"
+              class="w-full min-w-0 truncate border-0 bg-transparent p-0 text-[17px] font-bold text-fg outline-none placeholder:text-fg-subtle placeholder:font-normal"
+              placeholder="Dê um nome para esse plano"
+              [value]="title()"
+              (input)="onTituloChange($any($event.target).value)"
+            />
+          </div>
+        </div>
+
+        <div class="flex shrink-0 items-center gap-3">
+          <span class="whitespace-nowrap text-[12px] font-bold text-fg-muted">
+            @if (saving()) {
+              Salvando…
+            } @else if (dirty()) {
+              Alterações não salvas
+            } @else {
+              Salvo
+            }
+          </span>
+          <button
+            bdButton
+            size="sm"
+            [variant]="dirty() ? 'primary' : 'subtle'"
+            [disabled]="saving() || !dirty()"
+            [attr.aria-busy]="saving() ? true : null"
+            (click)="save()"
+          >
+            @if (saving()) {
+              <vtp-plate-loader tamanho="xs" cor="herdada" />
+            } @else {
+              <svg lucideCheck size="16" aria-hidden="true"></svg>
+            }
+            Salvar
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 border-t border-border pt-4">
+        <span class="text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
+          >Ações do dia</span
+        >
+        <button
+          bdButton
+          variant="subtle"
+          size="sm"
+          [disabled]="applyingChange()"
+          [attr.aria-busy]="applyingChange() ? true : null"
+          (click)="recreateDay()"
+        >
+          @if (applyingChange()) {
+            <vtp-plate-loader tamanho="xs" cor="herdada" />
+          }
+          Gerar novo dia
+        </button>
+        @if (plan.can_undo) {
+          <button
+            bdButton
+            variant="ghost"
+            size="sm"
+            [disabled]="applyingChange()"
+            [attr.aria-busy]="applyingChange() ? true : null"
+            (click)="undo()"
+          >
+            @if (applyingChange()) {
+              <vtp-plate-loader tamanho="xs" cor="herdada" />
+            }
+            Desfazer última alteração
+          </button>
+        }
+      </div>
+
+      <p class="m-0 flex items-start gap-2 text-[12.5px] leading-relaxed text-fg-muted">
+        <svg lucideInfo size="15" class="mt-0.5 shrink-0 text-fg-subtle" aria-hidden="true"></svg>
+        Este plano é uma sugestão geral e não substitui o acompanhamento de um nutricionista,
+        principalmente em caso de condições clínicas.
+      </p>
+    </section>
+
+    <!-- 2 · Resumo nutricional do dia -->
+    <div
+      class="card mt-6 flex flex-col items-start gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <vtp-macro-summary
+        [valores]="macroValores()"
+        [progresso]="progressoCalorias()"
+        tamanho="sm"
+      />
+      @if (plan.warning) {
+        <p class="m-0 max-w-[36ch] text-[12.5px] leading-relaxed text-fg-muted">
+          {{ plan.warning }}
+        </p>
+      }
+    </div>
 
     <div class="mt-7 md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
       <nav
@@ -122,13 +211,13 @@
 
       <div class="flex items-center gap-2 md:hidden" role="tablist" aria-label="Refeições do dia">
         <button
-          class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border-strong text-fg enabled:hover:border-primary enabled:hover:text-primary disabled:opacity-30"
+          class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent enabled:hover:bg-accent-soft disabled:opacity-30"
           type="button"
           aria-label="Refeição anterior"
           [disabled]="indiceAtivo() === 0"
           (click)="mealAnterior()"
         >
-          <svg lucideArrowLeft size="18" aria-hidden="true"></svg>
+          <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
         </button>
 
         <div class="min-w-0 flex-1">
@@ -151,13 +240,13 @@
         </div>
 
         <button
-          class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border-strong text-fg enabled:hover:border-primary enabled:hover:text-primary disabled:opacity-30"
+          class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-contrast enabled:hover:bg-primary-strong disabled:opacity-30"
           type="button"
           aria-label="Próxima refeição"
           [disabled]="indiceAtivo() === plan.meals.length - 1"
           (click)="mealSeguinte()"
         >
-          <svg lucideArrowRight size="18" aria-hidden="true"></svg>
+          <svg lucideArrowRight size="15" aria-hidden="true"></svg>
         </button>
       </div>
 
@@ -184,63 +273,6 @@
           />
         </div>
       }
-    </div>
-
-    <div class="mt-5 flex flex-wrap gap-3">
-      <button
-        bdButton
-        variant="subtle"
-        size="sm"
-        [disabled]="applyingChange()"
-        [attr.aria-busy]="applyingChange() ? true : null"
-        (click)="recreateDay()"
-      >
-        @if (applyingChange()) {
-          <vtp-plate-loader tamanho="xs" cor="herdada" />
-        }
-        Recriar dia
-      </button>
-      @if (plan.can_undo) {
-        <button
-          bdButton
-          variant="ghost"
-          size="sm"
-          [disabled]="applyingChange()"
-          [attr.aria-busy]="applyingChange() ? true : null"
-          (click)="undo()"
-        >
-          @if (applyingChange()) {
-            <vtp-plate-loader tamanho="xs" cor="herdada" />
-          }
-          Desfazer última alteração
-        </button>
-      }
-    </div>
-    <div class="mt-7 rounded-[22px] bg-primary-soft p-5">
-      <p class="m-0 mb-4 text-sm text-fg-muted">
-        Sugestão geral de alimentação; não substitui orientação de nutricionista, especialmente em
-        condições clínicas.
-      </p>
-      <label class="block text-sm font-bold" for="plan-title">Nome do plano</label
-      ><input
-        id="plan-title"
-        class="mt-2 w-full rounded-2xl border border-border bg-surface px-3.5 py-3"
-        [value]="title()"
-        (input)="title.set($any($event.target).value)"
-      /><button
-        class="mt-4"
-        bdButton
-        [disabled]="saving()"
-        [attr.aria-busy]="saving() ? true : null"
-        (click)="save()"
-      >
-        @if (saving()) {
-          <vtp-plate-loader tamanho="xs" cor="herdada" />
-        } @else {
-          <svg lucideCheck size="18" aria-hidden="true"></svg>
-        }
-        {{ saving() ? 'Salvando…' : 'Salvar plano' }}
-      </button>
     </div>
   </section>
 }

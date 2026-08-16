@@ -4,6 +4,7 @@ import { LucideArrowLeft } from '@lucide/angular';
 import { BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 
 import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
+import { MealMacroSummaryComponent } from '../../molecules/meal-macro-summary/meal-macro-summary.component';
 import type {
   MealPlanItem,
   MealPlanItemSuggestion,
@@ -19,6 +20,7 @@ import type {
     BdTooltipDirective,
     LucideArrowLeft,
     PlateLoaderComponent,
+    MealMacroSummaryComponent,
   ],
   templateUrl: './meal-drawer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -8,8 +8,10 @@ import {
   LucideArrowRight,
   LucideCheck,
   LucideCoffee,
+  LucideInfo,
   LucideMoon,
   LucideMoonStar,
+  LucidePencil,
   LucideSun,
   LucideSunrise,
   LucideSunset,
@@ -107,6 +109,8 @@ const PASSOS_FORM: StepTrackItem[] = [
     LucideArrowLeft,
     LucideArrowRight,
     LucideCheck,
+    LucideInfo,
+    LucidePencil,
     PlateLoaderComponent,
     LoadingStateComponent,
     MacroSummaryComponent,
@@ -154,6 +158,17 @@ export class DietaFormComponent {
   protected readonly passosForm = PASSOS_FORM;
   /** `true` quando a prévia veio de `?planoId=` (editando um plano já salvo). */
   protected readonly editando = signal(false);
+  /**
+   * `true` quando existe alteração (nome, regeneração, troca de item, recriar
+   * dia, desfazer) desde o último `save()` bem-sucedido. Não existe endpoint
+   * de "renomear" isolado — `save()` sempre persiste o rascunho inteiro — por
+   * isso o estado de salvamento é do plano todo, não só do campo de nome.
+   * Não há autosave: cada `save()` cria um novo `MealPlan` no backend (mesmo
+   * editando um já existente), então salvar a cada tecla digitada geraria
+   * planos duplicados — o gesto explícito de "Salvar" continua necessário,
+   * só ganhou feedback de estado pendente/salvo em volta dele.
+   */
+  protected readonly dirty = signal(false);
 
   protected readonly pratoAtivo = computed(() => {
     const aberto = this.pratoAberto();
@@ -221,6 +236,11 @@ export class DietaFormComponent {
     return ICONES_PERIODO.find(([limite]) => hora < limite)?.[1] ?? LucideMoon;
   }
 
+  protected onTituloChange(valor: string): void {
+    this.title.set(valor);
+    this.dirty.set(true);
+  }
+
   protected irParaPasso(indice: number): void {
     this.passo.set(indice);
   }
@@ -259,6 +279,7 @@ export class DietaFormComponent {
           this.draft.set(draft);
           this.mode.set('preview');
           this.pratoAberto.set(draft.meals[0]?.position ?? null);
+          this.dirty.set(true);
           this.closeSwap();
         },
         error: () => undefined,
@@ -275,6 +296,7 @@ export class DietaFormComponent {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
+          this.dirty.set(false);
           this.toastr.success('Plano alimentar salvo.');
           this.router.navigateByUrl('/dietas');
         },
@@ -293,6 +315,7 @@ export class DietaFormComponent {
         next: (replacement) => {
           this.draft.set(replacement);
           this.swapTarget.set(null);
+          this.dirty.set(true);
           this.toastr.success('Refeição reorganizada com uma nova combinação.');
         },
         error: () => undefined,
@@ -340,6 +363,7 @@ export class DietaFormComponent {
       .subscribe({
         next: (updated) => {
           this.draft.set(updated);
+          this.dirty.set(true);
           this.closeSwap();
           this.toastr.success('Alimento substituído mantendo a meta da refeição.');
         },
@@ -352,7 +376,7 @@ export class DietaFormComponent {
     if (!current || this.applyingChange()) return;
     if (
       !window.confirm(
-        'Gerar uma nova versão do dia? A prévia atual continuará disponível até você salvar a nova.',
+        'Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?',
       )
     )
       return;
@@ -363,8 +387,9 @@ export class DietaFormComponent {
       .subscribe({
         next: (replacement) => {
           this.draft.set(replacement);
+          this.dirty.set(true);
           this.closeSwap();
-          this.toastr.success('Nova versão do plano criada.');
+          this.toastr.success('Novo dia gerado.');
         },
         error: () => undefined,
       });
@@ -380,6 +405,7 @@ export class DietaFormComponent {
       .subscribe({
         next: (draft) => {
           this.draft.set(draft);
+          this.dirty.set(true);
           this.closeSwap();
           this.toastr.success('Última alteração desfeita.');
         },
@@ -440,6 +466,7 @@ export class DietaFormComponent {
           this.draft.set(draft);
           this.mode.set('preview');
           this.editando.set(true);
+          this.dirty.set(false);
           this.pratoAberto.set(draft.meals[0]?.position ?? null);
         },
         error: () => {
