@@ -84,7 +84,7 @@
               type="button"
               (click)="editPlan(plan)"
             >
-              Editar cópia
+              Editar e trocar alimentos
             </button>
             <button
               class="ml-4 mt-4 text-sm text-fg-muted underline"
@@ -234,7 +234,7 @@
                   type="button"
                   (click)="openItemSwap(meal, item)"
                 >
-                  Trocar
+                  Trocar alimento
                 </button>
               </li>
             }
@@ -256,7 +256,12 @@
       }
     </div>
     @if (swapTarget(); as target) {
-      <section class="mt-5 rounded-[22px] border border-primary/30 bg-primary-soft p-5">
+      <bd-modal
+        [open]="true"
+        (openChange)="onSwapModalOpenChange($event)"
+        title="Trocar alimento"
+        ariaLabel="Trocar alimento"
+      >
         <div class="flex items-start justify-between gap-4">
           <div>
             <p class="m-0 text-sm font-extrabold uppercase tracking-[.1em] text-primary">
@@ -352,7 +357,7 @@
             }
           </div>
         }
-      </section>
+      </bd-modal>
     }
     <div class="mt-5 flex flex-wrap gap-3">
       <button
@@ -413,10 +418,8 @@
   </section>
 }
 
-<!-- Gerar plano é a operação mais longa do produto: bloqueia a tela inteira em
-     vez de deixar só um botão apagado. Signal cru, sem gate. -->
 <vtp-loading-overlay
   [ativo]="generating()"
   titulo="Montando seu plano"
-  descricao="Escolhendo alimentos e equilibrando as refeições do dia."
+  [mensagens]="mensagensGeracao"
 />

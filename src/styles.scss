@@ -267,6 +267,17 @@ body {
     color var(--bd-duration) var(--bd-ease);
 }
 
+button:not(:disabled),
+a[href],
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
+button:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 button[bdButton],
 a[bdButton] {
   border-radius: 999px !important;

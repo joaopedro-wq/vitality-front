@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BdButtonComponent } from 'bandeira-ui';
+import { BdButtonComponent, BdModalComponent } from 'bandeira-ui';
 import { LucideArrowLeft, LucideCheck, LucidePlus, LucideSparkles } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin, switchMap } from 'rxjs';
@@ -26,6 +26,13 @@ import type {
   MealPlanStyle,
 } from '../../../core/models/meal-plan.model';
 
+const MENSAGENS_GERACAO: string[] = [
+  'Escolhendo alimentos para o seu dia…',
+  'Equilibrando proteína, carbo e gordura…',
+  'Encaixando nos horários das refeições…',
+  'Conferindo se bate com a sua meta…',
+];
+
 const TIMES: Record<3 | 4 | 5, string[]> = {
   3: ['08:00', '12:30', '19:30'],
   4: ['08:00', '12:30', '16:30', '20:00'],
@@ -38,6 +45,7 @@ const TIMES: Record<3 | 4 | 5, string[]> = {
   imports: [
     DecimalPipe,
     BdButtonComponent,
+    BdModalComponent,
     LucideArrowLeft,
     LucideCheck,
     LucidePlus,
@@ -61,6 +69,7 @@ export class DietasListComponent {
   protected readonly loading = signal(true);
   protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly generating = signal(false);
+  protected readonly mensagensGeracao = MENSAGENS_GERACAO;
   protected readonly saving = signal(false);
   protected readonly regeneratingMeal = signal<number | null>(null);
   protected readonly suggesting = signal(false);
@@ -193,6 +202,10 @@ export class DietasListComponent {
   protected closeSwap(): void {
     this.swapTarget.set(null);
     this.suggestions.set([]);
+  }
+
+  protected onSwapModalOpenChange(open: boolean): void {
+    if (!open) this.closeSwap();
   }
 
   protected loadSuggestions(): void {

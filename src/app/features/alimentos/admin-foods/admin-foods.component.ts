@@ -20,6 +20,12 @@ import { LoadingStateComponent } from '../../../components/molecules/loading-sta
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
+const MENSAGENS_IMPORTACAO: string[] = [
+  'Baixando o catálogo oficial…',
+  'Conferindo os alimentos já cadastrados…',
+  'Atualizando macros e nutrientes…',
+];
+
 @Component({
   selector: 'vtp-admin-foods',
   standalone: true,
@@ -50,6 +56,7 @@ export class AdminFoodsComponent {
   protected readonly loading = signal(true);
   protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly importing = signal(false);
+  protected readonly mensagensImportacao = MENSAGENS_IMPORTACAO;
   protected readonly saving = signal(false);
   protected readonly source = signal<FonteAlimento | ''>('');
   protected readonly status = signal<StatusAlimento | ''>('');
