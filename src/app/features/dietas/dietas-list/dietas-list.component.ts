@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BdButtonComponent } from 'bandeira-ui';
+import { BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 import { LucideArchive, LucidePencil, LucidePlus, LucideSparkles } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin } from 'rxjs';
@@ -10,6 +10,7 @@ import { BackButtonComponent } from '../../../components/molecules/back-button/b
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
+import { calcularProporcaoMacro } from '../../../components/utils/macro-percent.util';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import { MetaService } from '../../../services/meta.service';
 import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
@@ -21,6 +22,7 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
   imports: [
     DecimalPipe,
     BdButtonComponent,
+    BdTooltipDirective,
     LucideArchive,
     LucidePencil,
     LucidePlus,
@@ -78,13 +80,12 @@ export class DietasListComponent {
     return { rapido: 'Rápido', caseiro: 'Caseiro', economico: 'Econômico' }[style];
   }
 
-  protected macroPercent(plan: MealPlan, macro: 'proteina' | 'carbo' | 'gordura'): number {
-    const totals = plan.totals;
-    const energia = totals.proteina * 4 + totals.carbo * 4 + totals.gordura * 9;
-    if (energia <= 0) return 0;
-
-    const calorias = macro === 'gordura' ? totals.gordura * 9 : totals[macro] * 4;
-    return Math.min(100, Math.round((calorias / energia) * 100));
+  /** Anel do crachá: conic-gradient com a proporção real de proteína · carbo · gordura. */
+  protected ringBackground(plan: MealPlan): string {
+    const { proteina, carbo } = calcularProporcaoMacro(plan.totals);
+    const p1 = Math.round(proteina);
+    const p2 = Math.round(proteina + carbo);
+    return `conic-gradient(var(--bd-primary) 0 ${p1}%, var(--bd-accent) ${p1}% ${p2}%, var(--fat) ${p2}% 100%)`;
   }
 
   private load(): void {

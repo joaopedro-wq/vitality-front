@@ -44,97 +44,120 @@
     } @else {
       <div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
         @for (plan of plans(); track plan.id) {
-          <article class="card flex min-w-0 flex-col items-center rounded-[24px] p-2 text-center sm:p-2.5">
-            <div
-              class="grid size-16 shrink-0 place-items-center rounded-full border-2 border-border-strong sm:size-20"
-            >
-              <span>
-                <span class="block text-base font-extrabold text-primary-strong sm:text-lg">{{
-                  plan.meals.length
-                }}</span>
-                <span class="block text-[10px] font-bold uppercase tracking-wide text-fg-muted"
-                  >pratos</span
-                >
-              </span>
-            </div>
-
+          <article
+            class="card flex min-w-0 flex-col items-center gap-2 rounded-[24px] p-3 text-center sm:p-4"
+          >
             <span
-              class="mt-1.5 max-w-full truncate rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary sm:text-xs"
-              [attr.title]="formatStyle(plan.preferences.style)"
+              class="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-strong sm:text-xs"
               >{{ formatStyle(plan.preferences.style) }}</span
             >
+
+            <div class="relative">
+              <div
+                class="grid size-20 shrink-0 place-items-center rounded-full sm:size-24 [box-shadow:0_0_0_5px_var(--bd-surface),0_0_22px_-6px_var(--bd-accent)]"
+                [style.background]="ringBackground(plan)"
+              >
+                <span class="absolute inset-[9px] rounded-full bg-surface sm:inset-[11px]"></span>
+                <span class="relative flex flex-col items-center leading-none">
+                  <strong class="text-base font-extrabold tabular-nums sm:text-lg">{{
+                    plan.totals.caloria | number: '1.0-0'
+                  }}</strong>
+                  <span class="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-fg-muted"
+                    >kcal</span
+                  >
+                </span>
+              </div>
+              <span
+                class="absolute -bottom-1 -right-1 grid size-6 place-items-center rounded-full border-[3px] border-surface bg-accent text-[11px] font-extrabold text-primary-contrast sm:size-7 sm:text-xs"
+                [attr.title]="plan.meals.length + ' refeições'"
+                >{{ plan.meals.length }}</span
+              >
+            </div>
+
             <h2
-              class="m-0 mt-1 line-clamp-2 min-h-9 max-w-full break-words text-sm leading-5 sm:text-base"
+              class="m-0 line-clamp-2 min-h-9 max-w-full break-words text-sm font-bold leading-5 sm:text-base"
               [attr.title]="plan.titulo"
             >
               {{ plan.titulo }}
             </h2>
-            <div class="mt-1.5 w-full rounded-2xl bg-surface-hover px-2.5 py-2 text-left">
-              <div class="flex items-baseline justify-between gap-2">
-                <span class="text-[9px] font-bold uppercase tracking-wide text-fg-muted">Total do dia</span>
-                <strong class="whitespace-nowrap text-base font-extrabold tabular-nums text-primary-strong sm:text-lg">
-                  {{ plan.totals.caloria | number: '1.0-0' }}
-                  <span class="text-[10px] font-bold text-fg-muted">kcal</span>
-                </strong>
-              </div>
 
-              <div class="mt-1.5 space-y-1.5" aria-label="Distribuição de macronutrientes">
-                <div>
-                  <div class="flex items-center justify-between gap-2 text-[10px] font-bold">
-                    <span class="flex items-center gap-1 text-fg-muted"><span class="size-1.5 rounded-full bg-primary"></span>Proteína</span>
-                    <span class="tabular-nums text-fg">{{ plan.totals.proteina | number: '1.0-0' }}g</span>
-                  </div>
-                  <div class="mt-0.5 h-1 overflow-hidden rounded-full bg-border" role="presentation">
-                    <span class="block h-full rounded-full bg-primary" [style.width.%]="macroPercent(plan, 'proteina')"></span>
-                  </div>
-                </div>
-                <div>
-                  <div class="flex items-center justify-between gap-2 text-[10px] font-bold">
-                    <span class="flex items-center gap-1 text-fg-muted"><span class="size-1.5 rounded-full bg-accent"></span>Carboidrato</span>
-                    <span class="tabular-nums text-fg">{{ plan.totals.carbo | number: '1.0-0' }}g</span>
-                  </div>
-                  <div class="mt-0.5 h-1 overflow-hidden rounded-full bg-border" role="presentation">
-                    <span class="block h-full rounded-full bg-accent" [style.width.%]="macroPercent(plan, 'carbo')"></span>
-                  </div>
-                </div>
-                <div>
-                  <div class="flex items-center justify-between gap-2 text-[10px] font-bold">
-                    <span class="flex items-center gap-1 text-fg-muted"><span class="size-1.5 rounded-full bg-fat"></span>Gordura</span>
-                    <span class="tabular-nums text-fg">{{ plan.totals.gordura | number: '1.0-0' }}g</span>
-                  </div>
-                  <div class="mt-0.5 h-1 overflow-hidden rounded-full bg-border" role="presentation">
-                    <span class="block h-full rounded-full bg-fat" [style.width.%]="macroPercent(plan, 'gordura')"></span>
-                  </div>
-                </div>
-              </div>
+            <div class="flex flex-wrap items-baseline justify-center gap-1.5">
+              <span
+                class="inline-flex items-baseline gap-1 rounded-full bg-primary-soft px-2 py-1 text-[10px] font-bold text-primary-strong"
+              >
+                <strong class="text-xs tabular-nums"
+                  >{{ plan.totals.proteina | number: '1.0-0' }}g</strong
+                >Prot
+              </span>
+              <span
+                class="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2 py-1 text-[10px] font-bold text-accent"
+              >
+                <strong class="text-xs tabular-nums"
+                  >{{ plan.totals.carbo | number: '1.0-0' }}g</strong
+                >Carbo
+              </span>
+              <span
+                class="inline-flex items-baseline gap-1 rounded-full bg-fat/15 px-2 py-1 text-[10px] font-bold text-fat"
+              >
+                <strong class="text-xs tabular-nums"
+                  >{{ plan.totals.gordura | number: '1.0-0' }}g</strong
+                >Gord
+              </span>
             </div>
 
-            <div class="mt-auto grid w-full grid-cols-2 gap-1 pt-1.5 sm:gap-1.5">
+            <!-- Mobile: pares de botões redondos, só ícone — mesmo padrão do topbar (app-shell). -->
+            <div class="mt-auto flex w-full justify-center gap-2 pt-1.5 sm:hidden">
               <button
-                class="!h-7 !min-h-7 w-full min-w-0 !px-1 !py-0 text-xs leading-none sm:!h-auto sm:!min-h-9 sm:!px-2 sm:!py-2"
+                bdButton
+                variant="subtle"
+                size="sm"
+                type="button"
+                iconOnly
+                bdTooltip="Editar plano"
+                placement="top"
+                aria-label="Editar plano"
+                (click)="editPlan(plan)"
+              >
+                <svg lucidePencil size="15" aria-hidden="true"></svg>
+              </button>
+              <button
+                bdButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                iconOnly
+                bdTooltip="Arquivar plano"
+                placement="top"
+                aria-label="Arquivar plano"
+                (click)="archive(plan)"
+              >
+                <svg lucideArchive size="15" aria-hidden="true"></svg>
+              </button>
+            </div>
+
+            <!-- sm+: botões com texto -->
+            <div class="mt-auto hidden w-full grid-cols-2 gap-1.5 pt-1.5 sm:grid">
+              <button
                 bdButton
                 variant="subtle"
                 size="sm"
                 type="button"
                 aria-label="Editar plano"
-                title="Editar plano"
                 (click)="editPlan(plan)"
               >
                 <svg lucidePencil size="13" aria-hidden="true"></svg>
-                <span class="hidden sm:inline">Editar</span>
+                Editar
               </button>
               <button
-                class="!h-7 !min-h-7 w-full min-w-0 !px-1 !py-0 text-xs leading-none sm:!h-auto sm:!min-h-9 sm:!px-2 sm:!py-2"
                 bdButton
                 variant="ghost"
                 size="sm"
                 type="button"
                 aria-label="Arquivar plano"
-                title="Arquivar plano"
                 (click)="archive(plan)"
               >
                 <svg lucideArchive size="13" aria-hidden="true"></svg>
-                <span class="hidden sm:inline">Arquivar</span>
+                Arquivar
               </button>
             </div>
           </article>
