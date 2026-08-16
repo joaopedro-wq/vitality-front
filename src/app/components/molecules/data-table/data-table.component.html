@@ -16,6 +16,11 @@
   size="small"
   (onLazyLoad)="lazyLoad.emit($event)"
 >
+  <!-- Precisa ser filho DIRETO de <p-table>: a query do PrimeNG é
+       `['loadingicon'], descendants: false`. -->
+  <ng-template #loadingicon>
+    <vtp-plate-loader tamanho="sm" />
+  </ng-template>
   <ng-template #colgroup>
     <colgroup>
       @for (col of cols(); track col.field) {

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { BdCheckboxComponent } from 'bandeira-ui';
 
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
+
 export interface FacetOption {
   value: string;
   label: string;
@@ -10,7 +12,7 @@ export interface FacetOption {
 @Component({
   selector: 'vtp-facet-checkbox-list',
   standalone: true,
-  imports: [BdCheckboxComponent],
+  imports: [BdCheckboxComponent, PlateLoaderComponent],
   templateUrl: './facet-checkbox-list.component.html',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,

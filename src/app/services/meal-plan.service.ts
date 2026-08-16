@@ -10,6 +10,7 @@ import type {
   MealPlanDraft,
   MealPlanPreferences,
   FoodRestrictionOption,
+  MealPlanItemSuggestion,
 } from '../core/models/meal-plan.model';
 
 @Injectable({ providedIn: 'root' })
@@ -33,6 +34,50 @@ export class MealPlanService {
       .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanMealPreview(position), {
         draft_id: draftId,
       })
+      .pipe(map((res) => res.data));
+  }
+
+  itemSuggestions(
+    draftId: string,
+    position: number,
+    foodId: number,
+  ): Observable<MealPlanItemSuggestion[]> {
+    return this.http
+      .post<
+        ApiResponse<MealPlanItemSuggestion[]>
+      >(apiPaths.mealPlanItemSuggestions(position, foodId), { draft_id: draftId })
+      .pipe(map((res) => res.data));
+  }
+
+  replaceItem(
+    draftId: string,
+    position: number,
+    foodId: number,
+    replacementFoodId: number,
+    quantity: number,
+  ): Observable<MealPlanDraft> {
+    return this.http
+      .post<
+        ApiResponse<MealPlanDraft>
+      >(apiPaths.mealPlanItemReplace(position, foodId), { draft_id: draftId, replacement_food_id: replacementFoodId, quantity })
+      .pipe(map((res) => res.data));
+  }
+
+  undo(draftId: string): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanUndo(), { draft_id: draftId })
+      .pipe(map((res) => res.data));
+  }
+
+  recreate(draftId: string): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanRecreate(), { draft_id: draftId })
+      .pipe(map((res) => res.data));
+  }
+
+  editDraft(id: number): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanEditDraft(id), {})
       .pipe(map((res) => res.data));
   }
 

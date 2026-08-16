@@ -14,24 +14,48 @@
       required
       [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''"
     >
-      <input bdInput type="text" formControlName="name" autocomplete="name" placeholder="Como te chamam" />
+      <input
+        bdInput
+        type="text"
+        formControlName="name"
+        autocomplete="name"
+        placeholder="Como te chamam"
+      />
     </bd-field>
 
     <bd-field
       label="E-mail"
       required
-      [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um e-mail válido.' : ''"
+      [error]="
+        form.controls.email.touched && form.controls.email.invalid
+          ? 'Informe um e-mail válido.'
+          : ''
+      "
     >
-      <input bdInput type="email" formControlName="email" autocomplete="email" placeholder="voce@exemplo.com" />
+      <input
+        bdInput
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="voce@exemplo.com"
+      />
     </bd-field>
 
     <bd-field
       label="Senha"
       hint="Pelo menos 6 caracteres."
       required
-      [error]="form.controls.password.touched && form.controls.password.invalid ? 'Senha muito curta.' : ''"
+      [error]="
+        form.controls.password.touched && form.controls.password.invalid ? 'Senha muito curta.' : ''
+      "
     >
-      <input bdInput type="password" formControlName="password" autocomplete="new-password" placeholder="••••••••" />
+      <input
+        bdInput
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        placeholder="••••••••"
+      />
     </bd-field>
 
     <bd-field
@@ -53,7 +77,18 @@
       />
     </bd-field>
 
-    <button bdButton type="submit" block [loading]="status() === 'sending'">Criar minha conta</button>
+    <button
+      bdButton
+      type="submit"
+      block
+      [disabled]="status() === 'sending'"
+      [attr.aria-busy]="status() === 'sending' ? true : null"
+    >
+      @if (status() === 'sending') {
+        <vtp-plate-loader tamanho="xs" cor="herdada" />
+      }
+      Criar minha conta
+    </button>
   </form>
 
   <p class="switch-line">

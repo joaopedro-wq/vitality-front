@@ -16,6 +16,7 @@ import {
 } from '@lucide/angular';
 
 import { FoodIllustrationComponent } from '../../atoms/food-illustration/food-illustration.component';
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 import type { FaseDiario, FaseItem, MomentoRefeicao } from '../../utils/diary-day.util';
 import { chaveDoItem } from '../../utils/diary-day.util';
 
@@ -38,6 +39,7 @@ const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
   selector: 'vtp-diary-phase-card',
   standalone: true,
   imports: [
+    PlateLoaderComponent,
     DecimalPipe,
     FoodIllustrationComponent,
     LucideDynamicIcon,

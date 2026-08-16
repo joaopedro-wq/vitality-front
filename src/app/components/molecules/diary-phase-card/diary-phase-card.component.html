@@ -95,10 +95,15 @@
                 class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-danger/10 hover:text-danger disabled:opacity-40"
                 type="button"
                 [disabled]="removendo() === chave"
+                [attr.aria-busy]="removendo() === chave ? true : null"
                 [attr.aria-label]="'Remover ' + item.descricao"
                 (click)="removerItem.emit(item)"
               >
-                <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+                @if (removendo() === chave) {
+                  <vtp-plate-loader tamanho="xs" cor="herdada" />
+                } @else {
+                  <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+                }
               </button>
             </span>
           </li>

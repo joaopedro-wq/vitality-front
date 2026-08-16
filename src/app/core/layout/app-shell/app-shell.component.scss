@@ -179,8 +179,22 @@
   box-shadow: var(--bd-focus-ring);
 }
 .content {
+  position: relative;
   flex: 1;
   padding: 28px;
+}
+
+// Cobre a página anterior enquanto o chunk da próxima rota baixa, em vez de
+// deixar a UI congelada com o conteúdo velho.
+.route-loading {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  padding-top: 8vh;
+  background: color-mix(in srgb, var(--bd-bg) 82%, transparent);
+  backdrop-filter: blur(2px);
 }
 
 .horizontal-nav {

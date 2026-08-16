@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import { LucideArrowRight } from '@lucide/angular';
@@ -6,9 +6,17 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
-import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../components/utils/recomendacao-calc.util';
+import {
+  calcularSugestaoRecomendacao,
+  type SugestaoRecomendacao,
+} from '../../../components/utils/recomendacao-calc.util';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { MetaRevealComponent } from '../../../components/molecules/meta-reveal/meta-reveal.component';
-import { StepTrackComponent, type StepTrackItem } from '../../../components/molecules/step-track/step-track.component';
+import {
+  StepTrackComponent,
+  type StepTrackItem,
+} from '../../../components/molecules/step-track/step-track.component';
 import { RecomendacaoService } from '../../../services/recomendacao.service';
 import { MetaService } from '../../../services/meta.service';
 import { AtividadeStepComponent } from './steps/atividade-step/atividade-step.component';
@@ -25,13 +33,13 @@ const PASSOS: StepTrackItem[] = [
   { titulo: 'Confirmar', descricao: 'Revisar e salvar' },
 ];
 
-
 @Component({
   selector: 'vtp-metas-page',
   standalone: true,
   imports: [
     BdButtonComponent,
     LucideArrowRight,
+    LoadingStateComponent,
     MetaRevealComponent,
     StepTrackComponent,
     PerfilStepComponent,
@@ -52,6 +60,11 @@ export class MetasPageComponent {
 
   protected readonly passos = PASSOS;
   protected readonly fase = signal<FaseCarregamento>('carregando');
+  // Gateado: o template inteiro pendura no signal de exibição, nunca no cru —
+  // senão o conteúdo apareceria por baixo do loader na permanência mínima.
+  protected readonly carregandoVisivel = gateCarregamento(
+    computed(() => this.fase() === 'carregando'),
+  );
   protected readonly passo = signal(0);
   protected readonly sugestao = signal<SugestaoRecomendacao | null>(null);
 

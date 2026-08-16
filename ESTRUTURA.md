@@ -12,10 +12,17 @@ src/app/
     http/       error.interceptor.ts, api-paths.ts
     models/     user, alimento, refeicao, dieta, registro, diary, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes
-    layout/     app-shell/, theme.service.ts, palette.service.ts
+    layout/     app-shell/, theme.service.ts, palette.service.ts, navegacao.service.ts
+                (navegacao.service.ts: signal `navegando` a partir de router.events, pro
+                 indicador de troca de rota — trata Cancel/Error, não só Start/End)
   components/
-    atoms/       wrappers finos sobre a bandeira-ui — só quando agregam valor
+    atoms/       wrappers finos sobre a bandeira-ui e primitivos visuais próprios
+                 plate-loader/   "Prato Servindo" — o único indicador de espera do sistema,
+                                 em 4 escalas (xs/sm/md/lg); `cor="herdada"` quando estiver
+                                 sobre superfície primary
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
+                 loading-state/  prato + título + descrição — bloco de espera de tela/seção,
+                                 único dono de `role="status"` do sistema
                  macro-summary/  anel + chips de macro (sm/lg/xl) — Metas, Diário e Dashboard
                  meta-reveal/    anel + dígitos + barras de macro em "modo revelação" (calculando
                                  → revelado) — usado no passo Sugestão, no painel "configurado" de
@@ -47,6 +54,8 @@ src/app/
                                  fim de dia
                  day-reveal-overlay/ overlay de revelação do dia (aberto pela bandeira do mapa),
                                  reusa `meta-reveal` arredondando os totais antes de passar
+                 loading-overlay/ scrim + `loading-state` para ação longa que trava a tela
+                                 (gerar plano de dieta, reimportar TACO)
     directives/  diretivas presentation-only reusáveis (ex.: somente-numero.directive.ts)
     pipes/
     utils/       recomendacao-calc.util.ts (TMB/GET), meal-nutrition.util.ts (soma o detalhe
@@ -56,6 +65,8 @@ src/app/
                  journey-path.util.ts (curva serpentina do mapa de fases, paramétrica em N)
                  macro-percent.util.ts (calcularPercentuaisMacro por caloria total,
                  calcularProporcaoMacro por soma dos macros — pra barras contíguas sem buraco)
+                 loading-gate.util.ts (gateCarregamento: signal de carregamento cru -> signal
+                 de exibição, com atraso de 250ms e permanência mínima de 400ms; tem .spec.ts)
   services/
     meta.service.ts
     recomendacao.service.ts

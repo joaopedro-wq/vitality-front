@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, booleanAttribute, input, output } from '@angular/core';
 import { BdAvatarComponent, BdButtonComponent } from 'bandeira-ui';
-import { LucideCamera, LucideLoaderCircle, LucideTrash2, LucideX } from '@lucide/angular';
+import { LucideCamera, LucideTrash2, LucideX } from '@lucide/angular';
+
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 
 /**
  * "Crachá de jogador" — mesma linguagem visual do `MetaRevealComponent`
@@ -14,7 +16,14 @@ import { LucideCamera, LucideLoaderCircle, LucideTrash2, LucideX } from '@lucide
 @Component({
   selector: 'vtp-profile-photo-card',
   standalone: true,
-  imports: [BdAvatarComponent, BdButtonComponent, LucideCamera, LucideLoaderCircle, LucideTrash2, LucideX],
+  imports: [
+    BdAvatarComponent,
+    BdButtonComponent,
+    LucideCamera,
+    LucideTrash2,
+    LucideX,
+    PlateLoaderComponent,
+  ],
   templateUrl: './profile-photo-card.component.html',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,

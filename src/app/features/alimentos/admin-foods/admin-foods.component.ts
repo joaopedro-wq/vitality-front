@@ -15,6 +15,10 @@ import type {
   StatusAlimento,
 } from '../../../core/models/alimento.model';
 import { AlimentoService } from '../../../services/alimento.service';
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
 @Component({
   selector: 'vtp-admin-foods',
@@ -30,6 +34,9 @@ import { AlimentoService } from '../../../services/alimento.service';
     LucideArrowLeft,
     LucidePlus,
     LucideRefreshCw,
+    PlateLoaderComponent,
+    LoadingStateComponent,
+    LoadingOverlayComponent,
   ],
   templateUrl: './admin-foods.component.html',
   styleUrl: './admin-foods.component.scss',
@@ -41,6 +48,7 @@ export class AdminFoodsComponent {
   private readonly toastr = inject(ToastrService);
   protected readonly foods = signal<Alimento[]>([]);
   protected readonly loading = signal(true);
+  protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly importing = signal(false);
   protected readonly saving = signal(false);
   protected readonly source = signal<FonteAlimento | ''>('');

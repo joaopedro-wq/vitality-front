@@ -7,6 +7,8 @@ export interface FoodRestrictionOption {
   slug: string;
   label: string;
   type: 'diet' | 'intolerance' | 'allergy';
+  food_count: number;
+  available: boolean;
 }
 
 export interface MealPlanPreferences {
@@ -23,7 +25,20 @@ export interface MealPlanItem {
   food_id: number;
   descricao: string;
   quantity: number;
+  role?: string | null;
   macros: DiaryMacros;
+}
+
+export interface MealPlanItemSuggestion {
+  food_id: number;
+  descricao: string;
+  quantity: number;
+  role: string;
+  macros: DiaryMacros;
+  meal_totals: DiaryMacros;
+  delta: DiaryMacros;
+  reason: string;
+  within_target: boolean;
 }
 
 export interface MealPlanMeal {
@@ -39,6 +54,7 @@ export interface MealPlanMeal {
 
 export interface MealPlanDraft {
   draft_id: string;
+  can_undo?: boolean;
   preferences: MealPlanPreferences;
   target: DiaryMacros;
   totals: DiaryMacros;

@@ -30,6 +30,8 @@ import type {
   DiaryMeal,
   DiaryNutrient,
 } from '../../../core/models/diary.model';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { AlimentoService } from '../../../services/alimento.service';
 import { DiarioService } from '../../../services/diario.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
@@ -45,6 +47,7 @@ import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-dia
     StepFooterComponent,
     NutritionRevealComponent,
     LucideSearch,
+    LoadingStateComponent,
   ],
   templateUrl: './entry-composer.component.html',
   styles: [':host { display: block; }'],
@@ -71,6 +74,7 @@ export class EntryComposerComponent implements OnDestroy {
   protected readonly foods = signal<Alimento[]>([]);
   protected readonly atalhos = signal<Alimento[]>([]);
   protected readonly carregandoFoods = signal(false);
+  protected readonly carregandoFoodsVisivel = gateCarregamento(this.carregandoFoods);
   protected readonly itens = signal<PlateItem[]>([]);
   protected readonly salvando = signal(false);
   protected readonly trocaAberta = signal(false);

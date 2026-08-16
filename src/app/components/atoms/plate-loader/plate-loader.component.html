@@ -1,0 +1,45 @@
+@if (tamanho() === 'xs') {
+  <span class="disco" [style.width.px]="px()" [style.height.px]="px()"><i></i></span>
+} @else {
+  <svg
+    class="prato"
+    [attr.width]="px()"
+    [attr.height]="px()"
+    viewBox="0 0 140 140"
+    aria-hidden="true"
+  >
+    <defs>
+      <clipPath [attr.id]="clipId">
+        <circle cx="70" cy="70" r="50"></circle>
+      </clipPath>
+    </defs>
+
+    @if (comVapor()) {
+      <g class="vapor">
+        <path d="M58 22 c 6 -6 -6 -12 0 -18"></path>
+        <path d="M70 18 c 6 -6 -6 -12 0 -18"></path>
+        <path d="M82 22 c 6 -6 -6 -12 0 -18"></path>
+      </g>
+    }
+
+    <circle class="louca" cx="70" cy="70" r="50"></circle>
+
+    <g [attr.clip-path]="'url(#' + clipId + ')'">
+      <g class="nivel">
+        <g class="onda onda--fundo">
+          <path
+            d="M-60 6 C -45 -6 -15 -6 0 6 S 30 18 60 6 S 90 -6 120 6 S 150 18 180 6 L180 150 L-60 150 Z"
+          ></path>
+        </g>
+        <g class="onda">
+          <path
+            d="M-60 0 C -45 -12 -15 -12 0 0 S 30 12 60 0 S 90 -12 120 0 S 150 12 180 0 L180 150 L-60 150 Z"
+          ></path>
+        </g>
+      </g>
+    </g>
+
+    <circle class="aro" cx="70" cy="70" r="50"></circle>
+    <circle class="aro aro--externo" cx="70" cy="70" r="62"></circle>
+  </svg>
+}

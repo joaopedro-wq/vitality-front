@@ -29,19 +29,13 @@ import { DiarioService } from '../../../services/diario.service';
 import { MetaService } from '../../../services/meta.service';
 import { EntryComposerComponent } from '../entry-composer/entry-composer.component';
 import { MealManagerComponent } from '../meal-manager/meal-manager.component';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
 const EMPTY_TOTALS: DiaryMacros = { caloria: 0, proteina: 0, carbo: 0, gordura: 0, quantidade: 0 };
 
 type Modo = 'cartao' | 'compor';
 
-/**
- * Orquestrador do Diário — "Jornada do dia".
- *
- * O dia é um mapa de fases (uma por refeição). A fase selecionada aparece na
- * coluna direita, que alterna entre o cartão de leitura (`modo: 'cartao'`) e o
- * composer de registro (`modo: 'compor'`) — nunca os dois ao mesmo tempo, e o
- * composer nunca pergunta de novo a refeição: ela já veio do clique no mapa.
- */
 @Component({
   selector: 'vtp-diario-list',
   standalone: true,
@@ -56,6 +50,7 @@ type Modo = 'cartao' | 'compor';
     LucideArrowLeft,
     LucideArrowRight,
     LucideSettings2,
+    LoadingStateComponent,
   ],
   templateUrl: './diario-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,6 +68,7 @@ export class DiarioListComponent {
   protected readonly meals = signal<DiaryMeal[]>([]);
   protected readonly meta = signal<MetaDiaria | null>(null);
   protected readonly loading = signal(true);
+  protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly managerOpen = signal(false);
   protected readonly revelacaoAberta = signal(false);
   protected readonly faseMobileAberta = signal(false);

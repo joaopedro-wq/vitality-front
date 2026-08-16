@@ -12,11 +12,13 @@
     type="button"
     [class.done]="ultimo()"
     [attr.aria-label]="ultimo() ? 'Salvar' : 'Continuar'"
+    [attr.aria-busy]="carregando() ? true : null"
     [disabled]="carregando() || desabilitado()"
     (click)="avancar.emit()"
   >
     @if (carregando()) {
-      <svg lucideLoaderCircle class="spin" size="15" aria-hidden="true"></svg>
+      <!-- `cor="herdada"`: o fundo do botão já é --bd-primary. -->
+      <vtp-plate-loader tamanho="xs" cor="herdada" />
     } @else if (ultimo()) {
       <svg lucideSave size="16" aria-hidden="true"></svg>
     } @else {

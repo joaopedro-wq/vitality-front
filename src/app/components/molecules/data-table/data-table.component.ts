@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { TableModule, type TableLazyLoadEvent } from 'primeng/table';
 
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
+
 export interface DataTableColumn<T> {
   field: string;
   header: string;
@@ -16,10 +18,10 @@ export interface DataTableColumn<T> {
 @Component({
   selector: 'vtp-data-table',
   standalone: true,
-  imports: [TableModule],
+  imports: [TableModule, PlateLoaderComponent],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
-  host: { class: 'block' },
+  host: { class: 'block', '[attr.aria-busy]': 'loading() ? true : null' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataTableComponent<T extends object = Record<string, unknown>> {

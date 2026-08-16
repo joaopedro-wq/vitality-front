@@ -6,8 +6,19 @@
       <h1>Catálogo de alimentos</h1>
       <p>Itens globais usados por toda a plataforma.</p>
     </div>
-    <button bdButton variant="subtle" [loading]="importing()" (click)="importTaco()">
-      <svg lucideRefreshCw size="16"></svg> Reimportar TACO
+    <button
+      bdButton
+      variant="subtle"
+      [disabled]="importing()"
+      [attr.aria-busy]="importing() ? true : null"
+      (click)="importTaco()"
+    >
+      @if (importing()) {
+        <vtp-plate-loader tamanho="xs" cor="herdada" />
+      } @else {
+        <svg lucideRefreshCw size="16"></svg>
+      }
+      Reimportar TACO
     </button>
   </header>
   <div class="layout">
@@ -70,7 +81,10 @@
             ><input bdInput type="number" formControlName="gordura"
           /></bd-field>
         </div>
-        <button bdButton [loading]="saving()">
+        <button bdButton [disabled]="saving()" [attr.aria-busy]="saving() ? true : null">
+          @if (saving()) {
+            <vtp-plate-loader tamanho="xs" cor="herdada" />
+          }
           {{ editing() ? 'Salvar alterações' : 'Criar alimento' }}
         </button>
       </form>
@@ -96,8 +110,8 @@
           <option value="arquivado">Arquivado</option>
         </select>
       </div>
-      @if (loading()) {
-        <p class="state">Carregando…</p>
+      @if (loadingVisivel()) {
+        <vtp-loading-state tamanho="sm" titulo="Carregando o catálogo" />
       } @else {
         <div class="catalog__list">
           @for (food of foods(); track food.id) {
@@ -129,3 +143,11 @@
     </section>
   </div>
 </div>
+
+<!-- Importar a TACO relê o catálogo inteiro: bloqueia a tela em vez de deixar
+     só o botão apagado. Signal cru, sem gate. -->
+<vtp-loading-overlay
+  [ativo]="importing()"
+  titulo="Importando a base TACO"
+  descricao="Relendo o catálogo oficial. Isso pode levar alguns instantes."
+/>

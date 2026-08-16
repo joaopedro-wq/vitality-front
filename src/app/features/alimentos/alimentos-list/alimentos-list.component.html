@@ -120,14 +120,16 @@
 
       <div class="results-meta">
         <span>{{ totalRegistros() }} alimentos encontrados</span>
+        @if (recarregando()) {
+          <vtp-plate-loader tamanho="xs" rotulo="Atualizando resultados" />
+        }
       </div>
 
-      @if (carregando()) {
-        <div class="food-grid" aria-label="Carregando alimentos">
-          @for (item of [1, 2, 3, 4, 5, 6]; track item) {
-            <div class="food-skeleton"></div>
-          }
-        </div>
+      @if (primeiraCargaVisivel()) {
+        <vtp-loading-state
+          titulo="Abrindo o catálogo"
+          descricao="Buscando os alimentos e os grupos disponíveis."
+        />
       } @else if (vazio()) {
         <section class="empty card">
           <svg lucideHeart size="24" aria-hidden="true"></svg>
@@ -143,7 +145,11 @@
           </p>
         </section>
       } @else if (viewMode() === 'cards') {
-        <div class="food-grid" aria-label="Resultados do catálogo">
+        <div
+          class="food-grid"
+          aria-label="Resultados do catálogo"
+          [class.food-grid--recarregando]="recarregando()"
+        >
           @for (food of alimentos(); track food.id) {
             <vtp-food-tile
               [food]="food"
@@ -296,8 +302,10 @@
       >
         <svg lucideX size="18" aria-hidden="true"></svg>
       </button>
-      @if (detalheCarregando()) {
-        <div class="detail-loading">Carregando detalhes…</div>
+      @if (detalheCarregandoVisivel()) {
+        <div class="detail-loading">
+          <vtp-loading-state tamanho="sm" titulo="Carregando detalhes" />
+        </div>
       } @else {
         <div class="food-detail__hero">
           @if (food.image_url && !detalheImagemComErro()) {

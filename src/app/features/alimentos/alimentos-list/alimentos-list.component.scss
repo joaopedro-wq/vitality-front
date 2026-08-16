@@ -129,11 +129,11 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 0.85rem;
 }
-.food-skeleton {
-  min-height: 180px;
-  border: 1px solid var(--bd-border);
-  border-radius: 16px;
-  background: var(--bd-surface-hover);
+
+.food-grid--recarregando {
+  pointer-events: none;
+  opacity: 0.55;
+  transition: opacity var(--bd-duration) var(--bd-ease);
 }
 .empty {
   margin-top: 1rem;

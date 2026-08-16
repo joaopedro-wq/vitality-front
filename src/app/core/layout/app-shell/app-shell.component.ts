@@ -32,6 +32,9 @@ import {
 
 import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
 import { AuthService } from '../../auth/auth.service';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
+import { NavegacaoService } from '../navegacao.service';
 import { NavigationLayoutService } from '../navigation-layout.service';
 import { PaletteService, type PaletteId } from '../palette.service';
 import { ThemeService } from '../theme.service';
@@ -73,6 +76,7 @@ const NAV_ITEMS: NavItem[] = [
     LucidePanelLeft,
     LucidePanelTop,
     PalettePickerComponent,
+    LoadingStateComponent,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
@@ -83,6 +87,8 @@ export class AppShellComponent {
   protected readonly theme = inject(ThemeService);
   protected readonly palette = inject(PaletteService);
   protected readonly navigationLayout = inject(NavigationLayoutService);
+  private readonly navegacao = inject(NavegacaoService);
+  protected readonly navegandoVisivel = gateCarregamento(this.navegacao.navegando);
   private readonly router = inject(Router);
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 

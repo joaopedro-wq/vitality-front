@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { LucideArrowLeft, LucideArrowRight, LucideLoaderCircle, LucideSave } from '@lucide/angular';
+import { LucideArrowLeft, LucideArrowRight, LucideSave } from '@lucide/angular';
+
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 
 @Component({
   selector: 'vtp-step-footer',
   standalone: true,
-  imports: [LucideArrowLeft, LucideArrowRight, LucideSave, LucideLoaderCircle],
+  imports: [LucideArrowLeft, LucideArrowRight, LucideSave, PlateLoaderComponent],
   templateUrl: './step-footer.component.html',
   styleUrl: './step-footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

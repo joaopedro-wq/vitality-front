@@ -37,8 +37,8 @@
         </p>
       }
 
-      @if (carregandoFoods()) {
-        <p class="py-6 text-center text-[13px] text-fg-muted">Buscando alimentos…</p>
+      @if (carregandoFoodsVisivel()) {
+        <vtp-loading-state tamanho="sm" titulo="Buscando alimentos" />
       } @else if (catalogo().length) {
         <div class="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
           @for (food of catalogo(); track food.id) {

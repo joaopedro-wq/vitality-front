@@ -33,6 +33,9 @@ import {
   type DataTableColumn,
 } from '../../../components/molecules/data-table/data-table.component';
 import { FoodTileComponent } from '../../../components/molecules/food-tile/food-tile.component';
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import {
   ViewModeToggleComponent,
   type ViewModeOption,
@@ -119,6 +122,8 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     FoodTileComponent,
     ViewModeToggleComponent,
     AlimentosFiltrosComponent,
+    PlateLoaderComponent,
+    LoadingStateComponent,
   ],
   templateUrl: './alimentos-list.component.html',
   styleUrl: './alimentos-list.component.scss',
@@ -157,6 +162,17 @@ export class AlimentosListComponent {
 
   protected readonly alimentos = signal<Alimento[]>([]);
   protected readonly carregando = signal(true);
+  /**
+   * Primeira carga (ainda sem nada na tela) mostra o prato no lugar da lista.
+   * Recarga (paginar, filtrar, ordenar) mantém os resultados no lugar e só os
+   * esmaece — trocar uma lista cheia por um loader é pior que esperar sobre ela.
+   */
+  protected readonly primeiraCargaVisivel = gateCarregamento(
+    computed(() => this.carregando() && this.alimentos().length === 0),
+  );
+  protected readonly recarregando = computed(
+    () => this.carregando() && this.alimentos().length > 0,
+  );
   protected readonly pagina = signal(1);
   protected readonly totalRegistros = signal(0);
   protected readonly vazio = computed(() => !this.carregando() && this.alimentos().length === 0);
@@ -172,6 +188,7 @@ export class AlimentosListComponent {
 
   protected readonly detalhe = signal<Alimento | null>(null);
   protected readonly detalheCarregando = signal(false);
+  protected readonly detalheCarregandoVisivel = gateCarregamento(this.detalheCarregando);
   protected readonly detalheImagemComErro = signal(false);
 
   protected readonly sortField = signal<FoodSortField>('descricao');
@@ -394,16 +411,16 @@ export class AlimentosListComponent {
 
   private loadGrupos(): void {
     this.grupoLoading.set(true);
-    this.alimentosService.groups().subscribe({
-      next: (grupos) => {
-        this.grupos.set(grupos);
-        this.grupoLoading.set(false);
-      },
-      error: () => {
-        this.grupoLoading.set(false);
-        this.toastr.error('Não foi possível carregar os grupos alimentares.');
-      },
-    });
+    // `finalize` em vez de zerar em next/error: se a subscription for cancelada
+    // (troca de filtro antes da resposta), nenhum dos dois roda e o loader fica
+    // preso para sempre. Padrão do resto do projeto.
+    this.alimentosService
+      .groups()
+      .pipe(finalize(() => this.grupoLoading.set(false)))
+      .subscribe({
+        next: (grupos) => this.grupos.set(grupos),
+        error: () => this.toastr.error('Não foi possível carregar os grupos alimentares.'),
+      });
   }
 
   private load(): void {

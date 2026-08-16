@@ -92,7 +92,18 @@
           class="rounded-md border border-border bg-surface px-1.5 py-1 text-[11px] text-fg outline-none focus-visible:border-primary"
         />
       </div>
-      <button bdButton type="button" [disabled]="saving()" (click)="add()">Salvar</button>
+      <button
+        bdButton
+        type="button"
+        [disabled]="saving()"
+        [attr.aria-busy]="saving() ? true : null"
+        (click)="add()"
+      >
+        @if (saving()) {
+          <vtp-plate-loader tamanho="xs" cor="herdada" />
+        }
+        Salvar
+      </button>
     </div>
   } @else {
     <button

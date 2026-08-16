@@ -146,6 +146,52 @@ critério de organização, atualize lá, não aqui.
   certo. Estado final do botão de avançar (`ultimo()`, "Salvar") não tem cor própria — cai no
   mesmo `--bd-primary` do botão padrão, nunca verde/`--bd-success` (isso já foi um bug: usar uma
   cor semântica fora da paleta de marca num CTA que não é indicador de status).
+- **Todo estado de carregamento do sistema é o "Prato Servindo"** (2026-08-15). Antes conviviam
+  três linguagens incompatíveis (spinner Lucide no `step-footer`, spinner interno do `bdButton`, e
+  `[disabled]` + troca de texto sem indicador nenhum em Dietas), além de esperas sem feedback algum
+  — boot em tela branca, troca de rota congelando a tela, gerar plano de dieta só apagando um botão.
+  Escolhido entre 6 conceitos comparados em artefatos. Peças:
+  `components/atoms/plate-loader/` (o desenho, em 4 escalas), `components/molecules/loading-state/`
+  (prato + título + descrição, para tela/seção), `components/organisms/loading-overlay/` (scrim para
+  ação longa) e `components/utils/loading-gate.util.ts` (anti-flicker). Regras que não podem ser
+  quebradas ao mexer nisso:
+  - **`cor="herdada"` sempre que o prato estiver sobre superfície primary** (dentro de `bdButton`
+    cheio, do `.round-next` do `step-footer`, de qualquer botão sólido). O default é
+    `--bd-primary`, e primary sobre primary é invisível. Não dá pra resolver com herança de CSS:
+    uma declaração de `color` no `:host` **sempre** vence o valor herdado do pai — por isso é um
+    input explícito, não mágica.
+  - **O gate de anti-flicker é um util, não estado interno do componente.** `gateCarregamento()`
+    converte o signal cru num signal de exibição (250ms de atraso, 400ms de permanência mínima) e
+    **o template inteiro pendura nele** (`@if (xVisivel()) {} @else {}`). Tentar guardar isso dentro
+    do componente de loading não funciona: quem decide renderizar loader ou conteúdo é o `@if`/
+    `@switch` do pai, que troca de branch na hora — o loader apareceria por cima da página já
+    pintada. O signal **cru** continua valendo para `disabled`, guard e regra de negócio (senão dá
+    pra clicar "próxima página" durante os 250ms).
+  - **Reduced-motion desliga a animação pelo NOME** (`animation-name: none`), nunca sobrescrevendo o
+    `transform`: declaração de animação vence declaração normal, e a guarda global do `styles.scss`
+    (que só encurta a duração para 0.01ms) faria a animação parar no último keyframe — o prato
+    **vazio**. Com o nome desligado, o valor estático (`translateY(52px)`, meio cheio) volta a valer.
+  - **`role="status"` só no `vtp-loading-state`**; o `plate-loader` entra `aria-hidden` quando não
+    recebe `rotulo`. Nunca aninhar dois `role="status"`. Em botão, o estado é anunciado por
+    `aria-busy` no próprio botão.
+  - **`bdButton` não usa mais `[loading]`** — usa `[disabled]` + `[attr.aria-busy]` + o prato
+    projetado dentro. O `[loading]` da lib renderiza um `<span>` vazio estilizado por CSS; virar
+    prato ali exigiria redesenhar o prato em `mask-image`, ou seja, um segundo desenho fora de
+    sincronia com o SVG do componente — exatamente o que o conceito único existe para evitar.
+  - **Catálogo de alimentos tem regra própria**: primeira carga (lista vazia) mostra o prato;
+    recarga (paginar/filtrar/ordenar) mantém os cards no lugar e só os esmaece
+    (`.food-grid--recarregando`), com um prato `xs` na barra de resultados. Os 6 blocos de
+    `.food-skeleton` foram removidos — trocar uma lista cheia por blocos vazios a cada clique de
+    página era pior que esperar sobre o conteúdo. Isso também consertou um bug silencioso: em modo
+    Tabela o `@if (carregando())` desmontava a tabela inteira, então a máscara do `p-table`
+    (`[loading]`, linha 160) nunca chegava a aparecer.
+  - **O splash do `index.html` é cópia consciente do componente.** Precisa existir antes de qualquer
+    JS de aplicação, então duplica o SVG e as keyframes; some sozinho porque o Angular faz
+    `textContent = ''` no host ao criar o componente raiz (`dom_renderer.mjs`, `selectRootElement`).
+    Se um dia ligarem SSR/hydration, `PRESERVE_HOST_CONTENT` vira `true` e o splash **não** será
+    removido. O fade de entrada usa `animation-delay`, não duração, porque a guarda global de
+    reduced-motion zera durações mas não atrasos — sem isso o splash piscaria no login (sem token,
+    `restoreSession()` resolve síncrono).
 - **`card` — ver "Design tokens" abaixo.**
 - **Rodapé do quiz volta a ficar em fluxo normal — não trava mais posição** (2026-08-13, revertido
   na mesma sessão): chegamos a implementar altura fixa no card + `.step-body` com `overflow-y:

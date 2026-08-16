@@ -1,70 +1,91 @@
-@switch (fase()) {
-  @case ('carregando') {
-    <div class="py-15 text-center text-fg-muted">Carregando suas metas…</div>
-  }
-
-  @case ('configurado') {
-    <div class="flex flex-col gap-7">
-      <div class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border">
-        <div class="flex flex-col gap-2 max-w-[56ch] max-[640px]:max-w-none">
-          <p class="m-0 text-[11px] font-extrabold tracking-[0.08em] uppercase text-primary-strong">Meta atual</p>
-          <h1 class="m-0 text-[22px] max-[640px]:text-[20px] tracking-[-0.01em] text-balance">Sua meta diária está pronta</h1>
-          <p class="m-0 text-[13.5px] max-[640px]:text-[12.5px] text-fg-muted leading-[1.5]">
-            Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser.
-          </p>
+@if (carregandoVisivel()) {
+  <vtp-loading-state
+    titulo="Preparando suas metas"
+    descricao="Buscando a meta vigente e a recomendação nutricional."
+  />
+} @else {
+  @switch (fase()) {
+    @case ('configurado') {
+      <div class="flex flex-col gap-7">
+        <div
+          class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border"
+        >
+          <div class="flex flex-col gap-2 max-w-[56ch] max-[640px]:max-w-none">
+            <p
+              class="m-0 text-[11px] font-extrabold tracking-[0.08em] uppercase text-primary-strong"
+            >
+              Meta atual
+            </p>
+            <h1 class="m-0 text-[22px] max-[640px]:text-[20px] tracking-[-0.01em] text-balance">
+              Sua meta diária está pronta
+            </h1>
+            <p class="m-0 text-[13.5px] max-[640px]:text-[12.5px] text-fg-muted leading-[1.5]">
+              Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser.
+            </p>
+          </div>
+          <button
+            bdButton
+            class="max-[640px]:w-full max-[640px]:justify-center"
+            (click)="irParaDashboard()"
+          >
+            Ir para o painel <svg lucideArrowRight size="15" aria-hidden="true"></svg>
+          </button>
         </div>
-        <button bdButton class="max-[640px]:w-full max-[640px]:justify-center" (click)="irParaDashboard()">
-          Ir para o painel <svg lucideArrowRight size="15" aria-hidden="true"></svg>
-        </button>
-      </div>
 
-      <div class="card py-9 px-8 flex justify-center">
-        <vtp-meta-reveal [valores]="sugestao()!" tamanho="lg" label="Build completo" />
-      </div>
+        <div class="card py-9 px-8 flex justify-center">
+          <vtp-meta-reveal [valores]="sugestao()!" tamanho="lg" label="Build completo" />
+        </div>
 
-      <div class="flex justify-center">
-        <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
+        <div class="flex justify-center">
+          <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
+        </div>
       </div>
-    </div>
-  }
+    }
 
-  @case ('quiz') {
-    <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
-      <div class="hidden md:block">
-        <vtp-step-track
-          [steps]="passos"
-          [ativo]="passo()"
-          label="Etapas da configuração de metas"
-          (stepClick)="irPara($event)"
-        />
-      </div>
+    @case ('quiz') {
+      <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+        <div class="hidden md:block">
+          <vtp-step-track
+            [steps]="passos"
+            [ativo]="passo()"
+            label="Etapas da configuração de metas"
+            (stepClick)="irPara($event)"
+          />
+        </div>
 
-      <div class="flex md:hidden items-center gap-2 mb-3">
-        <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle">Passo {{ passo() + 1 }} de {{ passos.length }}</span>
-        <span class="text-fg-subtle">·</span>
-        <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
-      </div>
+        <div class="flex md:hidden items-center gap-2 mb-3">
+          <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+            >Passo {{ passo() + 1 }} de {{ passos.length }}</span
+          >
+          <span class="text-fg-subtle">·</span>
+          <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
+        </div>
 
-      <div class="min-w-0">
-        @switch (passo()) {
-          @case (0) {
-            <vtp-perfil-step (concluido)="passo.set(1)" />
-          }
-          @case (1) {
-            <vtp-atividade-step (voltar)="irPara(0)" (concluido)="onSugestaoCalculada($event)" />
-          }
-          @case (2) {
-            @if (sugestao(); as s) {
-              <vtp-sugestao-step [sugestao]="s" (voltar)="irPara(1)" (continuar)="passo.set(3)" />
+        <div class="min-w-0">
+          @switch (passo()) {
+            @case (0) {
+              <vtp-perfil-step (concluido)="passo.set(1)" />
+            }
+            @case (1) {
+              <vtp-atividade-step (voltar)="irPara(0)" (concluido)="onSugestaoCalculada($event)" />
+            }
+            @case (2) {
+              @if (sugestao(); as s) {
+                <vtp-sugestao-step [sugestao]="s" (voltar)="irPara(1)" (continuar)="passo.set(3)" />
+              }
+            }
+            @case (3) {
+              @if (sugestao(); as s) {
+                <vtp-revisar-step
+                  [sugestao]="s"
+                  (voltar)="irPara(2)"
+                  (salvo)="fase.set('configurado')"
+                />
+              }
             }
           }
-          @case (3) {
-            @if (sugestao(); as s) {
-              <vtp-revisar-step [sugestao]="s" (voltar)="irPara(2)" (salvo)="fase.set('configurado')" />
-            }
-          }
-        }
+        </div>
       </div>
-    </div>
+    }
   }
 }

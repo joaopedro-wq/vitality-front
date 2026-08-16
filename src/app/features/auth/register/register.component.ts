@@ -1,16 +1,28 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { BdAlertComponent, BdButtonComponent, BdFieldComponent, BdInputComponent } from 'bandeira-ui';
+import {
+  BdAlertComponent,
+  BdButtonComponent,
+  BdFieldComponent,
+  BdInputComponent,
+} from 'bandeira-ui';
 import { ToastrService } from 'ngx-toastr';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 
 type RegisterStatus = 'idle' | 'sending';
 
-/** Compara `password`/`password_confirmation` — o backend também exige (`confirmed`), então valida os dois lados. */
 function passwordsMatch(): ValidatorFn {
   return (group: AbstractControl): ValidationErrors | null => {
     const senha = group.get('password')?.value;
@@ -26,6 +38,7 @@ function passwordsMatch(): ValidatorFn {
     ReactiveFormsModule,
     RouterLink,
     AuthPosterLayoutComponent,
+    PlateLoaderComponent,
     BdFieldComponent,
     BdInputComponent,
     BdButtonComponent,

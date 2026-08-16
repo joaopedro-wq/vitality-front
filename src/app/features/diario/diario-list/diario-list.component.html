@@ -1,5 +1,8 @@
-@if (loading()) {
-  <p class="px-1 py-10 text-center text-[14px] text-fg-muted">Preparando seu diário…</p>
+@if (loadingVisivel()) {
+  <vtp-loading-state
+    titulo="Preparando seu diário"
+    descricao="Buscando os lançamentos do dia e a sua meta."
+  />
 } @else {
   <section class="mx-auto flex max-w-[1140px] flex-col gap-4 animate-reveal">
     <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">

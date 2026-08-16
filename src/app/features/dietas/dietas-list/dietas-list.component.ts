@@ -6,6 +6,10 @@ import { LucideArrowLeft, LucideCheck, LucidePlus, LucideSparkles } from '@lucid
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin, switchMap } from 'rxjs';
 
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
+import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { AlimentoService } from '../../../services/alimento.service';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import { MetaService } from '../../../services/meta.service';
@@ -13,10 +17,11 @@ import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-dia
 import type { Alimento } from '../../../core/models/alimento.model';
 import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
 import type {
-  FoodRestrictionOption,
   MealPlan,
-  MealPlanDietType,
   MealPlanDraft,
+  MealPlanItem,
+  MealPlanItemSuggestion,
+  MealPlanMeal,
   MealPlanPreferences,
   MealPlanStyle,
 } from '../../../core/models/meal-plan.model';
@@ -37,6 +42,9 @@ const TIMES: Record<3 | 4 | 5, string[]> = {
     LucideCheck,
     LucidePlus,
     LucideSparkles,
+    PlateLoaderComponent,
+    LoadingStateComponent,
+    LoadingOverlayComponent,
   ],
   templateUrl: './dietas-list.component.html',
   styleUrl: './dietas-list.component.scss',
@@ -51,22 +59,24 @@ export class DietasListComponent {
   private readonly toastr = inject(ToastrService);
 
   protected readonly loading = signal(true);
+  protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly generating = signal(false);
   protected readonly saving = signal(false);
   protected readonly regeneratingMeal = signal<number | null>(null);
+  protected readonly suggesting = signal(false);
+  protected readonly applyingChange = signal(false);
   protected readonly mode = signal<'list' | 'form' | 'preview'>('list');
   protected readonly meta = signal<MetaDiaria | null>(null);
   protected readonly plans = signal<MealPlan[]>([]);
   protected readonly draft = signal<MealPlanDraft | null>(null);
   protected readonly mealCount = signal<3 | 4 | 5>(4);
   protected readonly style = signal<MealPlanStyle>('rapido');
-  protected readonly dietType = signal<MealPlanDietType>('onivora');
-  protected readonly restrictionSlugs = signal<string[]>([]);
-  protected readonly restrictionOptions = signal<FoodRestrictionOption[]>([]);
   protected readonly title = signal('Meu plano do dia');
   protected readonly excluded = signal<Alimento[]>([]);
   protected readonly foodSearch = signal('');
   protected readonly foodResults = signal<Alimento[]>([]);
+  protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
+  protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
 
   protected readonly hasMeta = computed(() => this.meta() !== null);
   protected readonly mealTimes = computed(() => TIMES[this.mealCount()]);
@@ -90,20 +100,6 @@ export class DietasListComponent {
 
   protected setStyle(value: string): void {
     this.style.set(value as MealPlanStyle);
-  }
-
-  protected setDietType(value: string): void {
-    this.dietType.set(value as MealPlanDietType);
-  }
-
-  protected toggleRestriction(slug: string): void {
-    this.restrictionSlugs.update((current) =>
-      current.includes(slug) ? current.filter((item) => item !== slug) : [...current, slug],
-    );
-  }
-
-  protected hasRestriction(slug: string): boolean {
-    return this.restrictionSlugs().includes(slug);
   }
 
   protected searchFoods(value: string): void {
@@ -136,8 +132,8 @@ export class DietasListComponent {
       meal_times: TIMES[this.mealCount()],
       style: this.style(),
       excluded_food_ids: this.excluded().map((food) => food.id),
-      diet_type: this.dietType(),
-      restriction_slugs: this.restrictionSlugs(),
+      diet_type: 'onivora',
+      restriction_slugs: [],
     };
     this.generating.set(true);
     this.plansService
@@ -182,6 +178,111 @@ export class DietasListComponent {
       .subscribe({
         next: (replacement) => {
           this.draft.set(replacement);
+          this.swapTarget.set(null);
+          this.toastr.success('Refeição reorganizada com uma nova combinação.');
+        },
+        error: () => undefined,
+      });
+  }
+
+  protected openItemSwap(meal: MealPlanMeal, item: MealPlanItem): void {
+    this.swapTarget.set({ meal, item });
+    this.suggestions.set([]);
+  }
+
+  protected closeSwap(): void {
+    this.swapTarget.set(null);
+    this.suggestions.set([]);
+  }
+
+  protected loadSuggestions(): void {
+    const draft = this.draft();
+    const target = this.swapTarget();
+    if (!draft || !target || this.suggesting()) return;
+    this.suggesting.set(true);
+    this.plansService
+      .itemSuggestions(draft.draft_id, target.meal.position, target.item.food_id)
+      .pipe(finalize(() => this.suggesting.set(false)))
+      .subscribe({
+        next: (suggestions) => this.suggestions.set(suggestions),
+        error: () => undefined,
+      });
+  }
+
+  protected applySuggestion(suggestion: MealPlanItemSuggestion): void {
+    const draft = this.draft();
+    const target = this.swapTarget();
+    if (!draft || !target || this.applyingChange()) return;
+    this.applyingChange.set(true);
+    this.plansService
+      .replaceItem(
+        draft.draft_id,
+        target.meal.position,
+        target.item.food_id,
+        suggestion.food_id,
+        suggestion.quantity,
+      )
+      .pipe(finalize(() => this.applyingChange.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.draft.set(updated);
+          this.closeSwap();
+          this.toastr.success('Alimento substituído mantendo a meta da refeição.');
+        },
+        error: () => undefined,
+      });
+  }
+
+  protected recreateDay(): void {
+    const current = this.draft();
+    if (!current || this.applyingChange()) return;
+    if (
+      !window.confirm(
+        'Gerar uma nova versão do dia? A prévia atual continuará disponível até você salvar a nova.',
+      )
+    )
+      return;
+    this.applyingChange.set(true);
+    this.plansService
+      .recreate(current.draft_id)
+      .pipe(finalize(() => this.applyingChange.set(false)))
+      .subscribe({
+        next: (replacement) => {
+          this.draft.set(replacement);
+          this.closeSwap();
+          this.toastr.success('Nova versão do plano criada.');
+        },
+        error: () => undefined,
+      });
+  }
+
+  protected undo(): void {
+    const current = this.draft();
+    if (!current || this.applyingChange()) return;
+    this.applyingChange.set(true);
+    this.plansService
+      .undo(current.draft_id)
+      .pipe(finalize(() => this.applyingChange.set(false)))
+      .subscribe({
+        next: (draft) => {
+          this.draft.set(draft);
+          this.closeSwap();
+          this.toastr.success('Última alteração desfeita.');
+        },
+        error: () => undefined,
+      });
+  }
+
+  protected editPlan(plan: MealPlan): void {
+    if (this.generating()) return;
+    this.generating.set(true);
+    this.plansService
+      .editDraft(plan.id)
+      .pipe(finalize(() => this.generating.set(false)))
+      .subscribe({
+        next: (draft) => {
+          this.draft.set(draft);
+          this.mode.set('preview');
         },
         error: () => undefined,
       });
@@ -223,18 +324,14 @@ export class DietasListComponent {
       metas: this.metaService.list(),
       plans: this.plansService.list(),
       profile: this.plansService.profile(),
-      restrictions: this.plansService.restrictions(),
     })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: ({ metas, plans, profile, restrictions }) => {
+        next: ({ metas, plans, profile }) => {
           this.meta.set(metas.find((item) => item.data === null) ?? metas[0] ?? null);
           this.plans.set(plans.filter((plan) => !plan.archived_at));
           this.mealCount.set(profile.meal_count);
           this.style.set(profile.style);
-          this.dietType.set(profile.diet_type);
-          this.restrictionSlugs.set(profile.restriction_slugs);
-          this.restrictionOptions.set(restrictions);
         },
         error: () => this.toastr.error('Não foi possível carregar seus planos agora.'),
       });

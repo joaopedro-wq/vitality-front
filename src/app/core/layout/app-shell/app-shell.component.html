@@ -161,7 +161,16 @@
       </nav>
     }
 
-    <main class="content"><router-outlet /></main>
+    <main class="content">
+      <router-outlet />
+      <!-- Troca de rota baixa um chunk (`loadComponent`). Gateado: navegação
+           com chunk em cache não chega a piscar nada. -->
+      @if (navegandoVisivel()) {
+        <div class="route-loading">
+          <vtp-loading-state titulo="Abrindo…" />
+        </div>
+      }
+    </main>
   </div>
 
   @if (mobileMoreOpen()) {

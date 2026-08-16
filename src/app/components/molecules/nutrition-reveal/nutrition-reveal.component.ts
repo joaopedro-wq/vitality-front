@@ -2,12 +2,13 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import type { DiaryMacros, DiaryNutrient } from '../../../core/models/diary.model';
+import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 import { MetaRevealComponent, type MetaRevealValores } from '../meta-reveal/meta-reveal.component';
 
 @Component({
   selector: 'vtp-nutrition-reveal',
   standalone: true,
-  imports: [DecimalPipe, MetaRevealComponent],
+  imports: [DecimalPipe, MetaRevealComponent, PlateLoaderComponent],
   templateUrl: './nutrition-reveal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

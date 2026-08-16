@@ -1,0 +1,154 @@
+:host {
+  // Cor única de todo o desenho.
+  color: var(--bd-primary);
+}
+
+// Uma declaração de `color` no `:host` vence o valor herdado do pai — então
+// sobre fundo primary o prato ficaria primary sobre primary. `cor="herdada"`
+// desliga o default e devolve a decisão ao container.
+:host(.cor-herdada) {
+  color: inherit;
+}
+
+.prato {
+  display: block;
+  overflow: visible;
+}
+
+// Louça e aro são a mesma cor do conteúdo, só rebaixados — mantém o desenho
+// legível sobre qualquer fundo sem depender de token de superfície.
+.louca {
+  fill: currentColor;
+  opacity: 0.14;
+}
+
+.aro {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  opacity: 0.4;
+}
+
+.aro--externo {
+  opacity: 0.22;
+}
+
+.onda path {
+  fill: currentColor;
+}
+
+.onda--fundo path {
+  opacity: 0.35;
+}
+
+// O valor estático aqui é o que vale quando a animação é desligada (ver o bloco
+// de reduced-motion no fim): prato cheio pela metade, nunca vazio.
+.nivel {
+  transform: translateY(52px);
+  animation: vtp-prato-encher 3.4s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+
+.onda {
+  animation: vtp-prato-onda 2.4s linear infinite;
+}
+
+.onda--fundo {
+  animation-duration: 3.3s;
+  animation-direction: reverse;
+}
+
+.vapor {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: vtp-prato-vapor 3.4s ease-in-out infinite;
+}
+
+@keyframes vtp-prato-encher {
+  0% {
+    transform: translateY(136px);
+  }
+  68% {
+    transform: translateY(30px);
+  }
+  86% {
+    transform: translateY(26px);
+  }
+  100% {
+    transform: translateY(136px);
+  }
+}
+
+@keyframes vtp-prato-onda {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(60px);
+  }
+}
+
+@keyframes vtp-prato-vapor {
+  0%,
+  55% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  75% {
+    opacity: 0.5;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+// Escala `xs`: a onda não se lê a 20px, então vira um disco que enche.
+.disco {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+}
+
+.disco i {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  transform-origin: bottom;
+  transform: scaleY(0.55);
+  animation: vtp-prato-disco 2.6s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+}
+
+@keyframes vtp-prato-disco {
+  0% {
+    transform: scaleY(0);
+  }
+  70%,
+  86% {
+    transform: scaleY(0.85);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+
+// A guarda global de `prefers-reduced-motion` (src/styles.scss) só encurta a
+// duração para 0.01ms — o que faria a animação parar no ÚLTIMO keyframe, ou
+// seja, no prato vazio. Não adianta sobrescrever o `transform` aqui: declaração
+// de animação vence declaração normal. O jeito certo é desligar a animação pelo
+// nome, e aí o valor estático de `.nivel`/`.disco i` volta a valer.
+@media (prefers-reduced-motion: reduce) {
+  .nivel,
+  .onda,
+  .vapor,
+  .disco i {
+    animation-name: none;
+  }
+}

@@ -4,6 +4,7 @@ import { LucideArchive, LucideCheck, LucideDynamicIcon, LucidePlus } from '@luci
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { ICONE_POR_MOMENTO, momentoDaRefeicao } from '../../../components/utils/diary-day.util';
 import type { DiaryMeal } from '../../../core/models/diary.model';
 import { DiarioService } from '../../../services/diario.service';
@@ -12,6 +13,7 @@ import { DiarioService } from '../../../services/diario.service';
   selector: 'vtp-meal-manager',
   standalone: true,
   imports: [
+    PlateLoaderComponent,
     BdButtonComponent,
     BdModalComponent,
     LucideArchive,

@@ -2,10 +2,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { BdAlertComponent, BdButtonComponent, BdFieldComponent, BdInputComponent } from 'bandeira-ui';
+import {
+  BdAlertComponent,
+  BdButtonComponent,
+  BdFieldComponent,
+  BdInputComponent,
+} from 'bandeira-ui';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
+import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 
 type LoginStatus = 'idle' | 'sending';
 
@@ -13,6 +19,7 @@ type LoginStatus = 'idle' | 'sending';
   selector: 'vtp-login',
   standalone: true,
   imports: [
+    PlateLoaderComponent,
     ReactiveFormsModule,
     RouterLink,
     AuthPosterLayoutComponent,

@@ -1,0 +1,9 @@
+@if (ativo()) {
+  <div
+    class="fixed inset-0 z-[90] grid place-items-center bg-black/45 p-6 backdrop-blur-[2px]"
+  >
+    <div class="card w-full max-w-[380px] px-7 py-2 shadow-[var(--bd-shadow-lg)]">
+      <vtp-loading-state [titulo]="titulo()" [descricao]="descricao()" />
+    </div>
+  </div>
+}

@@ -21,10 +21,12 @@
           class="absolute -right-0.5 bottom-1 grid size-7 place-items-center rounded-full border-2 border-surface bg-danger text-white disabled:opacity-70"
           aria-label="Remover foto"
           [disabled]="removendo()"
+          [attr.aria-busy]="removendo() ? true : null"
           (click)="remover.emit()"
         >
           @if (removendo()) {
-            <svg lucideLoaderCircle size="13" class="animate-spin" aria-hidden="true"></svg>
+            <!-- `cor="herdada"`: o botão é sólido (bg-danger, texto branco). -->
+            <vtp-plate-loader tamanho="xs" cor="herdada" />
           } @else {
             <svg lucideTrash2 size="13" aria-hidden="true"></svg>
           }

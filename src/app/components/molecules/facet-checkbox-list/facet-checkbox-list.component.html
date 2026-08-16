@@ -6,7 +6,10 @@
   }
 
   @if (loading()) {
-    <p class="m-0 text-[12px] text-fg-muted">Carregando…</p>
+    <p class="m-0 flex items-center gap-2 text-[12px] text-fg-muted">
+      <vtp-plate-loader tamanho="xs" />
+      Carregando…
+    </p>
   } @else if (options().length === 0) {
     <p class="m-0 text-[12px] text-fg-muted">{{ emptyLabel() }}</p>
   } @else {
