@@ -3,7 +3,8 @@
 </p>
 <h2 class="m-0 mt-1.5 text-xl font-bold tracking-tight">Qual estilo ajuda mais na sua rotina?</h2>
 <p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
-  Isso muda o tipo de preparo sugerido, não a meta calórica.
+  Isso ajusta somente praticidade, preparo e custo entre refeições que já fazem sentido. Não muda
+  sua meta nem a coerência do prato.
 </p>
 <div class="mt-6 flex flex-wrap justify-center gap-2">
   @for (option of opcoes; track option.value) {
@@ -21,5 +22,8 @@
     </button>
   }
 </div>
+<p class="m-0 mt-4 text-xs leading-relaxed text-fg-muted">
+  Rápido prioriza montagens simples; Caseiro, pratos tradicionais; Econômico, alimentos acessíveis.
+</p>
 
 <vtp-step-footer (voltar)="voltar.emit()" (avancar)="avancar()" />
