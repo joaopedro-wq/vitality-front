@@ -1,21 +1,21 @@
-<nav [attr.aria-label]="label()" class="flex flex-col">
-  @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
-    @let done = i < ativo();
-    @let active = i === ativo();
-    <div class="flex flex-col">
+@if (orientacao() === 'horizontal') {
+  <nav [attr.aria-label]="label()" class="flex items-start">
+    @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
+      @let done = i < ativo();
+      @let active = i === ativo();
       <button
         type="button"
-        class="flex items-start gap-3 w-full text-left rounded-lg py-1.5 [font-family:inherit] cursor-pointer bg-transparent border-none transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:[box-shadow:var(--bd-focus-ring)]"
+        class="flex shrink-0 flex-col items-center gap-1.5 rounded-lg bg-transparent px-1 [font-family:inherit] border-none cursor-pointer transition-colors focus-visible:outline-none focus-visible:[box-shadow:var(--bd-focus-ring)]"
         [attr.aria-current]="active ? 'step' : null"
         (click)="stepClick.emit(i)"
       >
         <span
-          class="shrink-0 size-[30px] rounded-full border-2 text-[12px] font-extrabold grid place-items-center"
+          class="size-[30px] rounded-full border-2 text-[12px] font-extrabold grid place-items-center transition-transform duration-200"
           [class]="
             done
               ? 'bg-primary border-primary text-primary-contrast'
               : active
-                ? 'bg-surface border-primary text-primary-strong [box-shadow:0_0_0_4px_var(--bd-primary-soft)]'
+                ? 'bg-surface border-primary text-primary-strong scale-110 [box-shadow:0_0_0_4px_var(--bd-primary-soft)]'
                 : 'bg-surface border-border-strong text-fg-muted'
           "
         >
@@ -25,16 +25,66 @@
             {{ i + 1 }}
           }
         </span>
-        <span class="min-w-0 pt-0.5">
-          <b class="block text-[13.5px] font-bold" [class.text-primary-strong]="active">{{ s.titulo }}</b>
-          @if (s.descricao) {
-            <span class="block text-[11.5px] text-fg-muted">{{ s.descricao }}</span>
-          }
-        </span>
+        <span
+          class="max-w-[76px] text-center text-[11px] font-bold leading-tight"
+          [class.text-primary-strong]="active"
+          >{{ s.titulo }}</span
+        >
       </button>
       @if (!last) {
-        <div class="ml-[15px] w-0.5 h-2.5" [class.bg-primary]="done" [class.bg-border]="!done"></div>
+        <div
+          class="mx-1 mt-[15px] h-0.5 flex-1"
+          [class.bg-primary]="done"
+          [class.bg-border]="!done"
+        ></div>
       }
-    </div>
-  }
-</nav>
+    }
+  </nav>
+} @else {
+  <nav [attr.aria-label]="label()" class="flex flex-col">
+    @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
+      @let done = i < ativo();
+      @let active = i === ativo();
+      <div class="flex flex-col">
+        <button
+          type="button"
+          class="flex items-start gap-3 w-full text-left rounded-lg py-1.5 [font-family:inherit] cursor-pointer bg-transparent border-none transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:[box-shadow:var(--bd-focus-ring)]"
+          [attr.aria-current]="active ? 'step' : null"
+          (click)="stepClick.emit(i)"
+        >
+          <span
+            class="shrink-0 size-[30px] rounded-full border-2 text-[12px] font-extrabold grid place-items-center"
+            [class]="
+              done
+                ? 'bg-primary border-primary text-primary-contrast'
+                : active
+                  ? 'bg-surface border-primary text-primary-strong [box-shadow:0_0_0_4px_var(--bd-primary-soft)]'
+                  : 'bg-surface border-border-strong text-fg-muted'
+            "
+          >
+            @if (done) {
+              <svg lucideCheck size="14" aria-hidden="true"></svg>
+            } @else {
+              {{ i + 1 }}
+            }
+          </span>
+          <span class="min-w-0 pt-0.5">
+            <b class="block text-[13.5px] font-bold" [class.text-primary-strong]="active">{{
+              s.titulo
+            }}</b>
+            @if (s.descricao) {
+              <span class="block text-[11.5px] text-fg-muted">{{ s.descricao }}</span>
+            }
+          </span>
+        </button>
+        @if (!last) {
+          <div
+            class="ml-[15px] w-0.5 h-2.5"
+            [class.bg-primary]="done"
+            [class.bg-border]="!done"
+          ></div>
+        }
+      </div>
+    }
+  </nav>
+}

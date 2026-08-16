@@ -6,7 +6,7 @@
       subtitulo="Encontre itens do catálogo TACO e guarde os que você usa com frequência."
     />
     @if (auth.currentUser()?.is_admin) {
-      <a bdButton routerLink="/admin/alimentos"
+      <a bdButton size="sm" routerLink="/admin/alimentos"
         ><svg lucideShieldCheck size="16" aria-hidden="true"></svg
         ><span>Gerenciar catálogo</span></a
       >

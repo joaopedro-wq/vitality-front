@@ -6,7 +6,7 @@ export interface StepTrackItem {
   descricao?: string;
 }
 
-
+export type StepTrackOrientation = 'vertical' | 'horizontal';
 
 @Component({
   selector: 'vtp-step-track',
@@ -20,6 +20,7 @@ export class StepTrackComponent {
   readonly steps = input.required<StepTrackItem[]>();
   readonly ativo = input.required<number>();
   readonly label = input('Etapas');
+  readonly orientacao = input<StepTrackOrientation>('vertical');
 
   readonly stepClick = output<number>();
 }

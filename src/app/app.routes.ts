@@ -57,6 +57,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'dietas/novo',
+        loadComponent: () =>
+          import('./features/dietas/dieta-form/dieta-form.component').then(
+            (m) => m.DietaFormComponent,
+          ),
+      },
+      {
         path: 'metas',
         loadComponent: () =>
           import('./features/metas/metas-page/metas-page.component').then(

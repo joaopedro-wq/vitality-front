@@ -12,6 +12,7 @@
     <button
       bdButton
       variant="subtle"
+      size="sm"
       [disabled]="importing()"
       [attr.aria-busy]="importing() ? true : null"
       (click)="importTaco()"
