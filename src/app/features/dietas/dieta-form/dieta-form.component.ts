@@ -18,7 +18,6 @@ import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/pla
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
-import { StepFooterComponent } from '../../../components/molecules/step-footer/step-footer.component';
 import {
   StepTrackComponent,
   type StepTrackItem,
@@ -26,7 +25,6 @@ import {
 import { MealDrawerComponent } from '../../../components/organisms/meal-drawer/meal-drawer.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
-import { AlimentoService } from '../../../services/alimento.service';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import { MetaService } from '../../../services/meta.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
@@ -40,6 +38,10 @@ import type {
   MealPlanPreferences,
   MealPlanStyle,
 } from '../../../core/models/meal-plan.model';
+import { RefeicoesStepComponent } from './steps/refeicoes-step/refeicoes-step.component';
+import { EstiloStepComponent } from './steps/estilo-step/estilo-step.component';
+import { EvitarStepComponent } from './steps/evitar-step/evitar-step.component';
+import { RevisarStepComponent } from './steps/revisar-step/revisar-step.component';
 
 const MENSAGENS_GERACAO: string[] = [
   'Escolhendo alimentos para o seu dia…',
@@ -88,9 +90,12 @@ const PASSOS_FORM: StepTrackItem[] = [
     MealPlateComponent,
     MealDrawerComponent,
     PageTitleComponent,
-    StepFooterComponent,
     StepTrackComponent,
     LoadingOverlayComponent,
+    RefeicoesStepComponent,
+    EstiloStepComponent,
+    EvitarStepComponent,
+    RevisarStepComponent,
   ],
   templateUrl: './dieta-form.component.html',
   host: { class: 'block p-8 max-sm:p-4' },
@@ -99,7 +104,6 @@ const PASSOS_FORM: StepTrackItem[] = [
 export class DietaFormComponent {
   private readonly plansService = inject(MealPlanService);
   private readonly metaService = inject(MetaService);
-  private readonly foodsService = inject(AlimentoService);
   private readonly diaryDraft = inject(MealPlanDiaryDraftService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -120,8 +124,6 @@ export class DietaFormComponent {
   protected readonly style = signal<MealPlanStyle>('rapido');
   protected readonly title = signal('Meu plano do dia');
   protected readonly excluded = signal<Alimento[]>([]);
-  protected readonly foodSearch = signal('');
-  protected readonly foodResults = signal<Alimento[]>([]);
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
   protected readonly pratoAberto = signal<number | null>(null);
@@ -162,48 +164,19 @@ export class DietaFormComponent {
     this.passo.set(indice);
   }
 
-  protected passoAnterior(): void {
-    if (this.passo() > 0) this.passo.update((atual) => atual - 1);
+  protected onRefeicoesConcluido(valor: 3 | 4 | 5): void {
+    this.mealCount.set(valor);
+    this.passo.set(1);
   }
 
-  protected passoAvancar(): void {
-    if (this.passo() < this.passosForm.length - 1) {
-      this.passo.update((atual) => atual + 1);
-      return;
-    }
-    this.generate();
+  protected onEstiloConcluido(valor: MealPlanStyle): void {
+    this.style.set(valor);
+    this.passo.set(2);
   }
 
-  protected setMealCount(value: number): void {
-    this.mealCount.set(value as 3 | 4 | 5);
-  }
-
-  protected setStyle(value: string): void {
-    this.style.set(value as MealPlanStyle);
-  }
-
-  protected searchFoods(value: string): void {
-    const search = value.trim();
-    this.foodSearch.set(value);
-    if (search.length < 2) {
-      this.foodResults.set([]);
-      return;
-    }
-    this.foodsService.list({ search, page: 1 }).subscribe({
-      next: (page) =>
-        this.foodResults.set(page.data.filter((food) => !this.isExcluded(food.id)).slice(0, 6)),
-      error: () => this.foodResults.set([]),
-    });
-  }
-
-  protected addExcluded(food: Alimento): void {
-    if (!this.isExcluded(food.id)) this.excluded.update((foods) => [...foods, food]);
-    this.foodSearch.set('');
-    this.foodResults.set([]);
-  }
-
-  protected removeExcluded(id: number): void {
-    this.excluded.update((foods) => foods.filter((food) => food.id !== id));
+  protected onEvitarConcluido(itens: Alimento[]): void {
+    this.excluded.set(itens);
+    this.passo.set(3);
   }
 
   protected generate(): void {
@@ -364,14 +337,6 @@ export class DietaFormComponent {
 
   protected voltarParaLista(): void {
     this.router.navigateByUrl('/dietas');
-  }
-
-  protected formatStyle(style: MealPlanStyle): string {
-    return { rapido: 'Rápido', caseiro: 'Caseiro', economico: 'Econômico' }[style];
-  }
-
-  private isExcluded(id: number): boolean {
-    return this.excluded().some((food) => food.id === id);
   }
 
   private iniciar(): void {

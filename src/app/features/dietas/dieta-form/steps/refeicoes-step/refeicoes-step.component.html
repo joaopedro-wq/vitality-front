@@ -1,0 +1,25 @@
+<p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+  Passo 1 de 4
+</p>
+<h2 class="m-0 mt-1.5 text-xl font-bold tracking-tight">Quantas refeições você costuma fazer?</h2>
+<p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
+  Isso define quantos pratos vão entrar no seu dia.
+</p>
+<div class="mt-6 flex flex-wrap justify-center gap-2">
+  @for (count of [3, 4, 5]; track count) {
+    <button
+      class="rounded-full border px-3 py-1.5 text-sm font-bold transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+      [class]="
+        selecionado() === count
+          ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+          : 'border-border bg-transparent text-fg hover:border-border-strong'
+      "
+      type="button"
+      (click)="selecionar(count)"
+    >
+      {{ count }} refeições
+    </button>
+  }
+</div>
+
+<vtp-step-footer [mostrarVoltar]="false" (avancar)="avancar()" />

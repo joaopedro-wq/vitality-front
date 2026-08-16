@@ -22,6 +22,7 @@ export class MealPlateComponent {
   readonly ativo = input(false);
   readonly regenerando = input(false);
   readonly icone = input.required<LucideIcon>();
+  readonly orientacao = input<'circular' | 'linha'>('circular');
 
   readonly select = output<void>();
 

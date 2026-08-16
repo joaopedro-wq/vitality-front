@@ -1,0 +1,43 @@
+<p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+  Passo 3 de 4 · opcional
+</p>
+<h2 class="m-0 mt-1.5 text-xl font-bold tracking-tight">Algum alimento pra evitar?</h2>
+<p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
+  Pode pular — só entra se você já sabe do que não gosta.
+</p>
+<input
+  class="mx-auto mt-6 block w-full max-w-[420px] rounded-2xl border border-border bg-surface px-3.5 py-3 text-left"
+  [value]="busca()"
+  placeholder="Busque um alimento"
+  (input)="buscar($any($event.target).value)"
+/>
+@if (resultados().length) {
+  <div
+    class="mx-auto mt-2 w-full max-w-[420px] overflow-hidden rounded-2xl border border-border text-left"
+  >
+    @for (food of resultados(); track food.id) {
+      <button
+        class="block w-full border-0 bg-transparent px-3 py-2.5 text-left hover:bg-primary-soft"
+        type="button"
+        (click)="adicionar(food)"
+      >
+        {{ food.descricao }}
+      </button>
+    }
+  </div>
+}
+@if (excluidos().length) {
+  <div class="mt-3 flex flex-wrap justify-center gap-2">
+    @for (food of excluidos(); track food.id) {
+      <button
+        class="rounded-full border border-border px-3.5 py-2 text-[13px] font-bold"
+        type="button"
+        (click)="remover(food.id)"
+      >
+        {{ food.descricao }} ×
+      </button>
+    }
+  </div>
+}
+
+<vtp-step-footer (voltar)="voltar.emit()" (avancar)="avancar()" />
