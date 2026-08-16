@@ -2,7 +2,6 @@ import { booleanAttribute, ChangeDetectionStrategy, Component, input } from '@an
 
 export type PageTitleVariant = 'pagina' | 'autenticacao';
 
-
 @Component({
   selector: 'vtp-page-title',
   standalone: true,
