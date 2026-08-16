@@ -2,7 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { BdButtonComponent } from 'bandeira-ui';
 
 import { ProfilePhotoCardComponent } from '../../../components/molecules/profile-photo-card/profile-photo-card.component';
-import { StepTrackComponent, type StepTrackItem } from '../../../components/molecules/step-track/step-track.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
+import {
+  StepTrackComponent,
+  type StepTrackItem,
+} from '../../../components/molecules/step-track/step-track.component';
 import { calcularProgressoPerfil } from '../../../components/utils/perfil-progresso.util';
 import { AuthService } from '../../../core/auth/auth.service';
 import type { User } from '../../../core/models/user.model';
@@ -22,6 +26,7 @@ const PASSOS: StepTrackItem[] = [
   imports: [
     BdButtonComponent,
     ProfilePhotoCardComponent,
+    PageTitleComponent,
     StepTrackComponent,
     IdentidadeStepComponent,
     CorpoStepComponent,

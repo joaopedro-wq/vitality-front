@@ -21,6 +21,8 @@ src/app/
                                  em 4 escalas (xs/sm/md/lg); `cor="herdada"` quando estiver
                                  sobre superfície primary
     molecules/   composições pequenas, presentation-only (sem service de feature injetado)
+                 page-title/     contexto + título + subtítulo dos cabeçalhos de tela; mantém
+                                 tipografia e espaçamentos centralizados, com variante de auth
                  loading-state/  prato + título + descrição — bloco de espera de tela/seção,
                                  único dono de `role="status"` do sistema
                  macro-summary/  anel + chips de macro (sm/lg/xl) — Metas, Diário e Dashboard

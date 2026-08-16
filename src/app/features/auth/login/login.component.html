@@ -1,8 +1,9 @@
 <vtp-auth-poster-layout badge="68% batem a meta">
-  <div class="heading">
-    <h1>Volta pra roda</h1>
-    <p>Sua meta de hoje está esperando. Entra e registra a primeira refeição.</p>
-  </div>
+  <vtp-page-title
+    titulo="Volta pra roda"
+    subtitulo="Sua meta de hoje está esperando. Entra e registra a primeira refeição."
+    variante="autenticacao"
+  />
 
   <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
     @if (generalError()) {

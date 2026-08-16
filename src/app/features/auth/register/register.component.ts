@@ -20,6 +20,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 
 type RegisterStatus = 'idle' | 'sending';
 
@@ -39,6 +40,7 @@ function passwordsMatch(): ValidatorFn {
     RouterLink,
     AuthPosterLayoutComponent,
     PlateLoaderComponent,
+    PageTitleComponent,
     BdFieldComponent,
     BdInputComponent,
     BdButtonComponent,

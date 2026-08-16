@@ -6,6 +6,7 @@ import {
   type TamanhoPrato,
 } from '../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../components/molecules/loading-state/loading-state.component';
+import { PageTitleComponent } from '../../components/molecules/page-title/page-title.component';
 import { ThemeService } from '../../core/layout/theme.service';
 
 @Component({
@@ -17,11 +18,12 @@ import { ThemeService } from '../../core/layout/theme.service';
     BdBadgeComponent,
     PlateLoaderComponent,
     LoadingStateComponent,
+    PageTitleComponent,
   ],
   template: `
     <div class="mx-auto flex max-w-2xl flex-col gap-6 p-8">
       <header class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-fg">Vitality PLUS — UI check</h1>
+        <vtp-page-title contexto="Desenvolvimento" titulo="Vitality PLUS — UI check" />
         <button bdButton variant="ghost" (click)="theme.toggle()">Tema: {{ theme.theme() }}</button>
       </header>
 

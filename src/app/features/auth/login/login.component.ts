@@ -12,6 +12,7 @@ import {
 import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 
 type LoginStatus = 'idle' | 'sending';
 
@@ -20,6 +21,7 @@ type LoginStatus = 'idle' | 'sending';
   standalone: true,
   imports: [
     PlateLoaderComponent,
+    PageTitleComponent,
     ReactiveFormsModule,
     RouterLink,
     AuthPosterLayoutComponent,

@@ -10,29 +10,22 @@
     <div class="grid h-14 w-14 place-items-center rounded-2xl bg-primary-soft text-primary">
       <svg lucideSparkles size="28" aria-hidden="true"></svg>
     </div>
-    <div>
-      <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
-        Plano alimentar
-      </p>
-      <h1 class="m-0 mt-2 text-2xl">Primeiro, vamos definir sua meta</h1>
-      <p class="m-0 mt-2 max-w-md text-fg-muted">
-        Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.
-      </p>
-    </div>
+    <vtp-page-title
+      contexto="Plano alimentar"
+      titulo="Primeiro, vamos definir sua meta"
+      subtitulo="Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo."
+      centralizado
+    />
     <button bdButton (click)="openGenerator()">Definir minhas metas</button>
   </section>
 } @else if (mode() === 'list') {
   <section class="mx-auto max-w-5xl">
     <header class="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
-          Plano alimentar
-        </p>
-        <h1 class="m-0 mt-1 text-3xl tracking-tight">Uma rotina que cabe no seu dia</h1>
-        <p class="m-0 mt-2 text-fg-muted">
-          Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.
-        </p>
-      </div>
+      <vtp-page-title
+        contexto="Plano alimentar"
+        titulo="Uma rotina que cabe no seu dia"
+        subtitulo="Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar."
+      />
       <button bdButton (click)="openGenerator()">
         <svg lucidePlus size="18" aria-hidden="true"></svg> Gerar novo plano
       </button>
@@ -107,11 +100,11 @@
     >
       <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Voltar
     </button>
-    <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">Novo plano</p>
-    <h1 class="m-0 mt-1 text-3xl">Como é o seu dia?</h1>
-    <p class="m-0 mt-2 text-fg-muted">
-      Usaremos sua meta de {{ meta()!.meta_calorias | number: '1.0-0' }} kcal como referência.
-    </p>
+    <vtp-page-title
+      contexto="Novo plano"
+      titulo="Como é o seu dia?"
+      subtitulo="Usaremos sua meta de {{ meta()!.meta_calorias | number: '1.0-0' }} kcal como referência."
+    />
     <div class="mt-7 grid gap-6 rounded-[28px] border border-border bg-surface p-6 shadow-sm">
       <fieldset>
         <legend>Quantas refeições você costuma fazer?</legend>
@@ -202,14 +195,11 @@
     >
       <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Ajustar preferências
     </button>
-    <p class="m-0 text-sm font-extrabold uppercase tracking-[.12em] text-primary">
-      Prévia do plano
-    </p>
-    <h1 class="m-0 mt-1 text-3xl">Seu dia, de um jeito mais simples</h1>
-    <p class="m-0 mt-2 text-fg-muted">
-      {{ plan.totals.caloria | number: '1.0-0' }} kcal ·
-      {{ plan.totals.proteina | number: '1.0-0' }} g de proteína
-    </p>
+    <vtp-page-title
+      contexto="Prévia do plano"
+      titulo="Seu dia, de um jeito mais simples"
+      subtitulo="{{ plan.totals.caloria | number: '1.0-0' }} kcal · {{ plan.totals.proteina | number: '1.0-0' }} g de proteína"
+    />
     @if (plan.summary) {
       <p class="plan-warning">{{ plan.summary }}</p>
     }

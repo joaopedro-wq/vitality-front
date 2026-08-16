@@ -30,6 +30,7 @@ import { MetaService } from '../../../services/meta.service';
 import { EntryComposerComponent } from '../entry-composer/entry-composer.component';
 import { MealManagerComponent } from '../meal-manager/meal-manager.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
 const EMPTY_TOTALS: DiaryMacros = { caloria: 0, proteina: 0, carbo: 0, gordura: 0, quantidade: 0 };
@@ -51,6 +52,7 @@ type Modo = 'cartao' | 'compor';
     LucideArrowRight,
     LucideSettings2,
     LoadingStateComponent,
+    PageTitleComponent,
   ],
   templateUrl: './diario-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

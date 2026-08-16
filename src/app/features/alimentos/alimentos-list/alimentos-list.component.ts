@@ -35,6 +35,7 @@ import {
 import { FoodTileComponent } from '../../../components/molecules/food-tile/food-tile.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import {
   ViewModeToggleComponent,
@@ -124,6 +125,7 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     AlimentosFiltrosComponent,
     PlateLoaderComponent,
     LoadingStateComponent,
+    PageTitleComponent,
   ],
   templateUrl: './alimentos-list.component.html',
   styleUrl: './alimentos-list.component.scss',

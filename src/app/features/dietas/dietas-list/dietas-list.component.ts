@@ -8,6 +8,7 @@ import { finalize, forkJoin, switchMap } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { AlimentoService } from '../../../services/alimento.service';
@@ -52,6 +53,7 @@ const TIMES: Record<3 | 4 | 5, string[]> = {
     LucideSparkles,
     PlateLoaderComponent,
     LoadingStateComponent,
+    PageTitleComponent,
     LoadingOverlayComponent,
   ],
   templateUrl: './dietas-list.component.html',

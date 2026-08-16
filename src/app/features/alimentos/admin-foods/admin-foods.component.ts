@@ -17,6 +17,7 @@ import type {
 import { AlimentoService } from '../../../services/alimento.service';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
@@ -42,6 +43,7 @@ const MENSAGENS_IMPORTACAO: string[] = [
     LucideRefreshCw,
     PlateLoaderComponent,
     LoadingStateComponent,
+    PageTitleComponent,
     LoadingOverlayComponent,
   ],
   templateUrl: './admin-foods.component.html',

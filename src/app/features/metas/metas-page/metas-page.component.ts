@@ -13,6 +13,7 @@ import {
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { MetaRevealComponent } from '../../../components/molecules/meta-reveal/meta-reveal.component';
+import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
   StepTrackComponent,
   type StepTrackItem,
@@ -41,6 +42,7 @@ const PASSOS: StepTrackItem[] = [
     LucideArrowRight,
     LoadingStateComponent,
     MetaRevealComponent,
+    PageTitleComponent,
     StepTrackComponent,
     PerfilStepComponent,
     AtividadeStepComponent,

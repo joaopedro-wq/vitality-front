@@ -2,26 +2,6 @@
   display: contents;
 }
 
-.heading h1 {
-  font-stretch: condensed;
-  font-weight: 900;
-  font-size: 34px;
-  line-height: 1.02;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
-  margin: 0 0 10px;
-  text-wrap: balance;
-  color: var(--bd-fg);
-}
-
-.heading p {
-  margin: 0 0 26px;
-  color: var(--bd-fg-muted);
-  font-size: 14.5px;
-  line-height: 1.55;
-  max-width: 34ch;
-}
-
 form {
   display: flex;
   flex-direction: column;

@@ -1,10 +1,10 @@
 <div class="food-library">
   <header class="food-library__header">
-    <div>
-      <p class="eyebrow">Biblioteca</p>
-      <h1>Alimentos</h1>
-      <p>Encontre itens do catálogo TACO e guarde os que você usa com frequência.</p>
-    </div>
+    <vtp-page-title
+      contexto="Biblioteca"
+      titulo="Alimentos"
+      subtitulo="Encontre itens do catálogo TACO e guarde os que você usa com frequência."
+    />
     @if (auth.currentUser()?.is_admin) {
       <a bdButton routerLink="/admin/alimentos"
         ><svg lucideShieldCheck size="16" aria-hidden="true"></svg

@@ -283,10 +283,6 @@ a[bdButton] {
   border-radius: 999px !important;
 }
 
-// Máscara de carregamento do `p-table`. Precisa ser global: o PrimeNG envolve o
-// template `#loadingicon` num `<span class="p-datatable-loading-icon">` criado
-// pelo próprio template dele, sem o atributo de encapsulamento do
-// `vtp-data-table` — uma regra no SCSS do componente não casaria.
 .p-datatable-mask {
   background: color-mix(in srgb, var(--bd-surface) 78%, transparent);
   backdrop-filter: blur(1px);

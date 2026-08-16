@@ -1,8 +1,9 @@
 <vtp-auth-poster-layout>
-  <div class="heading">
-    <h1>Entra na roda</h1>
-    <p>Junte-se a quem já registrou a primeira refeição hoje.</p>
-  </div>
+  <vtp-page-title
+    titulo="Entra na roda"
+    subtitulo="Junte-se a quem já registrou a primeira refeição hoje."
+    variante="autenticacao"
+  />
 
   <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
     @if (generalError()) {

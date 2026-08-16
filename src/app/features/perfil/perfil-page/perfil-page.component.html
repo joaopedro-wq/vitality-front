@@ -1,38 +1,65 @@
 <div class="mx-auto flex w-full max-w-5xl flex-col gap-7">
   <header class="border-b border-border pb-6">
-    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">Minha conta</p>
-    <h1 class="m-0 mt-1 text-[24px] tracking-[-0.02em] text-balance">Perfil e preferências</h1>
-    <p class="m-0 mt-2 max-w-[58ch] text-[13.5px] leading-[1.55] text-fg-muted">
-      Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.
-    </p>
+    <vtp-page-title
+      contexto="Minha conta"
+      titulo="Perfil e preferências"
+      subtitulo="Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso."
+    />
   </header>
 
   @if (concluido()) {
     @if (user(); as currentUser) {
-      <section class="card mx-auto flex w-full max-w-xl flex-col items-center gap-5 p-8 text-center animate-reveal">
-        <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">Perfil atualizado</p>
-        <vtp-profile-photo-card [name]="currentUser.name" [email]="currentUser.email" [src]="currentUser.avatar ?? ''" [progresso]="progresso()" somenteLeitura />
-        <p class="m-0 max-w-[42ch] text-[13px] leading-[1.55] text-fg-muted">Seus dados já estão prontos para orientar as metas e recomendações.</p>
-        <button bdButton variant="ghost" (click)="editarNovamente()">Editar perfil novamente</button>
+      <section
+        class="card mx-auto flex w-full max-w-xl flex-col items-center gap-5 p-8 text-center animate-reveal"
+      >
+        <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+          Perfil atualizado
+        </p>
+        <vtp-profile-photo-card
+          [name]="currentUser.name"
+          [email]="currentUser.email"
+          [src]="currentUser.avatar ?? ''"
+          [progresso]="progresso()"
+          somenteLeitura
+        />
+        <p class="m-0 max-w-[42ch] text-[13px] leading-[1.55] text-fg-muted">
+          Seus dados já estão prontos para orientar as metas e recomendações.
+        </p>
+        <button bdButton variant="ghost" (click)="editarNovamente()">
+          Editar perfil novamente
+        </button>
       </section>
     }
   } @else {
     <section class="card p-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
       <div class="hidden md:block">
-        <vtp-step-track [steps]="passos" [ativo]="passo()" label="Etapas do perfil" (stepClick)="irPara($event)" />
+        <vtp-step-track
+          [steps]="passos"
+          [ativo]="passo()"
+          label="Etapas do perfil"
+          (stepClick)="irPara($event)"
+        />
       </div>
 
       <div class="mb-3 flex items-center gap-2 md:hidden">
-        <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle">Passo {{ passo() + 1 }} de {{ passos.length }}</span>
+        <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+          >Passo {{ passo() + 1 }} de {{ passos.length }}</span
+        >
         <span class="text-fg-subtle">·</span>
         <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
       </div>
 
       <div class="min-w-0">
         @switch (passo()) {
-          @case (0) { <vtp-identidade-step (salvo)="onSalvo($event, 1)" /> }
-          @case (1) { <vtp-corpo-step (voltar)="irPara(0)" (salvo)="onSalvo($event, 2)" /> }
-          @case (2) { <vtp-rotina-step (voltar)="irPara(1)" (salvo)="onSalvo($event, 3)" /> }
+          @case (0) {
+            <vtp-identidade-step (salvo)="onSalvo($event, 1)" />
+          }
+          @case (1) {
+            <vtp-corpo-step (voltar)="irPara(0)" (salvo)="onSalvo($event, 2)" />
+          }
+          @case (2) {
+            <vtp-rotina-step (voltar)="irPara(1)" (salvo)="onSalvo($event, 3)" />
+          }
         }
       </div>
     </section>
