@@ -2,7 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
-import { LucidePlus, LucideSparkles } from '@lucide/angular';
+import { LucideArchive, LucidePencil, LucidePlus, LucideSparkles } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin } from 'rxjs';
 
@@ -21,6 +21,8 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
   imports: [
     DecimalPipe,
     BdButtonComponent,
+    LucideArchive,
+    LucidePencil,
     LucidePlus,
     LucideSparkles,
     BackButtonComponent,
@@ -74,6 +76,15 @@ export class DietasListComponent {
 
   protected formatStyle(style: MealPlanStyle): string {
     return { rapido: 'Rápido', caseiro: 'Caseiro', economico: 'Econômico' }[style];
+  }
+
+  protected macroPercent(plan: MealPlan, macro: 'proteina' | 'carbo' | 'gordura'): number {
+    const totals = plan.totals;
+    const energia = totals.proteina * 4 + totals.carbo * 4 + totals.gordura * 9;
+    if (energia <= 0) return 0;
+
+    const calorias = macro === 'gordura' ? totals.gordura * 9 : totals[macro] * 4;
+    return Math.min(100, Math.round((calorias / energia) * 100));
   }
 
   private load(): void {
