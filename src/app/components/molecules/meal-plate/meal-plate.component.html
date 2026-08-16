@@ -1,0 +1,41 @@
+<button
+  type="button"
+  class="group flex w-20 shrink-0 flex-col items-center gap-2 bg-transparent"
+  role="tab"
+  [id]="'prato-' + meal().position"
+  [attr.aria-selected]="ativo()"
+  [attr.aria-controls]="'gaveta-' + meal().position"
+  (click)="select.emit()"
+>
+  <span
+    class="relative grid size-20 place-items-center rounded-full border-2 bg-surface transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-active:scale-95"
+    [class]="
+      ativo()
+        ? 'border-primary scale-[1.06] [box-shadow:0_0_0_4px_var(--bd-primary-soft)]'
+        : 'border-border-strong group-hover:border-primary/60'
+    "
+  >
+    <span
+      class="pointer-events-none absolute inset-[-6px] rounded-full [mask:radial-gradient(farthest-side,transparent_calc(100%-4px),#000_calc(100%-4px))]"
+      [style.background]="aro()"
+      aria-hidden="true"
+    ></span>
+    <svg
+      [lucideIcon]="icone()"
+      size="22"
+      class="relative text-primary-strong"
+      aria-hidden="true"
+    ></svg>
+    @if (regenerando()) {
+      <span class="absolute inset-0 grid place-items-center rounded-full bg-surface/85">
+        <vtp-plate-loader tamanho="xs" />
+      </span>
+    }
+  </span>
+  <span class="text-center text-[12.5px] font-bold leading-tight text-fg">{{
+    meal().descricao
+  }}</span>
+  <span class="tabular-nums text-[10.5px] text-fg-muted">
+    {{ meal().horario }} · {{ meal().totals.caloria | number: '1.0-0' }} kcal
+  </span>
+</button>

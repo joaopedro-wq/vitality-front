@@ -1,14 +1,26 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BdButtonComponent, BdModalComponent } from 'bandeira-ui';
-import { LucideArrowLeft, LucideCheck, LucidePlus, LucideSparkles } from '@lucide/angular';
+import { BdButtonComponent } from 'bandeira-ui';
+import {
+  LucideArrowLeft,
+  LucideCheck,
+  LucideMoon,
+  LucidePlus,
+  LucideSparkles,
+  LucideSun,
+  LucideSunrise,
+  LucideSunset,
+  type LucideIcon,
+} from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin, switchMap } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
+import { MealDrawerComponent } from '../../../components/organisms/meal-drawer/meal-drawer.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { AlimentoService } from '../../../services/alimento.service';
@@ -40,24 +52,32 @@ const TIMES: Record<3 | 4 | 5, string[]> = {
   5: ['07:30', '10:30', '13:00', '16:30', '20:00'],
 };
 
+const ICONES_PERIODO: ReadonlyArray<readonly [limite: number, icone: LucideIcon]> = [
+  [10, LucideSunrise],
+  [15, LucideSun],
+  [18, LucideSunset],
+  [24, LucideMoon],
+];
+
 @Component({
   selector: 'vtp-dietas-list',
   standalone: true,
   imports: [
     DecimalPipe,
     BdButtonComponent,
-    BdModalComponent,
     LucideArrowLeft,
     LucideCheck,
     LucidePlus,
     LucideSparkles,
     PlateLoaderComponent,
     LoadingStateComponent,
+    MealPlateComponent,
+    MealDrawerComponent,
     PageTitleComponent,
     LoadingOverlayComponent,
   ],
   templateUrl: './dietas-list.component.html',
-  styleUrl: './dietas-list.component.scss',
+  host: { class: 'block p-8 max-sm:p-4' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DietasListComponent {
@@ -88,12 +108,38 @@ export class DietasListComponent {
   protected readonly foodResults = signal<Alimento[]>([]);
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
+  protected readonly pratoAberto = signal<number | null>(null);
 
   protected readonly hasMeta = computed(() => this.meta() !== null);
   protected readonly mealTimes = computed(() => TIMES[this.mealCount()]);
+  protected readonly pratoAtivo = computed(() => {
+    const aberto = this.pratoAberto();
+    if (aberto === null) return null;
+    return this.draft()?.meals.find((meal) => meal.position === aberto) ?? null;
+  });
 
   constructor() {
     this.load();
+  }
+
+  protected togglePrato(position: number): void {
+    if (this.pratoAberto() === position) {
+      this.pratoAberto.set(null);
+      return;
+    }
+    this.pratoAberto.set(position);
+    this.swapTarget.set(null);
+    this.suggestions.set([]);
+  }
+
+  protected fecharGaveta(): void {
+    this.pratoAberto.set(null);
+    this.closeSwap();
+  }
+
+  protected iconePeriodo(horario: string): LucideIcon {
+    const hora = Number(horario.split(':')[0]);
+    return ICONES_PERIODO.find(([limite]) => hora < limite)?.[1] ?? LucideMoon;
   }
 
   protected openGenerator(): void {
@@ -155,6 +201,8 @@ export class DietasListComponent {
         next: (draft) => {
           this.draft.set(draft);
           this.mode.set('preview');
+          this.pratoAberto.set(draft.meals[0]?.position ?? null);
+          this.closeSwap();
         },
         error: () => undefined,
       });
@@ -173,6 +221,7 @@ export class DietasListComponent {
           this.plans.update((plans) => [plan, ...plans]);
           this.mode.set('list');
           this.draft.set(null);
+          this.pratoAberto.set(null);
           this.toastr.success('Plano alimentar salvo.');
         },
         error: () => undefined,
@@ -204,10 +253,6 @@ export class DietasListComponent {
   protected closeSwap(): void {
     this.swapTarget.set(null);
     this.suggestions.set([]);
-  }
-
-  protected onSwapModalOpenChange(open: boolean): void {
-    if (!open) this.closeSwap();
   }
 
   protected loadSuggestions(): void {
@@ -298,17 +343,19 @@ export class DietasListComponent {
         next: (draft) => {
           this.draft.set(draft);
           this.mode.set('preview');
+          this.pratoAberto.set(draft.meals[0]?.position ?? null);
+          this.closeSwap();
         },
         error: () => undefined,
       });
   }
 
-  protected useMeal(plan: MealPlan, mealIndex: number): void {
-    const plannedMeal = plan.meals[mealIndex];
-    if (!plannedMeal) return;
-    this.diaryDraft.prepare(0, plannedMeal.items);
+  protected useMealFromDrawer(meal: MealPlanMeal): void {
+    const current = this.draft();
+    const mealIndex = current?.meals.findIndex((item) => item.position === meal.position) ?? -1;
+    this.diaryDraft.prepare(0, meal.items);
     this.router.navigate(['/diario'], {
-      queryParams: { registrar: 1, planMeal: mealIndex, plan: plan.id },
+      queryParams: { registrar: 1, planMeal: mealIndex >= 0 ? mealIndex : null },
     });
   }
 

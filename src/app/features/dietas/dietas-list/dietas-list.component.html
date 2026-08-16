@@ -43,49 +43,38 @@
     } @else {
       <div class="mt-8 grid gap-5 md:grid-cols-2">
         @for (plan of plans(); track plan.id) {
-          <article class="rounded-[24px] border border-border bg-surface p-5 shadow-sm">
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <span
-                  class="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary"
-                  >{{ formatStyle(plan.preferences.style) }}</span
+          <article
+            class="flex flex-col items-center rounded-[24px] border border-border bg-surface p-6 text-center shadow-sm"
+          >
+            <div
+              class="grid size-[130px] shrink-0 place-items-center rounded-full border-2 border-border-strong"
+            >
+              <span>
+                <span class="block text-2xl font-extrabold text-primary-strong">{{
+                  plan.meals.length
+                }}</span>
+                <span class="block text-[11px] font-bold uppercase tracking-wide text-fg-muted"
+                  >pratos</span
                 >
-                <h2 class="m-0 mt-3 text-xl">{{ plan.titulo }}</h2>
-              </div>
-              <span class="text-right text-sm font-bold text-fg-muted"
-                >{{ plan.totals.caloria | number: '1.0-0' }} kcal</span
-              >
+              </span>
             </div>
-            <p class="m-0 mt-3 text-sm text-fg-muted">
-              {{ plan.meals.length }} refeições · {{ plan.totals.proteina | number: '1.0-0' }} g
-              proteína
+            <span
+              class="mt-4 rounded-full bg-primary-soft px-2.5 py-1 text-xs font-bold text-primary"
+              >{{ formatStyle(plan.preferences.style) }}</span
+            >
+            <h2 class="m-0 mt-3 text-xl">{{ plan.titulo }}</h2>
+            <p class="m-0 mt-1 text-sm text-fg-muted">
+              {{ plan.totals.caloria | number: '1.0-0' }} kcal ·
+              {{ plan.totals.proteina | number: '1.0-0' }}g proteína
             </p>
-            <div class="mt-5 grid gap-2">
-              @for (meal of plan.meals; track meal.position; let index = $index) {
-                <button class="meal-row" type="button" (click)="useMeal(plan, index)">
-                  <span
-                    ><strong>{{ meal.descricao }}</strong
-                    ><small
-                      >{{ meal.horario }} · {{ meal.totals.caloria | number: '1.0-0' }} kcal</small
-                    ></span
-                  ><span>Usar no diário</span>
-                </button>
-              }
+            <div class="mt-5 flex gap-2">
+              <button bdButton variant="subtle" size="sm" type="button" (click)="editPlan(plan)">
+                Editar
+              </button>
+              <button bdButton variant="ghost" size="sm" type="button" (click)="archive(plan)">
+                Arquivar
+              </button>
             </div>
-            <button
-              class="mt-4 text-sm text-fg-muted underline"
-              type="button"
-              (click)="editPlan(plan)"
-            >
-              Editar e trocar alimentos
-            </button>
-            <button
-              class="ml-4 mt-4 text-sm text-fg-muted underline"
-              type="button"
-              (click)="archive(plan)"
-            >
-              Arquivar plano
-            </button>
           </article>
         }
       </div>
@@ -103,16 +92,22 @@
     <vtp-page-title
       contexto="Novo plano"
       titulo="Como é o seu dia?"
-      subtitulo="Usaremos sua meta de {{ meta()!.meta_calorias | number: '1.0-0' }} kcal como referência."
+      subtitulo="Usaremos sua meta de {{
+        meta()!.meta_calorias | number: '1.0-0'
+      }} kcal como referência."
     />
     <div class="mt-7 grid gap-6 rounded-[28px] border border-border bg-surface p-6 shadow-sm">
-      <fieldset>
-        <legend>Quantas refeições você costuma fazer?</legend>
+      <fieldset class="m-0 border-0 p-0">
+        <legend class="font-extrabold">Quantas refeições você costuma fazer?</legend>
         <div class="mt-3 flex gap-2">
           @for (count of [3, 4, 5]; track count) {
             <button
-              class="choice"
-              [class.choice-active]="mealCount() === count"
+              class="rounded-full border px-3.5 py-2 font-bold transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+              [class]="
+                mealCount() === count
+                  ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+                  : 'border-border bg-transparent text-fg hover:border-border-strong'
+              "
               type="button"
               (click)="setMealCount(count)"
             >
@@ -121,8 +116,8 @@
           }
         </div>
       </fieldset>
-      <fieldset>
-        <legend>Qual estilo ajuda mais na sua rotina?</legend>
+      <fieldset class="m-0 border-0 p-0">
+        <legend class="font-extrabold">Qual estilo ajuda mais na sua rotina?</legend>
         <div class="mt-3 flex flex-wrap gap-2">
           @for (
             option of [
@@ -133,8 +128,12 @@
             track option.value
           ) {
             <button
-              class="choice"
-              [class.choice-active]="style() === option.value"
+              class="rounded-full border px-3.5 py-2 font-bold transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+              [class]="
+                style() === option.value
+                  ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+                  : 'border-border bg-transparent text-fg hover:border-border-strong'
+              "
               type="button"
               (click)="setStyle(option.value)"
             >
@@ -143,28 +142,38 @@
           }
         </div>
       </fieldset>
-      <fieldset>
-        <legend>
+      <fieldset class="m-0 border-0 p-0">
+        <legend class="font-extrabold">
           Alimentos que você prefere evitar
           <span class="font-normal text-fg-muted">(opcional)</span>
         </legend>
         <input
-          class="plan-input mt-3"
+          class="mt-3 w-full rounded-2xl border border-border bg-surface px-3.5 py-3"
           [value]="foodSearch()"
           placeholder="Busque um alimento"
           (input)="searchFoods($any($event.target).value)"
         />
         @if (foodResults().length) {
-          <div class="food-results">
+          <div class="mt-2 overflow-hidden rounded-2xl border border-border">
             @for (food of foodResults(); track food.id) {
-              <button type="button" (click)="addExcluded(food)">{{ food.descricao }}</button>
+              <button
+                class="block w-full border-0 bg-transparent px-3 py-2.5 text-left hover:bg-primary-soft"
+                type="button"
+                (click)="addExcluded(food)"
+              >
+                {{ food.descricao }}
+              </button>
             }
           </div>
         }
         @if (excluded().length) {
           <div class="mt-3 flex flex-wrap gap-2">
             @for (food of excluded(); track food.id) {
-              <button class="excluded-chip" type="button" (click)="removeExcluded(food.id)">
+              <button
+                class="rounded-full border border-border px-3.5 py-2 text-[13px] font-bold"
+                type="button"
+                (click)="removeExcluded(food.id)"
+              >
                 {{ food.descricao }} ×
               </button>
             }
@@ -197,158 +206,60 @@
     </button>
     <vtp-page-title
       contexto="Prévia do plano"
-      titulo="Seu dia, de um jeito mais simples"
-      subtitulo="{{ plan.totals.caloria | number: '1.0-0' }} kcal · {{ plan.totals.proteina | number: '1.0-0' }} g de proteína"
+      titulo="Monte o seu prato"
+      subtitulo="{{ plan.totals.caloria | number: '1.0-0' }} kcal · {{
+        plan.totals.proteina | number: '1.0-0'
+      }} g de proteína"
     />
     @if (plan.summary) {
-      <p class="plan-warning">{{ plan.summary }}</p>
+      <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.summary }}</p>
     }
     @if (plan.warning) {
-      <p class="plan-warning">{{ plan.warning }}</p>
+      <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.warning }}</p>
     }
-    <div class="mt-6 grid gap-4">
-      @for (meal of plan.meals; track meal.position) {
-        <article class="rounded-[22px] border border-border bg-surface p-5">
-          <div class="flex justify-between gap-3">
-            <h2 class="m-0 text-lg">
-              {{ meal.descricao }} <small>{{ meal.horario }}</small>
-            </h2>
-            <strong>{{ meal.totals.caloria | number: '1.0-0' }} kcal</strong>
-          </div>
-          <ul class="m-0 mt-3 grid gap-2 pl-5 text-fg-muted">
-            @for (item of meal.items; track item.food_id) {
-              <li class="flex items-center justify-between gap-3">
-                <span>{{ item.descricao }} · {{ item.quantity | number: '1.0-0' }} g</span>
-                <button
-                  class="text-xs font-bold text-primary-strong underline"
-                  type="button"
-                  (click)="openItemSwap(meal, item)"
-                >
-                  Trocar alimento
-                </button>
-              </li>
-            }
-          </ul>
-          @if (meal.explanation) {
-            <p class="m-0 mt-3 text-sm text-fg-muted">{{ meal.explanation }}</p>
-          }
-          <button
-            class="mt-3 text-sm font-bold text-primary-strong underline"
-            type="button"
-            [disabled]="regeneratingMeal() !== null"
-            (click)="regenerateMeal(meal.position)"
-          >
-            {{
-              regeneratingMeal() === meal.position ? 'Trocando sugestão…' : 'Trocar esta refeição'
-            }}
-          </button>
-        </article>
-      }
-    </div>
-    @if (swapTarget(); as target) {
-      <bd-modal
-        [open]="true"
-        (openChange)="onSwapModalOpenChange($event)"
-        title="Trocar alimento"
-        ariaLabel="Trocar alimento"
-      >
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="m-0 text-sm font-extrabold uppercase tracking-[.1em] text-primary">
-              Ajustar refeição
-            </p>
-            <h2 class="m-0 mt-1 text-lg">{{ target.item.descricao }}</h2>
-            <p class="m-0 mt-1 text-sm text-fg-muted">
-              Escolha como quer ajustar sem perder o restante do plano.
-            </p>
-          </div>
-          <button class="text-sm underline" type="button" (click)="closeSwap()">Fechar</button>
-        </div>
-        @if (!suggestions().length) {
-          <div class="mt-4 flex flex-wrap gap-2">
-            <button
-              bdButton
-              size="sm"
-              [disabled]="suggesting()"
-              [attr.aria-busy]="suggesting() ? true : null"
-              (click)="loadSuggestions()"
-            >
-              @if (suggesting()) {
-                <vtp-plate-loader tamanho="xs" cor="herdada" />
-              }
-              {{ suggesting() ? 'Buscando opções…' : 'Trocar somente este alimento' }}
-            </button>
-            <button
-              bdButton
-              variant="subtle"
-              size="sm"
-              [disabled]="regeneratingMeal() !== null"
-              [attr.aria-busy]="regeneratingMeal() !== null ? true : null"
-              (click)="regenerateMeal(target.meal.position)"
-            >
-              @if (regeneratingMeal() !== null) {
-                <vtp-plate-loader tamanho="xs" cor="herdada" />
-              }
-              Reorganizar esta refeição
-            </button>
-            <button
-              bdButton
-              variant="ghost"
-              size="sm"
-              [disabled]="applyingChange()"
-              [attr.aria-busy]="applyingChange() ? true : null"
-              (click)="recreateDay()"
-            >
-              @if (applyingChange()) {
-                <vtp-plate-loader tamanho="xs" cor="herdada" />
-              }
-              Recriar o plano do dia
-            </button>
-          </div>
-        } @else {
-          <div class="mt-4 grid gap-3">
-            @for (suggestion of suggestions(); track suggestion.food_id) {
-              <article class="rounded-xl border border-border bg-surface p-3">
-                <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <strong
-                      >{{ suggestion.descricao }} ·
-                      {{ suggestion.quantity | number: '1.0-0' }} g</strong
-                    >
-                    <p class="m-0 mt-1 text-sm text-fg-muted">{{ suggestion.reason }}</p>
-                    <p class="m-0 mt-1 text-xs text-fg-muted">
-                      Depois: {{ suggestion.meal_totals.caloria | number: '1.0-0' }} kcal · P
-                      {{ suggestion.meal_totals.proteina | number: '1.0-0' }} g · C
-                      {{ suggestion.meal_totals.carbo | number: '1.0-0' }} g · G
-                      {{ suggestion.meal_totals.gordura | number: '1.0-0' }} g.
-                    </p>
-                    <p class="m-0 mt-1 text-xs text-fg-muted">
-                      Impacto: {{ suggestion.delta.caloria >= 0 ? '+' : ''
-                      }}{{ suggestion.delta.caloria | number: '1.0-0' }} kcal · P
-                      {{ suggestion.delta.proteina >= 0 ? '+' : ''
-                      }}{{ suggestion.delta.proteina | number: '1.0-0' }} g. Continua dentro da meta
-                      da refeição.
-                    </p>
-                  </div>
-                  <button
-                    bdButton
-                    size="sm"
-                    [disabled]="applyingChange()"
-                    [attr.aria-busy]="applyingChange() ? true : null"
-                    (click)="applySuggestion(suggestion)"
-                  >
-                    @if (applyingChange()) {
-                      <vtp-plate-loader tamanho="xs" cor="herdada" />
-                    }
-                    Usar
-                  </button>
-                </div>
-              </article>
-            }
-          </div>
+
+    <div
+      class="mt-7 rounded-[28px] p-6"
+      style="background: linear-gradient(180deg, var(--bd-surface-hover), var(--bd-bg))"
+    >
+      <div class="flex gap-5 overflow-x-auto pb-1" role="tablist" aria-label="Refeições do dia">
+        @for (meal of plan.meals; track meal.position) {
+          <vtp-meal-plate
+            [meal]="meal"
+            [ativo]="pratoAberto() === meal.position"
+            [regenerando]="regeneratingMeal() === meal.position"
+            [icone]="iconePeriodo(meal.horario)"
+            (select)="togglePrato(meal.position)"
+          />
         }
-      </bd-modal>
+      </div>
+    </div>
+
+    @if (pratoAtivo(); as meal) {
+      <div
+        [id]="'gaveta-' + meal.position"
+        class="card animate-reveal mt-4 p-6"
+        role="tabpanel"
+        [attr.aria-labelledby]="'prato-' + meal.position"
+      >
+        <vtp-meal-drawer
+          [meal]="meal"
+          [suggestions]="suggestions()"
+          [swapTarget]="swapTarget()?.item ?? null"
+          [suggesting]="suggesting()"
+          [applyingChange]="applyingChange()"
+          [regenerando]="regeneratingMeal() === meal.position"
+          (swapItem)="openItemSwap(meal, $event)"
+          (closeSwap)="closeSwap()"
+          (loadSuggestions)="loadSuggestions()"
+          (applySuggestion)="applySuggestion($event)"
+          (regenerateMeal)="regenerateMeal(meal.position)"
+          (useMeal)="useMealFromDrawer(meal)"
+          (close)="fecharGaveta()"
+        />
+      </div>
     }
+
     <div class="mt-5 flex flex-wrap gap-3">
       <button
         bdButton
@@ -387,7 +298,7 @@
       <label class="block text-sm font-bold" for="plan-title">Nome do plano</label
       ><input
         id="plan-title"
-        class="plan-input mt-2"
+        class="mt-2 w-full rounded-2xl border border-border bg-surface px-3.5 py-3"
         [value]="title()"
         (input)="title.set($any($event.target).value)"
       /><button
