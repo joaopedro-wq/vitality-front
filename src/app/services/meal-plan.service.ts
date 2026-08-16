@@ -90,6 +90,15 @@ export class MealPlanService {
       .pipe(map((res) => res.data));
   }
 
+  update(id: number, payload: CreateMealPlanPayload): Observable<MealPlan> {
+    return this.http
+      .put<ApiResponse<MealPlan>>(apiPaths.mealPlan(id), {
+        titulo: payload.titulo,
+        draft_id: payload.draft_id,
+      })
+      .pipe(map((res) => res.data));
+  }
+
   profile(): Observable<MealPlanPreferences> {
     return this.http
       .get<ApiResponse<MealPlanPreferences>>(apiPaths.mealPlanProfile())

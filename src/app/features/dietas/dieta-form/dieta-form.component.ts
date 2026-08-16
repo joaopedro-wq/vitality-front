@@ -163,20 +163,10 @@ export class DietaFormComponent {
   protected readonly pratoAberto = signal<number | null>(null);
   protected readonly passo = signal(0);
   protected readonly passosForm = PASSOS_FORM;
-  /** `true` quando a prévia veio de `?planoId=` (editando um plano já salvo). */
   protected readonly editando = signal(false);
-  /**
-   * `true` quando existe alteração (nome, regeneração, troca de item, recriar
-   * dia, desfazer) desde o último `save()` bem-sucedido. Não existe endpoint
-   * de "renomear" isolado — `save()` sempre persiste o rascunho inteiro — por
-   * isso o estado de salvamento é do plano todo, não só do campo de nome.
-   * Não há autosave: cada `save()` cria um novo `MealPlan` no backend (mesmo
-   * editando um já existente), então salvar a cada tecla digitada geraria
-   * planos duplicados — o gesto explícito de "Salvar" continua necessário,
-   * só ganhou feedback de estado pendente/salvo em volta dele.
-   */
+  protected readonly planoEmEdicaoId = signal<number | null>(null);
+
   protected readonly dirty = signal(false);
-  /** Modo de edição do nome — padrão é só leitura; digitar é uma ação explícita. */
   protected readonly editandoNome = signal(false);
   protected readonly rascunhoNome = signal('');
   private readonly inputNomeRef = viewChild<ElementRef<HTMLInputElement>>('inputNome');
@@ -187,7 +177,6 @@ export class DietaFormComponent {
     return this.draft()?.meals.find((meal) => meal.position === aberto) ?? null;
   });
 
-  /** Índice (0-based) do prato ativo dentro de `plan.meals` — base da navegação mobile. */
   protected readonly indiceAtivo = computed(() => {
     const meals = this.draft()?.meals ?? [];
     const aberto = this.pratoAberto();
@@ -195,7 +184,6 @@ export class DietaFormComponent {
     return indice === -1 ? 0 : indice;
   });
 
-  /** Resumo nutricional do plano, arredondado — fonte do `vtp-macro-summary` no cabeçalho. */
   protected readonly macroValores = computed(() => {
     const totals = this.draft()?.totals;
     if (!totals) return null;
@@ -337,17 +325,18 @@ export class DietaFormComponent {
     const titulo = this.title().trim();
     if (!draft || !titulo || this.saving()) return;
     this.saving.set(true);
-    this.plansService
-      .save({ titulo, draft_id: draft.draft_id })
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.dirty.set(false);
-          this.toastr.success('Plano alimentar salvo.');
-          this.router.navigateByUrl('/dietas');
-        },
-        error: () => undefined,
-      });
+    const planoId = this.planoEmEdicaoId();
+    const request = planoId
+      ? this.plansService.update(planoId, { titulo, draft_id: draft.draft_id })
+      : this.plansService.save({ titulo, draft_id: draft.draft_id });
+    request.pipe(finalize(() => this.saving.set(false))).subscribe({
+      next: () => {
+        this.dirty.set(false);
+        this.toastr.success('Plano alimentar salvo.');
+        this.router.navigateByUrl('/dietas');
+      },
+      error: () => undefined,
+    });
   }
 
   protected regenerateMeal(position: number): void {
@@ -508,6 +497,7 @@ export class DietaFormComponent {
           this.draft.set(draft);
           this.mode.set('preview');
           this.editando.set(true);
+          this.planoEmEdicaoId.set(id);
           this.dirty.set(false);
           this.pratoAberto.set(draft.meals[0]?.position ?? null);
         },

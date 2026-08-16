@@ -50,6 +50,7 @@ export const apiPaths = {
   dieta: (id: number | string) => `${environment.apiBaseUrl}/dieta/${id}`,
 
   mealPlans: () => `${environment.apiBaseUrl}/meal-plans`,
+  mealPlan: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}`,
   mealPlanProfile: () => `${environment.apiBaseUrl}/meal-plan-profile`,
   mealPlanRestrictions: () => `${environment.apiBaseUrl}/meal-plan-restrictions`,
   mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
@@ -61,7 +62,8 @@ export const apiPaths = {
     `${environment.apiBaseUrl}/meal-plans/preview/meal/${position}/item/${foodId}/suggestions`,
   mealPlanItemReplace: (position: number, foodId: number) =>
     `${environment.apiBaseUrl}/meal-plans/preview/meal/${position}/item/${foodId}/replace`,
-  mealPlanEditDraft: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}/edit-draft`,
+  mealPlanEditDraft: (id: number | string) =>
+    `${environment.apiBaseUrl}/meal-plans/${id}/edit-draft`,
   mealPlanArchive: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}/archive`,
 
   registros: () => `${environment.apiBaseUrl}/registro`,
