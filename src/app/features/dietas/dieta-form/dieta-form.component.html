@@ -76,15 +76,25 @@
       <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Ajustar preferências
     </button>
     <header class="border-b border-border pb-6">
-      <vtp-page-title
-        contexto="Prévia do plano"
-        titulo="Monte o seu prato"
-        subtitulo="{{ plan.totals.caloria | number: '1.0-0' }} kcal · {{
-          plan.totals.proteina | number: '1.0-0'
-        }} g de proteína"
-      />
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div class="min-w-0">
+          <vtp-page-title contexto="Prévia do plano" titulo="Monte o seu prato" />
+          <p
+            class="m-0 mt-2 max-w-[42ch] truncate text-[15px] font-bold text-fg"
+            [attr.title]="title()"
+          >
+            {{ title() }}
+          </p>
+        </div>
+        <vtp-macro-summary
+          class="shrink-0"
+          [valores]="macroValores()"
+          [progresso]="progressoCalorias()"
+          tamanho="sm"
+        />
+      </div>
     </header>
-    @if (plan.summary) {
+    @if (plan.summary && !editando()) {
       <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.summary }}</p>
     }
     @if (plan.warning) {
@@ -93,7 +103,7 @@
 
     <div class="mt-7 md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
       <nav
-        class="flex gap-2 overflow-x-auto pb-1 md:sticky md:top-6 md:flex-col md:overflow-visible md:pb-0"
+        class="hidden gap-2 md:sticky md:top-6 md:flex md:flex-col"
         role="tablist"
         aria-label="Refeições do dia"
       >
@@ -104,11 +114,52 @@
             [meal]="meal"
             [ativo]="pratoAberto() === meal.position"
             [regenerando]="regeneratingMeal() === meal.position"
-            [icone]="iconePeriodo(meal.horario)"
-            (select)="togglePrato(meal.position)"
+            [icone]="iconeRefeicao(meal)"
+            (select)="selecionarPrato(meal.position)"
           />
         }
       </nav>
+
+      <div class="flex items-center gap-2 md:hidden" role="tablist" aria-label="Refeições do dia">
+        <button
+          class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border-strong text-fg enabled:hover:border-primary enabled:hover:text-primary disabled:opacity-30"
+          type="button"
+          aria-label="Refeição anterior"
+          [disabled]="indiceAtivo() === 0"
+          (click)="mealAnterior()"
+        >
+          <svg lucideArrowLeft size="18" aria-hidden="true"></svg>
+        </button>
+
+        <div class="min-w-0 flex-1">
+          @if (plan.meals[indiceAtivo()]; as mealAtual) {
+            <vtp-meal-plate
+              orientacao="linha"
+              class="w-full"
+              [meal]="mealAtual"
+              [ativo]="true"
+              [regenerando]="regeneratingMeal() === mealAtual.position"
+              [icone]="iconeRefeicao(mealAtual)"
+              (select)="selecionarPrato(mealAtual.position)"
+            />
+          }
+          <p
+            class="m-0 mt-1.5 text-center text-[11px] font-bold uppercase tracking-[0.08em] text-fg-muted"
+          >
+            Refeição {{ indiceAtivo() + 1 }} de {{ plan.meals.length }}
+          </p>
+        </div>
+
+        <button
+          class="flex size-11 shrink-0 items-center justify-center rounded-full border border-border-strong text-fg enabled:hover:border-primary enabled:hover:text-primary disabled:opacity-30"
+          type="button"
+          aria-label="Próxima refeição"
+          [disabled]="indiceAtivo() === plan.meals.length - 1"
+          (click)="mealSeguinte()"
+        >
+          <svg lucideArrowRight size="18" aria-hidden="true"></svg>
+        </button>
+      </div>
 
       @if (pratoAtivo(); as meal) {
         <div
@@ -130,7 +181,6 @@
             (applySuggestion)="applySuggestion($event)"
             (regenerateMeal)="regenerateMeal(meal.position)"
             (useMeal)="useMealFromDrawer(meal)"
-            (close)="fecharGaveta()"
           />
         </div>
       }

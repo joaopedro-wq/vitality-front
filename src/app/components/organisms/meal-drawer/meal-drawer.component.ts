@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { LucideArrowLeft } from '@lucide/angular';
-import { BdButtonComponent } from 'bandeira-ui';
+import { BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
 
 import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 import type {
@@ -13,7 +13,13 @@ import type {
 @Component({
   selector: 'vtp-meal-drawer',
   standalone: true,
-  imports: [DecimalPipe, BdButtonComponent, LucideArrowLeft, PlateLoaderComponent],
+  imports: [
+    DecimalPipe,
+    BdButtonComponent,
+    BdTooltipDirective,
+    LucideArrowLeft,
+    PlateLoaderComponent,
+  ],
   templateUrl: './meal-drawer.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,5 +37,4 @@ export class MealDrawerComponent {
   readonly applySuggestion = output<MealPlanItemSuggestion>();
   readonly regenerateMeal = output<void>();
   readonly useMeal = output<void>();
-  readonly close = output<void>();
 }

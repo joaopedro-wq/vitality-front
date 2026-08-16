@@ -11,20 +11,11 @@
       }
     </h3>
   </div>
-  <div class="flex items-center gap-4">
-    @if (!swapTarget()) {
-      <strong class="whitespace-nowrap text-primary-strong"
-        >{{ meal().totals.caloria | number: '1.0-0' }} kcal</strong
-      >
-    }
-    <button
-      class="text-sm font-bold text-fg-muted underline underline-offset-2"
-      type="button"
-      (click)="close.emit()"
+  @if (!swapTarget()) {
+    <strong class="whitespace-nowrap text-primary-strong"
+      >{{ meal().totals.caloria | number: '1.0-0' }} kcal</strong
     >
-      Fechar
-    </button>
-  </div>
+  }
 </div>
 
 @if (swapTarget(); as target) {
@@ -120,6 +111,8 @@
       bdButton
       variant="subtle"
       size="sm"
+      bdTooltip="Recria os alimentos dessa refeição mantendo os macros, preferências e restrições"
+      placement="top"
       [disabled]="regenerando()"
       [attr.aria-busy]="regenerando() ? true : null"
       (click)="regenerateMeal.emit()"
@@ -127,7 +120,7 @@
       @if (regenerando()) {
         <vtp-plate-loader tamanho="xs" cor="herdada" />
       }
-      {{ regenerando() ? 'Trocando sugestão…' : 'Reorganizar esta refeição' }}
+      {{ regenerando() ? 'Trocando refeição…' : 'Trocar refeição' }}
     </button>
     <button bdButton variant="ghost" size="sm" type="button" (click)="useMeal.emit()">
       Usar no diário

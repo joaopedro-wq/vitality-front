@@ -61,7 +61,9 @@ export class DietasListComponent {
   }
 
   protected editPlan(plan: MealPlan): void {
-    this.router.navigate(['/dietas/novo'], { queryParams: { planoId: plan.id } });
+    this.router.navigate(['/dietas/novo'], {
+      queryParams: { planoId: plan.id, planoNome: plan.titulo },
+    });
   }
 
   protected archive(plan: MealPlan): void {

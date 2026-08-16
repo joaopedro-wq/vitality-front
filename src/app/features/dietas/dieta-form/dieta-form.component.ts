@@ -3,12 +3,18 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import {
+  LucideApple,
   LucideArrowLeft,
+  LucideArrowRight,
   LucideCheck,
+  LucideCoffee,
   LucideMoon,
+  LucideMoonStar,
   LucideSun,
   LucideSunrise,
   LucideSunset,
+  LucideUtensils,
+  LucideUtensilsCrossed,
   type LucideIcon,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
@@ -16,6 +22,7 @@ import { finalize, forkJoin, switchMap } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
 import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
@@ -56,12 +63,26 @@ const TIMES: Record<3 | 4 | 5, string[]> = {
   5: ['07:30', '10:30', '13:00', '16:30', '20:00'],
 };
 
-/** Ícone de período por horário — nunca emoji, sempre um Lucide de verdade. */
+/** Ícone de período por horário — fallback quando o nome da refeição não bate com nada conhecido. */
 const ICONES_PERIODO: ReadonlyArray<readonly [limite: number, icone: LucideIcon]> = [
   [10, LucideSunrise],
   [15, LucideSun],
   [18, LucideSunset],
   [24, LucideMoon],
+];
+
+/**
+ * Ícone por tipo de refeição — mais coerente com o momento do dia do que só o
+ * horário (ex.: "Lanche da tarde" às 16h vira maçã, não sol de tarde genérico).
+ * Casa por palavra-chave no nome; refeição sem nome reconhecido cai no
+ * fallback por horário (`ICONES_PERIODO`).
+ */
+const ICONES_REFEICAO: ReadonlyArray<readonly [palavras: string[], icone: LucideIcon]> = [
+  [['café', 'manhã'], LucideCoffee],
+  [['almoço'], LucideUtensils],
+  [['lanche'], LucideApple],
+  [['jantar'], LucideUtensilsCrossed],
+  [['ceia'], LucideMoonStar],
 ];
 
 const PASSOS_FORM: StepTrackItem[] = [
@@ -84,9 +105,11 @@ const PASSOS_FORM: StepTrackItem[] = [
     DecimalPipe,
     BdButtonComponent,
     LucideArrowLeft,
+    LucideArrowRight,
     LucideCheck,
     PlateLoaderComponent,
     LoadingStateComponent,
+    MacroSummaryComponent,
     MealPlateComponent,
     MealDrawerComponent,
     PageTitleComponent,
@@ -129,6 +152,8 @@ export class DietaFormComponent {
   protected readonly pratoAberto = signal<number | null>(null);
   protected readonly passo = signal(0);
   protected readonly passosForm = PASSOS_FORM;
+  /** `true` quando a prévia veio de `?planoId=` (editando um plano já salvo). */
+  protected readonly editando = signal(false);
 
   protected readonly pratoAtivo = computed(() => {
     const aberto = this.pratoAberto();
@@ -136,27 +161,63 @@ export class DietaFormComponent {
     return this.draft()?.meals.find((meal) => meal.position === aberto) ?? null;
   });
 
+  /** Índice (0-based) do prato ativo dentro de `plan.meals` — base da navegação mobile. */
+  protected readonly indiceAtivo = computed(() => {
+    const meals = this.draft()?.meals ?? [];
+    const aberto = this.pratoAberto();
+    const indice = meals.findIndex((meal) => meal.position === aberto);
+    return indice === -1 ? 0 : indice;
+  });
+
+  /** Resumo nutricional do plano, arredondado — fonte do `vtp-macro-summary` no cabeçalho. */
+  protected readonly macroValores = computed(() => {
+    const totals = this.draft()?.totals;
+    if (!totals) return null;
+    return {
+      caloria: Math.round(totals.caloria),
+      proteina: Math.round(totals.proteina),
+      carbo: Math.round(totals.carbo),
+      gordura: Math.round(totals.gordura),
+    };
+  });
+
+  protected readonly progressoCalorias = computed(() => {
+    const plan = this.draft();
+    if (!plan?.target.caloria) return 0;
+    return Math.min(1, plan.totals.caloria / plan.target.caloria);
+  });
+
   constructor() {
     this.iniciar();
   }
 
-  protected togglePrato(position: number): void {
-    if (this.pratoAberto() === position) {
-      this.pratoAberto.set(null);
-      return;
-    }
+  protected selecionarPrato(position: number): void {
+    if (this.pratoAberto() === position) return;
     this.pratoAberto.set(position);
     this.swapTarget.set(null);
     this.suggestions.set([]);
   }
 
-  protected fecharGaveta(): void {
-    this.pratoAberto.set(null);
-    this.closeSwap();
+  protected mealAnterior(): void {
+    const meals = this.draft()?.meals ?? [];
+    const anterior = meals[this.indiceAtivo() - 1];
+    if (anterior) this.selecionarPrato(anterior.position);
   }
 
-  protected iconePeriodo(horario: string): LucideIcon {
-    const hora = Number(horario.split(':')[0]);
+  protected mealSeguinte(): void {
+    const meals = this.draft()?.meals ?? [];
+    const seguinte = meals[this.indiceAtivo() + 1];
+    if (seguinte) this.selecionarPrato(seguinte.position);
+  }
+
+  /** Ícone Lucide da refeição — por tipo (nome) quando reconhecido, senão por horário. */
+  protected iconeRefeicao(meal: MealPlanMeal): LucideIcon {
+    const nome = meal.descricao.toLowerCase();
+    const porTipo = ICONES_REFEICAO.find(([palavras]) =>
+      palavras.some((palavra) => nome.includes(palavra)),
+    );
+    if (porTipo) return porTipo[1];
+    const hora = Number(meal.horario.split(':')[0]);
     return ICONES_PERIODO.find(([limite]) => hora < limite)?.[1] ?? LucideMoon;
   }
 
@@ -341,6 +402,8 @@ export class DietaFormComponent {
 
   private iniciar(): void {
     const planoId = this.route.snapshot.queryParamMap.get('planoId');
+    const planoNome = this.route.snapshot.queryParamMap.get('planoNome');
+    if (planoNome) this.title.set(planoNome);
     forkJoin({
       metas: this.metaService.list(),
       profile: this.plansService.profile(),
@@ -376,6 +439,7 @@ export class DietaFormComponent {
         next: (draft) => {
           this.draft.set(draft);
           this.mode.set('preview');
+          this.editando.set(true);
           this.pratoAberto.set(draft.meals[0]?.position ?? null);
         },
         error: () => {
