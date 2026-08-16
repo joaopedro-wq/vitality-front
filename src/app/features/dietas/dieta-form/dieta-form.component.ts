@@ -16,7 +16,7 @@ import {
   LucideApple,
   LucideArrowLeft,
   LucideArrowRight,
-  LucideCheck,
+  LucideSave,
   LucideCoffee,
   LucideInfo,
   LucideMoon,
@@ -36,7 +36,6 @@ import { finalize, forkJoin, switchMap } from 'rxjs';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
-import { MacroSummaryComponent } from '../../../components/molecules/macro-summary/macro-summary.component';
 import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
@@ -114,14 +113,13 @@ const PASSOS_FORM: StepTrackItem[] = [
     BdButtonComponent,
     LucideArrowLeft,
     LucideArrowRight,
-    LucideCheck,
+    LucideSave,
     LucideInfo,
     LucidePencil,
     LucideX,
     PlateLoaderComponent,
     BackButtonComponent,
     LoadingStateComponent,
-    MacroSummaryComponent,
     MealPlateComponent,
     MealDrawerComponent,
     PageTitleComponent,
@@ -195,12 +193,6 @@ export class DietaFormComponent {
       carbo: Math.round(totals.carbo),
       gordura: Math.round(totals.gordura),
     };
-  });
-
-  protected readonly progressoCalorias = computed(() => {
-    const plan = this.draft();
-    if (!plan?.target.caloria) return 0;
-    return Math.min(1, plan.totals.caloria / plan.target.caloria);
   });
 
   constructor() {

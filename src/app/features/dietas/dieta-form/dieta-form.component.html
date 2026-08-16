@@ -140,8 +140,6 @@
               Salvando…
             } @else if (dirty()) {
               Alterações não salvas
-            } @else {
-              Salvo
             }
           </span>
           <button
@@ -155,46 +153,68 @@
             @if (saving()) {
               <vtp-plate-loader tamanho="xs" cor="herdada" />
             } @else {
-              <svg lucideCheck size="16" aria-hidden="true"></svg>
+              <svg lucideSave size="16" aria-hidden="true"></svg>
             }
             Salvar
           </button>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 border-t border-border pt-4">
-        <span class="text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
-          >Ações do dia</span
-        >
-        <button
-          bdButton
-          variant="subtle"
-          size="sm"
-          [disabled]="applyingChange()"
-          [attr.aria-busy]="applyingChange() ? true : null"
-          (click)="recreateDay()"
-        >
-          @if (applyingChange()) {
-            <vtp-plate-loader tamanho="xs" cor="herdada" />
-          }
-          Gerar novo dia
-        </button>
-        @if (plan.can_undo) {
-          <button
-            bdButton
-            variant="ghost"
-            size="sm"
-            [disabled]="applyingChange()"
-            [attr.aria-busy]="applyingChange() ? true : null"
-            (click)="undo()"
+      <!-- Resumo nutricional (ticket: canhoto com kcal, talão com os macros). -->
+      <div class="border-t border-border pt-4">
+        <div class="inline-flex items-stretch">
+          <div
+            class="flex items-center gap-2.5 rounded-l-[16px] border border-r-0 border-border bg-bg px-4 py-2.5"
           >
-            @if (applyingChange()) {
-              <vtp-plate-loader tamanho="xs" cor="herdada" />
-            }
-            Desfazer última alteração
-          </button>
-        }
+            <div>
+              <p class="m-0 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-subtle">
+                Plano gerado
+              </p>
+              <p class="m-0 mt-0.5 flex items-baseline gap-1 leading-none">
+                <strong class="text-xl font-extrabold tabular-nums sm:text-2xl">{{
+                  macroValores()?.caloria ?? '—'
+                }}</strong>
+                <span class="text-xs font-bold text-fg-muted">kcal</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="w-0 border-l-2 border-dashed border-border-strong"></div>
+
+          <div
+            class="flex items-center gap-4 rounded-r-[16px] border border-l-0 border-border bg-bg px-4 py-2.5"
+          >
+            <div class="flex flex-col items-center gap-0.5">
+              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+                ><span class="size-1.5 rounded-full bg-primary"></span>Prot</span
+              >
+              <strong class="text-sm font-extrabold tabular-nums"
+                >{{ macroValores()?.proteina ?? '—' }}g</strong
+              >
+            </div>
+            <div class="flex flex-col items-center gap-0.5">
+              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+                ><span class="size-1.5 rounded-full bg-accent"></span>Carbo</span
+              >
+              <strong class="text-sm font-extrabold tabular-nums"
+                >{{ macroValores()?.carbo ?? '—' }}g</strong
+              >
+            </div>
+            <div class="flex flex-col items-center gap-0.5">
+              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+                ><span class="size-1.5 rounded-full bg-fat"></span>Gord</span
+              >
+              <strong class="text-sm font-extrabold tabular-nums"
+                >{{ macroValores()?.gordura ?? '—' }}g</strong
+              >
+            </div>
+          </div>
+        </div>
       </div>
+
+      @if (plan.warning) {
+        <p class="m-0 text-[12.5px] leading-relaxed text-fg-muted">{{ plan.warning }}</p>
+      }
 
       <p class="m-0 flex items-start gap-2 text-[12.5px] leading-relaxed text-fg-muted">
         <svg lucideInfo size="15" class="mt-0.5 shrink-0 text-fg-subtle" aria-hidden="true"></svg>
@@ -202,22 +222,6 @@
         principalmente em caso de condições clínicas.
       </p>
     </section>
-
-    <!-- 2 · Resumo nutricional do dia -->
-    <div
-      class="card mt-6 flex flex-col items-start gap-3 p-5 sm:flex-row sm:items-center sm:justify-between"
-    >
-      <vtp-macro-summary
-        [valores]="macroValores()"
-        [progresso]="progressoCalorias()"
-        tamanho="sm"
-      />
-      @if (plan.warning) {
-        <p class="m-0 max-w-[36ch] text-[12.5px] leading-relaxed text-fg-muted">
-          {{ plan.warning }}
-        </p>
-      }
-    </div>
 
     <div class="mt-7 md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
       <nav
