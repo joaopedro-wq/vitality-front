@@ -1,10 +1,12 @@
 import { DecimalPipe } from '@angular/common';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import {
   ChangeDetectionStrategy,
   Component,
   OnDestroy,
   computed,
   effect,
+  HostListener,
   inject,
   input,
   output,
@@ -35,12 +37,15 @@ import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { AlimentoService } from '../../../services/alimento.service';
 import { DiarioService } from '../../../services/diario.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
+import { MealPlanService } from '../../../services/meal-plan.service';
+import type { MealPlan, MealPlanMeal } from '../../../core/models/meal-plan.model';
 
 @Component({
   selector: 'vtp-entry-composer',
   standalone: true,
   imports: [
     DecimalPipe,
+    CdkTrapFocus,
     DiaryDestinationBandComponent,
     FoodPickCardComponent,
     PlateRowComponent,
@@ -66,6 +71,7 @@ export class EntryComposerComponent implements OnDestroy {
   private readonly foodsService = inject(AlimentoService);
   private readonly diary = inject(DiarioService);
   private readonly planDraft = inject(MealPlanDiaryDraftService);
+  private readonly plansService = inject(MealPlanService);
   private readonly buscas = new Subject<string>();
   private readonly destruido = new Subject<void>();
   private requisicaoDeNutrientes = 0;
@@ -82,6 +88,31 @@ export class EntryComposerComponent implements OnDestroy {
   protected readonly passo = signal<'selecionar' | 'revisar'>('selecionar');
   protected readonly nutrientes = signal<DiaryNutrient[]>([]);
   protected readonly carregandoNutrientes = signal(false);
+  protected readonly seletorPlanoAberto = signal(false);
+  protected readonly carregandoPlanos = signal(false);
+  protected readonly planos = signal<MealPlan[]>([]);
+  protected readonly planoAtivo = signal<MealPlan | null>(null);
+
+  protected readonly refeicaoSugerida = computed<MealPlanMeal | null>(() => {
+    const plano = this.planoAtivo();
+    if (!plano?.meals.length) return null;
+
+    const alvo = this.normalizar(this.meal().descricao);
+    const exata = plano.meals.find((refeicao) => {
+      const nome = this.normalizar(refeicao.descricao);
+      return nome.includes(alvo) || alvo.includes(nome);
+    });
+    if (exata) return exata;
+
+    const horaAlvo = this.minutos(this.meal().horario);
+    return (
+      [...plano.meals].sort(
+        (a, b) =>
+          Math.abs(this.minutos(a.horario) - horaAlvo) -
+          Math.abs(this.minutos(b.horario) - horaAlvo),
+      )[0] ?? null
+    );
+  });
 
   protected readonly catalogo = computed(() => (this.query() ? this.foods() : this.atalhos()));
 
@@ -109,6 +140,8 @@ export class EntryComposerComponent implements OnDestroy {
       const date = this.date();
 
       this.trocaAberta.set(false);
+      this.seletorPlanoAberto.set(false);
+      this.planoAtivo.set(null);
       this.passo.set('selecionar');
       this.nutrientes.set([]);
       this.carregandoNutrientes.set(false);
@@ -159,6 +192,58 @@ export class EntryComposerComponent implements OnDestroy {
 
   protected buscar(termo: string): void {
     this.buscas.next(termo.trim());
+  }
+
+  /** Abre a biblioteca de planos sem substituir o que já foi escolhido no prato. */
+  protected abrirSeletorPlano(): void {
+    this.seletorPlanoAberto.set(true);
+    if (this.planos().length || this.carregandoPlanos()) return;
+
+    this.carregandoPlanos.set(true);
+    this.plansService
+      .list()
+      .pipe(finalize(() => this.carregandoPlanos.set(false)))
+      .subscribe({
+        next: (planos) => {
+          const ativos = planos.filter((plano) => !plano.archived_at);
+          this.planos.set(ativos);
+          if (ativos.length === 1) this.planoAtivo.set(ativos[0]);
+        },
+        error: () => this.planos.set([]),
+      });
+  }
+
+  protected fecharSeletorPlano(): void {
+    this.seletorPlanoAberto.set(false);
+    this.planoAtivo.set(null);
+  }
+
+  @HostListener('document:keydown.escape', ['$event'])
+  protected fecharSeletorPlanoComEscape(event: Event): void {
+    if (this.seletorPlanoAberto()) {
+      event.preventDefault();
+      this.fecharSeletorPlano();
+    }
+  }
+
+  protected selecionarPlano(plano: MealPlan): void {
+    this.planoAtivo.set(plano);
+  }
+
+  /** Copia a refeição do plano para o editor; porções e itens continuam editáveis. */
+  protected aplicarRefeicaoDoPlano(refeicao: MealPlanMeal): void {
+    this.itens.set(
+      refeicao.items.map((item) => ({
+        foodId: item.food_id,
+        descricao: item.descricao,
+        illustrationKey: null,
+        quantity: item.quantity,
+        qtdRef: item.quantity,
+        macrosRef: item.macros,
+      })),
+    );
+    this.resolverPorcoesBase(refeicao.items.map((item) => item.food_id));
+    this.fecharSeletorPlano();
   }
 
   protected escolher(food: Alimento): void {
@@ -342,5 +427,18 @@ export class EntryComposerComponent implements OnDestroy {
     this.itens.update((itens) =>
       itens.map((item) => ({ ...item, porcaoBase: bases.get(item.foodId) })),
     );
+  }
+
+  private normalizar(valor: string): string {
+    return valor
+      .toLocaleLowerCase('pt-BR')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim();
+  }
+
+  private minutos(valor: string): number {
+    const [hora, minuto] = valor.split(':').map(Number);
+    return (hora || 0) * 60 + (minuto || 0);
   }
 }
