@@ -5,6 +5,7 @@ import {
   Component,
   HostListener,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -45,6 +46,7 @@ import {
   type ViewModeOption,
 } from '../../../components/molecules/view-mode-toggle/view-mode-toggle.component';
 import { AuthService } from '../../../core/auth/auth.service';
+import { LanguageService } from '../../../core/i18n/language.service';
 import type { Alimento, AlimentoGrupo } from '../../../core/models/alimento.model';
 import { AlimentoService, type FoodFilters } from '../../../services/alimento.service';
 import { AlimentosFiltrosComponent } from '../alimentos-filtros/alimentos-filtros.component';
@@ -127,8 +129,13 @@ export class AlimentosListComponent {
   private readonly document = inject(DOCUMENT);
   protected readonly auth = inject(AuthService);
   private readonly toastr = inject(ToastrService);
+  private readonly language = inject(LanguageService);
   private readonly buscaChange$ = new Subject<string>();
   private readonly caloriaRangeChange$ = new Subject<[number, number]>();
+  /** `effect()` roda uma vez na inicialização também — a primeira carga já é
+   * feita explicitamente no constructor, então esta flag evita buscar tudo
+   * de novo assim que o componente monta. */
+  private idiomaInicializado = false;
 
   protected readonly tab = signal<'all' | 'favorites'>('all');
   protected readonly busca = signal('');
@@ -207,6 +214,23 @@ export class AlimentosListComponent {
     this.caloriaRangeChange$.pipe(debounceTime(300)).subscribe((range) => {
       this.caloriaRange.set(range);
       this.reiniciarPaginacao();
+      this.load();
+    });
+
+    // A API traduz descricao/detalhe_exibicao/grupo_exibicao pelo Accept-Language
+    // enviado a cada chamada (ver `localeInterceptor`) — trocar o idioma não
+    // recarrega a página sozinho, então recarrega os dados aqui pra a tela
+    // nunca ficar com rótulos do idioma anterior. O `id` do grupo é estável
+    // entre idiomas, então o filtro selecionado continua válido.
+    effect(() => {
+      this.language.locale();
+      if (!this.idiomaInicializado) {
+        this.idiomaInicializado = true;
+
+        return;
+      }
+      this.loadGrupos();
+      this.pagina.set(1);
       this.load();
     });
   }
