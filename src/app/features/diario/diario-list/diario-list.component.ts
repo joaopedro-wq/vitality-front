@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BdButtonComponent } from 'bandeira-ui';
 import { LucideArrowLeft, LucideArrowRight, LucideSettings2 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, forkJoin, type Observable } from 'rxjs';
 
 import { MacroGoalStripComponent } from '../../../components/molecules/macro-goal-strip/macro-goal-strip.component';
+import { OverflowMenuComponent } from '../../../components/molecules/overflow-menu/overflow-menu.component';
 import { JourneyMapComponent } from '../../../components/organisms/journey-map/journey-map.component';
 import { DayRevealOverlayComponent } from '../../../components/organisms/day-reveal-overlay/day-reveal-overlay.component';
 import { DiaryPhaseCardComponent } from '../../../components/molecules/diary-phase-card/diary-phase-card.component';
@@ -42,8 +42,8 @@ type Modo = 'cartao' | 'compor';
   selector: 'vtp-diario-list',
   standalone: true,
   imports: [
-    BdButtonComponent,
     MacroGoalStripComponent,
+    OverflowMenuComponent,
     JourneyMapComponent,
     DiaryPhaseCardComponent,
     DayRevealOverlayComponent,
@@ -74,6 +74,7 @@ export class DiarioListComponent {
   protected readonly loading = signal(true);
   protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly managerOpen = signal(false);
+  protected readonly menuAberto = signal(false);
   protected readonly revelacaoAberta = signal(false);
   protected readonly faseMobileAberta = signal(false);
 

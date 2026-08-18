@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { BdModalComponent } from 'bandeira-ui';
 import {
   LucideApple,
   LucideArrowLeftRight,
@@ -24,7 +25,7 @@ const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
 @Component({
   selector: 'vtp-diary-destination-band',
   standalone: true,
-  imports: [LucideDynamicIcon, LucideArrowLeftRight],
+  imports: [BdModalComponent, LucideDynamicIcon, LucideArrowLeftRight],
   templateUrl: './diary-destination-band.component.html',
   styles: [':host { display: block; }'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,5 +44,13 @@ export class DiaryDestinationBandComponent {
 
   protected iconeDe(meal: DiaryMeal): LucideIcon {
     return ICONE_POR_MOMENTO[momentoDaRefeicao(meal.descricao)];
+  }
+
+  /** `bd-modal` fecha sozinho no Esc/clique no fundo/X — `aberto` continua
+   * sendo dono do pai (mesmo contrato de antes, quando era um bloco inline);
+   * isso só repassa o fechamento pro `alternarTroca` que o pai já trata como
+   * toggle. */
+  protected onDialogChange(open: boolean): void {
+    if (!open) this.alternarTroca.emit();
   }
 }

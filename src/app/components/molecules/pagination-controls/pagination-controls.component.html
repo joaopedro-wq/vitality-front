@@ -1,0 +1,52 @@
+@if (totalPaginas() > 1) {
+  <footer
+    class="food-pagination"
+    [class.food-pagination--loading]="carregando()"
+    [attr.aria-busy]="carregando()"
+  >
+    <div class="food-pagination__summary">
+      <span>Resultados</span>
+      <p>
+        Exibindo <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> de
+        <b>{{ totalRegistros() }}</b> itens
+      </p>
+    </div>
+    <nav class="food-pagination__navigation" aria-label="Paginação">
+      <button
+        type="button"
+        class="food-pagination__step"
+        [disabled]="pagina() === 1 || carregando()"
+        (click)="irParaPagina(pagina() - 1)"
+      >
+        <svg lucideChevronLeft size="16" aria-hidden="true"></svg><span>Anterior</span>
+      </button>
+      <div class="food-pagination__pages" aria-label="Selecionar página">
+        @for (item of itensPaginacao(); track $index) {
+          @if (item === 'ellipsis') {
+            <span aria-hidden="true">…</span>
+          } @else {
+            <button
+              type="button"
+              [class.active]="item === pagina()"
+              [attr.aria-current]="item === pagina() ? 'page' : null"
+              [attr.aria-label]="'Página ' + item"
+              [disabled]="carregando()"
+              (click)="irParaPagina(item)"
+            >
+              {{ item }}
+            </button>
+          }
+        }
+      </div>
+      <span class="food-pagination__status">Página {{ pagina() }} de {{ totalPaginas() }}</span>
+      <button
+        type="button"
+        class="food-pagination__step food-pagination__step--next"
+        [disabled]="pagina() === totalPaginas() || carregando()"
+        (click)="irParaPagina(pagina() + 1)"
+      >
+        <span>Próxima</span><svg lucideChevronRight size="16" aria-hidden="true"></svg>
+      </button>
+    </nav>
+  </footer>
+}

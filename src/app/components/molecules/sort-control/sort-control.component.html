@@ -1,0 +1,48 @@
+<div class="sort-control">
+  <button
+    class="sort-criterion"
+    type="button"
+    [attr.aria-expanded]="aberto()"
+    aria-haspopup="menu"
+    (click)="toggleAberto()"
+  >
+    <span>{{ rotulo() }}</span
+    ><b>{{ opcaoAtualLabel() }}</b
+    ><svg lucideChevronDown size="14" aria-hidden="true"></svg>
+  </button>
+  <button
+    class="sort-direction"
+    type="button"
+    [attr.aria-label]="direcaoLabel()"
+    [attr.title]="direcaoLabel()"
+    (click)="inverter()"
+  >
+    @if (ordem() === 1) {
+      <svg lucideArrowUp size="16" aria-hidden="true"></svg>
+    } @else {
+      <svg lucideArrowDown size="16" aria-hidden="true"></svg>
+    }
+  </button>
+  @if (aberto()) {
+    <div class="sort-options" role="menu" aria-label="Ordenar por">
+      <p>Ordenar por</p>
+      @for (opcao of opcoes(); track opcao.field) {
+        <button
+          type="button"
+          role="menuitemradio"
+          [attr.aria-checked]="campo() === opcao.field"
+          [class.active]="campo() === opcao.field"
+          (click)="selecionar(opcao.field)"
+        >
+          {{ opcao.label }}
+          @if (campo() === opcao.field) {
+            <span>{{ direcaoLabel() }}</span>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>
+@if (aberto()) {
+  <button class="sort-scrim" aria-label="Fechar opções de ordenação" (click)="fechar()"></button>
+}

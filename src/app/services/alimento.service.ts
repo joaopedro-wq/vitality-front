@@ -23,6 +23,7 @@ export interface FoodFilters {
   fonte?: FonteAlimento;
   status?: StatusAlimento;
   grupo?: string[];
+  grupo_normalizado?: string[];
   caloria_min?: number;
   caloria_max?: number;
   sort_field?: 'descricao' | 'grupo' | 'caloria' | 'proteina' | 'carbo' | 'gordura';
@@ -40,6 +41,11 @@ export class AlimentoService {
   groups(): Observable<AlimentoGrupo[]> {
     return this.http
       .get<{ data: AlimentoGrupo[] }>(apiPaths.gruposAlimentos())
+      .pipe(map((response) => response.data));
+  }
+  gruposNormalizados(): Observable<AlimentoGrupo[]> {
+    return this.http
+      .get<{ data: AlimentoGrupo[] }>(apiPaths.gruposNormalizadosAlimentos())
       .pipe(map((response) => response.data));
   }
   get(id: number): Observable<Alimento> {

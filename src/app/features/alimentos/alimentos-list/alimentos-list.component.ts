@@ -11,11 +11,6 @@ import {
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
 import {
-  LucideArrowDown,
-  LucideArrowUp,
-  LucideChevronDown,
-  LucideChevronLeft,
-  LucideChevronRight,
   LucideFilter,
   LucideHeart,
   LucideLayoutGrid,
@@ -37,7 +32,14 @@ import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/pla
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
+import { PaginationControlsComponent } from '../../../components/molecules/pagination-controls/pagination-controls.component';
+import { SortControlComponent } from '../../../components/molecules/sort-control/sort-control.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
+import {
+  FOOD_SORT_OPTIONS,
+  direcaoOrdenacaoLabel,
+  type FoodSortField,
+} from '../../../components/utils/food-sort-options.util';
 import {
   ViewModeToggleComponent,
   type ViewModeOption,
@@ -49,18 +51,6 @@ import { AlimentosFiltrosComponent } from '../alimentos-filtros/alimentos-filtro
 
 const CALORIA_BOUNDS: [number, number] = [0, 900];
 const PAGE_SIZE = 20;
-type FoodSortField = NonNullable<FoodFilters['sort_field']>;
-interface FoodSortOption {
-  field: FoodSortField;
-  label: string;
-}
-const FOOD_SORT_OPTIONS: FoodSortOption[] = [
-  { field: 'descricao', label: 'Nome' },
-  { field: 'caloria', label: 'Calorias' },
-  { field: 'proteina', label: 'Proteína' },
-  { field: 'carbo', label: 'Carboidratos' },
-  { field: 'gordura', label: 'Gorduras' },
-];
 const VIEW_MODE_OPTIONS: ViewModeOption[] = [
   { value: 'cards', label: 'Cards', icon: LucideLayoutGrid },
   { value: 'tabela', label: 'Tabela', icon: LucideTable },
@@ -111,11 +101,6 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     RouterLink,
     BdButtonComponent,
     DataTableComponent,
-    LucideArrowDown,
-    LucideArrowUp,
-    LucideChevronDown,
-    LucideChevronLeft,
-    LucideChevronRight,
     LucideFilter,
     LucideHeart,
     LucideSearch,
@@ -128,6 +113,8 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     BackButtonComponent,
     LoadingStateComponent,
     PageTitleComponent,
+    PaginationControlsComponent,
+    SortControlComponent,
   ],
   templateUrl: './alimentos-list.component.html',
   styleUrl: './alimentos-list.component.scss',
@@ -148,7 +135,6 @@ export class AlimentosListComponent {
   protected readonly viewMode = signal<'cards' | 'tabela'>('cards');
   protected readonly viewModeOptions = VIEW_MODE_OPTIONS;
   protected readonly filtrosAbertos = signal(false);
-  protected readonly ordenacaoAberta = signal(false);
 
   protected readonly grupos = signal<AlimentoGrupo[]>([]);
   protected readonly grupoSelecionado = signal<string[]>([]);
@@ -181,14 +167,6 @@ export class AlimentosListComponent {
   protected readonly totalRegistros = signal(0);
   protected readonly vazio = computed(() => !this.carregando() && this.alimentos().length === 0);
   protected readonly totalPaginas = computed(() => Math.ceil(this.totalRegistros() / PAGE_SIZE));
-  protected readonly intervaloResultados = computed(() => {
-    const total = this.totalRegistros();
-    const inicio = total ? (this.pagina() - 1) * PAGE_SIZE + 1 : 0;
-    return { inicio, fim: Math.min(this.pagina() * PAGE_SIZE, total) };
-  });
-  protected readonly itensPaginacao = computed(() =>
-    this.criarItensPaginacao(this.pagina(), this.totalPaginas()),
-  );
 
   protected readonly detalhe = signal<Alimento | null>(null);
   protected readonly detalheCarregando = signal(false);
@@ -198,14 +176,9 @@ export class AlimentosListComponent {
   protected readonly sortField = signal<FoodSortField>('descricao');
   protected readonly sortOrder = signal<1 | -1>(1);
   protected readonly sortOptions = FOOD_SORT_OPTIONS;
-  protected readonly ordenacaoAtual = computed(
-    () =>
-      FOOD_SORT_OPTIONS.find((option) => option.field === this.sortField()) ?? FOOD_SORT_OPTIONS[0],
+  protected readonly direcaoOrdenacao = computed(() =>
+    direcaoOrdenacaoLabel(this.sortField(), this.sortOrder()),
   );
-  protected readonly direcaoOrdenacao = computed(() => {
-    if (this.sortField() === 'descricao') return this.sortOrder() === 1 ? 'A–Z' : 'Z–A';
-    return this.sortOrder() === 1 ? 'Menor para maior' : 'Maior para menor';
-  });
   protected readonly tableColumns = TABLE_COLUMNS;
   protected readonly tableStateKey = computed(() => {
     const userId = this.auth.currentUser()?.id;
@@ -242,7 +215,6 @@ export class AlimentosListComponent {
   protected onEscape(): void {
     if (this.detalhe()) this.fecharDetalhe();
     else if (this.filtrosAbertos()) this.fecharFiltros();
-    else this.fecharOrdenacao();
   }
 
   atualizarBusca(value: string): void {
@@ -255,23 +227,14 @@ export class AlimentosListComponent {
     this.load();
   }
 
-  toggleOrdenacao(): void {
-    this.ordenacaoAberta.update((aberta) => !aberta);
-  }
-
-  fecharOrdenacao(): void {
-    this.ordenacaoAberta.set(false);
-  }
-
   selecionarOrdenacao(field: FoodSortField): void {
     this.sortField.set(field);
     this.reiniciarPaginacao();
-    this.fecharOrdenacao();
     this.load();
   }
 
-  inverterOrdenacao(): void {
-    this.sortOrder.update((order) => (order === 1 ? -1 : 1));
+  definirOrdem(ordem: 1 | -1): void {
+    this.sortOrder.set(ordem);
     this.reiniciarPaginacao();
     this.load();
   }
@@ -387,30 +350,6 @@ export class AlimentosListComponent {
         .getElementById('food-results')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-  }
-
-  private criarItensPaginacao(
-    paginaAtual: number,
-    totalPaginas: number,
-  ): Array<number | 'ellipsis'> {
-    if (totalPaginas <= 7) return Array.from({ length: totalPaginas }, (_, index) => index + 1);
-
-    const paginas = new Set([1, totalPaginas]);
-    for (
-      let pagina = Math.max(2, paginaAtual - 1);
-      pagina <= Math.min(totalPaginas - 1, paginaAtual + 1);
-      pagina++
-    ) {
-      paginas.add(pagina);
-    }
-
-    const itens: Array<number | 'ellipsis'> = [];
-    for (const pagina of [...paginas].sort((a, b) => a - b)) {
-      const anterior = itens.at(-1);
-      if (typeof anterior === 'number' && pagina - anterior > 1) itens.push('ellipsis');
-      itens.push(pagina);
-    }
-    return itens;
   }
 
   private loadGrupos(): void {

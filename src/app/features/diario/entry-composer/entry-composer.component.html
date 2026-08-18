@@ -17,246 +17,316 @@
   </header>
 
   @if (passo() === 'selecionar') {
-    @if (!entry() && !seletorPlanoAberto()) {
-      <button
-        type="button"
-        class="mb-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-primary/35 bg-primary-soft/45 px-4 py-3 text-left transition-colors hover:border-primary"
-        (click)="abrirSeletorPlano()"
-      >
-        <span>
-          <strong class="block text-[13px] text-primary-strong"
-            >Começar pelo plano alimentar</strong
-          >
-          <small class="mt-0.5 block text-[12px] text-fg-muted">
-            Puxe uma refeição pronta e ajuste as porções antes de registrar.
-          </small>
-        </span>
-        <span class="shrink-0 text-xs font-bold text-primary-strong">Escolher</span>
-      </button>
-    }
-
-    @if (seletorPlanoAberto()) {
-      <div
-        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/35 p-2 backdrop-blur-[2px] sm:items-center sm:p-6"
-        (click)="fecharSeletorPlano()"
-      >
-        <section
-          cdkTrapFocus
-          cdkTrapFocusAutoCapture
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="plano-dialog-titulo"
-          class="flex h-[calc(100dvh-1rem)] max-h-[820px] w-full max-w-5xl flex-col overflow-hidden rounded-[26px] border border-border bg-surface shadow-2xl sm:h-auto sm:max-h-[88vh]"
-          (click)="$event.stopPropagation()"
-        >
-          <header
-            class="flex items-start justify-between gap-4 border-b border-border px-5 py-4 sm:px-7 sm:py-5"
-          >
-            <div>
-              <p
-                class="m-0 text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong"
+    @if (mostrarResumoRegistrado()) {
+      <div class="rounded-2xl border border-border bg-surface p-3">
+        <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
+          Já registrado nesta refeição
+        </p>
+        <ul class="flex list-none flex-col gap-1.5 p-0">
+          @for (item of itensRegistrados(); track chaveDoItem(item)) {
+            @let chave = chaveDoItem(item);
+            <li class="group flex items-center gap-3 rounded-xl border border-border px-3 py-2.5">
+              <span
+                class="grid size-7 flex-none place-items-center overflow-hidden rounded-[9px] bg-primary-soft"
               >
-                Adicionar pelo plano
-              </p>
-              <h2 id="plano-dialog-titulo" class="m-0 mt-1 text-xl font-bold text-fg">
-                Monte {{ meal().descricao.toLowerCase() }} a partir de uma sugestão
-              </h2>
-              <p class="m-0 mt-1 max-w-2xl text-[12.5px] text-fg-muted">
-                Escolha um plano e uma refeição. Depois você ainda poderá ajustar tudo antes de
-                registrar.
-              </p>
+                <vtp-food-illustration [illustrationKey]="item.illustrationKey" />
+              </span>
+
+              <b class="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{{
+                item.descricao
+              }}</b>
+
+              <small class="whitespace-nowrap text-[12px] tabular-nums text-fg-muted">
+                {{ item.quantity | number: '1.0-0' }} g ·
+                {{ item.macros.caloria | number: '1.0-0' }} kcal
+              </small>
+
+              <span
+                class="flex flex-none gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+              >
+                <button
+                  class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-primary-soft hover:text-primary-strong"
+                  type="button"
+                  [attr.aria-label]="'Editar o lançamento de ' + item.descricao"
+                  (click)="editarLancamento.emit(item.entryId)"
+                >
+                  <svg lucideEdit3 size="14" aria-hidden="true"></svg>
+                </button>
+                <button
+                  class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-danger/10 hover:text-danger disabled:opacity-40"
+                  type="button"
+                  [disabled]="removendo() === chave"
+                  [attr.aria-busy]="removendo() === chave ? true : null"
+                  [attr.aria-label]="'Remover ' + item.descricao"
+                  (click)="removerItem.emit(item)"
+                >
+                  @if (removendo() === chave) {
+                    <vtp-plate-loader tamanho="xs" cor="herdada" />
+                  } @else {
+                    <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+                  }
+                </button>
+              </span>
+            </li>
+          }
+        </ul>
+
+        <button
+          type="button"
+          class="mx-auto mt-3 flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-contrast transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04]"
+          (click)="modoAdicionarMais.set(true)"
+        >
+          <svg lucidePlus size="14" aria-hidden="true"></svg>
+          Adicionar mais alimentos
+        </button>
+      </div>
+    } @else {
+      @if (!itensRegistrados().length && planosDisponiveis().length) {
+        <div
+          class="mb-3 flex flex-col gap-2.5 rounded-2xl border border-primary bg-primary-soft/60 p-3.5 animate-reveal"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <span
+              class="rounded-full bg-primary px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-primary-contrast"
+            >
+              Do seu plano
+            </span>
+
+            @if (planosDisponiveis().length > 1) {
+              <button
+                type="button"
+                class="inline-flex flex-none items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3 py-1.5 text-[12px] text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+                [attr.aria-expanded]="planoDialogAberto()"
+                (click)="planoDialogAberto.set(true)"
+              >
+                <svg lucideArrowLeftRight size="13" aria-hidden="true"></svg>
+                Trocar plano
+              </button>
+            }
+          </div>
+
+          @if (sugestaoHero(); as sugestao) {
+            <div class="flex items-center gap-3">
+              <span
+                class="grid size-10 flex-none place-items-center rounded-xl bg-primary text-primary-contrast"
+                aria-hidden="true"
+              >
+                <svg lucideClipboardList size="18"></svg>
+              </span>
+              <span class="min-w-0">
+                <span
+                  class="block text-[10px] font-extrabold uppercase tracking-widest text-primary-strong"
+                >
+                  Sugestão pra agora
+                </span>
+                <strong class="mt-0.5 block truncate text-[13.5px] text-fg">{{
+                  sugestao.descricao
+                }}</strong>
+                <small class="mt-0.5 block text-[11.5px] text-fg-muted tabular-nums"
+                  >{{ sugestao.totals.caloria | number: '1.0-0' }} kcal ·
+                  {{ sugestao.items.length }} itens</small
+                >
+              </span>
             </div>
+
+            <div class="flex flex-wrap gap-1.5">
+              @for (item of sugestao.items; track item.food_id) {
+                <span
+                  class="rounded-full border border-primary/30 bg-surface px-2.5 py-1 text-[11px] font-semibold text-fg"
+                >
+                  {{ item.descricao }}
+                </span>
+              }
+            </div>
+
             <button
               type="button"
-              class="shrink-0 rounded-lg px-2 py-1 text-xs font-bold text-fg-muted underline"
-              (click)="fecharSeletorPlano()"
+              class="mx-auto flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12.5px] font-bold text-primary-contrast transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-[1.04]"
+              (click)="aplicarRefeicaoDoPlano(sugestao)"
             >
-              Fechar
+              Usar essa sugestão
             </button>
-          </header>
-
-          <div
-            class="grid min-h-0 flex-1 gap-4 overflow-y-auto p-4 sm:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)] sm:gap-6 sm:p-6"
-          >
-            <div>
-              <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
-                Seus planos
-              </p>
-              @if (carregandoPlanos()) {
-                <vtp-loading-state tamanho="sm" titulo="Carregando planos" />
-              } @else if (!planos().length) {
-                <p
-                  class="m-0 rounded-xl border border-dashed border-border p-4 text-[12.5px] text-fg-muted"
-                >
-                  Você ainda não tem um plano salvo. Monte um em <strong>Dietas</strong> e volte
-                  para cá.
-                </p>
-              } @else {
-                <div class="grid gap-2">
-                  @for (plano of planos(); track plano.id) {
-                    <button
-                      type="button"
-                      class="rounded-xl border bg-bg p-3 text-left transition-colors hover:border-primary"
-                      [class.border-primary]="planoAtivo()?.id === plano.id"
-                      [class.border-border]="planoAtivo()?.id !== plano.id"
-                      (click)="selecionarPlano(plano)"
-                    >
-                      <strong class="block truncate text-[13px] text-fg">{{ plano.titulo }}</strong>
-                      <span class="text-[11px] text-fg-muted"
-                        >{{ plano.meals.length }} refeições ·
-                        {{ plano.totals.caloria | number: '1.0-0' }} kcal/dia</span
-                      >
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-
-            <div class="min-w-0">
-              @if (planoAtivo(); as plano) {
-                <p
-                  class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle"
-                >
-                  Escolha a refeição do plano
-                </p>
-                @if (refeicaoSugerida(); as sugerida) {
-                  <button
-                    type="button"
-                    class="mb-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-primary bg-primary-soft/55 p-3 text-left"
-                    (click)="aplicarRefeicaoDoPlano(sugerida)"
-                  >
-                    <span>
-                      <span
-                        class="block text-[10px] font-extrabold uppercase tracking-widest text-primary-strong"
-                        >Sugestão para {{ meal().descricao.toLowerCase() }}</span
-                      >
-                      <strong class="mt-1 block text-[14px] text-fg"
-                        >{{ sugerida.descricao }} · {{ sugerida.horario }}</strong
-                      >
-                      <small class="mt-1 block text-[11px] text-fg-muted"
-                        >{{ sugerida.items.length }} itens ·
-                        {{ sugerida.totals.caloria | number: '1.0-0' }} kcal</small
-                      >
-                    </span>
-                    <span
-                      class="shrink-0 rounded-full bg-primary px-3 py-1.5 text-[11px] font-bold text-primary-contrast"
-                      >Usar sugestão</span
-                    >
-                  </button>
-                }
-                <div class="grid gap-2 sm:grid-cols-2">
-                  @for (refeicao of plano.meals; track refeicao.position) {
-                    <button
-                      type="button"
-                      class="flex min-h-24 flex-col justify-between rounded-2xl border border-border bg-bg p-3 text-left transition-colors hover:border-primary"
-                      (click)="aplicarRefeicaoDoPlano(refeicao)"
-                    >
-                      <span>
-                        <strong class="block text-[13px] text-fg">{{ refeicao.descricao }}</strong>
-                        <small class="mt-1 block text-[11px] text-fg-muted"
-                          >{{ refeicao.horario }} · {{ refeicao.items.length }} itens</small
-                        >
-                      </span>
-                      <span
-                        class="mt-3 flex items-center justify-between text-xs font-bold text-primary-strong"
-                        ><span>{{ refeicao.totals.caloria | number: '1.0-0' }} kcal</span
-                        ><span>Usar refeição →</span></span
-                      >
-                    </button>
-                  }
-                </div>
-              } @else {
-                <div
-                  class="grid min-h-48 place-items-center rounded-2xl border border-dashed border-border p-6 text-center text-[13px] text-fg-muted"
-                >
-                  Selecione um plano à esquerda para ver as refeições disponíveis.
-                </div>
-              }
-            </div>
-          </div>
-        </section>
-      </div>
-    }
-
-    <label
-      class="mb-3 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
-    >
-      <svg lucideSearch size="16" aria-hidden="true"></svg>
-      <span class="sr-only">Buscar alimento no catálogo</span>
-      <input
-        class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
-        type="search"
-        placeholder="Buscar no catálogo TACO"
-        (input)="buscar($any($event.target).value)"
-      />
-    </label>
-
-    <div class="flex-1">
-      @if (!query()) {
-        <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
-          Seus alimentos de sempre
-        </p>
-      }
-
-      @if (carregandoFoodsVisivel()) {
-        <vtp-loading-state tamanho="sm" titulo="Buscando alimentos" />
-      } @else if (catalogo().length) {
-        <div class="grid gap-2 [grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
-          @for (food of catalogo(); track food.id) {
-            <vtp-food-pick-card
-              [food]="food"
-              [selecionado]="estaNoPrato(food)"
-              (pick)="escolher($event)"
-            />
+          } @else {
+            <p class="text-[12.5px] text-fg-muted">Esse plano ainda não tem refeições.</p>
           }
         </div>
-      } @else {
-        <p class="py-6 text-center text-[13px] text-fg-muted">
-          {{
-            query()
-              ? 'Nenhum alimento com esse nome.'
-              : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
-          }}
-        </p>
+        <p class="mb-3 text-center text-[11px] font-bold text-fg-subtle">ou monte do seu jeito</p>
       }
 
-      <div class="mt-4 rounded-[13px] border border-border bg-bg p-3">
-        <h3
-          class="mb-1.5 flex items-center gap-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-muted"
+      <div class="mb-2 flex items-center gap-2">
+        <label
+          class="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
         >
-          No prato
-          <span
-            class="ml-auto text-[12.5px] font-bold normal-case tracking-normal text-fg tabular-nums"
-          >
-            {{ totais().caloria | number: '1.0-0' }} kcal
-          </span>
-        </h3>
+          <svg lucideSearch size="16" aria-hidden="true"></svg>
+          <span class="sr-only">Buscar alimento no catálogo</span>
+          <input
+            class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+            type="search"
+            placeholder="Buscar por nome (opcional)"
+            (input)="buscar($any($event.target).value)"
+          />
+        </label>
 
-        @if (itens().length) {
-          @for (item of itens(); track item.foodId) {
-            <vtp-plate-row
-              [item]="item"
-              (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
-              (remover)="tirar(item.foodId)"
-            />
-          }
-        } @else {
-          <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
-        }
-      </div>
-
-      <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
-        <label for="hora-consumo">Horário</label>
-        <input
-          id="hora-consumo"
-          class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
-          type="time"
-          [value]="hora()"
-          (change)="hora.set($any($event.target).value)"
+        <vtp-sort-control
+          class="flex-none"
+          [opcoes]="sortOptions"
+          [campo]="sortField()"
+          [ordem]="sortOrder()"
+          [direcaoLabel]="direcaoOrdenacao()"
+          (campoChange)="alterarCampoOrdenacao($event)"
+          (ordemChange)="alterarOrdem($event)"
         />
-        <span>· sugerido por esta fase</span>
       </div>
-    </div>
+
+      <!-- Tablet/desktop: fileira de chips sempre visível. -->
+      <div
+        class="mb-3 hidden flex-wrap justify-center gap-2 md:flex"
+        role="group"
+        aria-label="Filtros rápidos de alimento"
+      >
+        <ng-container [ngTemplateOutlet]="chipsTpl" />
+      </div>
+
+      <!-- Mobile: chips viram folha inferior atrás de um gatilho — mesmo
+           padrão de `.filter-drawer` de `/alimentos`, só que em Tailwind
+           direto (este componente não tem SCSS próprio). -->
+      <div class="mb-3 flex md:hidden">
+        <button
+          type="button"
+          class="mx-auto flex items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3.5 py-2 text-[12.5px] font-bold text-fg-muted"
+          [attr.aria-expanded]="filtrosAbertos()"
+          (click)="filtrosAbertos.set(true)"
+        >
+          <svg lucideFilter size="14" aria-hidden="true"></svg>
+          {{ filtroAtivoLabel() ?? 'Filtrar' }}
+        </button>
+      </div>
+
+      @if (filtrosAbertos()) {
+        <button
+          type="button"
+          class="fixed inset-0 z-[70] bg-black/45 md:hidden"
+          aria-label="Fechar filtros"
+          (click)="filtrosAbertos.set(false)"
+        ></button>
+        <div
+          class="fixed inset-x-0 bottom-0 z-[75] rounded-t-[22px] bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [box-shadow:var(--bd-shadow-lg)] md:hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Filtros de alimento"
+        >
+          <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-border-strong" aria-hidden="true"></div>
+          <div
+            class="flex flex-wrap justify-center gap-2"
+            role="group"
+            aria-label="Filtros rápidos de alimento"
+          >
+            <ng-container [ngTemplateOutlet]="chipsTpl" />
+          </div>
+        </div>
+      }
+
+      <ng-template #chipsTpl>
+        @for (filtro of filtrosRapidos(); track filtro.id) {
+          <button
+            type="button"
+            class="flex w-[62px] flex-none flex-col items-center justify-center gap-1 rounded-xl border px-1.5 py-2 text-center text-[10px] font-bold leading-tight transition-[transform,border-color,background-color,color] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+            [class]="
+              filtroRapido() === filtro.id
+                ? 'border-primary bg-primary-soft text-primary-strong scale-[1.05]'
+                : 'border-border bg-surface text-fg-muted hover:border-border-strong'
+            "
+            [attr.aria-pressed]="filtroRapido() === filtro.id"
+            (click)="selecionarFiltro(filtro.id); filtrosAbertos.set(false)"
+          >
+            <svg [lucideIcon]="filtro.icon" size="18" aria-hidden="true"></svg>
+            {{ filtro.label }}
+          </button>
+        }
+      </ng-template>
+
+      <div class="flex-1">
+        @if (!query()) {
+          <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
+            {{ catalogoRotulo() }}
+          </p>
+        }
+
+        @if (carregandoFoodsVisivel()) {
+          <vtp-loading-state tamanho="sm" titulo="Buscando alimentos" />
+        } @else if (catalogo().length) {
+          <div
+            class="grid grid-cols-2 gap-2 md:[grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]"
+          >
+            @for (food of catalogo(); track food.id) {
+              <vtp-food-pick-card
+                [food]="food"
+                [selecionado]="estaNoPrato(food)"
+                (pick)="escolher($event)"
+              />
+            }
+          </div>
+        } @else {
+          <p class="py-6 text-center text-[13px] text-fg-muted">
+            {{
+              query()
+                ? 'Nenhum alimento com esse nome.'
+                : filtroRapido()
+                  ? 'Nada por aqui ainda nessa categoria.'
+                  : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
+            }}
+          </p>
+        }
+
+        @if (paginacaoVisivel()) {
+          <vtp-pagination-controls
+            [pagina]="pagina()"
+            [totalRegistros]="totalRegistros()"
+            [tamanhoPagina]="tamanhoPagina"
+            [carregando]="carregandoFoods()"
+            (paginaChange)="mudarPagina($event)"
+          />
+        }
+
+        <div class="mt-4 overflow-hidden rounded-[13px] border border-border">
+          <h3
+            class="flex items-center gap-2 bg-primary px-3 py-2 text-[11.5px] font-extrabold text-primary-contrast"
+          >
+            <svg lucideUtensils size="14" aria-hidden="true"></svg>
+            {{ itens().length }} {{ itens().length === 1 ? 'alimento' : 'alimentos' }}
+            <span class="ml-auto tabular-nums">
+              {{ totais().caloria | number: '1.0-0' }} kcal
+            </span>
+          </h3>
+
+          <div class="bg-bg p-3">
+            @if (itens().length) {
+              @for (item of itens(); track item.foodId) {
+                <vtp-plate-row
+                  [item]="item"
+                  (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
+                  (remover)="tirar(item.foodId)"
+                />
+              }
+            } @else {
+              <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
+            }
+          </div>
+        </div>
+
+        <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
+          <label for="hora-consumo">Horário</label>
+          <input
+            id="hora-consumo"
+            class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
+            type="time"
+            [value]="hora()"
+            (change)="hora.set($any($event.target).value)"
+          />
+          <span>· sugerido por esta fase</span>
+        </div>
+      </div>
+    }
   } @else {
     <div class="flex flex-1 flex-col items-center py-4">
       <p class="mb-1 text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong">
@@ -289,3 +359,102 @@
     (avancar)="avancar()"
   />
 </section>
+
+@if (planoDialogAberto()) {
+  <!-- Classe `plano-modal`: só este modal recebe a largura maior (ver
+       styles do componente) — o de "Novo registro" acima fica no tamanho
+       padrão do bd-modal. -->
+  <bd-modal
+    class="plano-modal"
+    [open]="true"
+    (openChange)="onPlanoDialogChange($event)"
+    title="Escolher plano"
+    ariaLabel="Escolher plano"
+  >
+    <p class="m-0 mb-4 text-[13px] text-fg-muted">
+      A sugestão da carta passa a vir do plano que você escolher aqui.
+    </p>
+
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      @for (plano of planosDisponiveis(); track plano.id) {
+        <button
+          type="button"
+          class="relative flex min-w-0 flex-col items-center gap-2 rounded-[24px] border bg-surface p-3 text-center transition-colors sm:p-4"
+          [class]="
+            planoSelecionadoHero()?.id === plano.id
+              ? 'border-primary bg-primary-soft/45'
+              : 'border-border'
+          "
+          [attr.aria-pressed]="planoSelecionadoHero()?.id === plano.id"
+          (click)="selecionarPlanoHero(plano)"
+        >
+          @if (planoSelecionadoHero()?.id === plano.id) {
+            <span
+              class="absolute right-2.5 top-2.5 grid size-5 place-items-center rounded-full bg-primary text-primary-contrast"
+            >
+              <svg lucideCheck size="12" aria-hidden="true"></svg>
+            </span>
+          }
+
+          <span
+            class="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-strong sm:text-xs"
+            >{{ formatStyle(plano.preferences.style) }}</span
+          >
+
+          <div class="relative">
+            <div
+              class="grid size-24 shrink-0 place-items-center rounded-full sm:size-28 [box-shadow:0_0_0_5px_var(--bd-surface),0_0_22px_-6px_var(--bd-accent)]"
+              [style.background]="ringBackground(plano)"
+            >
+              <span class="absolute inset-[10px] rounded-full bg-surface sm:inset-[12px]"></span>
+              <span class="relative flex flex-col items-center leading-none">
+                <strong class="text-lg font-extrabold tabular-nums sm:text-xl">{{
+                  plano.totals.caloria | number: '1.0-0'
+                }}</strong>
+                <span class="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-fg-muted"
+                  >kcal</span
+                >
+              </span>
+            </div>
+            <span
+              class="absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border-[3px] border-surface bg-accent text-xs font-extrabold text-primary-contrast sm:size-8"
+              [attr.title]="plano.meals.length + ' refeições'"
+              >{{ plano.meals.length }}</span
+            >
+          </div>
+
+          <h3
+            class="m-0 line-clamp-2 min-h-10 max-w-full break-words text-sm font-bold leading-5 sm:text-base"
+            [attr.title]="plano.titulo"
+          >
+            {{ plano.titulo }}
+          </h3>
+
+          <div class="flex flex-wrap items-baseline justify-center gap-1.5">
+            <span
+              class="inline-flex items-baseline gap-1 rounded-full bg-primary-soft px-2 py-1 text-[10px] font-bold text-primary-strong"
+            >
+              <strong class="text-xs tabular-nums"
+                >{{ plano.totals.proteina | number: '1.0-0' }}g</strong
+              >Prot
+            </span>
+            <span
+              class="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2 py-1 text-[10px] font-bold text-accent"
+            >
+              <strong class="text-xs tabular-nums"
+                >{{ plano.totals.carbo | number: '1.0-0' }}g</strong
+              >Carbo
+            </span>
+            <span
+              class="inline-flex items-baseline gap-1 rounded-full bg-fat/15 px-2 py-1 text-[10px] font-bold text-fat"
+            >
+              <strong class="text-xs tabular-nums"
+                >{{ plano.totals.gordura | number: '1.0-0' }}g</strong
+              >Gord
+            </span>
+          </div>
+        </button>
+      }
+    </div>
+  </bd-modal>
+}

@@ -67,50 +67,14 @@
           </button>
         </div>
         <div class="sort-and-view">
-          <div class="sort-control">
-            <button
-              class="sort-criterion"
-              type="button"
-              [attr.aria-expanded]="ordenacaoAberta()"
-              aria-haspopup="menu"
-              (click)="toggleOrdenacao()"
-            >
-              <span>Ordenar</span><b>{{ ordenacaoAtual().label }}</b
-              ><svg lucideChevronDown size="14" aria-hidden="true"></svg>
-            </button>
-            <button
-              class="sort-direction"
-              type="button"
-              [attr.aria-label]="direcaoOrdenacao()"
-              [attr.title]="direcaoOrdenacao()"
-              (click)="inverterOrdenacao()"
-            >
-              @if (sortOrder() === 1) {
-                <svg lucideArrowUp size="16" aria-hidden="true"></svg>
-              } @else {
-                <svg lucideArrowDown size="16" aria-hidden="true"></svg>
-              }
-            </button>
-            @if (ordenacaoAberta()) {
-              <div class="sort-options" role="menu" aria-label="Ordenar alimentos por">
-                <p>Ordenar por</p>
-                @for (option of sortOptions; track option.field) {
-                  <button
-                    type="button"
-                    role="menuitemradio"
-                    [attr.aria-checked]="sortField() === option.field"
-                    [class.active]="sortField() === option.field"
-                    (click)="selecionarOrdenacao(option.field)"
-                  >
-                    {{ option.label }}
-                    @if (sortField() === option.field) {
-                      <span>{{ direcaoOrdenacao() }}</span>
-                    }
-                  </button>
-                }
-              </div>
-            }
-          </div>
+          <vtp-sort-control
+            [opcoes]="sortOptions"
+            [campo]="sortField()"
+            [ordem]="sortOrder()"
+            [direcaoLabel]="direcaoOrdenacao()"
+            (campoChange)="selecionarOrdenacao($event)"
+            (ordemChange)="definirOrdem($event)"
+          />
           <vtp-view-mode-toggle
             [options]="viewModeOptions"
             [value]="viewMode()"
@@ -174,60 +138,12 @@
         </div>
       }
 
-      @if (totalPaginas() > 1) {
-        <footer
-          class="food-pagination"
-          [class.food-pagination--loading]="carregando()"
-          [attr.aria-busy]="carregando()"
-        >
-          <div class="food-pagination__summary">
-            <span>Resultados</span>
-            <p>
-              Exibindo <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> de
-              <b>{{ totalRegistros() }}</b> alimentos
-            </p>
-          </div>
-          <nav class="food-pagination__navigation" aria-label="Paginação de alimentos">
-            <button
-              type="button"
-              class="food-pagination__step"
-              [disabled]="pagina() === 1 || carregando()"
-              (click)="irParaPagina(pagina() - 1)"
-            >
-              <svg lucideChevronLeft size="16" aria-hidden="true"></svg><span>Anterior</span>
-            </button>
-            <div class="food-pagination__pages" aria-label="Selecionar página">
-              @for (item of itensPaginacao(); track $index) {
-                @if (item === 'ellipsis') {
-                  <span aria-hidden="true">…</span>
-                } @else {
-                  <button
-                    type="button"
-                    [class.active]="item === pagina()"
-                    [attr.aria-current]="item === pagina() ? 'page' : null"
-                    [attr.aria-label]="'Página ' + item"
-                    [disabled]="carregando()"
-                    (click)="irParaPagina(item)"
-                  >
-                    {{ item }}
-                  </button>
-                }
-              }
-            </div>
-            <span class="food-pagination__status"
-              >Página {{ pagina() }} de {{ totalPaginas() }}</span
-            >
-            <button
-              type="button"
-              class="food-pagination__step food-pagination__step--next"
-              [disabled]="pagina() === totalPaginas() || carregando()"
-              (click)="irParaPagina(pagina() + 1)"
-            >
-              <span>Próxima</span><svg lucideChevronRight size="16" aria-hidden="true"></svg>
-            </button>
-          </nav>
-        </footer>
-      }
+      <vtp-pagination-controls
+        [pagina]="pagina()"
+        [totalRegistros]="totalRegistros()"
+        [carregando]="carregando()"
+        (paginaChange)="irParaPagina($event)"
+      />
     </div>
   </div>
 
@@ -268,14 +184,6 @@
         (limpar)="limparFiltros()"
       />
     </aside>
-  }
-
-  @if (ordenacaoAberta()) {
-    <button
-      class="sort-scrim"
-      aria-label="Fechar opções de ordenação"
-      (click)="fecharOrdenacao()"
-    ></button>
   }
 
   @if (detalhe(); as food) {
