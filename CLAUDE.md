@@ -41,7 +41,15 @@ primary`), ou arbitrária (`text-[11px]`, `grid-cols-[224px_minmax(0,1fr)_296px]
   suficiente: `strict`, `noImplicitOverride`, `noPropertyAccessFromIndexSignature`,
   `strictTemplates`, `strictInjectionParameters`).
 - Testes: Jasmine/Karma (padrão do `ng new`, mesmo setup do portfólio).
-- Só PT-BR por enquanto — sem i18n multi-idioma.
+- **i18n via `@jsverse/transloco`** (pt-BR/en-US, ver "i18n" abaixo) — não é mais só PT-BR.
+- **Toda subscription de chamada à API é encerrada ao sair do componente** — nunca deixar um
+  `.subscribe()` órfão. Padrão do projeto: `Subject<void>` privado (`destruido`), `implements
+OnDestroy`, `ngOnDestroy() { this.destruido.next(); this.destruido.complete(); }`, e
+  `takeUntil(this.destruido)` em **todo** `.pipe()` antes do `.subscribe()` — mesmo em chamadas
+  que parecem rápidas (um `POST` que só demora um pouco mais que a navegação do usuário ainda
+  escreve num signal de componente destruído se não for cortado). Referência:
+  `EntryComposerComponent`, `DietaFormComponent`. Não usar `takeUntilDestroyed()` (built-in do
+  Angular) — o projeto já tem o padrão manual estabelecido, não misturar os dois estilos.
 
 ## Como rodar
 
@@ -327,6 +335,41 @@ usar sempre essas funções em vez de montar strings de URL na mão.
   recurso de outro por ID.
 - Os endpoints legados `/food` foram aposentados pelo catálogo global `/foods`; não reintroduzir
   alimentos por usuário nem a cópia da TACO no cadastro.
+
+## i18n
+
+Dois locales: `pt-BR` (default) e `en-US`, via `@jsverse/transloco`.
+
+- **Mecanismo**: `LanguageService` (`core/i18n/language.service.ts`) guarda o locale ativo num
+  signal (`locale`, readonly) e no `localStorage` (`vitality-language`); `setLanguage()` chama
+  `TranslocoService.setActiveLang()`. `localeInterceptor` (`core/i18n/locale.interceptor.ts`) lê o
+  `localStorage` e manda `Accept-Language: pt-BR|en-US` em toda chamada pra `apiBaseUrl` — o
+  backend (`SetLocale` middleware) usa esse header pra resolver `app()->getLocale()` e traduzir o
+  que devolve (nome/detalhe/categoria de alimento, nome de refeição, mensagens de validação, texto
+  gerado por IA no plano alimentar). Trocar o idioma **não recarrega a página** — é só o signal
+  mudando — então nada que já foi buscado antes da troca se retraduz sozinho.
+- **Textos estáticos da UI**: `public/i18n/{pt-BR,en-US}.json`, chaves lidas via `TranslocoPipe`
+  (`{{ 'namespace.chave' | transloco }}`, reativo à troca de idioma) ou, quando o valor precisa
+  virar array/string resolvida em TS (loading-overlay, toasts, `StepTrackComponent[steps]`),
+  `TranslocoService.translate()` dentro de um `computed()` que lê `language.locale()` no topo —
+  só assim o `computed` reroda quando o locale muda (ver `PageTitleComponent`/`LoadingStateComponent`
+  pro padrão mais antigo — de-para de texto literal pra chave — e `EstiloStepComponent`/
+  `DietaFormComponent` pro padrão novo, direto por chave).
+- **Dado já buscado não se retraduz sozinho** (achado implementando Dietas, 2026-08-18): qualquer signal preenchido por uma resposta da API (ex. `draft()` com o plano
+  alimentar gerado — nomes de refeição e de alimento embutidos no JSON) fica **congelado** no
+  idioma que estava ativo no momento da chamada. Trocar o idioma depois não muda o que já está na
+  tela. Onde isso importa (telas que mantêm dado de catálogo/plano vivo na tela por muito tempo),
+  reagir à troca com um `effect()` que recarrega/retraduz:
+  - **Lista simples** (`AlimentosListComponent`): só re-chama `load()`/`loadGrupos()` — a API já
+    devolve tudo nas descrições certas, não tem "estado" a preservar.
+  - **Plano alimentar já gerado** (`DietaFormComponent`): recarregar do zero regeneraria a
+    composição (outros alimentos, não só outro idioma) — errado. O backend expõe
+    `POST /meal-plans/preview/refresh-locale` (`MealPlanService.refreshLocale()`), que retraduz o
+    **mesmo** draft (mesmos alimentos/quantidades/IDs, só o texto de exibição) sem chamar a IA de
+    novo. `DietaFormComponent` chama isso só quando `mode()==='preview'` e existe `draft()`.
+  - Todo `effect()` de troca de idioma pula o primeiro disparo (roda uma vez ao montar o
+    componente) com uma flag (`idiomaInicializado`) — senão duplica a carga inicial que o
+    `constructor()` já dispara.
 
 ## Roadmap de implementação (Plano B)
 

@@ -189,5 +189,80 @@
     "wrongPassword": "Incorrect password.",
     "accountNotFound": "We couldn't find an account with this email.",
     "genericError": "We couldn't sign you in right now. Try again."
+  },
+  "dietPlan": {
+    "newPlanContext": "New plan",
+    "stepsLabel": "New plan steps",
+    "loadingHint": "Fetching your goal and preferences.",
+    "defaultTitle": "My daily plan",
+    "adjustPreferences": "Adjust preferences",
+    "calorieReference": "We'll use your goal of {{calories}} kcal as a reference.",
+    "planNameLabel": "Plan name",
+    "confirmNameLabel": "Confirm name",
+    "cancelNameEditLabel": "Cancel name editing",
+    "editNameLabel": "Edit plan name",
+    "saving": "Saving…",
+    "unsavedChanges": "Unsaved changes",
+    "planGenerated": "Plan generated",
+    "disclaimer": "This plan is a general suggestion and does not replace guidance from a nutritionist, especially in the case of clinical conditions.",
+    "dailyMealsLabel": "Meals of the day",
+    "previousMealLabel": "Previous meal",
+    "nextMealLabel": "Next meal",
+    "mealOfTotal": "Meal {{current}} of {{total}}",
+    "stepProgress": "Step {{current}} of {{total}}",
+    "optionalSuffix": " · optional",
+    "mealsCount": "{{count}} meals",
+    "mealsPerDay": "{{count}} per day",
+    "searchFoodPlaceholder": "Search for a food",
+    "nothing": "None",
+    "itemSingular": " item",
+    "itemPlural": " items",
+    "macroShort": { "protein": "Prot", "carbs": "Carbs", "fat": "Fat" },
+    "styleLabels": { "rapido": "Fast", "caseiro": "Homemade", "economico": "Budget" },
+    "reviewLabels": { "meals": "Meals", "style": "Style", "avoiding": "Avoiding" },
+    "generating": {
+      "step1": "Choosing foods for your day…",
+      "step2": "Balancing protein, carbs and fat…",
+      "step3": "Fitting them into meal times…",
+      "step4": "Checking it matches your goal…"
+    },
+    "steps": {
+      "meals": {
+        "title": "Meals",
+        "description": "How many per day",
+        "question": "How many meals do you usually have?",
+        "hint": "This sets how many dishes will be in your day."
+      },
+      "style": {
+        "title": "Style",
+        "description": "What helps your routine",
+        "question": "Which style helps your routine the most?",
+        "hint": "This only adjusts convenience, prep, and cost among meals that already make sense. It doesn't change your goal or the dish's coherence.",
+        "legend": "Fast favors simple assemblies; Homemade, traditional dishes; Budget, affordable foods."
+      },
+      "avoid": {
+        "title": "Avoid",
+        "description": "Optional",
+        "question": "Any foods to avoid?",
+        "hint": "You can skip this — only fill it in if you already know what you don't like."
+      },
+      "review": {
+        "title": "Review",
+        "description": "Check before generating",
+        "question": "Check before generating",
+        "hint": "You can go back to any question via the track above."
+      }
+    },
+    "toast": {
+      "saved": "Meal plan saved.",
+      "mealRegenerated": "Meal reorganized with a new combination.",
+      "itemReplaced": "Food replaced while keeping the meal's goal.",
+      "dayRecreated": "New day generated.",
+      "undone": "Last change undone.",
+      "loadPreferencesError": "We couldn't load your preferences right now.",
+      "loadForEditError": "We couldn't open this plan for editing."
+    },
+    "confirmRecreate": "Generating a new day recreates ALL meals from scratch. Any manual swap made in them will be replaced or lost. Continue?",
+    "swapFailureFallback": "We couldn't find a single swap that keeps this meal close to the goal. Reorganize the whole meal to find a more coherent combination."
   }
 }

@@ -6,13 +6,14 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 
 @Component({
   selector: 'vtp-refeicoes-step',
   standalone: true,
-  imports: [StepFooterComponent],
+  imports: [StepFooterComponent, TranslocoPipe],
   templateUrl: './refeicoes-step.component.html',
   host: { class: 'card flex flex-col gap-1.5 p-6 md:p-8 text-center animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +22,7 @@ export class RefeicoesStepComponent implements OnInit {
   readonly valorInicial = input.required<3 | 4 | 5>();
   readonly concluido = output<3 | 4 | 5>();
 
+  protected readonly opcoes: readonly (3 | 4 | 5)[] = [3, 4, 5];
   protected readonly selecionado = signal<3 | 4 | 5>(4);
 
   ngOnInit(): void {

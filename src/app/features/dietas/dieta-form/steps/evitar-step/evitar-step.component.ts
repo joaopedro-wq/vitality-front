@@ -7,6 +7,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 import { AlimentoService } from '../../../../../services/alimento.service';
@@ -15,7 +16,7 @@ import type { Alimento } from '../../../../../core/models/alimento.model';
 @Component({
   selector: 'vtp-evitar-step',
   standalone: true,
-  imports: [StepFooterComponent],
+  imports: [StepFooterComponent, TranslocoPipe],
   templateUrl: './evitar-step.component.html',
   host: { class: 'card flex flex-col gap-1.5 p-6 md:p-8 text-center animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,

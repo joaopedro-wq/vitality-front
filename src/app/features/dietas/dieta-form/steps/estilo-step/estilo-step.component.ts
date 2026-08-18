@@ -2,33 +2,42 @@ import {
   ChangeDetectionStrategy,
   Component,
   type OnInit,
+  computed,
+  inject,
   input,
   output,
   signal,
 } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
+import { LanguageService } from '../../../../../core/i18n/language.service';
 import type { MealPlanStyle } from '../../../../../core/models/meal-plan.model';
 
-/** Passo 2 do quiz — qual estilo (rápido/caseiro/econômico) ajuda mais na rotina. */
 @Component({
   selector: 'vtp-estilo-step',
   standalone: true,
-  imports: [StepFooterComponent],
+  imports: [StepFooterComponent, TranslocoPipe],
   templateUrl: './estilo-step.component.html',
   host: { class: 'card flex flex-col gap-1.5 p-6 md:p-8 text-center animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EstiloStepComponent implements OnInit {
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
+
   readonly valorInicial = input.required<MealPlanStyle>();
   readonly voltar = output<void>();
   readonly concluido = output<MealPlanStyle>();
 
-  protected readonly opcoes: { value: MealPlanStyle; label: string }[] = [
-    { value: 'rapido', label: 'Rápido' },
-    { value: 'caseiro', label: 'Caseiro' },
-    { value: 'economico', label: 'Econômico' },
-  ];
+  protected readonly opcoes = computed<{ value: MealPlanStyle; label: string }[]>(() => {
+    this.language.locale();
+
+    return (['rapido', 'caseiro', 'economico'] as const).map((value) => ({
+      value,
+      label: this.transloco.translate(`dietPlan.styleLabels.${value}`),
+    }));
+  });
 
   protected readonly selecionado = signal<MealPlanStyle>('rapido');
 

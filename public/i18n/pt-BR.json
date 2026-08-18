@@ -189,5 +189,80 @@
     "wrongPassword": "Senha incorreta.",
     "accountNotFound": "Não encontramos uma conta com este e-mail.",
     "genericError": "Não foi possível entrar agora. Tente novamente."
+  },
+  "dietPlan": {
+    "newPlanContext": "Novo plano",
+    "stepsLabel": "Etapas do novo plano",
+    "loadingHint": "Buscando sua meta e suas preferências.",
+    "defaultTitle": "Meu plano do dia",
+    "adjustPreferences": "Ajustar preferências",
+    "calorieReference": "Usaremos sua meta de {{calories}} kcal como referência.",
+    "planNameLabel": "Nome do plano",
+    "confirmNameLabel": "Confirmar nome",
+    "cancelNameEditLabel": "Cancelar edição do nome",
+    "editNameLabel": "Editar nome do plano",
+    "saving": "Salvando…",
+    "unsavedChanges": "Alterações não salvas",
+    "planGenerated": "Plano gerado",
+    "disclaimer": "Este plano é uma sugestão geral e não substitui o acompanhamento de um nutricionista, principalmente em caso de condições clínicas.",
+    "dailyMealsLabel": "Refeições do dia",
+    "previousMealLabel": "Refeição anterior",
+    "nextMealLabel": "Próxima refeição",
+    "mealOfTotal": "Refeição {{current}} de {{total}}",
+    "stepProgress": "Passo {{current}} de {{total}}",
+    "optionalSuffix": " · opcional",
+    "mealsCount": "{{count}} refeições",
+    "mealsPerDay": "{{count}} por dia",
+    "searchFoodPlaceholder": "Busque um alimento",
+    "nothing": "Nada",
+    "itemSingular": " item",
+    "itemPlural": " itens",
+    "macroShort": { "protein": "Prot", "carbs": "Carbo", "fat": "Gord" },
+    "styleLabels": { "rapido": "Rápido", "caseiro": "Caseiro", "economico": "Econômico" },
+    "reviewLabels": { "meals": "Refeições", "style": "Estilo", "avoiding": "Evitando" },
+    "generating": {
+      "step1": "Escolhendo alimentos para o seu dia…",
+      "step2": "Equilibrando proteína, carbo e gordura…",
+      "step3": "Encaixando nos horários das refeições…",
+      "step4": "Conferindo se bate com a sua meta…"
+    },
+    "steps": {
+      "meals": {
+        "title": "Refeições",
+        "description": "Quantas por dia",
+        "question": "Quantas refeições você costuma fazer?",
+        "hint": "Isso define quantos pratos vão entrar no seu dia."
+      },
+      "style": {
+        "title": "Estilo",
+        "description": "O que ajuda na rotina",
+        "question": "Qual estilo ajuda mais na sua rotina?",
+        "hint": "Isso ajusta somente praticidade, preparo e custo entre refeições que já fazem sentido. Não muda sua meta nem a coerência do prato.",
+        "legend": "Rápido prioriza montagens simples; Caseiro, pratos tradicionais; Econômico, alimentos acessíveis."
+      },
+      "avoid": {
+        "title": "Evitar",
+        "description": "Opcional",
+        "question": "Algum alimento pra evitar?",
+        "hint": "Pode pular — só entra se você já sabe do que não gosta."
+      },
+      "review": {
+        "title": "Revisar",
+        "description": "Confere antes de gerar",
+        "question": "Confere antes de gerar",
+        "hint": "Pode voltar em qualquer pergunta pela trilha acima."
+      }
+    },
+    "toast": {
+      "saved": "Plano alimentar salvo.",
+      "mealRegenerated": "Refeição reorganizada com uma nova combinação.",
+      "itemReplaced": "Alimento substituído mantendo a meta da refeição.",
+      "dayRecreated": "Novo dia gerado.",
+      "undone": "Última alteração desfeita.",
+      "loadPreferencesError": "Não foi possível carregar suas preferências agora.",
+      "loadForEditError": "Não foi possível abrir esse plano para edição."
+    },
+    "confirmRecreate": "Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?",
+    "swapFailureFallback": "Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente."
   }
 }

@@ -57,6 +57,7 @@ export const apiPaths = {
   mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
   mealPlanRecreate: () => `${environment.apiBaseUrl}/meal-plans/preview/recreate`,
   mealPlanUndo: () => `${environment.apiBaseUrl}/meal-plans/preview/undo`,
+  mealPlanRefreshLocale: () => `${environment.apiBaseUrl}/meal-plans/preview/refresh-locale`,
   mealPlanMealPreview: (position: number) =>
     `${environment.apiBaseUrl}/meal-plans/preview/meal/${position}`,
   mealPlanItemSuggestions: (position: number, foodId: number) =>

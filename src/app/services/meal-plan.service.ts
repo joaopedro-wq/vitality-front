@@ -69,6 +69,12 @@ export class MealPlanService {
       .pipe(map((res) => res.data));
   }
 
+  refreshLocale(draftId: string): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanRefreshLocale(), { draft_id: draftId })
+      .pipe(map((res) => res.data));
+  }
+
   recreate(draftId: string): Observable<MealPlanDraft> {
     return this.http
       .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanRecreate(), { draft_id: draftId })

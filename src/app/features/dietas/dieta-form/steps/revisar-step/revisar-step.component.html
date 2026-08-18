@@ -1,29 +1,32 @@
 <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
-  Passo 4 de 4
+  {{ 'dietPlan.stepProgress' | transloco: { current: 4, total: 4 } }}
 </p>
-<h2 class="m-0 mt-1.5 text-xl font-bold tracking-tight">Confere antes de gerar</h2>
+<h2 class="m-0 mt-1.5 text-xl font-bold tracking-tight">
+  {{ 'dietPlan.steps.review.question' | transloco }}
+</h2>
 <p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
-  Pode voltar em qualquer pergunta pela trilha acima.
+  {{ 'dietPlan.steps.review.hint' | transloco }}
 </p>
 <div class="mx-auto mt-6 grid w-full max-w-[420px] gap-2.5 text-left">
   <div
     class="flex items-center justify-between border-b border-dashed border-border-strong pb-2.5 text-sm"
   >
-    <span class="text-fg-muted">Refeições</span>
-    <strong>{{ mealCount() }} por dia</strong>
+    <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.meals' | transloco }}</span>
+    <strong>{{ 'dietPlan.mealsPerDay' | transloco: { count: mealCount() } }}</strong>
   </div>
   <div
     class="flex items-center justify-between border-b border-dashed border-border-strong pb-2.5 text-sm"
   >
-    <span class="text-fg-muted">Estilo</span>
+    <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.style' | transloco }}</span>
     <strong>{{ formatStyle(style()) }}</strong>
   </div>
   <div class="flex items-center justify-between text-sm">
-    <span class="text-fg-muted">Evitando</span>
+    <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.avoiding' | transloco }}</span>
     <strong>{{
       excluded().length
-        ? excluded().length + (excluded().length === 1 ? ' item' : ' itens')
-        : 'Nada'
+        ? excluded().length +
+          ((excluded().length === 1 ? 'dietPlan.itemSingular' : 'dietPlan.itemPlural') | transloco)
+        : ('dietPlan.nothing' | transloco)
     }}</strong>
   </div>
 </div>

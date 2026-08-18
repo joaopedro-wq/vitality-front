@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  OnDestroy,
   computed,
   effect,
   inject,
@@ -31,7 +32,8 @@ import {
   type LucideIcon,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, forkJoin, switchMap } from 'rxjs';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { Subject, finalize, forkJoin, switchMap, takeUntil } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
@@ -48,6 +50,7 @@ import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import { MetaService } from '../../../services/meta.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
+import { LanguageService } from '../../../core/i18n/language.service';
 import type { Alimento } from '../../../core/models/alimento.model';
 import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
 import type {
@@ -62,13 +65,6 @@ import { RefeicoesStepComponent } from './steps/refeicoes-step/refeicoes-step.co
 import { EstiloStepComponent } from './steps/estilo-step/estilo-step.component';
 import { EvitarStepComponent } from './steps/evitar-step/evitar-step.component';
 import { RevisarStepComponent } from './steps/revisar-step/revisar-step.component';
-
-const MENSAGENS_GERACAO: string[] = [
-  'Escolhendo alimentos para o seu dia…',
-  'Equilibrando proteína, carbo e gordura…',
-  'Encaixando nos horários das refeições…',
-  'Conferindo se bate com a sua meta…',
-];
 
 const TIMES: Record<3 | 4 | 5, string[]> = {
   3: ['08:00', '12:30', '19:30'],
@@ -88,21 +84,17 @@ const ICONES_PERIODO: ReadonlyArray<readonly [limite: number, icone: LucideIcon]
  * Ícone por tipo de refeição — mais coerente com o momento do dia do que só o
  * horário (ex.: "Lanche da tarde" às 16h vira maçã, não sol de tarde genérico).
  * Casa por palavra-chave no nome; refeição sem nome reconhecido cai no
- * fallback por horário (`ICONES_PERIODO`).
+ * fallback por horário (`ICONES_PERIODO`). `meal.descricao` vem da API já
+ * traduzida pro locale ativo (`lang/{pt-BR,en-US}/messages.php`), então cada
+ * regra cobre a palavra em português e em inglês — casar só em português
+ * faria o ícone cair sempre no fallback genérico quando o app está em inglês.
  */
 const ICONES_REFEICAO: ReadonlyArray<readonly [palavras: string[], icone: LucideIcon]> = [
-  [['café', 'manhã'], LucideCoffee],
-  [['almoço'], LucideUtensils],
-  [['lanche'], LucideApple],
-  [['jantar'], LucideUtensilsCrossed],
-  [['ceia'], LucideMoonStar],
-];
-
-const PASSOS_FORM: StepTrackItem[] = [
-  { titulo: 'Refeições', descricao: 'Quantas por dia' },
-  { titulo: 'Estilo', descricao: 'O que ajuda na rotina' },
-  { titulo: 'Evitar', descricao: 'Opcional' },
-  { titulo: 'Revisar', descricao: 'Confere antes de gerar' },
+  [['café', 'manhã', 'breakfast'], LucideCoffee],
+  [['almoço', 'lunch'], LucideUtensils],
+  [['lanche', 'snack'], LucideApple],
+  [['jantar', 'dinner'], LucideUtensilsCrossed],
+  [['ceia', 'evening'], LucideMoonStar],
 ];
 
 @Component({
@@ -129,23 +121,40 @@ const PASSOS_FORM: StepTrackItem[] = [
     EstiloStepComponent,
     EvitarStepComponent,
     RevisarStepComponent,
+    TranslocoPipe,
   ],
   templateUrl: './dieta-form.component.html',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DietaFormComponent {
+export class DietaFormComponent implements OnDestroy {
   private readonly plansService = inject(MealPlanService);
   private readonly metaService = inject(MetaService);
   private readonly diaryDraft = inject(MealPlanDiaryDraftService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly toastr = inject(ToastrService);
+  private readonly transloco = inject(TranslocoService);
+  private readonly language = inject(LanguageService);
+  /** Regra do sistema: toda subscription de chamada à API é encerrada ao sair do
+   * componente — `takeUntil(this.destruido)` em cada `.subscribe()`, mesmo padrão
+   * de `EntryComposerComponent`. Sem isso, uma resposta que chega depois do usuário
+   * navegar pra outra tela ainda escreve em signals de um componente morto. */
+  private readonly destruido = new Subject<void>();
 
   protected readonly loading = signal(true);
   protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly generating = signal(false);
-  protected readonly mensagensGeracao = MENSAGENS_GERACAO;
+  protected readonly mensagensGeracao = computed<string[]>(() => {
+    this.language.locale();
+
+    return [
+      this.transloco.translate('dietPlan.generating.step1'),
+      this.transloco.translate('dietPlan.generating.step2'),
+      this.transloco.translate('dietPlan.generating.step3'),
+      this.transloco.translate('dietPlan.generating.step4'),
+    ];
+  });
   protected readonly saving = signal(false);
   protected readonly regeneratingMeal = signal<number | null>(null);
   protected readonly suggesting = signal(false);
@@ -155,14 +164,21 @@ export class DietaFormComponent {
   protected readonly draft = signal<MealPlanDraft | null>(null);
   protected readonly mealCount = signal<3 | 4 | 5>(4);
   protected readonly style = signal<MealPlanStyle>('rapido');
-  protected readonly title = signal('Meu plano do dia');
+  protected readonly title = signal('');
   protected readonly excluded = signal<Alimento[]>([]);
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
   protected readonly swapFailureMessage = signal<string | null>(null);
   protected readonly pratoAberto = signal<number | null>(null);
   protected readonly passo = signal(0);
-  protected readonly passosForm = PASSOS_FORM;
+  protected readonly passosForm = computed<StepTrackItem[]>(() => {
+    this.language.locale();
+
+    return (['meals', 'style', 'avoid', 'review'] as const).map((step) => ({
+      titulo: this.transloco.translate(`dietPlan.steps.${step}.title`),
+      descricao: this.transloco.translate(`dietPlan.steps.${step}.description`),
+    }));
+  });
   protected readonly editando = signal(false);
   protected readonly planoEmEdicaoId = signal<number | null>(null);
 
@@ -195,6 +211,10 @@ export class DietaFormComponent {
     };
   });
 
+  /** `effect()` roda uma vez na inicialização também — pula o primeiro disparo pra
+   * não tentar retraduzir um draft que ainda nem existe. */
+  private idiomaInicializado = false;
+
   constructor() {
     this.iniciar();
 
@@ -205,6 +225,38 @@ export class DietaFormComponent {
         input?.select();
       }
     });
+
+    // A API traduz descricao/detalhe_exibicao/meal.descricao pelo Accept-Language
+    // enviado a cada chamada — mas um plano já gerado fica com esse texto congelado
+    // no idioma de quando foi buscado. Trocar o idioma vendo uma prévia ou editando
+    // um plano precisa retraduzir o draft já carregado, sem regenerar a composição
+    // (mesmos alimentos/quantidades/IDs — só o texto de exibição muda).
+    effect(() => {
+      this.language.locale();
+      if (!this.idiomaInicializado) {
+        this.idiomaInicializado = true;
+
+        return;
+      }
+      this.refreshDraftLocale();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destruido.next();
+    this.destruido.complete();
+  }
+
+  private refreshDraftLocale(): void {
+    const draft = this.draft();
+    if (this.mode() !== 'preview' || !draft) return;
+    this.plansService
+      .refreshLocale(draft.draft_id)
+      .pipe(takeUntil(this.destruido))
+      .subscribe({
+        next: (refreshed) => this.draft.set(refreshed),
+        error: () => undefined,
+      });
   }
 
   protected iniciarEdicaoNome(): void {
@@ -301,8 +353,11 @@ export class DietaFormComponent {
     this.generating.set(true);
     this.plansService
       .saveProfile(preferences)
-      .pipe(switchMap(() => this.plansService.preview(preferences)))
-      .pipe(finalize(() => this.generating.set(false)))
+      .pipe(
+        switchMap(() => this.plansService.preview(preferences)),
+        finalize(() => this.generating.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (draft) => {
           this.draft.set(draft);
@@ -324,14 +379,19 @@ export class DietaFormComponent {
     const request = planoId
       ? this.plansService.update(planoId, { titulo, draft_id: draft.draft_id })
       : this.plansService.save({ titulo, draft_id: draft.draft_id });
-    request.pipe(finalize(() => this.saving.set(false))).subscribe({
-      next: () => {
-        this.dirty.set(false);
-        this.toastr.success('Plano alimentar salvo.');
-        this.router.navigateByUrl('/dietas');
-      },
-      error: () => undefined,
-    });
+    request
+      .pipe(
+        finalize(() => this.saving.set(false)),
+        takeUntil(this.destruido),
+      )
+      .subscribe({
+        next: () => {
+          this.dirty.set(false);
+          this.toastr.success(this.transloco.translate('dietPlan.toast.saved'));
+          this.router.navigateByUrl('/dietas');
+        },
+        error: () => undefined,
+      });
   }
 
   protected regenerateMeal(position: number): void {
@@ -340,14 +400,17 @@ export class DietaFormComponent {
     this.regeneratingMeal.set(position);
     this.plansService
       .regenerateMeal(current.draft_id, position)
-      .pipe(finalize(() => this.regeneratingMeal.set(null)))
+      .pipe(
+        finalize(() => this.regeneratingMeal.set(null)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (replacement) => {
           this.draft.set(replacement);
           this.swapTarget.set(null);
           this.swapFailureMessage.set(null);
           this.dirty.set(true);
-          this.toastr.success('Refeição reorganizada com uma nova combinação.');
+          this.toastr.success(this.transloco.translate('dietPlan.toast.mealRegenerated'));
         },
         error: () => undefined,
       });
@@ -373,7 +436,10 @@ export class DietaFormComponent {
     this.swapFailureMessage.set(null);
     this.plansService
       .itemSuggestions(draft.draft_id, target.meal.position, target.item.food_id)
-      .pipe(finalize(() => this.suggesting.set(false)))
+      .pipe(
+        finalize(() => this.suggesting.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (suggestions) => this.suggestions.set(suggestions),
         error: (error) => this.swapFailureMessage.set(this.extractSwapFailureMessage(error)),
@@ -393,13 +459,16 @@ export class DietaFormComponent {
         suggestion.food_id,
         suggestion.quantity,
       )
-      .pipe(finalize(() => this.applyingChange.set(false)))
+      .pipe(
+        finalize(() => this.applyingChange.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (updated) => {
           this.draft.set(updated);
           this.dirty.set(true);
           this.closeSwap();
-          this.toastr.success('Alimento substituído mantendo a meta da refeição.');
+          this.toastr.success(this.transloco.translate('dietPlan.toast.itemReplaced'));
         },
         error: () => undefined,
       });
@@ -414,28 +483,26 @@ export class DietaFormComponent {
       if (typeof error.error?.message === 'string') return error.error.message;
     }
 
-    return 'Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente.';
+    return this.transloco.translate('dietPlan.swapFailureFallback');
   }
 
   protected recreateDay(): void {
     const current = this.draft();
     if (!current || this.applyingChange()) return;
-    if (
-      !window.confirm(
-        'Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?',
-      )
-    )
-      return;
+    if (!window.confirm(this.transloco.translate('dietPlan.confirmRecreate'))) return;
     this.applyingChange.set(true);
     this.plansService
       .recreate(current.draft_id)
-      .pipe(finalize(() => this.applyingChange.set(false)))
+      .pipe(
+        finalize(() => this.applyingChange.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (replacement) => {
           this.draft.set(replacement);
           this.dirty.set(true);
           this.closeSwap();
-          this.toastr.success('Novo dia gerado.');
+          this.toastr.success(this.transloco.translate('dietPlan.toast.dayRecreated'));
         },
         error: () => undefined,
       });
@@ -447,13 +514,16 @@ export class DietaFormComponent {
     this.applyingChange.set(true);
     this.plansService
       .undo(current.draft_id)
-      .pipe(finalize(() => this.applyingChange.set(false)))
+      .pipe(
+        finalize(() => this.applyingChange.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (draft) => {
           this.draft.set(draft);
           this.dirty.set(true);
           this.closeSwap();
-          this.toastr.success('Última alteração desfeita.');
+          this.toastr.success(this.transloco.translate('dietPlan.toast.undone'));
         },
         error: () => undefined,
       });
@@ -471,38 +541,43 @@ export class DietaFormComponent {
   private iniciar(): void {
     const planoId = this.route.snapshot.queryParamMap.get('planoId');
     const planoNome = this.route.snapshot.queryParamMap.get('planoNome');
-    if (planoNome) this.title.set(planoNome);
+    this.title.set(planoNome || this.transloco.translate('dietPlan.defaultTitle'));
     forkJoin({
       metas: this.metaService.list(),
       profile: this.plansService.profile(),
-    }).subscribe({
-      next: ({ metas, profile }) => {
-        const metaAtual = metas.find((item) => item.data === null) ?? metas[0] ?? null;
-        this.meta.set(metaAtual);
-        this.mealCount.set(profile.meal_count);
-        this.style.set(profile.style);
+    })
+      .pipe(takeUntil(this.destruido))
+      .subscribe({
+        next: ({ metas, profile }) => {
+          const metaAtual = metas.find((item) => item.data === null) ?? metas[0] ?? null;
+          this.meta.set(metaAtual);
+          this.mealCount.set(profile.meal_count);
+          this.style.set(profile.style);
 
-        if (!metaAtual) {
-          this.router.navigateByUrl('/metas');
-          return;
-        }
-        if (planoId) {
-          this.carregarParaEdicao(Number(planoId));
-        } else {
+          if (!metaAtual) {
+            this.router.navigateByUrl('/metas');
+            return;
+          }
+          if (planoId) {
+            this.carregarParaEdicao(Number(planoId));
+          } else {
+            this.loading.set(false);
+          }
+        },
+        error: () => {
+          this.toastr.error(this.transloco.translate('dietPlan.toast.loadPreferencesError'));
           this.loading.set(false);
-        }
-      },
-      error: () => {
-        this.toastr.error('Não foi possível carregar suas preferências agora.');
-        this.loading.set(false);
-      },
-    });
+        },
+      });
   }
 
   private carregarParaEdicao(id: number): void {
     this.plansService
       .editDraft(id)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntil(this.destruido),
+      )
       .subscribe({
         next: (draft) => {
           this.draft.set(draft);
@@ -513,7 +588,7 @@ export class DietaFormComponent {
           this.pratoAberto.set(draft.meals[0]?.position ?? null);
         },
         error: () => {
-          this.toastr.error('Não foi possível abrir esse plano para edição.');
+          this.toastr.error(this.transloco.translate('dietPlan.toast.loadForEditError'));
           this.router.navigateByUrl('/dietas');
         },
       });

@@ -1,28 +1,29 @@
 @if (loadingVisivel()) {
   <vtp-loading-state
     titulo="Preparando seu plano"
-    descricao="Buscando sua meta e suas preferências."
+    [descricao]="'dietPlan.loadingHint' | transloco"
   />
 } @else if (mode() === 'form') {
   <vtp-back-button class="page-shell-wide" fallbackRota="/dietas" />
   <section class="page-shell-wide">
     <header class="border-b border-border pb-6">
       <vtp-page-title
-        contexto="Novo plano"
+        [contexto]="'dietPlan.newPlanContext' | transloco"
         titulo="Como é o seu dia?"
-        subtitulo="Usaremos sua meta de {{
-          meta()!.meta_calorias | number: '1.0-0'
-        }} kcal como referência."
+        [subtitulo]="
+          'dietPlan.calorieReference'
+            | transloco: { calories: meta()!.meta_calorias | number: '1.0-0' }
+        "
       />
     </header>
 
     <div class="page-shell mt-4 card p-4 sm:p-6 lg:p-8">
       <vtp-step-track
         class="mt-7 block"
-        [steps]="passosForm"
+        [steps]="passosForm()"
         [ativo]="passo()"
         orientacao="horizontal"
-        label="Etapas do novo plano"
+        [label]="'dietPlan.stepsLabel' | transloco"
         (stepClick)="irParaPasso($event)"
       />
 
@@ -69,7 +70,8 @@
       type="button"
       (click)="mode.set('form')"
     >
-      <svg lucideArrowLeft size="16" aria-hidden="true"></svg> Ajustar preferências
+      <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
+      {{ 'dietPlan.adjustPreferences' | transloco }}
     </button>
     <header class="border-b border-border pb-6">
       <vtp-page-title contexto="Prévia do plano" titulo="Monte o seu prato" />
@@ -85,7 +87,7 @@
             class="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
             for="plan-title"
           >
-            Nome do plano
+            {{ 'dietPlan.planNameLabel' | transloco }}
           </label>
 
           @if (editandoNome()) {
@@ -94,7 +96,7 @@
                 #inputNome
                 id="plan-title"
                 class="w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
-                aria-label="Nome do plano"
+                [attr.aria-label]="'dietPlan.planNameLabel' | transloco"
                 [value]="rascunhoNome()"
                 (input)="rascunhoNome.set($any($event.target).value)"
                 (keydown)="onNomeKeydown($event)"
@@ -102,7 +104,7 @@
               <button
                 class="flex size-9 shrink-0 items-center justify-center rounded-full text-primary-strong enabled:hover:bg-primary-soft"
                 type="button"
-                aria-label="Confirmar nome"
+                [attr.aria-label]="'dietPlan.confirmNameLabel' | transloco"
                 (click)="confirmarNome()"
               >
                 <svg lucideCheck size="16" aria-hidden="true"></svg>
@@ -110,7 +112,7 @@
               <button
                 class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-muted enabled:hover:bg-surface-hover"
                 type="button"
-                aria-label="Cancelar edição do nome"
+                [attr.aria-label]="'dietPlan.cancelNameEditLabel' | transloco"
                 (click)="cancelarEdicaoNome()"
               >
                 <svg lucideX size="16" aria-hidden="true"></svg>
@@ -125,7 +127,7 @@
                 class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-subtle enabled:hover:bg-surface-hover enabled:hover:text-fg"
                 type="button"
                 id="plan-title"
-                aria-label="Editar nome do plano"
+                [attr.aria-label]="'dietPlan.editNameLabel' | transloco"
                 (click)="iniciarEdicaoNome()"
               >
                 <svg lucidePencil size="15" aria-hidden="true"></svg>
@@ -137,9 +139,9 @@
         <div class="flex shrink-0 items-center gap-3">
           <span class="whitespace-nowrap text-[12px] font-bold text-fg-muted">
             @if (saving()) {
-              Salvando…
+              {{ 'dietPlan.saving' | transloco }}
             } @else if (dirty()) {
-              Alterações não salvas
+              {{ 'dietPlan.unsavedChanges' | transloco }}
             }
           </span>
           <button
@@ -155,7 +157,7 @@
             } @else {
               <svg lucideSave size="16" aria-hidden="true"></svg>
             }
-            Salvar
+            {{ 'common.actions.save' | transloco }}
           </button>
         </div>
       </div>
@@ -168,7 +170,7 @@
           >
             <div>
               <p class="m-0 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-subtle">
-                Plano gerado
+                {{ 'dietPlan.planGenerated' | transloco }}
               </p>
               <p class="m-0 mt-0.5 flex items-baseline gap-1 leading-none">
                 <strong class="text-xl font-extrabold tabular-nums sm:text-2xl">{{
@@ -186,7 +188,8 @@
           >
             <div class="flex flex-col items-center gap-0.5">
               <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-primary"></span>Prot</span
+                ><span class="size-1.5 rounded-full bg-primary"></span
+                >{{ 'dietPlan.macroShort.protein' | transloco }}</span
               >
               <strong class="text-sm font-extrabold tabular-nums"
                 >{{ macroValores()?.proteina ?? '—' }}g</strong
@@ -194,7 +197,8 @@
             </div>
             <div class="flex flex-col items-center gap-0.5">
               <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-accent"></span>Carbo</span
+                ><span class="size-1.5 rounded-full bg-accent"></span
+                >{{ 'dietPlan.macroShort.carbs' | transloco }}</span
               >
               <strong class="text-sm font-extrabold tabular-nums"
                 >{{ macroValores()?.carbo ?? '—' }}g</strong
@@ -202,7 +206,8 @@
             </div>
             <div class="flex flex-col items-center gap-0.5">
               <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-fat"></span>Gord</span
+                ><span class="size-1.5 rounded-full bg-fat"></span
+                >{{ 'dietPlan.macroShort.fat' | transloco }}</span
               >
               <strong class="text-sm font-extrabold tabular-nums"
                 >{{ macroValores()?.gordura ?? '—' }}g</strong
@@ -218,8 +223,7 @@
 
       <p class="m-0 flex items-start gap-2 text-[12.5px] leading-relaxed text-fg-muted">
         <svg lucideInfo size="15" class="mt-0.5 shrink-0 text-fg-subtle" aria-hidden="true"></svg>
-        Este plano é uma sugestão geral e não substitui o acompanhamento de um nutricionista,
-        principalmente em caso de condições clínicas.
+        {{ 'dietPlan.disclaimer' | transloco }}
       </p>
     </section>
 
@@ -227,7 +231,7 @@
       <nav
         class="hidden gap-2 md:sticky md:top-6 md:flex md:flex-col"
         role="tablist"
-        aria-label="Refeições do dia"
+        [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
       >
         @for (meal of plan.meals; track meal.position) {
           <vtp-meal-plate
@@ -242,11 +246,15 @@
         }
       </nav>
 
-      <div class="flex items-center gap-2 md:hidden" role="tablist" aria-label="Refeições do dia">
+      <div
+        class="flex items-center gap-2 md:hidden"
+        role="tablist"
+        [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
+      >
         <button
           class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent enabled:hover:bg-accent-soft disabled:opacity-30"
           type="button"
-          aria-label="Refeição anterior"
+          [attr.aria-label]="'dietPlan.previousMealLabel' | transloco"
           [disabled]="indiceAtivo() === 0"
           (click)="mealAnterior()"
         >
@@ -268,14 +276,17 @@
           <p
             class="m-0 mt-1.5 text-center text-[11px] font-bold uppercase tracking-[0.08em] text-fg-muted"
           >
-            Refeição {{ indiceAtivo() + 1 }} de {{ plan.meals.length }}
+            {{
+              'dietPlan.mealOfTotal'
+                | transloco: { current: indiceAtivo() + 1, total: plan.meals.length }
+            }}
           </p>
         </div>
 
         <button
           class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-contrast enabled:hover:bg-primary-strong disabled:opacity-30"
           type="button"
-          aria-label="Próxima refeição"
+          [attr.aria-label]="'dietPlan.nextMealLabel' | transloco"
           [disabled]="indiceAtivo() === plan.meals.length - 1"
           (click)="mealSeguinte()"
         >
@@ -313,6 +324,6 @@
 
 <vtp-loading-overlay
   [ativo]="generating()"
-  titulo="Montando seu plano"
-  [mensagens]="mensagensGeracao"
+  [titulo]="'uiLoading.buildingPlan' | transloco"
+  [mensagens]="mensagensGeracao()"
 />
