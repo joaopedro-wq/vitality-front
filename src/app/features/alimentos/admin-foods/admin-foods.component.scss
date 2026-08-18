@@ -151,6 +151,9 @@
   color: var(--bd-fg-muted);
   font-size: 0.72rem;
 }
+.catalog p.original {
+  font-style: italic;
+}
 .row-actions {
   display: flex;
   align-items: center;

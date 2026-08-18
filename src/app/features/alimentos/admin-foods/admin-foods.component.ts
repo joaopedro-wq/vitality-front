@@ -70,7 +70,7 @@ export class AdminFoodsComponent {
   protected readonly selectedRestrictions = signal<string[]>([]);
   protected readonly textoDuplicados = computed(() =>
     this.duplicados()
-      .map((item) => item.descricao)
+      .map((item) => item.descricao_original)
       .join(' · '),
   );
   protected readonly form = this.fb.nonNullable.group({
@@ -109,7 +109,7 @@ export class AdminFoodsComponent {
   edit(food: Alimento): void {
     this.editing.set(food);
     this.form.setValue({
-      descricao: food.descricao,
+      descricao: food.descricao_original,
       grupo: food.grupo ?? '',
       proteina: food.proteina,
       gordura: food.gordura,

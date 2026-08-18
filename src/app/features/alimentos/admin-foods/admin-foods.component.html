@@ -122,6 +122,9 @@
               <div>
                 <span class="tag">{{ food.fonte }}</span>
                 <h2>{{ food.descricao }}</h2>
+                @if (food.descricao_original !== food.descricao) {
+                  <p class="original">Original: {{ food.descricao_original }}</p>
+                }
                 <p>
                   {{ food.grupo || 'Sem grupo' }} · {{ food.caloria | number: '1.0-0' }} kcal /
                   {{ food.qtd | number: '1.0-0' }} g

@@ -10,6 +10,7 @@ import { escalarMacros } from '../../utils/diary-day.util';
 export interface PlateItem {
   foodId: number;
   descricao: string;
+  detalheExibicao?: string | null;
   illustrationKey: string | null;
   quantity: number;
   qtdRef: number;

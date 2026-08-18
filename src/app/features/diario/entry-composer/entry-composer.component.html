@@ -32,9 +32,14 @@
                 <vtp-food-illustration [illustrationKey]="item.illustrationKey" />
               </span>
 
-              <b class="min-w-0 flex-1 truncate text-[13.5px] font-semibold">{{
-                item.descricao
-              }}</b>
+              <span class="min-w-0 flex-1">
+                <b class="block truncate text-[13.5px] font-semibold">{{ item.descricao }}</b>
+                @if (item.detalheExibicao) {
+                  <small class="block truncate text-[11px] text-fg-muted">{{
+                    item.detalheExibicao
+                  }}</small>
+                }
+              </span>
 
               <small class="whitespace-nowrap text-[12px] tabular-nums text-fg-muted">
                 {{ item.quantity | number: '1.0-0' }} g ·

@@ -5,7 +5,8 @@
     </p>
     <h3 class="m-0 mt-1 text-lg">
       @if (swapTarget(); as target) {
-        {{ 'actions.swap' | transloco }} {{ target.descricao }}
+        {{ 'actions.swap' | transloco }} {{ target.descricao
+        }}{{ target.detalhe_exibicao ? ' (' + target.detalhe_exibicao + ')' : '' }}
       } @else {
         Ingredientes do prato
       }
@@ -70,6 +71,9 @@
                   >{{ suggestion.descricao }} ·
                   {{ suggestion.quantity | number: '1.0-0' }} g</strong
                 >
+                @if (suggestion.detalhe_exibicao) {
+                  <p class="m-0 text-xs text-fg-muted">{{ suggestion.detalhe_exibicao }}</p>
+                }
                 <p class="m-0 mt-1 text-sm text-fg-muted">{{ suggestion.reason }}</p>
                 <p class="m-0 mt-1 text-xs text-fg-muted">
                   Depois: {{ suggestion.meal_totals.caloria | number: '1.0-0' }} kcal · P
@@ -109,7 +113,12 @@
       <li
         class="flex items-center justify-between gap-3 rounded-2xl border border-border px-3.5 py-3"
       >
-        <span>{{ item.descricao }} · {{ item.quantity | number: '1.0-0' }} g</span>
+        <span>
+          {{ item.descricao }} · {{ item.quantity | number: '1.0-0' }} g
+          @if (item.detalhe_exibicao) {
+            <small class="block text-xs text-fg-muted">{{ item.detalhe_exibicao }}</small>
+          }
+        </span>
         <button
           class="text-xs font-bold text-primary-strong underline underline-offset-2"
           type="button"

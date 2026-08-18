@@ -17,7 +17,6 @@ import type {
 
 export type MomentoRefeicao = 'manha' | 'almoco' | 'lanche' | 'jantar' | 'ceia';
 
-
 export const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
   manha: LucideSunrise,
   almoco: LucideSun,
@@ -32,6 +31,7 @@ export interface FaseItem {
   entryId: number;
   foodId: number;
   descricao: string;
+  detalheExibicao: string | null;
   illustrationKey: string | null;
   quantity: number;
   macros: DiaryMacros;
@@ -98,6 +98,7 @@ export function itensDaFase(day: DiaryDay | null, mealId: number): FaseItem[] {
         entryId: entry.id,
         foodId: item.food_id,
         descricao: item.descricao,
+        detalheExibicao: item.detalhe_exibicao,
         illustrationKey: item.illustration_key,
         quantity: item.quantity,
         macros: item.macros,

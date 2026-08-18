@@ -9,6 +9,9 @@
 
   <span class="min-w-[120px] flex-1">
     <b class="block truncate text-[13px] font-semibold">{{ item().descricao }}</b>
+    @if (item().detalheExibicao) {
+      <small class="block truncate text-[11px] text-fg-muted">{{ item().detalheExibicao }}</small>
+    }
     <small class="text-[11px] tabular-nums text-fg-muted">
       {{ macros().caloria | number: '1.0-0' }} kcal · P {{ macros().proteina | number: '1.0-1' }} g
       · C {{ macros().carbo | number: '1.0-1' }} g · G {{ macros().gordura | number: '1.0-1' }} g

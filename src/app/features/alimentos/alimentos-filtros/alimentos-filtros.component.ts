@@ -44,7 +44,7 @@ export class AlimentosFiltrosComponent {
   readonly limpar = output<void>();
 
   protected readonly opcoesGrupo = computed<FacetOption[]>(() =>
-    this.grupos().map((g) => ({ value: g.grupo, label: g.grupo, count: g.total })),
+    this.grupos().map((g) => ({ value: g.id, label: g.label, count: g.total })),
   );
 
   protected readonly temFiltroAtivo = computed(() => {

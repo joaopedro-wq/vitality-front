@@ -375,9 +375,8 @@ export class AlimentosListComponent {
         tab: this.tab(),
         search: this.busca(),
         page: this.pagina(),
-        grupo: this.grupoSelecionado().length ? this.grupoSelecionado() : undefined,
-        // A API valida o máximo em relação ao mínimo; portanto, o intervalo precisa
-        // seguir completo mesmo quando só uma das pontas foi movimentada.
+        categoria: this.grupoSelecionado().length ? this.grupoSelecionado() : undefined,
+
         caloria_min: caloriaRangeAtivo ? caloriaMin : undefined,
         caloria_max: caloriaRangeAtivo ? caloriaMax : undefined,
         sort_field: this.sortField() ?? undefined,

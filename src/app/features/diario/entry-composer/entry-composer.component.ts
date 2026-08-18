@@ -97,21 +97,20 @@ const FILTROS_FIXOS: readonly FiltroRapido[] = [
   { id: 'favoritos', label: 'Favoritos', icon: LucideHeart },
 ];
 
-/** Ícone por categoria normalizada (`grupo_normalizado`, fonte de verdade no
- * backend — `config/food_groups.php`). `LucidePackage` cobre "Outros" e
- * qualquer categoria futura que o mapa do backend venha a introduzir sem que
- * o frontend precise saber de antemão. */
 const ICONE_POR_CATEGORIA: Record<string, LucideIcon> = {
-  Proteína: LucideBeef,
-  Carboidrato: LucideWheat,
-  Leguminosas: LucideBean,
-  Vegetais: LucideSalad,
-  Frutas: LucideCherry,
-  Laticínios: LucideMilk,
-  Oleaginosas: LucideNut,
-  'Gorduras e óleos': LucideDroplet,
-  Doces: LucideCandy,
-  Bebidas: LucideCupSoda,
+  'carnes-e-aves': LucideBeef,
+  'peixes-e-frutos-do-mar': LucideBeef,
+  ovos: LucideMilk,
+  'graos-cereais-e-massas': LucideWheat,
+  'paes-e-preparacoes': LucideWheat,
+  leguminosas: LucideBean,
+  'verduras-e-legumes': LucideSalad,
+  frutas: LucideCherry,
+  'leites-e-derivados': LucideMilk,
+  'oleaginosas-e-sementes': LucideNut,
+  'oleos-e-gorduras': LucideDroplet,
+  'doces-e-sobremesas': LucideCandy,
+  bebidas: LucideCupSoda,
 };
 const ICONE_PADRAO = LucidePackage;
 const TAMANHO_PAGINA = 20;
@@ -208,15 +207,16 @@ export class EntryComposerComponent implements OnDestroy {
   );
 
   /** Fileira de chips: os dois pseudo-filtros fixos (recência) na frente,
-   * seguidos por toda categoria real do catálogo (`grupo_normalizado`) —
-   * o backend só devolve categorias com pelo menos 1 alimento, então a
-   * fileira nunca mostra uma categoria vazia. */
+   * seguidos por toda categoria real do catálogo (fonte única de verdade no
+   * backend, `FoodCatalogService::displayGroups()`) — o backend só devolve
+   * categorias com pelo menos 1 alimento, então a fileira nunca mostra uma
+   * categoria vazia. */
   protected readonly filtrosRapidos = computed<readonly FiltroRapido[]>(() => [
     ...FILTROS_FIXOS,
     ...this.categorias().map((categoria) => ({
-      id: categoria.grupo,
-      label: categoria.grupo,
-      icon: ICONE_POR_CATEGORIA[categoria.grupo] ?? ICONE_PADRAO,
+      id: categoria.id,
+      label: categoria.label,
+      icon: ICONE_POR_CATEGORIA[categoria.id] ?? ICONE_PADRAO,
     })),
   ]);
 
@@ -345,6 +345,7 @@ export class EntryComposerComponent implements OnDestroy {
           entry.items.map((item) => ({
             foodId: item.food_id,
             descricao: item.descricao,
+            detalheExibicao: item.detalhe_exibicao,
             illustrationKey: item.illustration_key,
             quantity: item.quantity,
             // O snapshot de macros do backend corresponde exatamente à quantidade
@@ -367,6 +368,7 @@ export class EntryComposerComponent implements OnDestroy {
         planDraft.items.map((item) => ({
           foodId: item.food_id,
           descricao: item.descricao,
+          detalheExibicao: item.detalhe_exibicao ?? null,
           illustrationKey: null,
           quantity: item.quantity,
           qtdRef: item.quantity,
@@ -455,6 +457,7 @@ export class EntryComposerComponent implements OnDestroy {
       refeicao.items.map((item) => ({
         foodId: item.food_id,
         descricao: item.descricao,
+        detalheExibicao: item.detalhe_exibicao ?? null,
         illustrationKey: null,
         quantity: item.quantity,
         qtdRef: item.quantity,
@@ -475,6 +478,7 @@ export class EntryComposerComponent implements OnDestroy {
       {
         foodId: food.id,
         descricao: food.descricao,
+        detalheExibicao: food.detalhe_exibicao,
         illustrationKey: food.illustration_key,
         quantity: food.qtd,
         qtdRef: food.qtd,
@@ -617,9 +621,9 @@ export class EntryComposerComponent implements OnDestroy {
       });
   }
 
-  /** Busca por texto (vence sobre categoria) ou por `grupo_normalizado`
-   * ativo, com paginação real igual `/alimentos` — nunca os dois ao mesmo
-   * tempo, mesma regra de `catalogo()`. */
+  /** Busca por texto (vence sobre categoria) ou por `categoria` (slug de
+   * `AlimentoGrupo.id`) ativo, com paginação real igual `/alimentos` —
+   * nunca os dois ao mesmo tempo, mesma regra de `catalogo()`. */
   private buscarResultados(pagina: number): void {
     this.carregandoFoods.set(true);
     const filtro = this.filtroRapido();
@@ -627,8 +631,7 @@ export class EntryComposerComponent implements OnDestroy {
       tab: 'all',
       page: pagina,
       search: this.query() || undefined,
-      grupo_normalizado:
-        !this.query() && filtro && !this.ehFiltroFixo(filtro) ? [filtro] : undefined,
+      categoria: !this.query() && filtro && !this.ehFiltroFixo(filtro) ? [filtro] : undefined,
       sort_field: this.sortField(),
       sort_order: this.sortOrder() === -1 ? 'desc' : 'asc',
     };

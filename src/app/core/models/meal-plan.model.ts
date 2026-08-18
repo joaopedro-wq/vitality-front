@@ -24,6 +24,8 @@ export interface MealPlanItem {
   id?: number;
   food_id: number;
   descricao: string;
+  detalhe_exibicao?: string | null;
+  descricao_original?: string;
   quantity: number;
   role?: string | null;
   macros: DiaryMacros;
@@ -32,6 +34,8 @@ export interface MealPlanItem {
 export interface MealPlanItemSuggestion {
   food_id: number;
   descricao: string;
+  detalhe_exibicao?: string | null;
+  descricao_original?: string;
   quantity: number;
   role: string;
   macros: DiaryMacros;

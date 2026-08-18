@@ -24,6 +24,7 @@ export interface FoodFilters {
   status?: StatusAlimento;
   grupo?: string[];
   grupo_normalizado?: string[];
+  categoria?: string[];
   caloria_min?: number;
   caloria_max?: number;
   sort_field?: 'descricao' | 'grupo' | 'caloria' | 'proteina' | 'carbo' | 'gordura';

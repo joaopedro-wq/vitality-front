@@ -32,9 +32,17 @@
         (error)="onImageError()"
       />
     } @else {
-      <vtp-food-illustration class="food-tile__illustration" [illustrationKey]="food().illustration_key" />
+      <vtp-food-illustration
+        class="food-tile__illustration"
+        [illustrationKey]="food().illustration_key"
+      />
     }
-    <p class="food-tile__name">{{ food().descricao }}</p>
+    <span class="food-tile__names">
+      <p class="food-tile__name">{{ food().descricao }}</p>
+      @if (food().detalhe_exibicao) {
+        <small class="food-tile__detalhe">{{ food().detalhe_exibicao }}</small>
+      }
+    </span>
   </div>
 
   <div class="food-tile__energy">

@@ -4,6 +4,8 @@ export type StatusAlimento = 'ativo' | 'pendente' | 'arquivado';
 export interface Alimento {
   id: number;
   descricao: string;
+  detalhe_exibicao: string | null;
+  descricao_original: string;
   proteina: number;
   gordura: number;
   carbo: number;
@@ -37,7 +39,8 @@ export interface FoodPage {
 }
 
 export interface AlimentoGrupo {
-  grupo: string;
+  id: string;
+  label: string;
   total: number;
 }
 

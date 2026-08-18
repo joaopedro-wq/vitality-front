@@ -227,6 +227,9 @@
           <div>
             <span>{{ food.grupo || 'Catálogo geral' }}</span>
             <h2>{{ food.descricao }}</h2>
+            @if (food.detalhe_exibicao) {
+              <p class="food-detail__detalhe">{{ food.detalhe_exibicao }}</p>
+            }
             <p>{{ food.fonte | uppercase }}</p>
           </div>
         </div>
