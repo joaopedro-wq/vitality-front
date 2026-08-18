@@ -43,8 +43,20 @@
   </div>
 
   <div class="food-tile__macros">
-    <span><i class="protein"></i><b>P</b>{{ food().proteina | number: '1.0-1' }}g</span>
-    <span><i class="carbo"></i><b>C</b>{{ food().carbo | number: '1.0-1' }}g</span>
-    <span><i class="fat"></i><b>G</b>{{ food().gordura | number: '1.0-1' }}g</span>
+    <span>
+      <i class="protein"></i>
+      <b>{{ food().proteina | number: '1.0-1' }}g</b>
+      <small>Prot</small>
+    </span>
+    <span>
+      <i class="carbo"></i>
+      <b>{{ food().carbo | number: '1.0-1' }}g</b>
+      <small>Carbo</small>
+    </span>
+    <span>
+      <i class="fat"></i>
+      <b>{{ food().gordura | number: '1.0-1' }}g</b>
+      <small>Gord</small>
+    </span>
   </div>
 </article>

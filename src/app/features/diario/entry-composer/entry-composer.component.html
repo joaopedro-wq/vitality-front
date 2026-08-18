@@ -1,4 +1,4 @@
-<section
+﻿<section
   class="card flex min-h-[520px] flex-col p-5 animate-reveal"
   aria-label="Registrar alimentos"
 >
@@ -42,7 +42,7 @@
               </small>
 
               <span
-                class="flex flex-none gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+                class="flex flex-none gap-0.5 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
               >
                 <button
                   class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-primary-soft hover:text-primary-strong"
@@ -153,7 +153,11 @@
         <p class="mb-3 text-center text-[11px] font-bold text-fg-subtle">ou monte do seu jeito</p>
       }
 
-      <div class="mb-2 flex items-center gap-2">
+      <!-- Tablet/desktop: busca, ordenação e chips sempre visíveis lado a
+           lado. No mobile os três somem daqui — moram dentro da folha de
+           filtro (ver abaixo); a linha ficava espremida demais tentando
+           caber busca + ordenação + chips juntos numa tela estreita. -->
+      <div class="mb-2 hidden items-center gap-2 md:flex">
         <label
           class="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
         >
@@ -163,6 +167,7 @@
             class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
             type="search"
             placeholder="Buscar por nome (opcional)"
+            [value]="query()"
             (input)="buscar($any($event.target).value)"
           />
         </label>
@@ -178,7 +183,6 @@
         />
       </div>
 
-      <!-- Tablet/desktop: fileira de chips sempre visível. -->
       <div
         class="mb-3 hidden flex-wrap justify-center gap-2 md:flex"
         role="group"
@@ -187,18 +191,20 @@
         <ng-container [ngTemplateOutlet]="chipsTpl" />
       </div>
 
-      <!-- Mobile: chips viram folha inferior atrás de um gatilho — mesmo
-           padrão de `.filter-drawer` de `/alimentos`, só que em Tailwind
-           direto (este componente não tem SCSS próprio). -->
+      <!-- Mobile: busca, ordenação e categoria viram uma única folha
+           inferior atrás de um gatilho — mesmo padrão de `.filter-drawer`
+           de `/alimentos`, só que em Tailwind direto (este componente não
+           tem SCSS próprio). O rótulo do gatilho reflete o que está ativo
+           (termo digitado entre aspas, categoria, ou o texto genérico). -->
       <div class="mb-3 flex md:hidden">
         <button
           type="button"
-          class="mx-auto flex items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3.5 py-2 text-[12.5px] font-bold text-fg-muted"
+          class="mx-auto flex max-w-full items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3.5 py-2 text-[12.5px] font-bold text-fg-muted"
           [attr.aria-expanded]="filtrosAbertos()"
           (click)="filtrosAbertos.set(true)"
         >
           <svg lucideFilter size="14" aria-hidden="true"></svg>
-          {{ filtroAtivoLabel() ?? 'Filtrar' }}
+          <span class="truncate">{{ filtroAtivoLabel() ?? 'Buscar e filtrar' }}</span>
         </button>
       </div>
 
@@ -210,18 +216,51 @@
           (click)="filtrosAbertos.set(false)"
         ></button>
         <div
-          class="fixed inset-x-0 bottom-0 z-[75] rounded-t-[22px] bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [box-shadow:var(--bd-shadow-lg)] md:hidden"
+          class="fixed inset-x-0 bottom-0 z-[75] flex max-h-[80vh] flex-col rounded-t-[22px] bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [box-shadow:var(--bd-shadow-lg)] md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Filtros de alimento"
         >
-          <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-border-strong" aria-hidden="true"></div>
           <div
-            class="flex flex-wrap justify-center gap-2"
-            role="group"
-            aria-label="Filtros rápidos de alimento"
-          >
-            <ng-container [ngTemplateOutlet]="chipsTpl" />
+            class="mx-auto mb-3 h-1 w-10 flex-none rounded-full bg-border-strong"
+            aria-hidden="true"
+          ></div>
+
+          <div class="flex-1 overflow-y-auto">
+            <label
+              class="mb-2 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+            >
+              <svg lucideSearch size="16" aria-hidden="true"></svg>
+              <span class="sr-only">Buscar alimento no catálogo</span>
+              <input
+                class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+                type="search"
+                placeholder="Buscar por nome (opcional)"
+                [value]="query()"
+                (input)="buscar($any($event.target).value)"
+              />
+            </label>
+
+            <vtp-sort-control
+              class="mb-3 flex justify-end"
+              [opcoes]="sortOptions"
+              [campo]="sortField()"
+              [ordem]="sortOrder()"
+              [direcaoLabel]="direcaoOrdenacao()"
+              (campoChange)="alterarCampoOrdenacao($event)"
+              (ordemChange)="alterarOrdem($event)"
+            />
+
+            <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
+              Categorias
+            </p>
+            <div
+              class="flex flex-wrap justify-center gap-2"
+              role="group"
+              aria-label="Filtros rápidos de alimento"
+            >
+              <ng-container [ngTemplateOutlet]="chipsTpl" />
+            </div>
           </div>
         </div>
       }

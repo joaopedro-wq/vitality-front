@@ -221,9 +221,10 @@ export class EntryComposerComponent implements OnDestroy {
   /** Rótulo do gatilho da folha de filtro no mobile — nome do filtro ativo,
    * ou `null` quando nenhum está selecionado (o template cai pro texto
    * genérico "Filtrar"). */
-  protected readonly filtroAtivoLabel = computed(
-    () => this.filtrosRapidos().find((filtro) => filtro.id === this.filtroRapido())?.label ?? null,
-  );
+  protected readonly filtroAtivoLabel = computed(() => {
+    if (this.query()) return `"${this.query()}"`;
+    return this.filtrosRapidos().find((filtro) => filtro.id === this.filtroRapido())?.label ?? null;
+  });
 
   /** Paginação real (mesmo padrão de `/alimentos`) só faz sentido navegando
    * o catálogo de verdade — busca por texto ou categoria ativa. Os atalhos

@@ -71,45 +71,67 @@
 }
 .food-tile__energy {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.35rem;
+  gap: 0.15rem 0.35rem;
   color: var(--bd-primary-strong);
 }
 .food-tile__energy strong {
   font-size: 1.2rem;
   line-height: 1;
+  white-space: nowrap;
 }
 .food-tile__energy small,
 .food-tile__energy span {
   color: var(--bd-fg-muted);
   font-size: 0.64rem;
   font-weight: 700;
+  white-space: nowrap;
 }
+/*
+ * P/C/G continuam lado a lado (3 colunas) em qualquer largura — o que
+ * quebrava não era a divisão em 3, era cada macro tentar caber "bolinha +
+ * P + valor" numa única linha horizontal dentro de uma coluna estreita (o
+ * `.food-grid` força 2 cards por linha abaixo de 768px). Virou o oposto:
+ * cada macro é sua própria mini-coluna (bolinha em cima, valor, tipo
+ * embaixo) — a largura que cada uma precisa é a do próprio texto isolado,
+ * não a soma dos três elementos numa linha só.
+ */
 .food-tile__macros {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.25rem;
+  gap: 0.3rem;
   padding-top: 0.5rem;
   border-top: 1px solid var(--bd-border);
-  color: var(--bd-fg-muted);
-  font-size: 0.6rem;
-  font-weight: 700;
+  text-align: center;
 }
 .food-tile__macros span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
   min-width: 0;
-  white-space: nowrap;
 }
 .food-tile__macros b {
-  margin-right: 2px;
   color: var(--bd-fg);
+  font-size: 0.66rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.food-tile__macros small {
+  color: var(--bd-fg-subtle);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 .food-tile__macros i {
-  display: inline-block;
+  display: block;
   width: 5px;
   height: 5px;
-  margin-right: 3px;
+  margin-bottom: 1px;
   border-radius: 999px;
-  vertical-align: middle;
 }
 .food-tile__macros .protein {
   background: var(--bd-primary);
@@ -130,9 +152,8 @@
     width: 40px;
     height: 40px;
   }
-  .food-tile__macros {
-    gap: 0.2rem;
-    font-size: 0.55rem;
+  .food-tile__macros b {
+    font-size: 0.62rem;
   }
 }
 

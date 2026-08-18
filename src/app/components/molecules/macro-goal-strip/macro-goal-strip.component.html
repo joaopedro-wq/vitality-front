@@ -39,7 +39,7 @@
       <div class="flex min-w-[122px] flex-1 flex-col gap-1.5">
         <div class="flex items-baseline justify-between gap-2 text-[11.5px]">
           <span class="font-bold">{{ medidor.label }}</span>
-          <span class="text-fg-muted tabular-nums">
+          <span class="whitespace-nowrap text-fg-muted tabular-nums">
             {{ medidor.valor | number: '1.0-0' }}
             @if (medidor.alvo) {
               <span> / {{ medidor.alvo | number: '1.0-0' }}</span>

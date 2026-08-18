@@ -1,5 +1,5 @@
 <button
-  class="relative flex h-[138px] w-full cursor-pointer flex-col justify-between rounded-[13px] border bg-surface p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:border-primary"
+  class="relative flex min-h-[138px] w-full cursor-pointer flex-col justify-between rounded-[13px] border bg-surface p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:border-primary"
   [class]="
     selecionado() ? 'border-primary [box-shadow:0_0_0_3px_var(--bd-primary-soft)]' : 'border-border'
   "
@@ -25,24 +25,39 @@
       <b class="block h-[30px] overflow-hidden text-[12.5px] font-semibold leading-tight">{{
         food().descricao
       }}</b>
-      <small class="text-[11px] tabular-nums text-fg-muted">
+      <small class="block truncate text-[11px] tabular-nums text-fg-muted">
         {{ food().caloria | number: '1.0-0' }} kcal / {{ food().qtd | number: '1.0-0' }} g
       </small>
     </span>
   </span>
 
-  <span class="grid grid-cols-3 gap-1 text-[10.5px] font-semibold tabular-nums text-fg-muted">
-    <span class="flex items-center gap-1">
+  <!-- P/C/G continuam lado a lado (3 colunas) em qualquer largura — o que
+       quebrava era o valor + rótulo tentando caber ao lado do bolinha
+       colorida numa coluna estreita. Virou o contrário: cada macro é sua
+       própria mini-coluna (bolinha em cima, valor, tipo embaixo), então a
+       largura que cada uma precisa é só a do próprio texto, não a soma de
+       "bolinha + P + valor" numa linha só. -->
+  <span class="grid grid-cols-3 gap-1 text-center tabular-nums text-fg-muted">
+    <span class="flex flex-col items-center gap-0.5">
       <i class="size-1.5 rounded-full bg-primary" aria-hidden="true"></i>
-      P {{ food().proteina | number: '1.0-1' }}g
+      <b class="text-[10.5px] font-bold leading-none text-fg">{{
+        food().proteina | number: '1.0-1'
+      }}g</b>
+      <span class="text-[8.5px] font-bold uppercase leading-none text-fg-subtle">Prot</span>
     </span>
-    <span class="flex items-center gap-1">
+    <span class="flex flex-col items-center gap-0.5">
       <i class="size-1.5 rounded-full bg-accent" aria-hidden="true"></i>
-      C {{ food().carbo | number: '1.0-1' }}g
+      <b class="text-[10.5px] font-bold leading-none text-fg">{{
+        food().carbo | number: '1.0-1'
+      }}g</b>
+      <span class="text-[8.5px] font-bold uppercase leading-none text-fg-subtle">Carbo</span>
     </span>
-    <span class="flex items-center gap-1">
+    <span class="flex flex-col items-center gap-0.5">
       <i class="size-1.5 rounded-full" style="background-color: var(--fat)" aria-hidden="true"></i>
-      G {{ food().gordura | number: '1.0-1' }}g
+      <b class="text-[10.5px] font-bold leading-none text-fg">{{
+        food().gordura | number: '1.0-1'
+      }}g</b>
+      <span class="text-[8.5px] font-bold uppercase leading-none text-fg-subtle">Gord</span>
     </span>
   </span>
 
