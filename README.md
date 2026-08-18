@@ -58,24 +58,6 @@ significa.
 <tr>
 <td width="50%" valign="top">
 
-### 📋 Dietas geradas por IA
-
-O plano nasce de um quiz curto (quantas refeições por dia → estilo que ajuda na rotina → o que
-evitar) e o backend usa **IA generativa (Google Gemini)** pra montar o cardápio do zero a partir
-dessas respostas e da meta calórica/macros já calculada — não é uma lista fixa nem um sorteio entre
-alimentos pré-cadastrados. Cada refeição pode ser regenerada individualmente ou o dia inteiro pode
-ser recriado, e trocar um alimento específico também pede sugestões novas à IA, sempre mantendo a
-refeição próxima da meta. O plano vira um crachá com anel de macros, reaproveitável sempre que
-quiser sem remontar a lista do zero, e pronto pra virar sugestão dentro do Diário.
-
-</td>
-<td width="50%" valign="top">
-<img src="docs/screenshots/dietas.png" alt="Tela de planos alimentares do Vitality PLUS — crachás de plano com anel de macros">
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-
 ### 🥗 Biblioteca de alimentos
 
 Catálogo global curado, iniciado pela TACO e enriquecido com a USDA Foundation Foods, com
@@ -88,6 +70,24 @@ nutricionais confiáveis.
 </td>
 </tr>
 </table>
+
+### 📋 Dietas geradas por IA
+
+O plano nasce de um quiz curto (quantas refeições por dia → estilo que ajuda na rotina → o que
+evitar) e o backend usa **IA generativa (Google Gemini)** pra montar o cardápio do zero a partir
+dessas respostas e da meta calórica/macros já calculada — não é uma lista fixa nem um sorteio entre
+alimentos pré-cadastrados. Cada refeição pode ser regenerada individualmente ou o dia inteiro pode
+ser recriado, e trocar um alimento específico também pede sugestões novas à IA, sempre mantendo a
+refeição próxima da meta. O plano vira um crachá com anel de macros, reaproveitável sempre que
+quiser sem remontar a lista do zero, e pronto pra virar sugestão dentro do Diário.
+
+<p align="center">
+  <img src="docs/screenshots/dietas-gerando-ia.png" alt="Vitality PLUS gerando um plano alimentar com IA — overlay 'Montando seu plano'" width="49%">
+  <img src="docs/screenshots/dietas-plano-gerado.png" alt="Plano alimentar gerado pela IA no Vitality PLUS, com resumo em texto natural e macros calculados" width="49%">
+</p>
+<p align="center">
+  <sub>À esquerda, a geração em andamento; à direita, o resultado — o resumo em itálico ("Plano alimentar brasileiro de 4 refeições diárias...") é texto gerado pela própria IA, não um template fixo.</sub>
+</p>
 
 - 🍽️ **Diário alimentar** — uma jornada diária de checkpoints: registra refeições num mini-quiz de
   momento → prato → porções, compara com a meta e mantém o histórico editável (screenshot no topo
