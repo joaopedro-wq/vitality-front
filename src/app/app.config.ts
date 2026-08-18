@@ -20,6 +20,7 @@ import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
+import { localeInterceptor } from './core/i18n/locale.interceptor';
 import { VitalityPrimeNgPreset } from './core/layout/primeng-preset';
 import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
 
@@ -28,7 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, localeInterceptor, errorInterceptor])),
     provideTransloco({
       config: translocoConfig({
         availableLangs: ['pt-BR', 'en-US'],
