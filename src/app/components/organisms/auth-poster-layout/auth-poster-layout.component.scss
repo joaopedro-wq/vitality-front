@@ -10,6 +10,12 @@
   color: var(--sidebar-fg);
   font-family: var(--bd-font-sans);
 }
+.auth-language {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+}
 
 .block {
   position: fixed;
@@ -36,8 +42,14 @@
   z-index: 0;
 }
 
-.dots.d1 { top: 8%; right: 6%; }
-.dots.d2 { bottom: 10%; left: 5%; }
+.dots.d1 {
+  top: 8%;
+  right: 6%;
+}
+.dots.d2 {
+  bottom: 10%;
+  left: 5%;
+}
 
 .fruit {
   display: inline-flex;
@@ -53,11 +65,23 @@
   box-shadow: 0 3px 0 color-mix(in srgb, var(--sidebar-bg) 32%, transparent);
 }
 
-.dot.sm { width: 12px; height: 12px; }
-.dot.lg { width: 22px; height: 22px; }
-.dot.sun { background: var(--bd-accent); }
-.dot.leaf { background: var(--sidebar-fg-muted); }
-.dot.mango { background: var(--bd-primary-strong); }
+.dot.sm {
+  width: 12px;
+  height: 12px;
+}
+.dot.lg {
+  width: 22px;
+  height: 22px;
+}
+.dot.sun {
+  background: var(--bd-accent);
+}
+.dot.leaf {
+  background: var(--sidebar-fg-muted);
+}
+.dot.mango {
+  background: var(--bd-primary-strong);
+}
 
 .stage {
   position: relative;
@@ -79,8 +103,14 @@
 }
 
 @keyframes pop {
-  from { opacity: 0; transform: translateY(10px) scale(0.97); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .badge {
@@ -108,5 +138,7 @@
 }
 
 @media (max-width: 480px) {
-  .dots { display: none; }
+  .dots {
+    display: none;
+  }
 }

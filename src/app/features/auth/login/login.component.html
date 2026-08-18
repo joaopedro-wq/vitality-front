@@ -1,69 +1,69 @@
-<vtp-auth-poster-layout badge="68% batem a meta">
-  <vtp-page-title
-    titulo="Volta pra roda"
-    subtitulo="Sua meta de hoje está esperando. Entra e registra a primeira refeição."
-    variante="autenticacao"
-  />
+<div *transloco="let t">
+  <vtp-auth-poster-layout [badge]="t('auth.loginBadge')">
+    <vtp-page-title
+      [titulo]="t('auth.loginTitle')"
+      [subtitulo]="t('auth.loginSubtitle')"
+      variante="autenticacao"
+    />
 
-  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    @if (generalError()) {
-      <bd-alert tone="danger" [title]="generalError()!" />
-    }
-
-    <bd-field
-      label="E-mail"
-      required
-      [error]="
-        emailError() ??
-        (form.controls.email.touched && form.controls.email.invalid
-          ? 'Informe um e-mail válido.'
-          : '')
-      "
-    >
-      <input
-        bdInput
-        type="email"
-        formControlName="email"
-        autocomplete="email"
-        placeholder="voce@exemplo.com"
-      />
-    </bd-field>
-
-    <bd-field
-      label="Senha"
-      required
-      [error]="
-        passwordError() ??
-        (form.controls.password.touched && form.controls.password.invalid
-          ? 'Informe sua senha.'
-          : '')
-      "
-    >
-      <input
-        bdInput
-        type="password"
-        formControlName="password"
-        autocomplete="current-password"
-        placeholder="••••••••"
-      />
-    </bd-field>
-
-    <button
-      bdButton
-      type="submit"
-      block
-      [disabled]="status() === 'sending'"
-      [attr.aria-busy]="status() === 'sending' ? true : null"
-    >
-      @if (status() === 'sending') {
-        <vtp-plate-loader tamanho="xs" cor="herdada" />
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (generalError()) {
+        <bd-alert tone="danger" [title]="generalError()!" />
       }
-      Entrar
-    </button>
-  </form>
 
-  <p class="switch-line">
-    Ainda não tem conta?
-    <a routerLink="/register">Criar conta</a>
-  </p>
-</vtp-auth-poster-layout>
+      <bd-field
+        [label]="t('auth.email')"
+        required
+        [error]="
+          emailError() ??
+          (form.controls.email.touched && form.controls.email.invalid ? t('auth.invalidEmail') : '')
+        "
+      >
+        <input
+          bdInput
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          [placeholder]="t('auth.emailPlaceholder')"
+        />
+      </bd-field>
+
+      <bd-field
+        [label]="t('auth.password')"
+        required
+        [error]="
+          passwordError() ??
+          (form.controls.password.touched && form.controls.password.invalid
+            ? t('auth.requiredPassword')
+            : '')
+        "
+      >
+        <input
+          bdInput
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          placeholder="••••••••"
+        />
+      </bd-field>
+
+      <button
+        bdButton
+        type="submit"
+        block
+        [disabled]="status() === 'sending'"
+        [attr.aria-busy]="status() === 'sending' ? true : null"
+      >
+        @if (status() === 'sending') {
+          <vtp-plate-loader tamanho="xs" cor="herdada" />
+        }
+        {{ t('auth.login') }}
+      </button>
+    </form>
+
+    <p class="switch-line">
+      {{ t('auth.noAccount') }}
+      <a routerLink="/register">{{ t('auth.createAccount') }}</a>
+    </p>
+  </vtp-auth-poster-layout>
+</div>

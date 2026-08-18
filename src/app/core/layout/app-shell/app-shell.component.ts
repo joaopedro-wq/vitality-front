@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import {
   LucideCarrot,
   LucideClipboardList,
@@ -38,6 +40,8 @@ import { NavegacaoService } from '../navegacao.service';
 import { NavigationLayoutService } from '../navigation-layout.service';
 import { PaletteService, type PaletteId } from '../palette.service';
 import { ThemeService } from '../theme.service';
+import { LanguageService } from '../../i18n/language.service';
+import { LanguageSelectorComponent } from '../../../components/molecules/language-selector/language-selector.component';
 
 interface NavItem {
   path: string;
@@ -47,13 +51,18 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { path: '/dashboard', label: 'Painel', icon: LucideHouse },
-  { path: '/diario', label: 'Diário', icon: LucideUtensils },
-  { path: '/alimentos', label: 'Alimentos', icon: LucideCarrot },
-  { path: '/dietas', label: 'Plano alimentar', icon: LucideClipboardList },
-  { path: '/metas', label: 'Metas', icon: LucideTarget },
-  { path: '/perfil', label: 'Perfil', icon: LucideUser },
-  { path: '/admin/alimentos', label: 'Catálogo', icon: LucideShieldCheck, adminOnly: true },
+  { path: '/dashboard', label: 'common.shell.nav.dashboard', icon: LucideHouse },
+  { path: '/diario', label: 'common.shell.nav.diary', icon: LucideUtensils },
+  { path: '/alimentos', label: 'common.shell.nav.foods', icon: LucideCarrot },
+  { path: '/dietas', label: 'common.shell.nav.diets', icon: LucideClipboardList },
+  { path: '/metas', label: 'common.shell.nav.goals', icon: LucideTarget },
+  { path: '/perfil', label: 'common.shell.nav.profile', icon: LucideUser },
+  {
+    path: '/admin/alimentos',
+    label: 'common.shell.nav.catalog',
+    icon: LucideShieldCheck,
+    adminOnly: true,
+  },
 ];
 
 @Component({
@@ -77,6 +86,8 @@ const NAV_ITEMS: NavItem[] = [
     LucidePanelTop,
     PalettePickerComponent,
     LoadingStateComponent,
+    LanguageSelectorComponent,
+    TranslocoDirective,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
@@ -85,6 +96,8 @@ const NAV_ITEMS: NavItem[] = [
 export class AppShellComponent {
   protected readonly auth = inject(AuthService);
   protected readonly theme = inject(ThemeService);
+  protected readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   protected readonly palette = inject(PaletteService);
   protected readonly navigationLayout = inject(NavigationLayoutService);
   private readonly navegacao = inject(NavegacaoService);
@@ -148,8 +161,15 @@ export class AppShellComponent {
   );
 
   protected readonly saudacaoPeriodo = computed(() => {
+    this.language.locale();
     const hora = new Date().getHours();
-    return hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    return this.transloco.translate(
+      hora < 12
+        ? 'common.shell.morning'
+        : hora < 18
+          ? 'common.shell.afternoon'
+          : 'common.shell.evening',
+    );
   });
 
   protected readonly saudacao = computed(() => {

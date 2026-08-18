@@ -1,4 +1,5 @@
 <div class="block" aria-hidden="true"></div>
+<div class="auth-language"><vtp-language-selector /></div>
 
 <div class="dots d1" aria-hidden="true">
   <div class="fruit">
@@ -17,7 +18,7 @@
   @if (badge()) {
     <div class="badge">{{ badge() }}</div>
   }
-  <p class="eyebrow">Vitality Plus · feira de hoje</p>
+  <p class="eyebrow">{{ eyebrow() }}</p>
 
   <ng-content />
 </div>

@@ -1,0 +1,10 @@
+<div class="language-selector" *transloco="let t">
+  <button
+    type="button"
+    class="flag-button"
+    [attr.aria-label]="t('common.language.change')"
+    (click)="toggle()"
+  >
+    <span class="flag" aria-hidden="true">{{ language.locale() === 'pt-BR' ? '🇧🇷' : '🇺🇸' }}</span>
+  </button>
+</div>

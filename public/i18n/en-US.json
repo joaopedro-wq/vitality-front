@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": { "change": "Change language", "menu": "Select language", "brazil": "Brazilian Portuguese", "usa": "US English" },
+    "navigation": {
+      "main": "Main navigation",
+      "more": "More",
+      "moreOptions": "More options",
+      "close": "Close",
+      "profile": "View profile",
+      "account": "My account"
+    },
+    "actions": {
+      "close": "Close",
+      "logout": "Sign out",
+      "loading": "Opening…",
+      "back": "Back",
+      "save": "Save",
+      "cancel": "Cancel",
+      "remove": "Remove"
+    },
+    "errors": { "generic": "We couldn't complete the operation. Try again." },
+    "shell": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "hello": "Hello",
+      "palette": "Choose palette",
+      "lightTheme": "Enable light theme",
+      "darkTheme": "Enable dark theme",
+      "horizontalMenu": "Use horizontal menu",
+      "sidebarMenu": "Use side menu",
+      "registerMeal": "Log meal",
+      "register": "Log",
+      "nav": {
+        "dashboard": "Dashboard",
+        "diary": "Diary",
+        "foods": "Foods",
+        "diets": "Meal plan",
+        "goals": "Goals",
+        "profile": "Profile",
+        "catalog": "Catalog"
+      }
+    }
+  },
+  "pageTitle": {
+    "dashboard": "Dashboard", "foods": "Foods", "diary": "Food diary", "profile": "Profile and preferences", "foodCatalog": "Food catalog", "dietsGoal": "First, let's define your goal", "dietsRoutine": "A routine that fits your day", "dietForm": "What is your day like?", "buildPlate": "Build your plate", "goalReady": "Your daily goal is ready", "development": "Development", "planPreview": "Plan preview", "dashboardSubtitle": "Phase 6 of the plan is not implemented yet.", "foodsSubtitle": "Find items in the TACO catalog and save the ones you use often.", "diarySubtitle": "Log your meals and follow your day's composition.", "profileSubtitle": "Update your details in short steps. Each advance is saved so you do not lose progress.", "foodCatalogSubtitle": "Global items used across the platform.", "dietsGoalSubtitle": "Your plan is built from the calories and macros you confirmed for your goal.", "dietsRoutineSubtitle": "Flexible suggestions based on your current goal — you always review before logging.", "goalReadySubtitle": "It counts for today in the dashboard and diary. Routine changed? Retake the quiz whenever you want."
+  },
+  "auth": {
+    "accountCreated": "Account created! Sign in to continue.",
+    "registerError": "We couldn't create your account right now. Try again.",
+    "eyebrow": "Vitality Plus · today's harvest",
+    "loginBadge": "68% hit their goal",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Your goal for today is waiting. Sign in and log your first meal.",
+    "registerTitle": "Join the circle",
+    "registerSubtitle": "Join everyone who has logged their first meal today.",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "confirmPassword": "Confirm password",
+    "emailPlaceholder": "you@example.com",
+    "namePlaceholder": "What should we call you?",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "passwordHint": "At least 6 characters.",
+    "login": "Sign in",
+    "createAccount": "Create account",
+    "createMyAccount": "Create my account",
+    "noAccount": "Don't have an account yet?",
+    "hasAccount": "Already have an account?",
+    "invalidEmail": "Enter a valid email.",
+    "requiredPassword": "Enter your password.",
+    "requiredName": "Enter your name.",
+    "shortPassword": "Password is too short.",
+    "passwordMismatch": "Passwords do not match.",
+    "wrongPassword": "Incorrect password.",
+    "accountNotFound": "We couldn't find an account with this email.",
+    "genericError": "We couldn't sign you in right now. Try again."
+  }
+}

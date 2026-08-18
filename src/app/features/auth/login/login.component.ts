@@ -13,6 +13,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 
 type LoginStatus = 'idle' | 'sending';
 
@@ -29,6 +31,7 @@ type LoginStatus = 'idle' | 'sending';
     BdInputComponent,
     BdButtonComponent,
     BdAlertComponent,
+    TranslocoDirective,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -39,6 +42,7 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly transloco = inject(TranslocoService);
 
   protected readonly status = signal<LoginStatus>('idle');
   /** Erro específico do campo — distinto do toast genérico do errorInterceptor. */
@@ -76,20 +80,20 @@ export class LoginComponent {
 
   private handleLoginError(err: unknown): void {
     if (!(err instanceof HttpErrorResponse)) {
-      this.generalError.set('Não foi possível entrar agora. Tente novamente.');
+      this.generalError.set(this.transloco.translate('auth.genericError'));
       return;
     }
 
     if (err.status === 401) {
-      this.passwordError.set('Senha incorreta.');
+      this.passwordError.set(this.transloco.translate('auth.wrongPassword'));
       return;
     }
 
     if (err.status === 404) {
-      this.emailError.set('Não encontramos uma conta com este e-mail.');
+      this.emailError.set(this.transloco.translate('auth.accountNotFound'));
       return;
     }
 
-    this.generalError.set('Não foi possível entrar agora. Tente novamente.');
+    this.generalError.set(this.transloco.translate('auth.genericError'));
   }
 }

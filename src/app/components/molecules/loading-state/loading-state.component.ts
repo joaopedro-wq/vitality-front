@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 
@@ -27,7 +29,14 @@ import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.comp
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingStateComponent {
-  readonly titulo = input('Carregando…');
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
+  readonly titulo = input<string | undefined>(undefined);
+  protected readonly tituloResolvido = computed(() => {
+    if (this.titulo()) return this.titulo()!;
+    this.language.locale();
+    return this.transloco.translate('common.actions.loading');
+  });
   readonly descricao = input<string | undefined>(undefined);
   readonly tamanho = input<'sm' | 'md'>('md');
 }

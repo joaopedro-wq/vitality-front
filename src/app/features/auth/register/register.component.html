@@ -1,99 +1,103 @@
-<vtp-auth-poster-layout>
-  <vtp-page-title
-    titulo="Entra na roda"
-    subtitulo="Junte-se a quem já registrou a primeira refeição hoje."
-    variante="autenticacao"
-  />
+<div *transloco="let t">
+  <vtp-auth-poster-layout>
+    <vtp-page-title
+      [titulo]="t('auth.registerTitle')"
+      subtitulo="Junte-se a quem já registrou a primeira refeição hoje."
+      variante="autenticacao"
+    />
 
-  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    @if (generalError()) {
-      <bd-alert tone="danger" [title]="generalError()!" />
-    }
-
-    <bd-field
-      label="Nome"
-      required
-      [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''"
-    >
-      <input
-        bdInput
-        type="text"
-        formControlName="name"
-        autocomplete="name"
-        placeholder="Como te chamam"
-      />
-    </bd-field>
-
-    <bd-field
-      label="E-mail"
-      required
-      [error]="
-        form.controls.email.touched && form.controls.email.invalid
-          ? 'Informe um e-mail válido.'
-          : ''
-      "
-    >
-      <input
-        bdInput
-        type="email"
-        formControlName="email"
-        autocomplete="email"
-        placeholder="voce@exemplo.com"
-      />
-    </bd-field>
-
-    <bd-field
-      label="Senha"
-      hint="Pelo menos 6 caracteres."
-      required
-      [error]="
-        form.controls.password.touched && form.controls.password.invalid ? 'Senha muito curta.' : ''
-      "
-    >
-      <input
-        bdInput
-        type="password"
-        formControlName="password"
-        autocomplete="new-password"
-        placeholder="••••••••"
-      />
-    </bd-field>
-
-    <bd-field
-      label="Confirmar senha"
-      required
-      [error]="
-        form.controls.password_confirmation.touched &&
-        (form.controls.password_confirmation.invalid || form.errors?.['passwordsMismatch'])
-          ? 'As senhas não coincidem.'
-          : ''
-      "
-    >
-      <input
-        bdInput
-        type="password"
-        formControlName="password_confirmation"
-        autocomplete="new-password"
-        placeholder="Repita a senha"
-      />
-    </bd-field>
-
-    <button
-      bdButton
-      type="submit"
-      block
-      [disabled]="status() === 'sending'"
-      [attr.aria-busy]="status() === 'sending' ? true : null"
-    >
-      @if (status() === 'sending') {
-        <vtp-plate-loader tamanho="xs" cor="herdada" />
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (generalError()) {
+        <bd-alert tone="danger" [title]="generalError()!" />
       }
-      Criar minha conta
-    </button>
-  </form>
 
-  <p class="switch-line">
-    Já tem conta?
-    <a routerLink="/login">Entrar</a>
-  </p>
-</vtp-auth-poster-layout>
+      <bd-field
+        [label]="t('auth.name')"
+        required
+        [error]="
+          form.controls.name.touched && form.controls.name.invalid ? t('auth.requiredName') : ''
+        "
+      >
+        <input
+          bdInput
+          type="text"
+          formControlName="name"
+          autocomplete="name"
+          [placeholder]="t('auth.namePlaceholder')"
+        />
+      </bd-field>
+
+      <bd-field
+        [label]="t('auth.email')"
+        required
+        [error]="
+          form.controls.email.touched && form.controls.email.invalid ? t('auth.invalidEmail') : ''
+        "
+      >
+        <input
+          bdInput
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          [placeholder]="t('auth.emailPlaceholder')"
+        />
+      </bd-field>
+
+      <bd-field
+        [label]="t('auth.password')"
+        [hint]="t('auth.passwordHint')"
+        required
+        [error]="
+          form.controls.password.touched && form.controls.password.invalid
+            ? t('auth.shortPassword')
+            : ''
+        "
+      >
+        <input
+          bdInput
+          type="password"
+          formControlName="password"
+          autocomplete="new-password"
+          placeholder="••••••••"
+        />
+      </bd-field>
+
+      <bd-field
+        [label]="t('auth.confirmPassword')"
+        required
+        [error]="
+          form.controls.password_confirmation.touched &&
+          (form.controls.password_confirmation.invalid || form.errors?.['passwordsMismatch'])
+            ? t('auth.passwordMismatch')
+            : ''
+        "
+      >
+        <input
+          bdInput
+          type="password"
+          formControlName="password_confirmation"
+          autocomplete="new-password"
+          [placeholder]="t('auth.confirmPasswordPlaceholder')"
+        />
+      </bd-field>
+
+      <button
+        bdButton
+        type="submit"
+        block
+        [disabled]="status() === 'sending'"
+        [attr.aria-busy]="status() === 'sending' ? true : null"
+      >
+        @if (status() === 'sending') {
+          <vtp-plate-loader tamanho="xs" cor="herdada" />
+        }
+        {{ t('auth.createMyAccount') }}
+      </button>
+    </form>
+
+    <p class="switch-line">
+      {{ t('auth.hasAccount') }}
+      <a routerLink="/login">{{ t('auth.login') }}</a>
+    </p>
+  </vtp-auth-poster-layout>
+</div>

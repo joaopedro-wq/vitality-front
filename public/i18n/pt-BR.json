@@ -1,0 +1,79 @@
+{
+  "common": {
+    "language": { "change": "Alterar idioma", "menu": "Selecionar idioma", "brazil": "Português do Brasil", "usa": "Inglês dos Estados Unidos" },
+    "navigation": {
+      "main": "Navegação principal",
+      "more": "Mais",
+      "moreOptions": "Mais opções",
+      "close": "Fechar",
+      "profile": "Ver perfil",
+      "account": "Minha conta"
+    },
+    "actions": {
+      "close": "Fechar",
+      "logout": "Sair",
+      "loading": "Abrindo…",
+      "back": "Voltar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "remove": "Remover"
+    },
+    "errors": { "generic": "Não foi possível completar a operação. Tente novamente." },
+    "shell": {
+      "morning": "Bom dia",
+      "afternoon": "Boa tarde",
+      "evening": "Boa noite",
+      "hello": "Olá",
+      "palette": "Escolher paleta",
+      "lightTheme": "Ativar tema claro",
+      "darkTheme": "Ativar tema escuro",
+      "horizontalMenu": "Usar menu horizontal",
+      "sidebarMenu": "Usar menu lateral",
+      "registerMeal": "Registrar refeição",
+      "register": "Registrar",
+      "nav": {
+        "dashboard": "Painel",
+        "diary": "Diário",
+        "foods": "Alimentos",
+        "diets": "Plano alimentar",
+        "goals": "Metas",
+        "profile": "Perfil",
+        "catalog": "Catálogo"
+      }
+    }
+  },
+  "pageTitle": {
+    "dashboard": "Dashboard", "foods": "Alimentos", "diary": "Diário alimentar", "profile": "Perfil e preferências", "foodCatalog": "Catálogo de alimentos", "dietsGoal": "Primeiro, vamos definir sua meta", "dietsRoutine": "Uma rotina que cabe no seu dia", "dietForm": "Como é o seu dia?", "buildPlate": "Monte o seu prato", "goalReady": "Sua meta diária está pronta", "development": "Desenvolvimento", "planPreview": "Prévia do plano", "dashboardSubtitle": "Fase 6 do plano ainda não implementada.", "foodsSubtitle": "Encontre itens do catálogo TACO e guarde os que você usa com frequência.", "diarySubtitle": "Registre suas refeições e acompanhe a composição do seu dia.", "profileSubtitle": "Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.", "foodCatalogSubtitle": "Itens globais usados por toda a plataforma.", "dietsGoalSubtitle": "Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.", "dietsRoutineSubtitle": "Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.", "goalReadySubtitle": "Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
+  },
+  "auth": {
+    "accountCreated": "Conta criada! Faça login para continuar.",
+    "registerError": "Não foi possível criar sua conta agora. Tente novamente.",
+    "eyebrow": "Vitality Plus · feira de hoje",
+    "loginBadge": "68% batem a meta",
+    "loginTitle": "Volta pra roda",
+    "loginSubtitle": "Sua meta de hoje está esperando. Entra e registra a primeira refeição.",
+    "registerTitle": "Entra na roda",
+    "registerSubtitle": "Junte-se a quem já registrou a primeira refeição hoje.",
+    "email": "E-mail",
+    "password": "Senha",
+    "name": "Nome",
+    "confirmPassword": "Confirmar senha",
+    "emailPlaceholder": "voce@exemplo.com",
+    "namePlaceholder": "Como te chamam",
+    "confirmPasswordPlaceholder": "Repita a senha",
+    "passwordHint": "Pelo menos 6 caracteres.",
+    "login": "Entrar",
+    "createAccount": "Criar conta",
+    "createMyAccount": "Criar minha conta",
+    "noAccount": "Ainda não tem conta?",
+    "hasAccount": "Já tem conta?",
+    "invalidEmail": "Informe um e-mail válido.",
+    "requiredPassword": "Informe sua senha.",
+    "requiredName": "Informe seu nome.",
+    "shortPassword": "Senha muito curta.",
+    "passwordMismatch": "As senhas não coincidem.",
+    "wrongPassword": "Senha incorreta.",
+    "accountNotFound": "Não encontramos uma conta com este e-mail.",
+    "genericError": "Não foi possível entrar agora. Tente novamente."
+  }
+}

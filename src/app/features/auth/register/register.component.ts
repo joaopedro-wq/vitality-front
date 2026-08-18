@@ -21,6 +21,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 
 type RegisterStatus = 'idle' | 'sending';
 
@@ -45,6 +47,7 @@ function passwordsMatch(): ValidatorFn {
     BdInputComponent,
     BdButtonComponent,
     BdAlertComponent,
+    TranslocoDirective,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -55,6 +58,7 @@ export class RegisterComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
+  private readonly transloco = inject(TranslocoService);
 
   protected readonly status = signal<RegisterStatus>('idle');
   protected readonly generalError = signal<string | null>(null);
@@ -81,7 +85,7 @@ export class RegisterComponent {
     this.authService.register(this.form.getRawValue()).subscribe({
       next: () => {
         this.status.set('idle');
-        this.toastr.success('Conta criada! Faça login para continuar.');
+        this.toastr.success(this.transloco.translate('auth.accountCreated'));
         this.router.navigateByUrl('/login');
       },
       error: (err: unknown) => {
@@ -89,7 +93,7 @@ export class RegisterComponent {
         if (err instanceof HttpErrorResponse && err.error?.message) {
           this.generalError.set(err.error.message);
         } else {
-          this.generalError.set('Não foi possível criar sua conta agora. Tente novamente.');
+          this.generalError.set(this.transloco.translate('auth.registerError'));
         }
       },
     });

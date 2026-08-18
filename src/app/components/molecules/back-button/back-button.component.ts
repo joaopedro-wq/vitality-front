@@ -1,7 +1,9 @@
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideArrowLeft } from '@lucide/angular';
+import { TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 @Component({
   selector: 'vtp-back-button',
@@ -14,9 +16,16 @@ import { LucideArrowLeft } from '@lucide/angular';
 export class BackButtonComponent {
   private readonly location = inject(Location);
   private readonly router = inject(Router);
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
 
   readonly rotulo = input('Voltar');
   readonly fallbackRota = input('/dashboard');
+  protected readonly rotuloResolvido = computed(() => {
+    if (this.rotulo() !== 'Voltar') return this.rotulo();
+    this.language.locale();
+    return this.transloco.translate('common.actions.back');
+  });
 
   protected voltar(): void {
     if (window.history.length > 1) {

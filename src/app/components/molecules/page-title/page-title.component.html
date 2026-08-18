@@ -4,7 +4,7 @@
   [class.items-center]="centralizado()"
   [class.text-center]="centralizado()"
 >
-  @if (contexto(); as textoContexto) {
+  @if (contextoResolvido(); as textoContexto) {
     <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
       {{ textoContexto }}
     </p>
@@ -14,20 +14,20 @@
     <h1
       class="m-0 text-[34px] font-black uppercase leading-[1.02] tracking-[-0.01em] text-balance text-fg [font-stretch:condensed]"
     >
-      {{ titulo() }}
+      {{ tituloResolvido() }}
     </h1>
 
-    @if (subtitulo(); as textoSubtitulo) {
+    @if (subtituloResolvido(); as textoSubtitulo) {
       <p class="m-0 mb-[26px] mt-[10px] max-w-[34ch] text-[14.5px] leading-[1.55] text-fg-muted">
         {{ textoSubtitulo }}
       </p>
     }
   } @else {
     <h1 class="m-0 text-[24px] tracking-[-0.02em] text-balance text-fg" [class.mt-1]="contexto()">
-      {{ titulo() }}
+      {{ tituloResolvido() }}
     </h1>
 
-    @if (subtitulo(); as textoSubtitulo) {
+    @if (subtituloResolvido(); as textoSubtitulo) {
       <p class="m-0 mt-2 text-[13.5px] leading-[1.55] text-fg-muted">
         {{ textoSubtitulo }}
       </p>

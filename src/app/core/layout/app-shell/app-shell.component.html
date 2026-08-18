@@ -1,4 +1,8 @@
-<div class="shell" [class.sidebar-layout]="navigationLayout.layout() === 'sidebar'">
+<div
+  class="shell"
+  [class.sidebar-layout]="navigationLayout.layout() === 'sidebar'"
+  *transloco="let t"
+>
   @if (navigationLayout.layout() === 'sidebar') {
     <aside class="sidebar">
       <a routerLink="/dashboard" class="logo">
@@ -23,24 +27,24 @@
       </a>
       <div class="grain" aria-hidden="true"></div>
 
-      <nav aria-label="Navegação principal">
+      <nav [attr.aria-label]="t('common.navigation.main')">
         @for (item of navItemsVisiveis(); track item.path) {
           <a [routerLink]="item.path" routerLinkActive="active" class="nav-item">
             <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
-            {{ item.label }}
+            {{ t(item.label) }}
           </a>
         }
       </nav>
 
-      <a routerLink="/perfil" class="sidebar-foot" bdTooltip="Editar perfil">
+      <a routerLink="/perfil" class="sidebar-foot" [bdTooltip]="t('common.navigation.profile')">
         <bd-avatar
           [name]="auth.currentUser()?.name ?? '?'"
           [src]="auth.currentUser()?.avatar ?? ''"
           size="sm"
         />
         <span class="txt">
-          <b>{{ auth.currentUser()?.name ?? 'Minha conta' }}</b>
-          Ver perfil
+          <b>{{ auth.currentUser()?.name ?? t('common.navigation.account') }}</b>
+          {{ t('common.navigation.profile') }}
         </span>
       </a>
     </aside>
@@ -52,11 +56,12 @@
         <div class="greeting">
           <span class="greeting-full">{{ saudacao() }}</span>
           <span class="greeting-compact">{{ saudacaoPeriodo() }}</span>
-          <span class="greeting-mobile">Olá</span>
+          <span class="greeting-mobile">{{ t('common.shell.hello') }}</span>
         </div>
       </div>
 
       <div class="top-actions">
+        <vtp-language-selector />
         <button
           class="layout-toggle"
           bdButton
@@ -64,11 +69,15 @@
           size="sm"
           iconOnly
           [bdTooltip]="
-            navigationLayout.layout() === 'sidebar' ? 'Usar menu horizontal' : 'Usar menu lateral'
+            navigationLayout.layout() === 'sidebar'
+              ? t('common.shell.horizontalMenu')
+              : t('common.shell.sidebarMenu')
           "
           placement="bottom"
           [attr.aria-label]="
-            navigationLayout.layout() === 'sidebar' ? 'Usar menu horizontal' : 'Usar menu lateral'
+            navigationLayout.layout() === 'sidebar'
+              ? t('common.shell.horizontalMenu')
+              : t('common.shell.sidebarMenu')
           "
           (click)="navigationLayout.toggle()"
         >
@@ -85,9 +94,9 @@
             variant="ghost"
             size="sm"
             iconOnly
-            bdTooltip="Escolher paleta"
+            [bdTooltip]="t('common.shell.palette')"
             placement="bottom"
-            aria-label="Escolher paleta"
+            [attr.aria-label]="t('common.shell.palette')"
             aria-haspopup="menu"
             [attr.aria-expanded]="paletaMenuAberto()"
             (click)="togglePaletaMenu()"
@@ -108,9 +117,13 @@
           variant="ghost"
           size="sm"
           iconOnly
-          [bdTooltip]="theme.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'"
+          [bdTooltip]="
+            theme.theme() === 'dark' ? t('common.shell.lightTheme') : t('common.shell.darkTheme')
+          "
           placement="bottom"
-          [attr.aria-label]="theme.theme() === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'"
+          [attr.aria-label]="
+            theme.theme() === 'dark' ? t('common.shell.lightTheme') : t('common.shell.darkTheme')
+          "
           (click)="theme.toggle()"
         >
           @if (theme.theme() === 'dark') {
@@ -124,13 +137,13 @@
           routerLink="/diario"
           [queryParams]="{ registrar: 1 }"
           class="cta"
-          bdTooltip="Registrar refeição"
+          [bdTooltip]="t('common.shell.registerMeal')"
           placement="bottom"
-          aria-label="Registrar refeição"
+          [attr.aria-label]="t('common.shell.registerMeal')"
         >
           <svg lucidePlus size="15" aria-hidden="true"></svg>
-          <span class="cta-full">Registrar refeição</span>
-          <span class="cta-compact">Registrar</span>
+          <span class="cta-full">{{ t('common.shell.registerMeal') }}</span>
+          <span class="cta-compact">{{ t('common.shell.register') }}</span>
         </a>
 
         <button
@@ -138,9 +151,9 @@
           variant="ghost"
           size="sm"
           iconOnly
-          bdTooltip="Sair"
+          [bdTooltip]="t('common.actions.logout')"
           placement="bottom"
-          aria-label="Sair"
+          [attr.aria-label]="t('common.actions.logout')"
           (click)="logout()"
         >
           <svg lucideLogOut size="16" aria-hidden="true"></svg>
@@ -149,12 +162,12 @@
     </header>
 
     @if (navigationLayout.layout() === 'horizontal') {
-      <nav class="horizontal-nav" aria-label="Navegação principal">
+      <nav class="horizontal-nav" [attr.aria-label]="t('common.navigation.main')">
         <div class="horizontal-nav__inner">
           @for (item of navItemsVisiveis(); track item.path) {
             <a [routerLink]="item.path" routerLinkActive="active" class="horizontal-nav__item">
               <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
-              {{ item.label }}
+              {{ t(item.label) }}
             </a>
           }
         </div>
@@ -167,7 +180,7 @@
            com chunk em cache não chega a piscar nada. -->
       @if (navegandoVisivel()) {
         <div class="route-loading">
-          <vtp-loading-state titulo="Abrindo…" />
+          <vtp-loading-state [titulo]="t('common.actions.loading')" />
         </div>
       }
     </main>
@@ -176,30 +189,37 @@
   @if (mobileMoreOpen()) {
     <button
       class="mobile-scrim"
-      aria-label="Fechar mais opções"
+      [attr.aria-label]="t('common.navigation.close')"
       (click)="closeMobileMore()"
     ></button>
-    <section class="mobile-more-sheet" role="dialog" aria-modal="true" aria-label="Mais opções">
+    <section
+      class="mobile-more-sheet"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="t('common.navigation.moreOptions')"
+    >
       <div class="mobile-more-sheet__header">
-        <span>Mais opções</span>
-        <button bdButton variant="ghost" size="sm" (click)="closeMobileMore()">Fechar</button>
+        <span>{{ t('common.navigation.moreOptions') }}</span>
+        <button bdButton variant="ghost" size="sm" (click)="closeMobileMore()">
+          {{ t('common.actions.close') }}
+        </button>
       </div>
-      <nav aria-label="Mais opções de navegação">
+      <nav [attr.aria-label]="t('common.navigation.moreOptions')">
         @for (item of mobileMoreItems(); track item.path) {
           <a [routerLink]="item.path" class="mobile-more-sheet__item" (click)="closeMobileMore()">
             <svg [lucideIcon]="item.icon" size="18" aria-hidden="true"></svg>
-            {{ item.label }}
+            {{ t(item.label) }}
           </a>
         }
       </nav>
     </section>
   }
 
-  <nav class="mobile-nav" aria-label="Navegação principal">
+  <nav class="mobile-nav" [attr.aria-label]="t('common.navigation.main')">
     @for (item of mobileNavItems(); track item.path) {
       <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav__item">
         <svg [lucideIcon]="item.icon" size="19" aria-hidden="true"></svg>
-        <span>{{ item.label }}</span>
+        <span>{{ t(item.label) }}</span>
       </a>
     }
     <button
@@ -210,7 +230,7 @@
       (click)="toggleMobileMore()"
     >
       <svg lucideEllipsis size="19" aria-hidden="true"></svg>
-      <span>Mais</span>
+      <span>{{ t('common.navigation.more') }}</span>
     </button>
   </nav>
 </div>

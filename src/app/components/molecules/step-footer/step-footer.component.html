@@ -1,6 +1,6 @@
 <div class="card-footer">
   @if (mostrarVoltar()) {
-    <button class="round-back" type="button" aria-label="Voltar" (click)="voltar.emit()">
+    <button class="round-back" type="button" [attr.aria-label]="backLabel()" (click)="voltar.emit()">
       <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
     </button>
   } @else {
@@ -11,7 +11,7 @@
     class="round-next"
     type="button"
     [class.done]="ultimo()"
-    [attr.aria-label]="ultimo() ? 'Salvar' : 'Continuar'"
+    [attr.aria-label]="ultimo() ? saveLabel() : continueLabel()"
     [attr.aria-busy]="carregando() ? true : null"
     [disabled]="carregando() || desabilitado()"
     (click)="avancar.emit()"

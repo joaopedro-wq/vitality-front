@@ -1,0 +1,19 @@
+:host { display: block; }
+.language-selector { display: block; flex: 0 0 auto; }
+.flag-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+  font-size: 25px;
+  line-height: 1;
+}
+.flag { display: block; line-height: 1; }
+.flag-button:hover { background: var(--bd-surface-hover); }
+.flag-button:focus-visible { outline: none; box-shadow: var(--bd-focus-ring); }
