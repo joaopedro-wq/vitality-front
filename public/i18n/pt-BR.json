@@ -1,5 +1,6 @@
 {
   "common": {
+    "steps": "Etapas",
     "language": {
       "change": "Alterar idioma",
       "menu": "Selecionar idioma",
@@ -95,8 +96,49 @@
     "goals": "Preparando suas metas"
   },
   "nutrition": { "kcal": "kcal", "protein": "Proteína", "carbs": "Carboidrato", "fat": "Gordura" },
+  "entry": {
+    "adjusting": "Ajustando lançamento",
+    "new": "Novo registro",
+    "fromPlan": "Do seu plano",
+    "changePlan": "Trocar plano",
+    "suggestionNow": "Sugestão pra agora",
+    "useSuggestion": "Usar essa sugestão",
+    "suggestionCard": "A sugestão da carta passa a vir do plano que você escolher aqui."
+  },
+  "actions": {
+    "swap": "Trocar",
+    "swapMeal": "Trocar refeição",
+    "swappingMeal": "Trocando refeição…"
+  },
+  "profileLabels": {
+    "account": "Minha conta",
+    "steps": "Etapas do perfil",
+    "identity": "Identidade e foto",
+    "identityDescription": "Como podemos chamar você?",
+    "body": "Seu corpo",
+    "bodyDescription": "Dados para personalizar sua meta",
+    "routine": "Rotina e confirmação",
+    "routineDescription": "Conte como é o seu dia",
+    "stage": "Etapa",
+    "startDescription": "Vamos começar pelos dados que identificam o seu perfil.",
+    "bodyNote": "Essas medidas permitem que as metas acompanhem melhor o seu momento.",
+    "routineDescriptionLong": "Com sua rotina e objetivo, finalizamos a base para recomendações mais úteis."
+  },
+  "goalLabels": {
+    "current": "Meta atual",
+    "steps": "Etapas da configuração de metas",
+    "profileStep": "Seu perfil",
+    "profileStepDescription": "Peso, altura, idade e gênero",
+    "activityStep": "Atividade",
+    "activityStepDescription": "Nível de atividade e objetivo",
+    "suggestionStep": "Sugestão",
+    "suggestionStepDescription": "Calculada a partir do perfil",
+    "confirmStep": "Confirmar",
+    "confirmStepDescription": "Revisar e salvar"
+  },
   "pageTitle": {
     "dashboard": "Dashboard",
+    "library": "Biblioteca",
     "foods": "Alimentos",
     "diary": "Diário alimentar",
     "profile": "Perfil e preferências",

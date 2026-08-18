@@ -22,9 +22,11 @@ export class BackButtonComponent {
   readonly rotulo = input('Voltar');
   readonly fallbackRota = input('/dashboard');
   protected readonly rotuloResolvido = computed(() => {
-    if (this.rotulo() !== 'Voltar') return this.rotulo();
     this.language.locale();
-    return this.transloco.translate('common.actions.back');
+    const value = this.rotulo();
+    if (value === 'Voltar') return this.transloco.translate('common.actions.back');
+    if (value === 'Biblioteca') return this.transloco.translate('pageTitle.library');
+    return value;
   });
 
   protected voltar(): void {

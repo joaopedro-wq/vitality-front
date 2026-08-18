@@ -5,7 +5,7 @@
     </p>
     <h3 class="m-0 mt-1 text-lg">
       @if (swapTarget(); as target) {
-        Trocar {{ target.descricao }}
+        {{ 'actions.swap' | transloco }} {{ target.descricao }}
       } @else {
         Ingredientes do prato
       }
@@ -115,7 +115,7 @@
           type="button"
           (click)="swapItem.emit(item)"
         >
-          Trocar
+          {{ 'actions.swap' | transloco }}
         </button>
       </li>
     }
@@ -139,7 +139,7 @@
       @if (regenerando()) {
         <vtp-plate-loader tamanho="xs" cor="herdada" />
       }
-      {{ regenerando() ? 'Trocando refeição…' : 'Trocar refeição' }}
+      {{ regenerando() ? ('actions.swappingMeal' | transloco) : ('actions.swapMeal' | transloco) }}
     </button>
     <button bdButton variant="ghost" size="sm" type="button" (click)="useMeal.emit()">
       Usar no diário

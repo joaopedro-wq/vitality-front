@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { BdModalComponent } from 'bandeira-ui';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   LucideArrowLeftRight,
   LucideBean,
@@ -119,6 +120,7 @@ const TAMANHO_PAGINA = 20;
   selector: 'vtp-entry-composer',
   standalone: true,
   imports: [
+    TranslocoPipe,
     DecimalPipe,
     NgTemplateOutlet,
     BdModalComponent,
@@ -285,7 +287,11 @@ export class EntryComposerComponent implements OnDestroy {
     if (filtro && !this.ehFiltroFixo(filtro)) return this.resultadosBusca();
 
     const lista =
-      filtro === 'frequentes' ? this.recentes() : filtro === 'favoritos' ? this.favoritos() : this.atalhos();
+      filtro === 'frequentes'
+        ? this.recentes()
+        : filtro === 'favoritos'
+          ? this.favoritos()
+          : this.atalhos();
     const campo = this.sortField();
     const ordem = this.sortOrder();
     return [...lista].sort((a, b) => compararAlimentos(a, b, campo, ordem));
@@ -621,7 +627,8 @@ export class EntryComposerComponent implements OnDestroy {
       tab: 'all',
       page: pagina,
       search: this.query() || undefined,
-      grupo_normalizado: !this.query() && filtro && !this.ehFiltroFixo(filtro) ? [filtro] : undefined,
+      grupo_normalizado:
+        !this.query() && filtro && !this.ehFiltroFixo(filtro) ? [filtro] : undefined,
       sort_field: this.sortField(),
       sort_order: this.sortOrder() === -1 ? 'desc' : 'asc',
     };

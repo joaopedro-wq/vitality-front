@@ -1,7 +1,22 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BdFieldComponent, BdInputComponent } from 'bandeira-ui';
-import { LucideDynamicIcon, LucideMars, LucideUsersRound, LucideVenus, type LucideIcon } from '@lucide/angular';
+import {
+  LucideDynamicIcon,
+  LucideMars,
+  LucideUsersRound,
+  LucideVenus,
+  type LucideIcon,
+} from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
 
@@ -15,8 +30,6 @@ import { UserService } from '../../../../../services/user.service';
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 const AVATAR_TYPES = new Set(['image/jpeg', 'image/png', 'image/gif']);
 
-/** Mesmo padrão de chip (ícone + pontos ativos) do resto do quiz — ver
- * `atividade-step` de Metas e `rotina-step` de Perfil. */
 const GENERO_OPTIONS: { value: Genero; label: string; icone: LucideIcon }[] = [
   { value: 'M', label: 'Masculino', icone: LucideMars },
   { value: 'F', label: 'Feminino', icone: LucideVenus },
@@ -28,6 +41,7 @@ const GENERO_OPTIONS: { value: Genero; label: string; icone: LucideIcon }[] = [
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    TranslocoPipe,
     BdFieldComponent,
     BdInputComponent,
     StepFooterComponent,
@@ -52,7 +66,9 @@ export class IdentidadeStepComponent implements OnDestroy {
   protected readonly avatarSelecionado = signal<File | null>(null);
   private readonly avatarPreview = signal<string | null>(null);
   protected readonly avatarSrc = computed(() => this.avatarPreview() ?? this.user()?.avatar ?? '');
-  protected readonly progresso = computed(() => calcularProgressoPerfil(this.user(), this.avatarSelecionado() !== null));
+  protected readonly progresso = computed(() =>
+    calcularProgressoPerfil(this.user(), this.avatarSelecionado() !== null),
+  );
   protected readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
@@ -99,13 +115,16 @@ export class IdentidadeStepComponent implements OnDestroy {
     if (!user?.avatar || this.removendoAvatar()) return;
 
     this.removendoAvatar.set(true);
-    this.userService.removeAvatar().pipe(finalize(() => this.removendoAvatar.set(false))).subscribe({
-      next: () => {
-        this.auth.setCurrentUser({ ...user, avatar: null });
-        this.toastr.success('Foto de perfil removida.');
-      },
-      error: () => this.toastr.error('Não foi possível remover a foto agora. Tente de novo.'),
-    });
+    this.userService
+      .removeAvatar()
+      .pipe(finalize(() => this.removendoAvatar.set(false)))
+      .subscribe({
+        next: () => {
+          this.auth.setCurrentUser({ ...user, avatar: null });
+          this.toastr.success('Foto de perfil removida.');
+        },
+        error: () => this.toastr.error('Não foi possível remover a foto agora. Tente de novo.'),
+      });
   }
 
   avancar(): void {

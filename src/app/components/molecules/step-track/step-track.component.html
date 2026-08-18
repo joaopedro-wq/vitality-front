@@ -1,6 +1,6 @@
 @if (orientacao() === 'horizontal') {
-  <nav [attr.aria-label]="label()" class="flex items-start">
-    @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
+  <nav [attr.aria-label]="labelResolvido()" class="flex items-start">
+    @for (s of stepsResolvidos(); track s.titulo; let i = $index; let last = $last) {
       @let done = i < ativo();
       @let active = i === ativo();
       <button
@@ -41,8 +41,8 @@
     }
   </nav>
 } @else {
-  <nav [attr.aria-label]="label()" class="flex flex-col">
-    @for (s of steps(); track s.titulo; let i = $index; let last = $last) {
+  <nav [attr.aria-label]="labelResolvido()" class="flex flex-col">
+    @for (s of stepsResolvidos(); track s.titulo; let i = $index; let last = $last) {
       @let done = i < ativo();
       @let active = i === ativo();
       <div class="flex flex-col">

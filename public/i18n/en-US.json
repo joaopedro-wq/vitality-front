@@ -1,5 +1,6 @@
 {
   "common": {
+    "steps": "Steps",
     "language": {
       "change": "Change language",
       "menu": "Select language",
@@ -95,8 +96,49 @@
     "goals": "Preparing your goals"
   },
   "nutrition": { "kcal": "kcal", "protein": "Protein", "carbs": "Carbohydrates", "fat": "Fat" },
+  "entry": {
+    "adjusting": "Adjusting entry",
+    "new": "New entry",
+    "fromPlan": "From your plan",
+    "changePlan": "Change plan",
+    "suggestionNow": "Suggestion for now",
+    "useSuggestion": "Use this suggestion",
+    "suggestionCard": "The card suggestion will use the plan you choose here."
+  },
+  "actions": {
+    "swap": "Swap",
+    "swapMeal": "Swap meal",
+    "swappingMeal": "Swapping meal…"
+  },
+  "profileLabels": {
+    "account": "My account",
+    "steps": "Profile steps",
+    "identity": "Identity and photo",
+    "identityDescription": "What should we call you?",
+    "body": "Your body",
+    "bodyDescription": "Data to personalize your goal",
+    "routine": "Routine and confirmation",
+    "routineDescription": "Tell us about your day",
+    "stage": "Step",
+    "startDescription": "Let's start with the details that identify your profile.",
+    "bodyNote": "These measurements help your goals better match your current moment.",
+    "routineDescriptionLong": "With your routine and goal, we finish the foundation for more useful recommendations."
+  },
+  "goalLabels": {
+    "current": "Current goal",
+    "steps": "Goal setup steps",
+    "profileStep": "Your profile",
+    "profileStepDescription": "Weight, height, age and gender",
+    "activityStep": "Activity",
+    "activityStepDescription": "Activity level and goal",
+    "suggestionStep": "Suggestion",
+    "suggestionStepDescription": "Calculated from your profile",
+    "confirmStep": "Confirm",
+    "confirmStepDescription": "Review and save"
+  },
   "pageTitle": {
     "dashboard": "Dashboard",
+    "library": "Library",
     "foods": "Foods",
     "diary": "Food diary",
     "profile": "Profile and preferences",

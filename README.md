@@ -118,16 +118,16 @@ incluindo registrar refeição — em controles só de ícone com tooltips posic
 
 ## Stack técnica
 
-| Camada            | Tecnologia                                                                                  |
-| ----------------- | ------------------------------------------------------------------------------------------- |
-| Framework         | Angular 20 — standalone components, Signals, `inject()`, lazy loading por rota              |
-| Design system     | [bandeira-ui](https://www.npmjs.com/package/bandeira-ui) (biblioteca própria do autor)      |
-| Estilo            | Tailwind v4 (CSS-first) — utilitário sempre que possível, SCSS só onde Tailwind não alcança |
-| Ícones            | [Lucide](https://lucide.dev) via `@lucide/angular`                                          |
-| Notificações      | ngx-toastr                                                                                  |
-| Linguagem         | TypeScript strict                                                                           |
-| Testes            | Jasmine / Karma                                                                             |
-| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back`                                     |
+| Camada            | Tecnologia                                                                                    |
+| ----------------- | --------------------------------------------------------------------------------------------- |
+| Framework         | Angular 20 — standalone components, Signals, `inject()`, lazy loading por rota                |
+| Design system     | [bandeira-ui](https://www.npmjs.com/package/bandeira-ui) (biblioteca própria do autor)        |
+| Estilo            | Tailwind v4 (CSS-first) — utilitário sempre que possível, SCSS só onde Tailwind não alcança   |
+| Ícones            | [Lucide](https://lucide.dev) via `@lucide/angular`                                            |
+| Notificações      | ngx-toastr                                                                                    |
+| Linguagem         | TypeScript strict                                                                             |
+| Testes            | Jasmine / Karma                                                                               |
+| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back`                                       |
 | Geração de planos | IA generativa (Google Gemini), acionada pelo backend a partir das respostas do quiz de dietas |
 
 A organização de pastas do código está detalhada em [`ESTRUTURA.md`](./ESTRUTURA.md).
@@ -158,6 +158,21 @@ o Angular).
 | `npm start`     | Sobe o dev server (`ng serve`) em `http://localhost:4200`, com reload automático. |
 | `npm run build` | Build de produção, otimizado, em `dist/`.                                         |
 | `npm test`      | Roda a suíte de testes (Jasmine/Karma).                                           |
+
+## Internacionalização
+
+O sistema possui internacionalização (i18n) em tempo de execução, com suporte a português do Brasil
+e inglês. O português (`pt-BR`) é o idioma padrão. A troca pode ser feita diretamente pelo seletor
+de bandeira na topbar; a preferência é persistida no navegador e aplicada também ao atributo `lang`
+do documento.
+
+As traduções ficam centralizadas em [`public/i18n/pt-BR.json`](./public/i18n/pt-BR.json) e
+[`public/i18n/en-US.json`](./public/i18n/en-US.json), organizadas por áreas e componentes. Os textos
+da interface usam Transloco, incluindo títulos, subtítulos, botões, filtros, mensagens de loading,
+etapas de perfil/metas e ações do diário. Ao adicionar uma nova string visível, inclua a chave nos
+dois arquivos de idioma e use a chave no template ou componente em vez de texto fixo.
+
+O inventário de cobertura e os pontos revisados está em [`docs/i18n-audit.md`](./docs/i18n-audit.md).
 
 ## Estrutura de pastas
 

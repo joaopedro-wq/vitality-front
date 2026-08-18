@@ -1,17 +1,26 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LucideArrowDown, LucideArrowRight, LucideArrowUp, LucideDynamicIcon, type LucideIcon } from '@lucide/angular';
+import { TranslocoPipe } from '@jsverse/transloco';
+import {
+  LucideArrowDown,
+  LucideArrowRight,
+  LucideArrowUp,
+  LucideDynamicIcon,
+  type LucideIcon,
+} from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY, catchError, finalize } from 'rxjs';
 
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 import { AuthService } from '../../../../../core/auth/auth.service';
-import type { NivelAtividade, Objetivo, UpdateUserPayload, User } from '../../../../../core/models/user.model';
+import type {
+  NivelAtividade,
+  Objetivo,
+  UpdateUserPayload,
+  User,
+} from '../../../../../core/models/user.model';
 import { UserService } from '../../../../../services/user.service';
 
-/** Mesmo vocabulário do `atividade-step` de Metas (chip + pontos de
- * intensidade) — os dois formulários editam os mesmos campos do usuário,
- * então usam o mesmo padrão visual em vez de dois estilos de chip soltos. */
 const ATIVIDADE_LABEL: Record<NivelAtividade, string> = {
   sedentario: 'Sedentário',
   leve: 'Leve',
@@ -47,7 +56,7 @@ const OBJETIVO_ICONE: Record<Objetivo, LucideIcon> = {
 @Component({
   selector: 'vtp-rotina-step',
   standalone: true,
-  imports: [ReactiveFormsModule, StepFooterComponent, LucideDynamicIcon],
+  imports: [ReactiveFormsModule, TranslocoPipe, StepFooterComponent, LucideDynamicIcon],
   templateUrl: './rotina-step.component.html',
   host: { class: 'block animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,7 +71,10 @@ export class RotinaStepComponent {
   readonly salvo = output<User>();
   protected readonly salvando = signal(false);
   protected readonly user = this.auth.currentUser;
-  protected readonly atividadeOptions = Object.entries(ATIVIDADE_LABEL) as [NivelAtividade, string][];
+  protected readonly atividadeOptions = Object.entries(ATIVIDADE_LABEL) as [
+    NivelAtividade,
+    string,
+  ][];
   protected readonly objetivoOptions = Object.entries(OBJETIVO_LABEL) as [Objetivo, string][];
   protected readonly intensidade = ATIVIDADE_INTENSIDADE;
   protected readonly descricaoAtividade = ATIVIDADE_DESCRICAO;
@@ -75,7 +87,11 @@ export class RotinaStepComponent {
 
   constructor() {
     const user = this.user();
-    if (user) this.form.patchValue({ nivel_atividade: user.nivel_atividade ?? 'moderado', objetivo: user.objetivo ?? 'manter' });
+    if (user)
+      this.form.patchValue({
+        nivel_atividade: user.nivel_atividade ?? 'moderado',
+        objetivo: user.objetivo ?? 'manter',
+      });
   }
 
   salvar(): void {
@@ -85,13 +101,16 @@ export class RotinaStepComponent {
     const valores = this.form.getRawValue();
     const payload: UpdateUserPayload = { name: user.name, email: user.email, ...valores };
     this.salvando.set(true);
-    this.userService.updateProfile(user.id, payload).pipe(
-      finalize(() => this.salvando.set(false)),
-      catchError(() => {
-        this.toastr.error('Não foi possível salvar sua rotina agora. Tente de novo.');
-        return EMPTY;
-      }),
-    ).subscribe((atualizado) => this.salvo.emit(atualizado));
+    this.userService
+      .updateProfile(user.id, payload)
+      .pipe(
+        finalize(() => this.salvando.set(false)),
+        catchError(() => {
+          this.toastr.error('Não foi possível salvar sua rotina agora. Tente de novo.');
+          return EMPTY;
+        }),
+      )
+      .subscribe((atualizado) => this.salvo.emit(atualizado));
   }
 
   protected atividadeAtual(): string {

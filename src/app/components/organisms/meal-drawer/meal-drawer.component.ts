@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { LucideArrowLeft } from '@lucide/angular';
 import { BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 import { MealMacroSummaryComponent } from '../../molecules/meal-macro-summary/meal-macro-summary.component';
@@ -16,6 +17,7 @@ import type {
   standalone: true,
   imports: [
     DecimalPipe,
+    TranslocoPipe,
     BdButtonComponent,
     BdTooltipDirective,
     LucideArrowLeft,

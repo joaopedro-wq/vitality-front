@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { BdModalComponent } from 'bandeira-ui';
+import { TranslocoPipe } from '@jsverse/transloco';
 import {
   LucideApple,
   LucideArrowLeftRight,
@@ -25,7 +26,7 @@ const ICONE_POR_MOMENTO: Record<MomentoRefeicao, LucideIcon> = {
 @Component({
   selector: 'vtp-diary-destination-band',
   standalone: true,
-  imports: [BdModalComponent, LucideDynamicIcon, LucideArrowLeftRight],
+  imports: [BdModalComponent, TranslocoPipe, LucideDynamicIcon, LucideArrowLeftRight],
   templateUrl: './diary-destination-band.component.html',
   styles: [':host { display: block; }'],
   changeDetection: ChangeDetectionStrategy.OnPush,

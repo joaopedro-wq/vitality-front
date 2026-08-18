@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BdFieldComponent, BdInputComponent } from 'bandeira-ui';
 import { ToastrService } from 'ngx-toastr';
 import { EMPTY, catchError, finalize } from 'rxjs';
@@ -13,7 +14,14 @@ import { UserService } from '../../../../../services/user.service';
 @Component({
   selector: 'vtp-corpo-step',
   standalone: true,
-  imports: [ReactiveFormsModule, BdFieldComponent, BdInputComponent, SomenteNumeroDirective, StepFooterComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslocoPipe,
+    BdFieldComponent,
+    BdInputComponent,
+    SomenteNumeroDirective,
+    StepFooterComponent,
+  ],
   templateUrl: './corpo-step.component.html',
   host: { class: 'block animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,12 +57,15 @@ export class CorpoStepComponent {
     const valores = this.form.getRawValue();
     const payload: UpdateUserPayload = { name: user.name, email: user.email, ...valores };
     this.salvando.set(true);
-    this.userService.updateProfile(user.id, payload).pipe(
-      finalize(() => this.salvando.set(false)),
-      catchError(() => {
-        this.toastr.error('Não foi possível salvar suas medidas agora. Tente de novo.');
-        return EMPTY;
-      }),
-    ).subscribe((atualizado) => this.salvo.emit(atualizado));
+    this.userService
+      .updateProfile(user.id, payload)
+      .pipe(
+        finalize(() => this.salvando.set(false)),
+        catchError(() => {
+          this.toastr.error('Não foi possível salvar suas medidas agora. Tente de novo.');
+          return EMPTY;
+        }),
+      )
+      .subscribe((atualizado) => this.salvo.emit(atualizado));
   }
 }

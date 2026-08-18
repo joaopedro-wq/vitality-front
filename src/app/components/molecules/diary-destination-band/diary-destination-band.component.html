@@ -22,7 +22,7 @@
     (click)="alternarTroca.emit()"
   >
     <svg lucideArrowLeftRight size="13" aria-hidden="true"></svg>
-    Trocar
+    {{ 'actions.swap' | transloco }}
   </button>
 </div>
 
@@ -30,8 +30,8 @@
   <bd-modal
     [open]="true"
     (openChange)="onDialogChange($event)"
-    title="Trocar refeição"
-    ariaLabel="Trocar refeição"
+    [title]="'actions.swapMeal' | transloco"
+    [ariaLabel]="'actions.swapMeal' | transloco"
   >
     <p class="m-0 mb-3 text-[12.5px] text-fg-muted">Ou toque direto em outra fase no mapa.</p>
     <div class="flex flex-wrap gap-2">

@@ -1,8 +1,14 @@
 <div class="flex flex-col gap-6">
   <div>
-    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">Etapa 1</p>
-    <h2 class="m-0 mt-1 text-[20px] tracking-[-0.02em]">Identidade e foto</h2>
-    <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">Vamos começar pelos dados que identificam o seu perfil.</p>
+    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+      {{ 'profileLabels.stage' | transloco }} 1
+    </p>
+    <h2 class="m-0 mt-1 text-[20px] tracking-[-0.02em]">
+      {{ 'profileLabels.identity' | transloco }}
+    </h2>
+    <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">
+      Vamos começar pelos dados que identificam o seu perfil.
+    </p>
   </div>
 
   @if (user(); as currentUser) {
@@ -21,20 +27,47 @@
 
   <form [formGroup]="form" class="grid gap-5 sm:grid-cols-2" (ngSubmit)="avancar()">
     <div class="sm:col-span-2">
-      <bd-field label="Nome" required hint="Usamos este nome para personalizar sua experiência." [error]="form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''">
+      <bd-field
+        label="Nome"
+        required
+        hint="Usamos este nome para personalizar sua experiência."
+        [error]="
+          form.controls.name.touched && form.controls.name.invalid ? 'Informe seu nome.' : ''
+        "
+      >
         <input bdInput type="text" formControlName="name" autocomplete="name" />
       </bd-field>
     </div>
     <div class="sm:col-span-2">
-      <bd-field label="E-mail" required hint="Seu acesso e comunicações importantes usam este endereço." [error]="form.controls.email.touched && form.controls.email.invalid ? 'Informe um e-mail válido.' : ''">
+      <bd-field
+        label="E-mail"
+        required
+        hint="Seu acesso e comunicações importantes usam este endereço."
+        [error]="
+          form.controls.email.touched && form.controls.email.invalid
+            ? 'Informe um e-mail válido.'
+            : ''
+        "
+      >
         <input bdInput type="email" formControlName="email" autocomplete="email" />
       </bd-field>
     </div>
-    <bd-field label="Data de nascimento" required hint="Ela ajuda a calcular suas recomendações." [error]="form.controls.data_nascimento.touched && form.controls.data_nascimento.invalid ? 'Informe sua data de nascimento.' : ''">
+    <bd-field
+      label="Data de nascimento"
+      required
+      hint="Ela ajuda a calcular suas recomendações."
+      [error]="
+        form.controls.data_nascimento.touched && form.controls.data_nascimento.invalid
+          ? 'Informe sua data de nascimento.'
+          : ''
+      "
+    >
       <input bdInput type="date" formControlName="data_nascimento" autocomplete="bday" />
     </bd-field>
     <div>
-      <p class="m-0 mb-2 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Gênero</p>
+      <p class="m-0 mb-2 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
+        Gênero
+      </p>
       <div class="flex flex-wrap gap-2">
         @for (opt of generoOptions; track opt.value) {
           <label

@@ -1,14 +1,22 @@
 <div class="flex flex-col gap-6">
   <div>
-    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">Etapa 3</p>
+    <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+      {{ 'profileLabels.stage' | transloco }} 3
+    </p>
     <h2 class="m-0 mt-1 text-[20px] tracking-[-0.02em]">Rotina e confirmação</h2>
-    <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">Com sua rotina e objetivo, finalizamos a base para recomendações mais úteis.</p>
+    <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">
+      Com sua rotina e objetivo, finalizamos a base para recomendações mais úteis.
+    </p>
   </div>
 
   <form [formGroup]="form" class="grid gap-6" (ngSubmit)="salvar()">
     <div class="text-center">
-      <p class="m-0 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Nível de atividade</p>
-      <p class="m-0 mt-1 text-[12px] text-fg-muted">Considere sua média das últimas semanas, não apenas o melhor dia.</p>
+      <p class="m-0 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
+        Nível de atividade
+      </p>
+      <p class="m-0 mt-1 text-[12px] text-fg-muted">
+        Considere sua média das últimas semanas, não apenas o melhor dia.
+      </p>
       <div class="mt-3 flex flex-wrap justify-center gap-2">
         @for (opt of atividadeOptions; track opt[0]) {
           <label
@@ -19,10 +27,23 @@
                 : 'border-border bg-surface text-fg hover:border-border-strong'
             "
           >
-            <input class="sr-only" type="radio" formControlName="nivel_atividade" [value]="opt[0]" />
-            <span class="flex gap-[3px]" [class.text-primary-strong]="form.controls.nivel_atividade.value === opt[0]" [class.text-border-strong]="form.controls.nivel_atividade.value !== opt[0]">
+            <input
+              class="sr-only"
+              type="radio"
+              formControlName="nivel_atividade"
+              [value]="opt[0]"
+            />
+            <span
+              class="flex gap-[3px]"
+              [class.text-primary-strong]="form.controls.nivel_atividade.value === opt[0]"
+              [class.text-border-strong]="form.controls.nivel_atividade.value !== opt[0]"
+            >
               @for (ponto of pontosIntensidade; track ponto) {
-                <span class="size-[5px] rounded-full" [class.bg-current]="ponto <= intensidade[opt[0]]" [class.bg-border]="ponto > intensidade[opt[0]]"></span>
+                <span
+                  class="size-[5px] rounded-full"
+                  [class.bg-current]="ponto <= intensidade[opt[0]]"
+                  [class.bg-border]="ponto > intensidade[opt[0]]"
+                ></span>
               }
             </span>
             {{ opt[1] }}
@@ -30,14 +51,18 @@
         }
       </div>
       @if (form.controls.nivel_atividade.value; as nivel) {
-        <span class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3.5 py-2 text-[11.5px] font-bold text-primary-strong animate-reveal">
+        <span
+          class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-3.5 py-2 text-[11.5px] font-bold text-primary-strong animate-reveal"
+        >
           {{ descricaoAtividade[nivel] }}
         </span>
       }
     </div>
     <div class="text-center">
       <p class="m-0 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">Objetivo</p>
-      <p class="m-0 mt-1 text-[12px] text-fg-muted">Você pode mudar depois, quando sua prioridade mudar.</p>
+      <p class="m-0 mt-1 text-[12px] text-fg-muted">
+        Você pode mudar depois, quando sua prioridade mudar.
+      </p>
       <div class="mt-3 flex flex-wrap justify-center gap-2">
         @for (opt of objetivoOptions; track opt[0]) {
           <label
@@ -59,12 +84,20 @@
 
   @if (user(); as currentUser) {
     <section class="rounded-[var(--bd-radius-md)] border border-border bg-surface-raised p-4">
-      <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-strong">Pronto para salvar</p>
+      <p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.08em] text-primary-strong">
+        Pronto para salvar
+      </p>
       <p class="m-0 mt-2 text-[13px] leading-[1.55] text-fg-muted">
-        {{ currentUser.peso }} kg · {{ currentUser.altura }} cm · {{ atividadeAtual() }} · {{ objetivoAtual() }}
+        {{ currentUser.peso }} kg · {{ currentUser.altura }} cm · {{ atividadeAtual() }} ·
+        {{ objetivoAtual() }}
       </p>
     </section>
   }
 
-  <vtp-step-footer [carregando]="salvando()" [ultimo]="true" (voltar)="voltar.emit()" (avancar)="salvar()" />
+  <vtp-step-footer
+    [carregando]="salvando()"
+    [ultimo]="true"
+    (voltar)="voltar.emit()"
+    (avancar)="salvar()"
+  />
 </div>
