@@ -1,6 +1,11 @@
 {
   "common": {
-    "language": { "change": "Change language", "menu": "Select language", "brazil": "Brazilian Portuguese", "usa": "US English" },
+    "language": {
+      "change": "Change language",
+      "menu": "Select language",
+      "brazil": "Brazilian Portuguese",
+      "usa": "US English"
+    },
     "navigation": {
       "main": "Main navigation",
       "more": "More",
@@ -42,8 +47,75 @@
       }
     }
   },
+  "ui": {
+    "pagination": {
+      "results": "Results",
+      "showing": "Showing",
+      "items": "items",
+      "navigation": "Pagination",
+      "previous": "Previous",
+      "selectPage": "Select page",
+      "page": "Page",
+      "next": "Next"
+    },
+    "sort": {
+      "sort": "Sort",
+      "by": "Sort by",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "name": "Name",
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fats"
+    }
+  },
+  "ui2": {
+    "actions": { "clear": "Clear" },
+    "foodFilters": {
+      "title": "Filters",
+      "search": "Search food",
+      "favorites": "Favorites",
+      "onlySaved": "Show only your saved foods",
+      "onlyFavorites": "Favorites only",
+      "group": "Food group",
+      "caloriesPerServing": "Calories per serving"
+    }
+  },
+  "uiLoading": {
+    "diary": "Preparing your diary",
+    "catalogOpening": "Opening the catalog",
+    "details": "Loading details",
+    "catalog": "Loading the catalog",
+    "importing": "Importing the TACO database",
+    "mealPlan": "Loading your meal plan",
+    "preparingPlan": "Preparing your plan",
+    "buildingPlan": "Building your plan",
+    "searchingFoods": "Searching foods",
+    "goals": "Preparing your goals"
+  },
+  "nutrition": { "kcal": "kcal", "protein": "Protein", "carbs": "Carbohydrates", "fat": "Fat" },
   "pageTitle": {
-    "dashboard": "Dashboard", "foods": "Foods", "diary": "Food diary", "profile": "Profile and preferences", "foodCatalog": "Food catalog", "dietsGoal": "First, let's define your goal", "dietsRoutine": "A routine that fits your day", "dietForm": "What is your day like?", "buildPlate": "Build your plate", "goalReady": "Your daily goal is ready", "development": "Development", "planPreview": "Plan preview", "dashboardSubtitle": "Phase 6 of the plan is not implemented yet.", "foodsSubtitle": "Find items in the TACO catalog and save the ones you use often.", "diarySubtitle": "Log your meals and follow your day's composition.", "profileSubtitle": "Update your details in short steps. Each advance is saved so you do not lose progress.", "foodCatalogSubtitle": "Global items used across the platform.", "dietsGoalSubtitle": "Your plan is built from the calories and macros you confirmed for your goal.", "dietsRoutineSubtitle": "Flexible suggestions based on your current goal — you always review before logging.", "goalReadySubtitle": "It counts for today in the dashboard and diary. Routine changed? Retake the quiz whenever you want."
+    "dashboard": "Dashboard",
+    "foods": "Foods",
+    "diary": "Food diary",
+    "profile": "Profile and preferences",
+    "foodCatalog": "Food catalog",
+    "dietsGoal": "First, let's define your goal",
+    "dietsRoutine": "A routine that fits your day",
+    "dietForm": "What is your day like?",
+    "buildPlate": "Build your plate",
+    "goalReady": "Your daily goal is ready",
+    "development": "Development",
+    "planPreview": "Plan preview",
+    "dashboardSubtitle": "Phase 6 of the plan is not implemented yet.",
+    "foodsSubtitle": "Find items in the TACO catalog and save the ones you use often.",
+    "diarySubtitle": "Log your meals and follow your day's composition.",
+    "profileSubtitle": "Update your details in short steps. Each advance is saved so you do not lose progress.",
+    "foodCatalogSubtitle": "Global items used across the platform.",
+    "dietsGoalSubtitle": "Your plan is built from the calories and macros you confirmed for your goal.",
+    "dietsRoutineSubtitle": "Flexible suggestions based on your current goal — you always review before logging.",
+    "goalReadySubtitle": "It counts for today in the dashboard and diary. Routine changed? Retake the quiz whenever you want."
   },
   "auth": {
     "accountCreated": "Account created! Sign in to continue.",

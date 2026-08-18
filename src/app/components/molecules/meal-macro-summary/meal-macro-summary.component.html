@@ -4,7 +4,9 @@
 >
   <strong class="whitespace-nowrap text-[17px] font-extrabold tabular-nums text-fg">
     {{ totals().caloria | number: '1.0-0' }}
-    <span class="ml-0.5 text-[11px] font-bold uppercase tracking-wide text-fg-muted">kcal</span>
+    <span class="ml-0.5 text-[11px] font-bold uppercase tracking-wide text-fg-muted">{{
+      'nutrition.kcal' | transloco
+    }}</span>
   </strong>
   <span
     class="flex flex-wrap items-center gap-x-2.5 gap-y-1 whitespace-nowrap text-[12px] font-bold tabular-nums text-fg-muted"

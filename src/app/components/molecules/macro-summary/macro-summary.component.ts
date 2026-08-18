@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 export interface MacroValores {
   caloria: number;
@@ -7,10 +8,10 @@ export interface MacroValores {
   gordura: number;
 }
 
-
 @Component({
   selector: 'vtp-macro-summary',
   standalone: true,
+  imports: [TranslocoPipe],
   templateUrl: './macro-summary.component.html',
   styleUrl: './macro-summary.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

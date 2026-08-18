@@ -6,15 +6,15 @@
     aria-haspopup="menu"
     (click)="toggleAberto()"
   >
-    <span>{{ rotulo() }}</span
+    <span>{{ rotuloResolvido() }}</span
     ><b>{{ opcaoAtualLabel() }}</b
     ><svg lucideChevronDown size="14" aria-hidden="true"></svg>
   </button>
   <button
     class="sort-direction"
     type="button"
-    [attr.aria-label]="direcaoLabel()"
-    [attr.title]="direcaoLabel()"
+    [attr.aria-label]="direcaoResolvida()"
+    [attr.title]="direcaoResolvida()"
     (click)="inverter()"
   >
     @if (ordem() === 1) {
@@ -25,7 +25,7 @@
   </button>
   @if (aberto()) {
     <div class="sort-options" role="menu" aria-label="Ordenar por">
-      <p>Ordenar por</p>
+      <p>{{ 'ui.sort.by' | transloco }}</p>
       @for (opcao of opcoes(); track opcao.field) {
         <button
           type="button"
@@ -34,9 +34,9 @@
           [class.active]="campo() === opcao.field"
           (click)="selecionar(opcao.field)"
         >
-          {{ opcao.label }}
+          {{ resolveOptionLabel(opcao.label) }}
           @if (campo() === opcao.field) {
-            <span>{{ direcaoLabel() }}</span>
+            <span>{{ direcaoResolvida() }}</span>
           }
         </button>
       }

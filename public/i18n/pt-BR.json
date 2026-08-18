@@ -1,6 +1,11 @@
 {
   "common": {
-    "language": { "change": "Alterar idioma", "menu": "Selecionar idioma", "brazil": "Português do Brasil", "usa": "Inglês dos Estados Unidos" },
+    "language": {
+      "change": "Alterar idioma",
+      "menu": "Selecionar idioma",
+      "brazil": "Português do Brasil",
+      "usa": "Inglês dos Estados Unidos"
+    },
     "navigation": {
       "main": "Navegação principal",
       "more": "Mais",
@@ -42,8 +47,75 @@
       }
     }
   },
+  "ui": {
+    "pagination": {
+      "results": "Resultados",
+      "showing": "Exibindo",
+      "items": "itens",
+      "navigation": "Paginação",
+      "previous": "Anterior",
+      "selectPage": "Selecionar página",
+      "page": "Página",
+      "next": "Próxima"
+    },
+    "sort": {
+      "sort": "Ordenar",
+      "by": "Ordenar por",
+      "ascending": "Ascendente",
+      "descending": "Descendente",
+      "name": "Nome",
+      "calories": "Calorias",
+      "protein": "Proteína",
+      "carbs": "Carboidratos",
+      "fat": "Gorduras"
+    }
+  },
+  "ui2": {
+    "actions": { "clear": "Limpar" },
+    "foodFilters": {
+      "title": "Filtros",
+      "search": "Buscar alimento",
+      "favorites": "Favoritos",
+      "onlySaved": "Exibir apenas seus alimentos salvos",
+      "onlyFavorites": "Somente favoritos",
+      "group": "Grupo alimentar",
+      "caloriesPerServing": "Calorias por porção"
+    }
+  },
+  "uiLoading": {
+    "diary": "Preparando seu diário",
+    "catalogOpening": "Abrindo o catálogo",
+    "details": "Carregando detalhes",
+    "catalog": "Carregando o catálogo",
+    "importing": "Importando a base TACO",
+    "mealPlan": "Carregando seu plano alimentar",
+    "preparingPlan": "Preparando seu plano",
+    "buildingPlan": "Montando seu plano",
+    "searchingFoods": "Buscando alimentos",
+    "goals": "Preparando suas metas"
+  },
+  "nutrition": { "kcal": "kcal", "protein": "Proteína", "carbs": "Carboidrato", "fat": "Gordura" },
   "pageTitle": {
-    "dashboard": "Dashboard", "foods": "Alimentos", "diary": "Diário alimentar", "profile": "Perfil e preferências", "foodCatalog": "Catálogo de alimentos", "dietsGoal": "Primeiro, vamos definir sua meta", "dietsRoutine": "Uma rotina que cabe no seu dia", "dietForm": "Como é o seu dia?", "buildPlate": "Monte o seu prato", "goalReady": "Sua meta diária está pronta", "development": "Desenvolvimento", "planPreview": "Prévia do plano", "dashboardSubtitle": "Fase 6 do plano ainda não implementada.", "foodsSubtitle": "Encontre itens do catálogo TACO e guarde os que você usa com frequência.", "diarySubtitle": "Registre suas refeições e acompanhe a composição do seu dia.", "profileSubtitle": "Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.", "foodCatalogSubtitle": "Itens globais usados por toda a plataforma.", "dietsGoalSubtitle": "Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.", "dietsRoutineSubtitle": "Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.", "goalReadySubtitle": "Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
+    "dashboard": "Dashboard",
+    "foods": "Alimentos",
+    "diary": "Diário alimentar",
+    "profile": "Perfil e preferências",
+    "foodCatalog": "Catálogo de alimentos",
+    "dietsGoal": "Primeiro, vamos definir sua meta",
+    "dietsRoutine": "Uma rotina que cabe no seu dia",
+    "dietForm": "Como é o seu dia?",
+    "buildPlate": "Monte o seu prato",
+    "goalReady": "Sua meta diária está pronta",
+    "development": "Desenvolvimento",
+    "planPreview": "Prévia do plano",
+    "dashboardSubtitle": "Fase 6 do plano ainda não implementada.",
+    "foodsSubtitle": "Encontre itens do catálogo TACO e guarde os que você usa com frequência.",
+    "diarySubtitle": "Registre suas refeições e acompanhe a composição do seu dia.",
+    "profileSubtitle": "Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.",
+    "foodCatalogSubtitle": "Itens globais usados por toda a plataforma.",
+    "dietsGoalSubtitle": "Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.",
+    "dietsRoutineSubtitle": "Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.",
+    "goalReadySubtitle": "Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
   },
   "auth": {
     "accountCreated": "Conta criada! Faça login para continuar.",

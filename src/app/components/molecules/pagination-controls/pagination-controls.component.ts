@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
+import { TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 import { criarItensPaginacao } from '../../utils/pagination.util';
 
@@ -11,12 +13,27 @@ import { criarItensPaginacao } from '../../utils/pagination.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginationControlsComponent {
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   readonly pagina = input.required<number>();
   readonly totalRegistros = input.required<number>();
   readonly tamanhoPagina = input(20);
   readonly carregando = input(false);
 
   readonly paginaChange = output<number>();
+  protected readonly labels = computed(() => {
+    this.language.locale();
+    return {
+      results: this.transloco.translate('ui.pagination.results'),
+      showing: this.transloco.translate('ui.pagination.showing'),
+      items: this.transloco.translate('ui.pagination.items'),
+      navigation: this.transloco.translate('ui.pagination.navigation'),
+      previous: this.transloco.translate('ui.pagination.previous'),
+      selectPage: this.transloco.translate('ui.pagination.selectPage'),
+      page: this.transloco.translate('ui.pagination.page'),
+      next: this.transloco.translate('ui.pagination.next'),
+    };
+  });
 
   protected readonly totalPaginas = computed(() =>
     Math.ceil(this.totalRegistros() / this.tamanhoPagina()),

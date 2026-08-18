@@ -1,6 +1,6 @@
 <aside class="card flex flex-col gap-6 p-5">
   <div class="flex items-center justify-between">
-    <p class="m-0 text-[13px] font-bold text-fg">Filtros</p>
+    <p class="m-0 text-[13px] font-bold text-fg">{{ 'ui2.foodFilters.title' | transloco }}</p>
     @if (temFiltroAtivo()) {
       <button
         type="button"
@@ -8,7 +8,7 @@
         (click)="limpar.emit()"
       >
         <svg lucideX size="12" aria-hidden="true"></svg>
-        Limpar
+        {{ 'ui2.actions.clear' | transloco }}
       </button>
     }
   </div>
@@ -19,7 +19,7 @@
       <input
         #termo
         type="search"
-        placeholder="Buscar alimento"
+        [placeholder]="'ui2.foodFilters.search' | transloco"
         [value]="busca()"
         (input)="buscaChange.emit(termo.value)"
       />
@@ -29,20 +29,20 @@
   @if (mostrarFavoritos()) {
     <section class="favorite-filter">
       <div>
-        <p>Favoritos</p>
-        <span>Exibir apenas seus alimentos salvos</span>
+        <p>{{ 'ui2.foodFilters.favorites' | transloco }}</p>
+        <span>{{ 'ui2.foodFilters.onlySaved' | transloco }}</span>
       </div>
       <bd-switch
         [checked]="somenteFavoritos()"
         (checkedChange)="somenteFavoritosChange.emit($event)"
       >
-        <span class="sr-only">Somente favoritos</span>
+        <span class="sr-only">{{ 'ui2.foodFilters.onlyFavorites' | transloco }}</span>
       </bd-switch>
     </section>
   }
 
   <vtp-facet-checkbox-list
-    label="Grupo alimentar"
+    [label]="'ui2.foodFilters.group' | transloco"
     [options]="opcoesGrupo()"
     [selected]="grupoSelecionado()"
     [loading]="grupoLoading()"
@@ -50,7 +50,7 @@
   />
 
   <vtp-range-slider
-    label="Calorias por porção"
+    [label]="'ui2.foodFilters.caloriesPerServing' | transloco"
     [min]="caloriaBounds()[0]"
     [max]="caloriaBounds()[1]"
     [step]="10"

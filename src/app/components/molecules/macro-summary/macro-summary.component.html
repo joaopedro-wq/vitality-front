@@ -1,6 +1,22 @@
-<div class="summary" [class.lg]="tamanho() === 'lg'" [class.xl]="tamanho() === 'xl'" [class.col]="orientacao() === 'col'">
-  <svg [attr.width]="raio() * 2 + espessura()" [attr.height]="raio() * 2 + espessura()" [attr.viewBox]="viewBox()">
-    <circle [attr.cx]="centro()" [attr.cy]="centro()" [attr.r]="raio()" fill="none" stroke="var(--bd-border)" [attr.stroke-width]="espessura()" />
+<div
+  class="summary"
+  [class.lg]="tamanho() === 'lg'"
+  [class.xl]="tamanho() === 'xl'"
+  [class.col]="orientacao() === 'col'"
+>
+  <svg
+    [attr.width]="raio() * 2 + espessura()"
+    [attr.height]="raio() * 2 + espessura()"
+    [attr.viewBox]="viewBox()"
+  >
+    <circle
+      [attr.cx]="centro()"
+      [attr.cy]="centro()"
+      [attr.r]="raio()"
+      fill="none"
+      stroke="var(--bd-border)"
+      [attr.stroke-width]="espessura()"
+    />
     @if (valores()) {
       <circle
         [attr.cx]="centro()"
@@ -15,15 +31,28 @@
         [attr.transform]="'rotate(-90 ' + centro() + ' ' + centro() + ')'"
       />
     }
-    <text [attr.x]="centro()" [attr.y]="centro() - 3" text-anchor="middle" class="ring-num">{{ valores()?.caloria ?? '—' }}</text>
-    <text [attr.x]="centro()" [attr.y]="centro() + 13" text-anchor="middle" class="ring-unit">kcal</text>
+    <text [attr.x]="centro()" [attr.y]="centro() - 3" text-anchor="middle" class="ring-num">
+      {{ valores()?.caloria ?? '—' }}
+    </text>
+    <text [attr.x]="centro()" [attr.y]="centro() + 13" text-anchor="middle" class="ring-unit">
+      {{ 'nutrition.kcal' | transloco }}
+    </text>
   </svg>
 
   <ng-content></ng-content>
 
   <div class="chips">
-    <div class="chip"><span class="dot protein"></span><span class="lbl">Proteína</span><b>{{ valores()?.proteina ?? '—' }} g</b></div>
-    <div class="chip"><span class="dot carb"></span><span class="lbl">Carboidrato</span><b>{{ valores()?.carbo ?? '—' }} g</b></div>
-    <div class="chip"><span class="dot fat"></span><span class="lbl">Gordura</span><b>{{ valores()?.gordura ?? '—' }} g</b></div>
+    <div class="chip">
+      <span class="dot protein"></span><span class="lbl">{{ 'nutrition.protein' | transloco }}</span
+      ><b>{{ valores()?.proteina ?? '—' }} g</b>
+    </div>
+    <div class="chip">
+      <span class="dot carb"></span><span class="lbl">{{ 'nutrition.carbs' | transloco }}</span
+      ><b>{{ valores()?.carbo ?? '—' }} g</b>
+    </div>
+    <div class="chip">
+      <span class="dot fat"></span><span class="lbl">{{ 'nutrition.fat' | transloco }}</span
+      ><b>{{ valores()?.gordura ?? '—' }} g</b>
+    </div>
   </div>
 </div>

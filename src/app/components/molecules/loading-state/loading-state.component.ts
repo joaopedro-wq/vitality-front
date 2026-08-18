@@ -32,8 +32,25 @@ export class LoadingStateComponent {
   private readonly language = inject(LanguageService);
   private readonly transloco = inject(TranslocoService);
   readonly titulo = input<string | undefined>(undefined);
+  private readonly keyByText: Record<string, string> = {
+    'Preparando seu diário': 'uiLoading.diary',
+    'Abrindo o catálogo': 'uiLoading.catalogOpening',
+    'Carregando detalhes': 'uiLoading.details',
+    'Carregando o catálogo': 'uiLoading.catalog',
+    'Importando a base TACO': 'uiLoading.importing',
+    'Carregando seu plano alimentar': 'uiLoading.mealPlan',
+    'Preparando seu plano': 'uiLoading.preparingPlan',
+    'Montando seu plano': 'uiLoading.buildingPlan',
+    'Buscando alimentos': 'uiLoading.searchingFoods',
+    'Preparando suas metas': 'uiLoading.goals',
+  };
   protected readonly tituloResolvido = computed(() => {
-    if (this.titulo()) return this.titulo()!;
+    const value = this.titulo();
+    if (value) {
+      this.language.locale();
+      const key = this.keyByText[value];
+      return key ? this.transloco.translate(key) : value;
+    }
     this.language.locale();
     return this.transloco.translate('common.actions.loading');
   });

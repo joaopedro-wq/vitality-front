@@ -5,22 +5,24 @@
     [attr.aria-busy]="carregando()"
   >
     <div class="food-pagination__summary">
-      <span>Resultados</span>
+      <span>{{ labels().results }}</span>
       <p>
-        Exibindo <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> de
-        <b>{{ totalRegistros() }}</b> itens
+        {{ labels().showing }}
+        <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> de
+        <b>{{ totalRegistros() }}</b> {{ labels().items }}
       </p>
     </div>
-    <nav class="food-pagination__navigation" aria-label="Paginação">
+    <nav class="food-pagination__navigation" [attr.aria-label]="labels().navigation">
       <button
         type="button"
         class="food-pagination__step"
         [disabled]="pagina() === 1 || carregando()"
         (click)="irParaPagina(pagina() - 1)"
       >
-        <svg lucideChevronLeft size="16" aria-hidden="true"></svg><span>Anterior</span>
+        <svg lucideChevronLeft size="16" aria-hidden="true"></svg
+        ><span>{{ labels().previous }}</span>
       </button>
-      <div class="food-pagination__pages" aria-label="Selecionar página">
+      <div class="food-pagination__pages" [attr.aria-label]="labels().selectPage">
         @for (item of itensPaginacao(); track $index) {
           @if (item === 'ellipsis') {
             <span aria-hidden="true">…</span>
@@ -29,7 +31,7 @@
               type="button"
               [class.active]="item === pagina()"
               [attr.aria-current]="item === pagina() ? 'page' : null"
-              [attr.aria-label]="'Página ' + item"
+              [attr.aria-label]="labels().page + ' ' + item"
               [disabled]="carregando()"
               (click)="irParaPagina(item)"
             >
@@ -38,14 +40,17 @@
           }
         }
       </div>
-      <span class="food-pagination__status">Página {{ pagina() }} de {{ totalPaginas() }}</span>
+      <span class="food-pagination__status"
+        >{{ labels().page }} {{ pagina() }} de {{ totalPaginas() }}</span
+      >
       <button
         type="button"
         class="food-pagination__step food-pagination__step--next"
         [disabled]="pagina() === totalPaginas() || carregando()"
         (click)="irParaPagina(pagina() + 1)"
       >
-        <span>Próxima</span><svg lucideChevronRight size="16" aria-hidden="true"></svg>
+        <span>{{ labels().next }}</span
+        ><svg lucideChevronRight size="16" aria-hidden="true"></svg>
       </button>
     </nav>
   </footer>

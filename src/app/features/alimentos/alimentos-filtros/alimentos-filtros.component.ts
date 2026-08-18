@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { BdSwitchComponent } from 'bandeira-ui';
 import { LucideSearch, LucideX } from '@lucide/angular';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import {
   FacetCheckboxListComponent,
@@ -18,6 +19,7 @@ import type { AlimentoGrupo } from '../../../core/models/alimento.model';
     RangeSliderComponent,
     LucideSearch,
     LucideX,
+    TranslocoPipe,
   ],
   templateUrl: './alimentos-filtros.component.html',
   styleUrl: './alimentos-filtros.component.scss',
