@@ -1,33 +1,66 @@
-<p class="m-0 mb-3.5 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
+<p class="m-0 mb-3 text-center text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
   {{ 'dashboard.week.title' | transloco }}
 </p>
 
-<div class="flex items-center justify-between gap-1 overflow-x-auto pb-1 sm:gap-2">
+<div class="mb-3 border-b border-border pb-3 text-center">
+  <p class="m-0 text-[26px] font-extrabold leading-none tabular-nums">
+    {{ diasDentroDaMeta()
+    }}<span class="text-[15px] font-semibold text-fg-muted"> / {{ totalDias() }}</span>
+  </p>
+  <p class="m-0 mt-1.5 text-[11px] leading-snug text-fg-muted">
+    {{ 'dashboard.week.summary' | transloco }}
+  </p>
+</div>
+
+<div class="flex flex-wrap justify-center gap-1.5 md:hidden">
   @for (dia of diasComRotulo(); track dia.data) {
-    <div class="flex min-w-[38px] flex-1 flex-col items-center gap-1.5">
-      <div
-        class="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full border-2 text-[10px] font-bold sm:h-8 sm:w-8"
-        [class.border-primary]="dia.dentro_da_meta"
-        [class.bg-primary]="dia.dentro_da_meta"
-        [class.text-primary-contrast]="dia.dentro_da_meta"
-        [class.border-border-strong]="!dia.dentro_da_meta && !dia.hoje"
-        [class.text-fg-muted]="!dia.dentro_da_meta && !dia.hoje"
-        [class.border-accent]="!dia.dentro_da_meta && dia.hoje"
-        [class.text-accent]="!dia.dentro_da_meta && dia.hoje"
-      >
-        @if (dia.dentro_da_meta) {
-          ✓
-        } @else if (dia.hoje) {
-          {{ dia.percentual }}%
-        } @else {
-          ·
-        }
-      </div>
+    <span
+      class="rounded-full px-2 py-1 text-[9.5px] font-bold uppercase tracking-wide"
+      [class]="classesDoPill(dia.estado)"
+      [attr.title]="dia.rotulo"
+      >{{ dia.rotulo }}</span
+    >
+  }
+</div>
+
+<!-- Desktop: a coluna fica tão alta quanto o card de Missões ao lado — em vez de deixar o
+     espaço sobrando vazio, cada dia vira uma linha com o resumo de macro daquele dia. -->
+<div class="hidden flex-col gap-1 md:flex">
+  @for (dia of diasComRotulo(); track dia.data) {
+    <div
+      class="flex items-center gap-2.5 rounded-[10px] px-2 py-2"
+      [class.bg-accent-soft]="dia.estado === 'today'"
+      [class.bg-primary-soft]="dia.estado === 'done'"
+    >
       <span
-        class="text-[9.5px] font-bold uppercase text-fg-subtle"
-        [class.text-accent]="dia.hoje"
+        class="w-8 flex-shrink-0 text-[11px] font-extrabold uppercase text-fg-muted"
+        [class.text-accent]="dia.estado === 'today'"
+        [class.text-primary-strong]="dia.estado === 'done'"
         >{{ dia.rotulo }}</span
       >
+      @if (dia.caloria > 0) {
+        <div class="min-w-0 flex-1">
+          <p class="m-0 text-[12px] font-bold tabular-nums">
+            {{ dia.caloria | number: '1.0-0' }} kcal
+          </p>
+          <div class="mt-0.5 flex gap-2.5 text-[10px] text-fg-muted">
+            <span
+              ><i class="mr-0.5 inline-block h-1.5 w-1.5 rounded-full bg-primary"></i
+              ><b class="tabular-nums font-mono">{{ dia.proteina }}g</b></span
+            >
+            <span
+              ><i class="mr-0.5 inline-block h-1.5 w-1.5 rounded-full bg-accent"></i
+              ><b class="tabular-nums font-mono">{{ dia.carbo }}g</b></span
+            >
+            <span
+              ><i class="mr-0.5 inline-block h-1.5 w-1.5 rounded-full bg-fat"></i
+              ><b class="tabular-nums font-mono">{{ dia.gordura }}g</b></span
+            >
+          </div>
+        </div>
+      } @else {
+        <span class="flex-1 text-[12px] text-fg-subtle">—</span>
+      }
     </div>
   }
 </div>

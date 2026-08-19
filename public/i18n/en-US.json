@@ -315,7 +315,8 @@
       "ctaDone": "View diary"
     },
     "week": {
-      "title": "Your week"
+      "title": "Your week",
+      "summary": "days with your calorie goal hit this week"
     },
     "missions": {
       "title": "Missions",

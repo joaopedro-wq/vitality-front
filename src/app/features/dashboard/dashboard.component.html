@@ -8,9 +8,10 @@
         <vtp-mission-card [proximaRefeicao]="r.proxima_refeicao" />
       </div>
 
-      <vtp-missions-card [progressao]="r.progressao" />
-
-      <vtp-week-trail [dias]="r.semana" [hoje]="r.date" />
+      <div class="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-[minmax(0,1fr)_300px]">
+        <vtp-missions-card [progressao]="r.progressao" />
+        <vtp-week-trail [dias]="r.semana" [hoje]="r.date" />
+      </div>
 
       <vtp-shortcuts-row [resumo]="r" />
     </div>

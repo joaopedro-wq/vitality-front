@@ -315,7 +315,8 @@
       "ctaDone": "Ver diário"
     },
     "week": {
-      "title": "Sua semana"
+      "title": "Sua semana",
+      "summary": "dias com a meta calórica batida nesta semana"
     },
     "missions": {
       "title": "Missões",

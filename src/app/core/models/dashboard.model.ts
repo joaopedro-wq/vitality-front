@@ -11,6 +11,10 @@ export interface DashboardSemanaDia {
   data: string;
   percentual: number;
   dentro_da_meta: boolean;
+  caloria: number;
+  proteina: number;
+  carbo: number;
+  gordura: number;
 }
 
 export interface DashboardProximaRefeicao {
