@@ -17,6 +17,7 @@ export type ConfirmDialogVariant = 'danger' | 'soft' | 'sheet';
     LucideX,
   ],
   templateUrl: './confirm-dialog.component.html',
+  styleUrl: './confirm-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialogComponent {

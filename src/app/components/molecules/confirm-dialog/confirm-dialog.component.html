@@ -55,9 +55,10 @@
 
       <div class="confirm-dialog__actions">
         <button
-          class="confirm-dialog__action"
+          class="confirm-dialog__action confirm-dialog__action--secondary"
           bdButton
           variant="ghost"
+          size="sm"
           type="button"
           (click)="cancelar()"
         >
@@ -67,6 +68,7 @@
           class="confirm-dialog__action"
           bdButton
           [variant]="variante() === 'soft' ? 'primary' : 'danger'"
+          size="sm"
           type="button"
           (click)="confirmar()"
         >
