@@ -24,6 +24,11 @@
       "cancel": "Cancelar",
       "remove": "Remover"
     },
+    "confirmation": {
+      "eyebrow": "Confirmação",
+      "attention": "Atenção",
+      "close": "Fechar confirmação"
+    },
     "errors": { "generic": "Não foi possível completar a operação. Tente novamente." },
     "shell": {
       "morning": "Bom dia",
@@ -255,12 +260,23 @@
     },
     "toast": {
       "saved": "Plano alimentar salvo.",
+      "archived": "Plano arquivado.",
+      "deleted": "Plano excluído.",
+      "deleteError": "Não foi possível excluir este plano agora.",
       "mealRegenerated": "Refeição reorganizada com uma nova combinação.",
       "itemReplaced": "Alimento substituído mantendo a meta da refeição.",
       "dayRecreated": "Novo dia gerado.",
       "undone": "Última alteração desfeita.",
       "loadPreferencesError": "Não foi possível carregar suas preferências agora.",
       "loadForEditError": "Não foi possível abrir esse plano para edição."
+    },
+    "confirm": {
+      "archiveTitle": "Arquivar este plano?",
+      "archiveDescription": "O plano ficará fora da sua lista ativa, mas poderá ser consultado depois.",
+      "deleteTitle": "Excluir este plano?",
+      "deleteDescription": "Essa ação é permanente e não será possível recuperar este plano depois.",
+      "archiveAction": "Arquivar plano",
+      "deleteAction": "Excluir plano"
     },
     "confirmRecreate": "Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?",
     "swapFailureFallback": "Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente."

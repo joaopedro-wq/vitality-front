@@ -90,50 +90,14 @@
             {{ 'dietPlan.planNameLabel' | transloco }}
           </label>
 
-          @if (editandoNome()) {
-            <div class="mt-1.5 flex items-center gap-1.5">
-              <input
-                #inputNome
-                id="plan-title"
-                class="w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
-                [attr.aria-label]="'dietPlan.planNameLabel' | transloco"
-                [value]="rascunhoNome()"
-                (input)="rascunhoNome.set($any($event.target).value)"
-                (keydown)="onNomeKeydown($event)"
-              />
-              <button
-                class="flex size-9 shrink-0 items-center justify-center rounded-full text-primary-strong enabled:hover:bg-primary-soft"
-                type="button"
-                [attr.aria-label]="'dietPlan.confirmNameLabel' | transloco"
-                (click)="confirmarNome()"
-              >
-                <svg lucideCheck size="16" aria-hidden="true"></svg>
-              </button>
-              <button
-                class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-muted enabled:hover:bg-surface-hover"
-                type="button"
-                [attr.aria-label]="'dietPlan.cancelNameEditLabel' | transloco"
-                (click)="cancelarEdicaoNome()"
-              >
-                <svg lucideX size="16" aria-hidden="true"></svg>
-              </button>
-            </div>
-          } @else {
-            <div class="mt-1.5 flex items-center gap-1.5">
-              <p class="m-0 min-w-0 truncate text-[17px] font-bold text-fg" [attr.title]="title()">
-                {{ title() }}
-              </p>
-              <button
-                class="flex size-9 shrink-0 items-center justify-center rounded-full text-fg-subtle enabled:hover:bg-surface-hover enabled:hover:text-fg"
-                type="button"
-                id="plan-title"
-                [attr.aria-label]="'dietPlan.editNameLabel' | transloco"
-                (click)="iniciarEdicaoNome()"
-              >
-                <svg lucidePencil size="15" aria-hidden="true"></svg>
-              </button>
-            </div>
-          }
+          <input
+            id="plan-title"
+            class="mt-1.5 w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
+            [attr.aria-label]="'dietPlan.planNameLabel' | transloco"
+            [placeholder]="'dietPlan.defaultTitle' | transloco"
+            [value]="title()"
+            (input)="onTituloChange($any($event.target).value)"
+          />
         </div>
 
         <div class="flex shrink-0 items-center gap-3">
@@ -148,7 +112,7 @@
             bdButton
             size="sm"
             [variant]="dirty() ? 'primary' : 'subtle'"
-            [disabled]="saving() || !dirty()"
+            [disabled]="saving() || !dirty() || !title().trim()"
             [attr.aria-busy]="saving() ? true : null"
             (click)="save()"
           >

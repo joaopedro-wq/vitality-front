@@ -126,4 +126,8 @@ export class MealPlanService {
   archive(id: number): Observable<void> {
     return this.http.post<void>(apiPaths.mealPlanArchive(id), {});
   }
+
+  remove(id: number): Observable<void> {
+    return this.http.delete<void>(apiPaths.mealPlan(id));
+  }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { BdBadgeComponent, BdButtonComponent, BdCardComponent } from 'bandeira-ui';
 
 import {
@@ -8,6 +8,10 @@ import {
 import { LoadingStateComponent } from '../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../components/molecules/page-title/page-title.component';
 import { ThemeService } from '../../core/layout/theme.service';
+import {
+  ConfirmDialogComponent,
+  type ConfirmDialogVariant,
+} from '../../components/molecules/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'vtp-ui-check',
@@ -16,6 +20,7 @@ import { ThemeService } from '../../core/layout/theme.service';
     BdButtonComponent,
     BdCardComponent,
     BdBadgeComponent,
+    ConfirmDialogComponent,
     PlateLoaderComponent,
     LoadingStateComponent,
     PageTitleComponent,
@@ -75,11 +80,93 @@ import { ThemeService } from '../../core/layout/theme.service';
           descricao="Carregando metas, refeições e catálogo."
         />
       </bd-card>
+
+      <bd-card class="flex flex-col gap-5 p-6">
+        <div>
+          <p class="m-0 text-[11px] font-extrabold uppercase tracking-[.1em] text-primary">
+            Protótipos
+          </p>
+          <h2 class="m-0 mt-1 text-lg font-semibold text-fg">Confirmação de ação</h2>
+          <p class="m-0 mt-2 text-sm text-fg-muted">
+            Escolha uma variação para abrir e avaliar antes de adotarmos o padrão do sistema.
+          </p>
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-3">
+          @for (prototipo of prototipos; track prototipo.variante) {
+            <button
+              bdButton
+              variant="ghost"
+              type="button"
+              class="!h-auto !min-h-0 flex-col !items-start !gap-1 !p-4 text-left"
+              (click)="abrirConfirmacao(prototipo.variante)"
+            >
+              <span class="text-[11px] font-extrabold uppercase tracking-wider text-primary">
+                {{ prototipo.nome }}
+              </span>
+              <span class="text-sm font-bold text-fg">{{ prototipo.titulo }}</span>
+              <span class="text-xs font-normal text-fg-muted">{{ prototipo.descricao }}</span>
+            </button>
+          }
+        </div>
+      </bd-card>
     </div>
+
+    <vtp-confirm-dialog
+      [aberto]="confirmacaoAberta() !== null"
+      [variante]="confirmacaoAberta() ?? 'danger'"
+      [titulo]="tituloConfirmacao()"
+      [descricao]="descricaoConfirmacao()"
+      [confirmarTexto]="confirmacaoAberta() === 'sheet' ? 'Arquivar plano' : 'Excluir plano'"
+      (cancelado)="fecharConfirmacao()"
+      (confirmado)="fecharConfirmacao()"
+    />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiCheckComponent {
   protected readonly theme = inject(ThemeService);
   protected readonly tamanhos: TamanhoPrato[] = ['xs', 'sm', 'md', 'lg'];
+  protected readonly confirmacaoAberta = signal<ConfirmDialogVariant | null>(null);
+  protected readonly prototipos: ReadonlyArray<{
+    variante: ConfirmDialogVariant;
+    nome: string;
+    titulo: string;
+    descricao: string;
+  }> = [
+    {
+      variante: 'danger',
+      nome: 'Protótipo 01',
+      titulo: 'Alerta direto',
+      descricao: 'Foco no risco e na ação destrutiva.',
+    },
+    {
+      variante: 'soft',
+      nome: 'Protótipo 02',
+      titulo: 'Confirmação suave',
+      descricao: 'Tom mais acolhedor para ações reversíveis.',
+    },
+    {
+      variante: 'sheet',
+      nome: 'Protótipo 03',
+      titulo: 'Painel de decisão',
+      descricao: 'Mais espaço para contexto e detalhes.',
+    },
+  ];
+
+  protected readonly tituloConfirmacao = () =>
+    this.confirmacaoAberta() === 'sheet' ? 'Arquivar este plano?' : 'Excluir este plano?';
+
+  protected readonly descricaoConfirmacao = () =>
+    this.confirmacaoAberta() === 'sheet'
+      ? 'O plano ficará fora da sua lista ativa, mas poderá ser consultado depois.'
+      : 'Essa ação é permanente e não será possível recuperar este plano depois.';
+
+  protected abrirConfirmacao(variante: ConfirmDialogVariant): void {
+    this.confirmacaoAberta.set(variante);
+  }
+
+  protected fecharConfirmacao(): void {
+    this.confirmacaoAberta.set(null);
+  }
 }

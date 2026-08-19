@@ -1,0 +1,78 @@
+@if (aberto()) {
+  <div
+    class="confirm-dialog fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+    role="presentation"
+    (click)="cancelar()"
+  >
+    <div class="confirm-dialog__backdrop absolute inset-0"></div>
+    <section
+      [class]="classePainel()"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="confirm-dialog-title"
+      aria-describedby="confirm-dialog-description"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        class="confirm-dialog__close"
+        bdButton
+        variant="ghost"
+        size="sm"
+        iconOnly
+        type="button"
+        [attr.aria-label]="'common.confirmation.close' | transloco"
+        (click)="cancelar()"
+      >
+        <svg lucideX size="17" aria-hidden="true"></svg>
+      </button>
+
+      <div class="confirm-dialog__icon" aria-hidden="true">
+        @switch (variante()) {
+          @case ('danger') {
+            <svg lucideTrash2 size="22"></svg>
+          }
+          @case ('soft') {
+            <svg lucideShieldCheck size="22"></svg>
+          }
+          @default {
+            <svg lucideArchive size="22"></svg>
+          }
+        }
+      </div>
+
+      <div class="confirm-dialog__copy">
+        <p class="confirm-dialog__eyebrow">
+          {{
+            (variante() === 'sheet'
+              ? 'common.confirmation.attention'
+              : 'common.confirmation.eyebrow'
+            ) | transloco
+          }}
+        </p>
+        <h2 id="confirm-dialog-title">{{ titulo() }}</h2>
+        <p id="confirm-dialog-description">{{ descricao() }}</p>
+      </div>
+
+      <div class="confirm-dialog__actions">
+        <button
+          class="confirm-dialog__action"
+          bdButton
+          variant="ghost"
+          type="button"
+          (click)="cancelar()"
+        >
+          {{ cancelarTexto() }}
+        </button>
+        <button
+          class="confirm-dialog__action"
+          bdButton
+          [variant]="variante() === 'soft' ? 'primary' : 'danger'"
+          type="button"
+          (click)="confirmar()"
+        >
+          {{ confirmarTexto() }}
+        </button>
+      </div>
+    </section>
+  </div>
+}

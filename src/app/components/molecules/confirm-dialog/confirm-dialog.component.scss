@@ -1,0 +1,118 @@
+.confirm-dialog__backdrop {
+  background: color-mix(in srgb, var(--bd-bg) 72%, transparent);
+  backdrop-filter: blur(5px);
+}
+
+.confirm-dialog__panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  width: min(100%, 430px);
+  padding: 28px;
+  border: 1px solid var(--bd-border);
+  border-radius: 28px;
+  background: var(--bd-surface);
+  box-shadow: var(--bd-shadow-lg);
+}
+
+.confirm-dialog__panel--soft {
+  border-color: color-mix(in srgb, var(--bd-primary) 28%, var(--bd-border));
+}
+
+.confirm-dialog__panel--sheet {
+  width: min(100%, 560px);
+  border-radius: 28px 28px 18px 18px;
+  border-top: 4px solid var(--bd-accent);
+}
+
+.confirm-dialog__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.confirm-dialog__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
+
+.confirm-dialog__panel--danger .confirm-dialog__icon {
+  background: color-mix(in srgb, var(--bd-danger) 14%, transparent);
+  color: var(--bd-danger);
+}
+
+.confirm-dialog__panel--sheet .confirm-dialog__icon {
+  background: color-mix(in srgb, var(--bd-accent) 18%, transparent);
+  color: var(--bd-accent);
+}
+
+.confirm-dialog__copy {
+  min-width: 0;
+  padding-right: 18px;
+}
+
+.confirm-dialog__eyebrow {
+  margin: 0 0 4px;
+  color: var(--bd-fg-subtle);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.confirm-dialog__copy h2 {
+  margin: 0;
+  color: var(--bd-fg);
+  font-size: 19px;
+  line-height: 1.25;
+}
+
+.confirm-dialog__copy p:last-child {
+  margin: 8px 0 0;
+  color: var(--bd-fg-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.confirm-dialog__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.confirm-dialog__actions button {
+  border-radius: 999px;
+}
+
+@media (max-width: 480px) {
+  .confirm-dialog__panel {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 24px 20px 20px;
+    border-radius: 24px;
+  }
+
+  .confirm-dialog__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+  }
+
+  .confirm-dialog__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .confirm-dialog__actions .confirm-dialog__action {
+    width: 100%;
+  }
+}

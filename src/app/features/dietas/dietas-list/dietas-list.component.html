@@ -42,10 +42,12 @@
         <button class="mt-5" bdButton (click)="openGenerator()">Montar meu plano</button>
       </div>
     } @else {
-      <div class="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+      <div
+        class="mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3 lg:gap-4"
+      >
         @for (plan of plans(); track plan.id) {
           <article
-            class="card flex min-w-0 flex-col items-center gap-2 rounded-[24px] p-3 text-center sm:p-4"
+            class="card @container flex min-w-0 flex-col items-center gap-2 rounded-[24px] p-3 text-center sm:p-4"
           >
             <span
               class="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-strong sm:text-xs"
@@ -105,8 +107,9 @@
               </span>
             </div>
 
-            <!-- Mobile: pares de botões redondos, só ícone — mesmo padrão do topbar (app-shell). -->
-            <div class="mt-auto flex w-full justify-center gap-2 pt-1.5 sm:hidden">
+            <!-- Card estreito: trio compacto por ícone. A troca considera a largura
+                 do card, inclusive quando a sidebar reduz o espaço disponível. -->
+            <div class="mt-auto flex w-full justify-center gap-1.5 pt-1.5 @[280px]:hidden">
               <button
                 bdButton
                 variant="subtle"
@@ -118,7 +121,7 @@
                 aria-label="Editar plano"
                 (click)="editPlan(plan)"
               >
-                <svg lucidePencil size="15" aria-hidden="true"></svg>
+                <svg lucidePencil size="14" aria-hidden="true"></svg>
               </button>
               <button
                 bdButton
@@ -129,23 +132,40 @@
                 bdTooltip="Arquivar plano"
                 placement="top"
                 aria-label="Arquivar plano"
-                (click)="archive(plan)"
+                (click)="solicitarArquivamento(plan)"
               >
-                <svg lucideArchive size="15" aria-hidden="true"></svg>
+                <svg lucideArchive size="14" aria-hidden="true"></svg>
+              </button>
+              <button
+                bdButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                iconOnly
+                bdTooltip="Excluir plano"
+                placement="top"
+                aria-label="Excluir plano"
+                [disabled]="removendo() === plan.id"
+                [attr.aria-busy]="removendo() === plan.id ? true : null"
+                (click)="solicitarExclusao(plan)"
+                class="enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
+              >
+                <svg lucideTrash2 size="14" aria-hidden="true"></svg>
               </button>
             </div>
 
-            <!-- sm+: botões com texto -->
-            <div class="mt-auto hidden w-full grid-cols-2 gap-1.5 pt-1.5 sm:grid">
+            <!-- Card a partir de 280px: três ações lado a lado com texto. -->
+            <div class="mt-auto hidden w-full grid-cols-3 gap-1 pt-1.5 @[280px]:grid">
               <button
                 bdButton
                 variant="subtle"
                 size="sm"
                 type="button"
                 aria-label="Editar plano"
+                class="!min-w-0 !px-1.5 !text-[12px]"
                 (click)="editPlan(plan)"
               >
-                <svg lucidePencil size="13" aria-hidden="true"></svg>
+                <svg lucidePencil size="12" aria-hidden="true"></svg>
                 Editar
               </button>
               <button
@@ -154,10 +174,25 @@
                 size="sm"
                 type="button"
                 aria-label="Arquivar plano"
-                (click)="archive(plan)"
+                class="!min-w-0 !px-1.5 !text-[12px]"
+                (click)="solicitarArquivamento(plan)"
               >
-                <svg lucideArchive size="13" aria-hidden="true"></svg>
+                <svg lucideArchive size="12" aria-hidden="true"></svg>
                 Arquivar
+              </button>
+              <button
+                bdButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                aria-label="Excluir plano"
+                class="!min-w-0 !px-1.5 !text-[12px] enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
+                [disabled]="removendo() === plan.id"
+                [attr.aria-busy]="removendo() === plan.id ? true : null"
+                (click)="solicitarExclusao(plan)"
+              >
+                <svg lucideTrash2 size="12" aria-hidden="true"></svg>
+                Excluir
               </button>
             </div>
           </article>
@@ -165,4 +200,14 @@
       </div>
     }
   </section>
+  <vtp-confirm-dialog
+    [aberto]="confirmacao() !== null"
+    [variante]="varianteConfirmacao()"
+    [titulo]="tituloConfirmacao() | transloco"
+    [descricao]="descricaoConfirmacao() | transloco"
+    [confirmarTexto]="textoConfirmacao() | transloco"
+    [cancelarTexto]="'common.actions.cancel' | transloco"
+    (cancelado)="fecharConfirmacao()"
+    (confirmado)="confirmarAcao()"
+  />
 }

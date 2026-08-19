@@ -59,6 +59,7 @@ export interface MealPlanMeal {
 export interface MealPlanDraft {
   draft_id: string;
   can_undo?: boolean;
+  titulo?: string;
   preferences: MealPlanPreferences;
   target: DiaryMacros;
   totals: DiaryMacros;

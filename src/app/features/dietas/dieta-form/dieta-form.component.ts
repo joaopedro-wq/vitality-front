@@ -2,13 +2,12 @@ import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  ElementRef,
   OnDestroy,
   computed,
   effect,
   inject,
   signal,
-  viewChild,
+  untracked,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,13 +21,11 @@ import {
   LucideInfo,
   LucideMoon,
   LucideMoonStar,
-  LucidePencil,
   LucideSun,
   LucideSunrise,
   LucideSunset,
   LucideUtensils,
   LucideUtensilsCrossed,
-  LucideX,
   type LucideIcon,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
@@ -107,8 +104,6 @@ const ICONES_REFEICAO: ReadonlyArray<readonly [palavras: string[], icone: Lucide
     LucideArrowRight,
     LucideSave,
     LucideInfo,
-    LucidePencil,
-    LucideX,
     PlateLoaderComponent,
     BackButtonComponent,
     LoadingStateComponent,
@@ -183,9 +178,6 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly planoEmEdicaoId = signal<number | null>(null);
 
   protected readonly dirty = signal(false);
-  protected readonly editandoNome = signal(false);
-  protected readonly rascunhoNome = signal('');
-  private readonly inputNomeRef = viewChild<ElementRef<HTMLInputElement>>('inputNome');
 
   protected readonly pratoAtivo = computed(() => {
     const aberto = this.pratoAberto();
@@ -219,26 +211,13 @@ export class DietaFormComponent implements OnDestroy {
     this.iniciar();
 
     effect(() => {
-      if (this.editandoNome()) {
-        const input = this.inputNomeRef()?.nativeElement;
-        input?.focus();
-        input?.select();
-      }
-    });
-
-    // A API traduz descricao/detalhe_exibicao/meal.descricao pelo Accept-Language
-    // enviado a cada chamada — mas um plano já gerado fica com esse texto congelado
-    // no idioma de quando foi buscado. Trocar o idioma vendo uma prévia ou editando
-    // um plano precisa retraduzir o draft já carregado, sem regenerar a composição
-    // (mesmos alimentos/quantidades/IDs — só o texto de exibição muda).
-    effect(() => {
       this.language.locale();
       if (!this.idiomaInicializado) {
         this.idiomaInicializado = true;
 
         return;
       }
-      this.refreshDraftLocale();
+      untracked(() => this.refreshDraftLocale());
     });
   }
 
@@ -257,33 +236,6 @@ export class DietaFormComponent implements OnDestroy {
         next: (refreshed) => this.draft.set(refreshed),
         error: () => undefined,
       });
-  }
-
-  protected iniciarEdicaoNome(): void {
-    this.rascunhoNome.set(this.title());
-    this.editandoNome.set(true);
-  }
-
-  protected confirmarNome(): void {
-    const valor = this.rascunhoNome().trim();
-    if (valor) {
-      this.onTituloChange(valor);
-    }
-    this.editandoNome.set(false);
-  }
-
-  protected cancelarEdicaoNome(): void {
-    this.editandoNome.set(false);
-  }
-
-  protected onNomeKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.confirmarNome();
-    } else if (event.key === 'Escape') {
-      event.preventDefault();
-      this.cancelarEdicaoNome();
-    }
   }
 
   protected selecionarPrato(position: number): void {
@@ -540,8 +492,10 @@ export class DietaFormComponent implements OnDestroy {
 
   private iniciar(): void {
     const planoId = this.route.snapshot.queryParamMap.get('planoId');
-    const planoNome = this.route.snapshot.queryParamMap.get('planoNome');
-    this.title.set(planoNome || this.transloco.translate('dietPlan.defaultTitle'));
+    // Vazio ao criar — o usuário escolhe o nome, não vem pré-preenchido com um
+    // título genérico. Editando um plano existente, `carregarParaEdicao()`
+    // preenche com o `titulo` de verdade vindo do backend (`draft.titulo`).
+    this.title.set('');
     forkJoin({
       metas: this.metaService.list(),
       profile: this.plansService.profile(),
@@ -581,6 +535,7 @@ export class DietaFormComponent implements OnDestroy {
       .subscribe({
         next: (draft) => {
           this.draft.set(draft);
+          this.title.set(draft.titulo ?? '');
           this.mode.set('preview');
           this.editando.set(true);
           this.planoEmEdicaoId.set(id);

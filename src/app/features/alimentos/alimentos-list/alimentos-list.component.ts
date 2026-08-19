@@ -8,6 +8,7 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BdButtonComponent } from 'bandeira-ui';
@@ -217,11 +218,6 @@ export class AlimentosListComponent {
       this.load();
     });
 
-    // A API traduz descricao/detalhe_exibicao/grupo_exibicao pelo Accept-Language
-    // enviado a cada chamada (ver `localeInterceptor`) — trocar o idioma não
-    // recarrega a página sozinho, então recarrega os dados aqui pra a tela
-    // nunca ficar com rótulos do idioma anterior. O `id` do grupo é estável
-    // entre idiomas, então o filtro selecionado continua válido.
     effect(() => {
       this.language.locale();
       if (!this.idiomaInicializado) {
@@ -229,9 +225,11 @@ export class AlimentosListComponent {
 
         return;
       }
-      this.loadGrupos();
-      this.pagina.set(1);
-      this.load();
+      untracked(() => {
+        this.loadGrupos();
+        this.pagina.set(1);
+        this.load();
+      });
     });
   }
 
