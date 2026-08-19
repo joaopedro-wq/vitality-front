@@ -318,9 +318,8 @@
       "title": "Sua semana"
     },
     "missions": {
-      "today": "Hoje",
-      "week": "Esta semana",
-      "milestones": "Marcos"
+      "title": "Missões",
+      "allDone": "🎉 Todas as missões em dia!"
     },
     "shortcuts": {
       "diary": "Diário",

@@ -1,95 +1,50 @@
-<section class="flex flex-col gap-2.5">
-  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
-    {{ 'dashboard.missions.today' | transloco }}
-  </p>
-  @for (missao of progressao().diarias; track missao.codigo) {
-    <div class="flex items-center gap-3">
-      <vtp-achievement-badge
-        [icone]="missao.icone"
-        [titulo]="missao.titulo"
-        [conquistado]="missao.concluida"
-      />
-      <div class="min-w-0 flex-1">
-        <p class="m-0 truncate text-[12.5px] font-semibold text-fg">{{ missao.titulo }}</p>
-        @if (!missao.concluida) {
-          <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-border">
-            <span
-              class="block h-full rounded-full bg-accent"
-              [style.width.%]="missao.progresso"
-            ></span>
-          </div>
-        }
-      </div>
-      <span
-        class="flex-shrink-0 text-[10.5px] font-bold tabular-nums"
-        [class.text-accent]="missao.concluida"
-        [class.text-fg-subtle]="!missao.concluida"
-        >+{{ missao.xp }}</span
-      >
-    </div>
-  }
-</section>
+<p class="m-0 mb-3.5 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
+  {{ 'dashboard.missions.title' | transloco }}
+</p>
 
-<section class="flex flex-col gap-2.5 border-t border-border pt-4">
-  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
-    {{ 'dashboard.missions.week' | transloco }}
-  </p>
-  @for (missao of progressao().semanais; track missao.codigo) {
-    <div class="flex items-center gap-3">
-      <vtp-achievement-badge
-        [icone]="missao.icone"
-        [titulo]="missao.titulo"
-        [conquistado]="missao.concluida"
-      />
-      <div class="min-w-0 flex-1">
-        <p class="m-0 truncate text-[12.5px] font-semibold text-fg">{{ missao.titulo }}</p>
-        @if (!missao.concluida) {
-          <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-border">
-            <span
-              class="block h-full rounded-full bg-accent"
-              [style.width.%]="missao.progresso"
-            ></span>
-          </div>
-        }
-      </div>
-      <span
-        class="flex-shrink-0 text-[10.5px] font-bold tabular-nums"
-        [class.text-accent]="missao.concluida"
-        [class.text-fg-subtle]="!missao.concluida"
-        >+{{ missao.xp }}</span
+<div class="corridor">
+  <div class="rail"></div>
+  <div class="nodes">
+    @for (missao of trilha(); track missao.codigo) {
+      <div
+        class="node"
+        [class.done]="missao.estado === 'done'"
+        [class.current]="missao.estado === 'current'"
+        [class.locked]="missao.estado === 'locked'"
       >
-    </div>
-  }
-</section>
+        <span class="pt">
+          @if (missao.estado === 'current') {
+            <span class="pacman" aria-hidden="true">
+              <span class="jaw top"></span>
+              <span class="jaw bottom"></span>
+              <span class="eye"></span>
+            </span>
+          } @else {
+            <span aria-hidden="true">{{ missao.icone }}</span>
+          }
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="label">{{ missao.titulo }}</p>
+          @if (missao.estado === 'current' && missao.progresso < 100) {
+            <div class="mt-1 h-1 w-full max-w-[200px] overflow-hidden rounded-full bg-border">
+              <span
+                class="block h-full rounded-full bg-accent"
+                [style.width.%]="missao.progresso"
+              ></span>
+            </div>
+          } @else {
+            <p class="sub tabular-nums font-mono">
+              +{{ missao.xp }} XP{{ missao.estado === 'done' ? ' · concluída' : '' }}
+            </p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
 
-<section class="flex flex-col gap-2.5 border-t border-border pt-4">
-  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
-    {{ 'dashboard.missions.milestones' | transloco }}
+@if (tudoConcluido()) {
+  <p class="m-0 mt-3 text-center text-[12px] font-bold text-success">
+    {{ 'dashboard.missions.allDone' | transloco }}
   </p>
-  @for (missao of progressao().marcos; track missao.codigo) {
-    <div class="flex items-center gap-3">
-      <vtp-achievement-badge
-        [icone]="missao.icone"
-        [titulo]="missao.titulo"
-        [conquistado]="missao.concluida"
-      />
-      <div class="min-w-0 flex-1">
-        <p class="m-0 truncate text-[12.5px] font-semibold text-fg">{{ missao.titulo }}</p>
-        @if (!missao.concluida) {
-          <div class="mt-1 h-1 w-full overflow-hidden rounded-full bg-border">
-            <span
-              class="block h-full rounded-full bg-accent"
-              [style.width.%]="missao.progresso"
-            ></span>
-          </div>
-        }
-      </div>
-      <span
-        class="flex-shrink-0 text-[10.5px] font-bold tabular-nums"
-        [class.text-accent]="missao.concluida"
-        [class.text-fg-subtle]="!missao.concluida"
-        >+{{ missao.xp }}</span
-      >
-    </div>
-  }
-</section>
+}

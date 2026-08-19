@@ -1,0 +1,170 @@
+:host {
+  display: block;
+}
+
+// Casco do corredor — Tailwind não expressa bem a linha vertical + boneco animado por cima, então
+// isso fica em SCSS de componente (ver CLAUDE.md, Stack: "SCSS só pro que Tailwind genuinamente
+// não expressa").
+.corridor {
+  position: relative;
+  padding: 2px 0;
+}
+
+.rail {
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 17px;
+  width: 2px;
+  background: var(--bd-border);
+}
+
+.nodes {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+
+  &.current {
+    margin: 2px -10px;
+    padding: 10px 12px;
+    background: var(--bd-accent-soft);
+    border-radius: 12px;
+  }
+
+  &.done .label {
+    text-decoration: line-through;
+    text-decoration-color: var(--bd-success);
+    text-decoration-thickness: 2px;
+    opacity: 0.7;
+  }
+
+  &.locked {
+    opacity: 0.55;
+
+    .pt {
+      filter: grayscale(0.35);
+    }
+  }
+}
+
+.pt {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+}
+
+.label {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--bd-fg);
+}
+
+.sub {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--bd-fg-muted);
+}
+
+// O boneco — duas mandíbulas (semicírculo de cima/baixo) girando via `transform: rotate()`.
+// Deliberadamente não é um único path SVG animado no atributo `d`: interpolação de `d` exige que
+// os dois estados tenham a mesma estrutura de comando e não é garantida entre navegadores; girar
+// dois elementos é só interpolação numérica, roda liso em qualquer lugar.
+.pacman {
+  position: relative;
+  display: block;
+  width: 26px;
+  height: 26px;
+  animation: vtp-mission-bob 1.2s ease-in-out infinite;
+}
+
+.jaw {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: var(--bd-accent);
+}
+
+.jaw.top {
+  top: 0;
+  border-radius: 26px 26px 0 0;
+  transform-origin: 50% 100%;
+  animation: vtp-mission-chomp-top 0.42s ease-in-out infinite;
+}
+
+.jaw.bottom {
+  bottom: 0;
+  border-radius: 0 0 26px 26px;
+  transform-origin: 50% 0%;
+  animation: vtp-mission-chomp-bottom 0.42s ease-in-out infinite;
+}
+
+.eye {
+  position: absolute;
+  top: 22%;
+  left: 55%;
+  z-index: 2;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--bd-bg);
+}
+
+@keyframes vtp-mission-chomp-top {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-40deg);
+  }
+}
+
+@keyframes vtp-mission-chomp-bottom {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(40deg);
+  }
+}
+
+@keyframes vtp-mission-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jaw.top {
+    animation: none;
+    transform: rotate(-30deg);
+  }
+  .jaw.bottom {
+    animation: none;
+    transform: rotate(30deg);
+  }
+  .pacman {
+    animation: none;
+  }
+}

@@ -318,9 +318,8 @@
       "title": "Your week"
     },
     "missions": {
-      "today": "Today",
-      "week": "This week",
-      "milestones": "Milestones"
+      "title": "Missions",
+      "allDone": "🎉 All missions up to date!"
     },
     "shortcuts": {
       "diary": "Diary",
