@@ -17,11 +17,24 @@ export interface DashboardSemanaDia {
   gordura: number;
 }
 
+export interface DashboardSugestaoPlano {
+  itens: string[];
+  totais: { caloria: number; proteina: number; carbo: number; gordura: number };
+}
+
+export interface DashboardRefeicaoDoDia {
+  meal_id: number;
+  descricao: string;
+  horario: string;
+  registrado: boolean;
+}
+
 export interface DashboardProximaRefeicao {
   meal_id: number;
   descricao: string;
   horario: string;
-  sugestao_plano: string | null;
+  sugestao_plano: DashboardSugestaoPlano | null;
+  refeicoes_hoje: DashboardRefeicaoDoDia[];
 }
 
 export interface DashboardPlanoRefeicaoStatus {

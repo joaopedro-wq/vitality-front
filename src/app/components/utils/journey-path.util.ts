@@ -34,7 +34,7 @@ const CINCO_FASES: TrilhaSerpentina = {
   ],
 };
 
-function curva(origem: PontoTrilha, destino: PontoTrilha): string {
+export function curva(origem: PontoTrilha, destino: PontoTrilha): string {
   const alcance = (destino.y - origem.y) * 0.55;
   return (
     `M${origem.x} ${origem.y}` +

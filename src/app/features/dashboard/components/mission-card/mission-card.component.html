@@ -1,41 +1,141 @@
 @if (proximaRefeicao(); as refeicao) {
-  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
-    {{ 'dashboard.mission.eyebrow' | transloco }}
-  </p>
-  <h3 class="m-0 text-[21px] font-extrabold text-fg">
-    {{ 'dashboard.mission.title' | transloco: { meal: refeicao.descricao } }}
-  </h3>
-  <p class="m-0 max-w-[38ch] text-[13px] text-fg-muted">
+  <div class="flex flex-col gap-4">
+    <div
+      class="flex flex-col items-center gap-4 text-center @[560px]:flex-row @[560px]:items-center @[560px]:gap-6 @[560px]:text-left"
+    >
+      <div class="relative shrink-0">
+        <vtp-progress-ring-icon tamanho="lg" [progresso]="100" corVar="--bd-primary">
+          <span class="text-[21px] font-extrabold tracking-[-0.02em] tabular-nums">{{
+            refeicao.horario
+          }}</span>
+        </vtp-progress-ring-icon>
+        <span
+          class="absolute bottom-[-4px] right-[-4px] grid size-8 place-items-center rounded-full border-[3px] border-surface bg-accent text-primary-contrast"
+        >
+          <svg lucideUtensils size="15" aria-hidden="true"></svg>
+        </span>
+      </div>
+
+      <div class="min-w-0 flex-1">
+        <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
+          {{ 'dashboard.mission.eyebrow' | transloco }}
+        </p>
+        <h3 class="m-0 mt-1 text-[19px] font-extrabold text-fg">
+          {{ 'dashboard.mission.title' | transloco: { meal: refeicao.descricao } }}
+        </h3>
+
+        @if (refeicao.sugestao_plano; as sugestao) {
+          <div
+            class="-mx-1.5 mt-2.5 flex flex-nowrap gap-1.5 overflow-x-auto px-1.5 pb-0.5 @[560px]:mx-0 @[560px]:flex-wrap @[560px]:justify-start @[560px]:overflow-visible @[560px]:px-0 @[560px]:pb-0"
+          >
+            @for (item of sugestao.itens; track item) {
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-surface-hover px-2.5 py-1 text-[11px] font-bold text-fg-muted"
+              >
+                <span class="size-1.5 shrink-0 rounded-full bg-primary"></span>{{ item }}
+              </span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="shrink-0 @[560px]:hidden">
+        <a
+          bdButton
+          variant="primary"
+          class="cta-glow"
+          [routerLink]="['/diario']"
+          [queryParams]="{ registrar: 1 }"
+        >
+          <svg lucidePlus size="16" aria-hidden="true"></svg>
+          {{ 'dashboard.mission.cta' | transloco: { meal: refeicao.descricao } }}
+        </a>
+      </div>
+      <div class="hidden shrink-0 @[560px]:block">
+        <a
+          bdButton
+          variant="primary"
+          size="sm"
+          class="cta-glow"
+          [routerLink]="['/diario']"
+          [queryParams]="{ registrar: 1 }"
+          [attr.aria-label]="'dashboard.mission.cta' | transloco: { meal: refeicao.descricao }"
+        >
+          <svg lucidePlus size="14" aria-hidden="true"></svg>
+          {{ 'dashboard.mission.ctaCompact' | transloco }}
+        </a>
+      </div>
+    </div>
+
     @if (refeicao.sugestao_plano; as sugestao) {
-      {{
-        'dashboard.mission.descriptionWithPlan'
-          | transloco: { food: sugestao, time: refeicao.horario }
-      }}
-    } @else {
-      {{ 'dashboard.mission.description' | transloco: { time: refeicao.horario } }}
+      <div
+        class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-[14px] border border-border bg-surface-hover px-4 py-3 text-[12px] text-fg-muted"
+      >
+        <span class="text-[14px] font-extrabold text-primary-strong tabular-nums"
+          >~{{ sugestao.totais.caloria }} {{ 'nutrition.kcal' | transloco }}</span
+        >
+        <span class="hidden h-[18px] w-px bg-border-strong @[420px]:block"></span>
+        <span class="inline-flex items-center gap-1.5 tabular-nums">
+          <span class="size-[7px] shrink-0 rounded-full bg-primary"></span>
+          <b class="font-extrabold text-fg">{{ sugestao.totais.proteina }}g</b>
+          {{ 'nutrition.protein' | transloco }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 tabular-nums">
+          <span class="size-[7px] shrink-0 rounded-full bg-accent"></span>
+          <b class="font-extrabold text-fg">{{ sugestao.totais.carbo }}g</b>
+          {{ 'nutrition.carbs' | transloco }}
+        </span>
+        <span class="inline-flex items-center gap-1.5 tabular-nums">
+          <span class="size-[7px] shrink-0 rounded-full bg-fat"></span>
+          <b class="font-extrabold text-fg">{{ sugestao.totais.gordura }}g</b>
+          {{ 'nutrition.fat' | transloco }}
+        </span>
+      </div>
     }
-  </p>
-  <a
-    bdButton
-    variant="primary"
-    class="cta-glow"
-    [routerLink]="['/diario']"
-    [queryParams]="{ registrar: 1 }"
-  >
-    <svg lucidePlus size="16" aria-hidden="true"></svg>
-    {{ 'dashboard.mission.cta' | transloco: { meal: refeicao.descricao } }}
-  </a>
+
+    <div
+      class="-mx-1.5 flex gap-4 overflow-x-auto border-t border-border px-1.5 pb-0.5 pt-3 @[560px]:gap-2 @[560px]:overflow-visible"
+    >
+      @for (item of refeicao.refeicoes_hoje; track item.meal_id) {
+        <div
+          class="flex w-16 shrink-0 flex-col items-center gap-1 text-center @[560px]:w-auto @[560px]:flex-1"
+        >
+          <span
+            class="grid size-7 shrink-0 place-items-center rounded-full border-2 text-fg-subtle @[560px]:size-9"
+            [class.border-border-strong]="!item.registrado && item.meal_id !== refeicao.meal_id"
+            [class.border-primary]="item.registrado || item.meal_id === refeicao.meal_id"
+            [class.text-primary]="!item.registrado && item.meal_id === refeicao.meal_id"
+            [class.shadow-[0_0_0_3px_var(--bd-primary-soft)]]="item.meal_id === refeicao.meal_id"
+            [class.bg-primary]="item.registrado"
+            [class.text-primary-contrast]="item.registrado"
+          >
+            <svg lucideUtensils size="12" class="@[560px]:hidden" aria-hidden="true"></svg>
+            <svg lucideUtensils size="16" class="hidden @[560px]:block" aria-hidden="true"></svg>
+          </span>
+          <span
+            class="w-full truncate text-[9.5px] font-extrabold text-fg-muted @[560px]:text-[11px]"
+            >{{ item.descricao }}</span
+          >
+          <span class="text-[9px] tabular-nums text-fg-subtle @[560px]:text-[10.5px]">{{
+            item.horario
+          }}</span>
+        </div>
+      }
+    </div>
+  </div>
 } @else {
-  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
-    {{ 'dashboard.mission.eyebrowDone' | transloco }}
-  </p>
-  <h3 class="m-0 text-[21px] font-extrabold text-fg">
-    {{ 'dashboard.mission.titleDone' | transloco }}
-  </h3>
-  <p class="m-0 max-w-[38ch] text-[13px] text-fg-muted">
-    {{ 'dashboard.mission.descriptionDone' | transloco }}
-  </p>
-  <a bdButton variant="ghost" [routerLink]="['/diario']">{{
-    'dashboard.mission.ctaDone' | transloco
-  }}</a>
+  <div class="flex flex-col items-center gap-4 text-center">
+    <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
+      {{ 'dashboard.mission.eyebrowDone' | transloco }}
+    </p>
+    <h3 class="m-0 text-[21px] font-extrabold text-fg">
+      {{ 'dashboard.mission.titleDone' | transloco }}
+    </h3>
+    <p class="m-0 max-w-[38ch] text-[13px] text-fg-muted">
+      {{ 'dashboard.mission.descriptionDone' | transloco }}
+    </p>
+    <a bdButton variant="ghost" [routerLink]="['/diario']">{{
+      'dashboard.mission.ctaDone' | transloco
+    }}</a>
+  </div>
 }

@@ -1,0 +1,11 @@
+<vtp-progress-ring-icon [progresso]="progresso()" [corVar]="corVar()" [ativo]="ativo()">
+  <svg [lucideIcon]="icone()" size="19" aria-hidden="true"></svg>
+</vtp-progress-ring-icon>
+
+<span
+  class="text-[11.5px] font-bold leading-tight"
+  [class.text-primary-strong]="ativo() && corVar() === '--bd-primary'"
+  [class.text-accent]="ativo() && corVar() === '--bd-accent'"
+  >{{ label() }}</span
+>
+<span class="text-[10px] leading-snug text-fg-muted">{{ status() }}</span>
