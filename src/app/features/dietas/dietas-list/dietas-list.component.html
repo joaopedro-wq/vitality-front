@@ -119,6 +119,7 @@
                 bdTooltip="Editar plano"
                 placement="top"
                 aria-label="Editar plano"
+                class="!h-8 !min-h-8 !w-8 !p-0"
                 (click)="editPlan(plan)"
               >
                 <svg lucidePencil size="14" aria-hidden="true"></svg>
@@ -132,6 +133,7 @@
                 bdTooltip="Arquivar plano"
                 placement="top"
                 aria-label="Arquivar plano"
+                class="!h-8 !min-h-8 !w-8 !p-0"
                 (click)="solicitarArquivamento(plan)"
               >
                 <svg lucideArchive size="14" aria-hidden="true"></svg>
@@ -148,7 +150,7 @@
                 [disabled]="removendo() === plan.id"
                 [attr.aria-busy]="removendo() === plan.id ? true : null"
                 (click)="solicitarExclusao(plan)"
-                class="enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
+                class="!h-8 !min-h-8 !w-8 !p-0 enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
               >
                 <svg lucideTrash2 size="14" aria-hidden="true"></svg>
               </button>
