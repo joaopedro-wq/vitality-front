@@ -11,7 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { BdModalComponent } from 'bandeira-ui';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   LucideArrowLeftRight,
   LucideBean,
@@ -81,6 +81,7 @@ import { DiarioService } from '../../../services/diario.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import type { MealPlan, MealPlanMeal, MealPlanStyle } from '../../../core/models/meal-plan.model';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 /** Os dois únicos "filtros" que não são categoria real do catálogo — atalhos
  * de recência, sempre capados em 12 itens, nunca paginados (ver `catalogo`). */
@@ -92,10 +93,10 @@ interface FiltroRapido {
   readonly icon: LucideIcon;
 }
 
-const FILTROS_FIXOS: readonly FiltroRapido[] = [
-  { id: 'frequentes', label: 'Frequentes', icon: LucideClock },
-  { id: 'favoritos', label: 'Favoritos', icon: LucideHeart },
-];
+const FILTROS_FIXOS_ICONES: Record<FiltroFixoId, LucideIcon> = {
+  frequentes: LucideClock,
+  favoritos: LucideHeart,
+};
 
 const ICONE_POR_CATEGORIA: Record<string, LucideIcon> = {
   'carnes-e-aves': LucideBeef,
@@ -181,6 +182,8 @@ export class EntryComposerComponent implements OnDestroy {
   private readonly diary = inject(DiarioService);
   private readonly planDraft = inject(MealPlanDiaryDraftService);
   private readonly plansService = inject(MealPlanService);
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   private readonly buscas = new Subject<string>();
   private readonly destruido = new Subject<void>();
   private requisicaoDeNutrientes = 0;
@@ -211,14 +214,26 @@ export class EntryComposerComponent implements OnDestroy {
    * backend, `FoodCatalogService::displayGroups()`) — o backend só devolve
    * categorias com pelo menos 1 alimento, então a fileira nunca mostra uma
    * categoria vazia. */
-  protected readonly filtrosRapidos = computed<readonly FiltroRapido[]>(() => [
-    ...FILTROS_FIXOS,
-    ...this.categorias().map((categoria) => ({
-      id: categoria.id,
-      label: categoria.label,
-      icon: ICONE_POR_CATEGORIA[categoria.id] ?? ICONE_PADRAO,
-    })),
-  ]);
+  protected readonly filtrosRapidos = computed<readonly FiltroRapido[]>(() => {
+    this.language.locale();
+    return [
+      {
+        id: 'frequentes' as const,
+        label: this.transloco.translate('entry.frequent'),
+        icon: FILTROS_FIXOS_ICONES.frequentes,
+      },
+      {
+        id: 'favoritos' as const,
+        label: this.transloco.translate('entry.favorites'),
+        icon: FILTROS_FIXOS_ICONES.favoritos,
+      },
+      ...this.categorias().map((categoria) => ({
+        id: categoria.id,
+        label: categoria.label,
+        icon: ICONE_POR_CATEGORIA[categoria.id] ?? ICONE_PADRAO,
+      })),
+    ];
+  });
 
   /** Rótulo do gatilho da folha de filtro no mobile — nome do filtro ativo,
    * ou `null` quando nenhum está selecionado (o template cai pro texto
@@ -302,7 +317,7 @@ export class EntryComposerComponent implements OnDestroy {
    * grade filtrada por categoria. */
   protected readonly catalogoRotulo = computed(() => {
     const filtro = this.filtroRapido();
-    if (!filtro) return 'Seus alimentos de sempre';
+    if (!filtro) return this.transloco.translate('entry.usualFoods');
     return `${this.filtrosRapidos().find((item) => item.id === filtro)?.label ?? ''}`;
   });
 
@@ -439,7 +454,11 @@ export class EntryComposerComponent implements OnDestroy {
   }
 
   protected formatStyle(style: MealPlanStyle): string {
-    return { rapido: 'Rápido', caseiro: 'Caseiro', economico: 'Econômico' }[style];
+    return {
+      rapido: this.transloco.translate('entry.styleFast'),
+      caseiro: this.transloco.translate('entry.styleHomemade'),
+      economico: this.transloco.translate('entry.styleEconomic'),
+    }[style];
   }
 
   /** Mesmo anel-crachá da lista de Dietas: conic-gradient com a proporção real

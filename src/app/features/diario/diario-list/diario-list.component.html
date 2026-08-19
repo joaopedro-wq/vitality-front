@@ -1,16 +1,16 @@
 @if (loadingVisivel()) {
   <vtp-loading-state
-    titulo="Preparando seu diário"
-    descricao="Buscando os lançamentos do dia e a sua meta."
+    [titulo]="'uiLoading.diary' | transloco"
+    [descricao]="'diaryPage.loadingDesc' | transloco"
   />
 } @else {
   <vtp-back-button class="page-shell-wide" />
   <section class="page-shell-wide flex flex-col gap-4 animate-reveal card p-4 sm:p-6 lg:p-8">
     <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
       <vtp-page-title
-        contexto="Diário"
-        titulo="Diário alimentar"
-        subtitulo="Registre suas refeições e acompanhe a composição do seu dia."
+        [contexto]="'diaryPage.eyebrow' | transloco"
+        [titulo]="'pageTitle.diary' | transloco"
+        [subtitulo]="'pageTitle.diarySubtitle' | transloco"
       />
 
       <div class="flex flex-wrap items-center gap-3">
@@ -18,7 +18,7 @@
           <button
             class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
             type="button"
-            aria-label="Dia anterior"
+            [attr.aria-label]="'diaryPage.previousDay' | transloco"
             (click)="previousDay()"
           >
             <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
@@ -27,14 +27,14 @@
           <span class="px-2">
             <b class="block text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
             <small class="text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
-              selectedDate() === today ? 'Hoje' : selectedDate()
+              selectedDate() === today ? ('diaryPage.today' | transloco) : selectedDate()
             }}</small>
           </span>
 
           <button
             class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
             type="button"
-            aria-label="Próximo dia"
+            [attr.aria-label]="'diaryPage.nextDay' | transloco"
             [disabled]="!canGoNext()"
             (click)="nextDay()"
           >
@@ -47,13 +47,13 @@
               type="button"
               (click)="goToday()"
             >
-              Hoje
+              {{ 'diaryPage.today' | transloco }}
             </button>
           }
         </div>
 
         <vtp-overflow-menu
-          rotulo="Mais ações"
+          [rotulo]="'diaryPage.moreActions' | transloco"
           [aberto]="menuAberto()"
           (alternar)="menuAberto.set(!menuAberto())"
           (fechar)="menuAberto.set(false)"
@@ -65,7 +65,7 @@
             (click)="menuAberto.set(false); managerOpen.set(true)"
           >
             <svg lucideSettings2 size="16" aria-hidden="true"></svg>
-            Organizar refeições
+            {{ 'diaryPage.organizeMeals' | transloco }}
           </button>
         </vtp-overflow-menu>
       </div>
@@ -90,7 +90,9 @@
           [selecionada]="faseSelecionada()"
           [preenchendo]="modo() === 'compor'"
           [carimbo]="carimbo()"
-          [dica]="modo() === 'compor' ? 'Registrando aqui' : 'Escolha a fase'"
+          [dica]="
+            (modo() === 'compor' ? 'diaryPage.composerHint' : 'diaryPage.chooseHint') | transloco
+          "
           [progresso]="progressoMeta()"
           [resumoBandeira]="resumoBandeira()"
           (faseClick)="selecionarFase($event)"
@@ -121,7 +123,7 @@
             (click)="fecharFaseMobile()"
           >
             <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
-            Voltar ao mapa
+            {{ 'diaryPage.backToMap' | transloco }}
           </button>
 
           <vtp-diary-phase-card
@@ -139,7 +141,7 @@
         </div>
       } @else {
         <div class="card p-6 text-[13.5px] text-fg-muted">
-          Organize suas refeições para começar a registrar.
+          {{ 'diaryPage.noMealsYet' | transloco }}
         </div>
       }
     </div>
@@ -151,8 +153,14 @@
     [totals]="totals()"
     [meta]="meta()"
     [completo]="fasesRestantes() === 0"
-    [titulo]="fasesRestantes() === 0 ? 'Dia fechado' : 'Como está seu dia'"
-    [label]="fasesRestantes() === 0 ? 'Dia completo' : 'Parcial de hoje'"
+    [titulo]="
+      (fasesRestantes() === 0 ? 'diaryPage.dayClosedTitle' : 'diaryPage.dayInProgressTitle')
+        | transloco
+    "
+    [label]="
+      (fasesRestantes() === 0 ? 'diaryPage.dayCompleteLabel' : 'diaryPage.dayPartialLabel')
+        | transloco
+    "
     (fechar)="revelacaoAberta.set(false)"
   />
 }

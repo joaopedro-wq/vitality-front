@@ -1,6 +1,6 @@
 <section
   class="card flex flex-wrap items-center gap-x-7 gap-y-4 px-5 py-4"
-  aria-label="Macros do dia"
+  [attr.aria-label]="'diaryPage.macrosAria' | transloco"
 >
   <div class="flex min-w-[190px] flex-1 flex-col gap-1.5">
     <div class="flex items-baseline gap-2">
@@ -9,10 +9,10 @@
       }}</strong>
       @if (meta(); as m) {
         <span class="text-[12px] text-fg-muted tabular-nums"
-          >/ {{ m.meta_calorias | number: '1.0-0' }} kcal</span
+          >/ {{ m.meta_calorias | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}</span
         >
       } @else {
-        <span class="text-[12px] text-fg-muted">kcal registradas</span>
+        <span class="text-[12px] text-fg-muted">{{ 'diaryPage.kcalLogged' | transloco }}</span>
       }
       @let falta = restante();
       @if (falta !== null) {
@@ -20,7 +20,8 @@
           class="ml-auto rounded-full px-2.5 py-1 text-[11px] font-bold tabular-nums"
           [class]="falta >= 0 ? 'bg-primary-soft text-primary-strong' : 'bg-accent-soft text-fg'"
         >
-          {{ falta >= 0 ? 'restam ' : 'acima ' }}{{ absoluto(falta) | number: '1.0-0' }} kcal
+          {{ (falta >= 0 ? 'diaryPage.kcalLeft' : 'diaryPage.kcalOver') | transloco
+          }}{{ absoluto(falta) | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
         </span>
       }
     </div>
@@ -62,7 +63,7 @@
     <a
       class="text-[12px] font-bold text-primary-strong underline decoration-dotted underline-offset-4"
       routerLink="/metas"
-      >Definir minha meta</a
+      >{{ 'diaryPage.setMyGoal' | transloco }}</a
     >
   }
 </section>

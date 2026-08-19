@@ -1,6 +1,6 @@
 ﻿<section
   class="card flex min-h-[520px] flex-col p-5 animate-reveal"
-  aria-label="Registrar alimentos"
+  [attr.aria-label]="'entry.logFoodsAria' | transloco"
 >
   <header class="mb-3">
     <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
@@ -20,7 +20,7 @@
     @if (mostrarResumoRegistrado()) {
       <div class="rounded-2xl border border-border bg-surface p-3">
         <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
-          Já registrado nesta refeição
+          {{ 'entry.alreadyLogged' | transloco }}
         </p>
         <ul class="flex list-none flex-col gap-1.5 p-0">
           @for (item of itensRegistrados(); track chaveDoItem(item)) {
@@ -43,7 +43,7 @@
 
               <small class="whitespace-nowrap text-[12px] tabular-nums text-fg-muted">
                 {{ item.quantity | number: '1.0-0' }} g ·
-                {{ item.macros.caloria | number: '1.0-0' }} kcal
+                {{ item.macros.caloria | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
               </small>
 
               <span
@@ -52,7 +52,7 @@
                 <button
                   class="grid size-7 place-items-center rounded-lg text-fg-subtle hover:bg-primary-soft hover:text-primary-strong"
                   type="button"
-                  [attr.aria-label]="'Editar o lançamento de ' + item.descricao"
+                  [attr.aria-label]="'entry.editEntryAria' | transloco: { name: item.descricao }"
                   (click)="editarLancamento.emit(item.entryId)"
                 >
                   <svg lucideEdit3 size="14" aria-hidden="true"></svg>
@@ -62,7 +62,7 @@
                   type="button"
                   [disabled]="removendo() === chave"
                   [attr.aria-busy]="removendo() === chave ? true : null"
-                  [attr.aria-label]="'Remover ' + item.descricao"
+                  [attr.aria-label]="'entry.removeAria' | transloco: { name: item.descricao }"
                   (click)="removerItem.emit(item)"
                 >
                   @if (removendo() === chave) {
@@ -82,7 +82,7 @@
           (click)="modoAdicionarMais.set(true)"
         >
           <svg lucidePlus size="14" aria-hidden="true"></svg>
-          Adicionar mais alimentos
+          {{ 'entry.addMoreFoods' | transloco }}
         </button>
       </div>
     } @else {
@@ -128,8 +128,9 @@
                   sugestao.descricao
                 }}</strong>
                 <small class="mt-0.5 block text-[11.5px] text-fg-muted tabular-nums"
-                  >{{ sugestao.totals.caloria | number: '1.0-0' }} kcal ·
-                  {{ sugestao.items.length }} itens</small
+                  >{{ sugestao.totals.caloria | number: '1.0-0' }}
+                  {{ 'nutrition.kcal' | transloco }} · {{ sugestao.items.length }}
+                  {{ 'entry.foodPlural' | transloco }}</small
                 >
               </span>
             </div>
@@ -152,10 +153,12 @@
               {{ 'entry.useSuggestion' | transloco }}
             </button>
           } @else {
-            <p class="text-[12.5px] text-fg-muted">Esse plano ainda não tem refeições.</p>
+            <p class="text-[12.5px] text-fg-muted">{{ 'entry.noMealsInPlan' | transloco }}</p>
           }
         </div>
-        <p class="mb-3 text-center text-[11px] font-bold text-fg-subtle">ou monte do seu jeito</p>
+        <p class="mb-3 text-center text-[11px] font-bold text-fg-subtle">
+          {{ 'entry.orBuildYourWay' | transloco }}
+        </p>
       }
 
       <!-- Tablet/desktop: busca, ordenação e chips sempre visíveis lado a
@@ -167,11 +170,11 @@
           class="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
         >
           <svg lucideSearch size="16" aria-hidden="true"></svg>
-          <span class="sr-only">Buscar alimento no catálogo</span>
+          <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
           <input
             class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
             type="search"
-            placeholder="Buscar por nome (opcional)"
+            [placeholder]="'entry.searchPlaceholder' | transloco"
             [value]="query()"
             (input)="buscar($any($event.target).value)"
           />
@@ -191,7 +194,7 @@
       <div
         class="mb-3 hidden flex-wrap justify-center gap-2 md:flex"
         role="group"
-        aria-label="Filtros rápidos de alimento"
+        [attr.aria-label]="'entry.quickFiltersAria' | transloco"
       >
         <ng-container [ngTemplateOutlet]="chipsTpl" />
       </div>
@@ -209,7 +212,9 @@
           (click)="filtrosAbertos.set(true)"
         >
           <svg lucideFilter size="14" aria-hidden="true"></svg>
-          <span class="truncate">{{ filtroAtivoLabel() ?? 'Buscar e filtrar' }}</span>
+          <span class="truncate">{{
+            filtroAtivoLabel() ?? ('entry.searchAndFilter' | transloco)
+          }}</span>
         </button>
       </div>
 
@@ -217,14 +222,14 @@
         <button
           type="button"
           class="fixed inset-0 z-[70] bg-black/45 md:hidden"
-          aria-label="Fechar filtros"
+          [attr.aria-label]="'entry.closeFilters' | transloco"
           (click)="filtrosAbertos.set(false)"
         ></button>
         <div
           class="fixed inset-x-0 bottom-0 z-[75] flex max-h-[80vh] flex-col rounded-t-[22px] bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [box-shadow:var(--bd-shadow-lg)] md:hidden"
           role="dialog"
           aria-modal="true"
-          aria-label="Filtros de alimento"
+          [attr.aria-label]="'entry.filtersAria' | transloco"
         >
           <div
             class="mx-auto mb-3 h-1 w-10 flex-none rounded-full bg-border-strong"
@@ -236,11 +241,11 @@
               class="mb-2 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
             >
               <svg lucideSearch size="16" aria-hidden="true"></svg>
-              <span class="sr-only">Buscar alimento no catálogo</span>
+              <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
               <input
                 class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
                 type="search"
-                placeholder="Buscar por nome (opcional)"
+                [placeholder]="'entry.searchPlaceholder' | transloco"
                 [value]="query()"
                 (input)="buscar($any($event.target).value)"
               />
@@ -257,12 +262,12 @@
             />
 
             <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
-              Categorias
+              {{ 'entry.categories' | transloco }}
             </p>
             <div
               class="flex flex-wrap justify-center gap-2"
               role="group"
-              aria-label="Filtros rápidos de alimento"
+              [attr.aria-label]="'entry.quickFiltersAria' | transloco"
             >
               <ng-container [ngTemplateOutlet]="chipsTpl" />
             </div>
@@ -297,7 +302,7 @@
         }
 
         @if (carregandoFoodsVisivel()) {
-          <vtp-loading-state tamanho="sm" titulo="Buscando alimentos" />
+          <vtp-loading-state tamanho="sm" [titulo]="'uiLoading.searchingFoods' | transloco" />
         } @else if (catalogo().length) {
           <div
             class="grid grid-cols-2 gap-2 md:[grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]"
@@ -313,11 +318,12 @@
         } @else {
           <p class="py-6 text-center text-[13px] text-fg-muted">
             {{
-              query()
-                ? 'Nenhum alimento com esse nome.'
+              (query()
+                ? 'entry.noFoodsNamed'
                 : filtroRapido()
-                  ? 'Nada por aqui ainda nessa categoria.'
-                  : 'Busque um alimento para começar — os que você usa sempre aparecem aqui depois.'
+                  ? 'entry.noFoodsCategory'
+                  : 'entry.searchToStart'
+              ) | transloco
             }}
           </p>
         }
@@ -337,9 +343,10 @@
             class="flex items-center gap-2 bg-primary px-3 py-2 text-[11.5px] font-extrabold text-primary-contrast"
           >
             <svg lucideUtensils size="14" aria-hidden="true"></svg>
-            {{ itens().length }} {{ itens().length === 1 ? 'alimento' : 'alimentos' }}
+            {{ itens().length }}
+            {{ (itens().length === 1 ? 'entry.foodSingular' : 'entry.foodPlural') | transloco }}
             <span class="ml-auto tabular-nums">
-              {{ totais().caloria | number: '1.0-0' }} kcal
+              {{ totais().caloria | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
             </span>
           </h3>
 
@@ -353,13 +360,13 @@
                 />
               }
             } @else {
-              <p class="text-[12.5px] text-fg-subtle">Nada escolhido ainda.</p>
+              <p class="text-[12.5px] text-fg-subtle">{{ 'entry.nothingChosen' | transloco }}</p>
             }
           </div>
         </div>
 
         <div class="mt-3 flex flex-wrap items-center gap-2.5 text-[12.5px] text-fg-muted">
-          <label for="hora-consumo">Horário</label>
+          <label for="hora-consumo">{{ 'entry.time' | transloco }}</label>
           <input
             id="hora-consumo"
             class="rounded-lg border border-border bg-bg px-2.5 py-1.5 text-[12.5px] text-fg outline-none focus-visible:border-primary"
@@ -367,18 +374,20 @@
             [value]="hora()"
             (change)="hora.set($any($event.target).value)"
           />
-          <span>· sugerido por esta fase</span>
+          <span>{{ 'entry.suggestedByPhase' | transloco }}</span>
         </div>
       </div>
     }
   } @else {
     <div class="flex flex-1 flex-col items-center py-4">
       <p class="mb-1 text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong">
-        Revisão da refeição
+        {{ 'entry.reviewEyebrow' | transloco }}
       </p>
-      <h2 class="m-0 text-[19px] font-bold tracking-tight text-balance">Confira antes de salvar</h2>
+      <h2 class="m-0 text-[19px] font-bold tracking-tight text-balance">
+        {{ 'entry.reviewTitle' | transloco }}
+      </h2>
       <p class="mb-5 mt-1 text-center text-[13px] text-fg-muted">
-        Os valores consideram as quantidades que você escolheu.
+        {{ 'entry.reviewDesc' | transloco }}
       </p>
 
       <vtp-nutrition-reveal
@@ -388,9 +397,9 @@
         [mostrarNutrientes]="true"
         [animar]="true"
         tamanho="lg"
-        label="Sua refeição"
-        labelCalculando="Somando sua refeição…"
-        calorieLabel="kcal na refeição"
+        [label]="'entry.yourMeal' | transloco"
+        [labelCalculando]="'entry.summingUp' | transloco"
+        [calorieLabel]="'entry.kcalInMeal' | transloco"
       />
     </div>
   }
@@ -406,14 +415,14 @@
 
 @if (planoDialogAberto()) {
   <!-- Classe `plano-modal`: só este modal recebe a largura maior (ver
-       styles do componente) — o de "Novo registro" acima fica no tamanho
+       styles do componente) — o de "Novo registro" acima fica no tamanho
        padrão do bd-modal. -->
   <bd-modal
     class="plano-modal"
     [open]="true"
     (openChange)="onPlanoDialogChange($event)"
-    title="Escolher plano"
-    ariaLabel="Escolher plano"
+    [title]="'entry.choosePlan' | transloco"
+    [ariaLabel]="'entry.choosePlan' | transloco"
   >
     <p class="m-0 mb-4 text-[13px] text-fg-muted">
       {{ 'entry.suggestionCard' | transloco }}
@@ -455,14 +464,14 @@
                 <strong class="text-lg font-extrabold tabular-nums sm:text-xl">{{
                   plano.totals.caloria | number: '1.0-0'
                 }}</strong>
-                <span class="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-fg-muted"
-                  >kcal</span
-                >
+                <span class="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-fg-muted">{{
+                  'nutrition.kcal' | transloco
+                }}</span>
               </span>
             </div>
             <span
               class="absolute -bottom-1 -right-1 grid size-7 place-items-center rounded-full border-[3px] border-surface bg-accent text-xs font-extrabold text-primary-contrast sm:size-8"
-              [attr.title]="plano.meals.length + ' refeições'"
+              [attr.title]="'entry.mealsCountTitle' | transloco: { count: plano.meals.length }"
               >{{ plano.meals.length }}</span
             >
           </div>
@@ -480,21 +489,21 @@
             >
               <strong class="text-xs tabular-nums"
                 >{{ plano.totals.proteina | number: '1.0-0' }}g</strong
-              >Prot
+              >{{ 'foodsPage.protAbbr' | transloco }}
             </span>
             <span
               class="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2 py-1 text-[10px] font-bold text-accent"
             >
               <strong class="text-xs tabular-nums"
                 >{{ plano.totals.carbo | number: '1.0-0' }}g</strong
-              >Carbo
+              >{{ 'foodsPage.carboAbbr' | transloco }}
             </span>
             <span
               class="inline-flex items-baseline gap-1 rounded-full bg-fat/15 px-2 py-1 text-[10px] font-bold text-fat"
             >
               <strong class="text-xs tabular-nums"
                 >{{ plano.totals.gordura | number: '1.0-0' }}g</strong
-              >Gord
+              >{{ 'foodsPage.gordAbbr' | transloco }}
             </span>
           </div>
         </button>

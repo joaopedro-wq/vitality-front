@@ -8,7 +8,7 @@
   class="relative mx-auto w-full max-w-[310px]"
   [style.aspect-ratio]="trilha().proporcao"
   role="tablist"
-  aria-label="Fases do dia"
+  [attr.aria-label]="'journeyMap.ariaPhases' | transloco"
 >
   <svg
     class="absolute inset-0 h-full w-full"
@@ -40,7 +40,12 @@
       [attr.aria-selected]="no.selecionada"
       [attr.aria-label]="
         no.fase.descricao +
-        (no.concluida ? ', concluída' : no.atual ? ', fase atual' : ', em aberto')
+        ((no.concluida
+          ? 'journeyMap.ariaCompleted'
+          : no.atual
+            ? 'journeyMap.ariaCurrent'
+            : 'journeyMap.ariaOpen'
+        ) | transloco)
       "
       (click)="faseClick.emit(no.indice)"
     >
@@ -66,7 +71,7 @@
         @if (legenda(no.fase); as texto) {
           {{ texto }}
         } @else {
-          {{ no.fase.totais.caloria | number: '1.0-0' }} kcal
+          {{ no.fase.totais.caloria | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
         }
       </span>
     </button>
@@ -76,7 +81,8 @@
     class="absolute bottom-0 left-1/2 flex -translate-x-1/2 cursor-pointer flex-col items-center gap-1 bg-transparent text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle transition-colors hover:text-primary-strong"
     type="button"
     [attr.aria-label]="
-      (chegou() ? 'Dia completo. ' : 'Ver como está seu dia até agora. ') + (resumoBandeira() ?? '')
+      ((chegou() ? 'journeyMap.ariaDayComplete' : 'journeyMap.ariaSeeDaySoFar') | transloco) +
+      (resumoBandeira() ?? '')
     "
     (click)="bandeiraClick.emit()"
   >
@@ -95,7 +101,7 @@
         <svg lucideFlag size="16" aria-hidden="true"></svg>
       </span>
     </span>
-    Fim do dia
+    {{ 'journeyMap.endOfDay' | transloco }}
     @if (resumoBandeira(); as resumo) {
       <span
         class="text-[10px] font-semibold normal-case tracking-normal tabular-nums text-fg-muted"

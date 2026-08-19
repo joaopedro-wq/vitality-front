@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { BdButtonComponent, BdModalComponent } from 'bandeira-ui';
 import { LucideArchive, LucideCheck, LucideDynamicIcon, LucidePlus } from '@lucide/angular';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, takeUntil } from 'rxjs';
 
@@ -21,6 +22,7 @@ import { DiarioService } from '../../../services/diario.service';
   selector: 'vtp-meal-manager',
   standalone: true,
   imports: [
+    TranslocoPipe,
     PlateLoaderComponent,
     BdButtonComponent,
     BdModalComponent,
@@ -40,6 +42,7 @@ export class MealManagerComponent implements OnDestroy {
 
   private readonly diary = inject(DiarioService);
   private readonly toastr = inject(ToastrService);
+  private readonly transloco = inject(TranslocoService);
   private readonly destruido = new Subject<void>();
   protected readonly adding = signal(false);
   protected readonly saving = signal(false);
@@ -73,10 +76,10 @@ export class MealManagerComponent implements OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.toastr.success('Refeição atualizada.');
+          this.toastr.success(this.transloco.translate('mealManager.successUpdated'));
           this.changed.emit();
         },
-        error: () => this.toastr.error('Não foi possível atualizar a refeição.'),
+        error: () => this.toastr.error(this.transloco.translate('mealManager.errorUpdate')),
       });
   }
 
@@ -99,22 +102,27 @@ export class MealManagerComponent implements OnDestroy {
           this.newDescription.set('');
           this.changed.emit();
         },
-        error: () => this.toastr.error('Não foi possível criar a refeição.'),
+        error: () => this.toastr.error(this.transloco.translate('mealManager.errorCreate')),
       });
   }
 
   protected archive(meal: DiaryMeal): void {
-    if (!window.confirm(`Arquivar ${meal.descricao}? Os registros antigos continuarão visíveis.`))
+    if (
+      !window.confirm(
+        this.transloco.translate('mealManager.confirmArchive', { meal: meal.descricao }),
+      )
+    ) {
       return;
+    }
     this.diary
       .archiveMeal(meal.id)
       .pipe(takeUntil(this.destruido))
       .subscribe({
         next: () => {
-          this.toastr.success('Refeição arquivada.');
+          this.toastr.success(this.transloco.translate('mealManager.successArchived'));
           this.changed.emit();
         },
-        error: () => this.toastr.error('Não foi possível arquivar a refeição.'),
+        error: () => this.toastr.error(this.transloco.translate('mealManager.errorArchive')),
       });
   }
 }

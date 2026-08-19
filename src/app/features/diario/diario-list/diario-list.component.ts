@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LucideArrowLeft, LucideArrowRight, LucideSettings2 } from '@lucide/angular';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, forkJoin, takeUntil, type Observable } from 'rxjs';
 
@@ -52,6 +53,7 @@ type Modo = 'cartao' | 'compor';
   selector: 'vtp-diario-list',
   standalone: true,
   imports: [
+    TranslocoPipe,
     MacroGoalStripComponent,
     OverflowMenuComponent,
     JourneyMapComponent,
@@ -76,6 +78,7 @@ export class DiarioListComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
   private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   private readonly destruido = new Subject<void>();
 
   protected readonly today = this.dateString(new Date());
@@ -111,12 +114,15 @@ export class DiarioListComponent implements OnDestroy {
     () => this.fases().filter((fase) => fase.estado !== 'concluida').length,
   );
   protected readonly mensagemVazia = computed(() => {
+    const locale = this.language.locale();
     const alvo = this.meta()?.meta_calorias;
     const restante = alvo ? alvo - this.totals().caloria : null;
     if (restante !== null && restante > 0) {
-      return `Nada registrado aqui ainda. Sobram ${Math.round(restante).toLocaleString('pt-BR')} kcal para o seu dia.`;
+      return this.transloco.translate('diaryPage.emptyPhaseWithBudget', {
+        kcal: Math.round(restante).toLocaleString(locale),
+      });
     }
-    return 'Nada registrado aqui ainda. Escolha o que entrou no prato para concluir esta fase.';
+    return this.transloco.translate('diaryPage.emptyPhaseNoBudget');
   });
   /** Mesma fórmula do `day-reveal-overlay` — vira o anel de progresso em volta
    * da bandeira do mapa, pra não exigir o clique nela pra ver como o dia está. */
@@ -129,16 +135,19 @@ export class DiarioListComponent implements OnDestroy {
   /** Legenda curta sob a bandeira — só aparece quando há algo pra contar
    * (consumo registrado ou meta definida), pra não poluir um dia zerado. */
   protected readonly resumoBandeira = computed(() => {
+    const locale = this.language.locale();
+    const kcalLabel = this.transloco.translate('nutrition.kcal');
     const consumido = Math.round(this.totals().caloria);
     const alvo = this.meta()?.meta_calorias;
-    if (!alvo) return consumido > 0 ? `${consumido.toLocaleString('pt-BR')} kcal` : null;
-    return `${consumido.toLocaleString('pt-BR')} / ${Math.round(alvo).toLocaleString('pt-BR')} kcal`;
+    if (!alvo) return consumido > 0 ? `${consumido.toLocaleString(locale)} ${kcalLabel}` : null;
+    return `${consumido.toLocaleString(locale)} / ${Math.round(alvo).toLocaleString(locale)} ${kcalLabel}`;
   });
 
   protected readonly canGoNext = computed(() => this.selectedDate() < this.today);
   protected readonly dateLabel = computed(() => {
+    const locale = this.language.locale();
     const date = new Date(`${this.selectedDate()}T12:00:00`);
-    return new Intl.DateTimeFormat('pt-BR', {
+    return new Intl.DateTimeFormat(locale, {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
@@ -242,7 +251,11 @@ export class DiarioListComponent implements OnDestroy {
     this.limparQueryParamRegistrar();
     if (fase) {
       this.carimbo.set(fase.mealId);
-      this.flash.set(`Fase atualizada · registrado em ${fase.descricao.toLowerCase()}.`);
+      this.flash.set(
+        this.transloco.translate('diaryPage.phaseUpdatedFlash', {
+          meal: fase.descricao.toLowerCase(),
+        }),
+      );
     }
     this.loadDay();
   }
@@ -255,7 +268,7 @@ export class DiarioListComponent implements OnDestroy {
     if (
       !payload &&
       !window.confirm(
-        `"${item.descricao}" é o único alimento deste lançamento. Remover apaga o lançamento inteiro. Continuar?`,
+        this.transloco.translate('diaryPage.confirmRemoveOnlyItem', { item: item.descricao }),
       )
     ) {
       return;
@@ -276,10 +289,12 @@ export class DiarioListComponent implements OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.toastr.success(`${item.descricao} removido.`);
+          this.toastr.success(
+            this.transloco.translate('diaryPage.itemRemovedToast', { item: item.descricao }),
+          );
           this.loadDay();
         },
-        error: () => this.toastr.error('Não foi possível remover este alimento agora.'),
+        error: () => this.toastr.error(this.transloco.translate('diaryPage.errorRemoveItem')),
       });
   }
 
@@ -337,7 +352,7 @@ export class DiarioListComponent implements OnDestroy {
           this.sincronizarFase();
           this.abrirSolicitado();
         },
-        error: () => this.toastr.error('Não foi possível carregar seu Diário agora.'),
+        error: () => this.toastr.error(this.transloco.translate('diaryPage.errorLoadDiary')),
       });
   }
 
@@ -347,7 +362,7 @@ export class DiarioListComponent implements OnDestroy {
       .pipe(takeUntil(this.destruido))
       .subscribe({
         next: (day) => this.day.set(day),
-        error: () => this.toastr.error('Não foi possível atualizar os lançamentos.'),
+        error: () => this.toastr.error(this.transloco.translate('diaryPage.errorUpdateEntries')),
       });
   }
 
@@ -369,7 +384,7 @@ export class DiarioListComponent implements OnDestroy {
           this.meals.set(meals);
           this.sincronizarFase();
         },
-        error: () => this.toastr.error('Não foi possível atualizar as refeições.'),
+        error: () => this.toastr.error(this.transloco.translate('diaryPage.errorUpdateMeals')),
       });
   }
 

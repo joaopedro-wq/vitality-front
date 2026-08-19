@@ -1,11 +1,11 @@
 <bd-modal
   [open]="true"
   (openChange)="onOpenChange($event)"
-  title="Organizar minha trilha"
-  ariaLabel="Organizar minha trilha"
+  [title]="'mealManager.title' | transloco"
+  [ariaLabel]="'mealManager.title' | transloco"
 >
   <p class="m-0 mb-4 text-[13px] text-fg-muted">
-    Cada estação abaixo é um disco no mapa do seu dia.
+    {{ 'mealManager.intro' | transloco }}
   </p>
 
   <div class="flex flex-col gap-2">
@@ -23,7 +23,7 @@
           <input
             #description
             [value]="meal.descricao"
-            aria-label="Nome da refeição"
+            [attr.aria-label]="'mealManager.mealNameAria' | transloco"
             class="w-full min-w-0 border-0 bg-transparent p-0 text-[14px] font-bold text-fg outline-none"
           />
           <div class="mt-0.5 flex items-center gap-1.5 text-[11.5px] text-fg-muted">
@@ -31,16 +31,16 @@
               #time
               type="time"
               [value]="meal.horario"
-              aria-label="Horário"
+              [attr.aria-label]="'mealManager.timeAria' | transloco"
               class="rounded-md border border-border bg-bg px-1.5 py-0.5 text-[11px] text-fg outline-none focus-visible:border-primary"
             />
-            <span>· ordem</span>
+            <span>{{ 'mealManager.orderLabel' | transloco }}</span>
             <input
               #order
               type="number"
               min="0"
               [value]="meal.ordem"
-              aria-label="Ordem"
+              [attr.aria-label]="'mealManager.orderAria' | transloco"
               class="w-10 rounded-md border border-border bg-bg px-1 py-0.5 text-center text-[11px] text-fg outline-none focus-visible:border-primary"
             />
           </div>
@@ -50,7 +50,7 @@
           <button
             class="grid size-8 place-items-center rounded-full border border-border bg-surface text-primary-strong transition-colors hover:border-primary"
             type="button"
-            aria-label="Salvar"
+            [attr.aria-label]="'mealManager.saveAria' | transloco"
             (click)="saveExisting(meal, description.value, time.value, order.valueAsNumber)"
           >
             <svg lucideCheck size="14" aria-hidden="true"></svg>
@@ -58,7 +58,7 @@
           <button
             class="grid size-8 place-items-center rounded-full border border-border bg-surface text-fg-muted transition-colors hover:border-danger hover:text-danger"
             type="button"
-            aria-label="Arquivar"
+            [attr.aria-label]="'mealManager.archiveAria' | transloco"
             (click)="archive(meal)"
           >
             <svg lucideArchive size="14" aria-hidden="true"></svg>
@@ -80,7 +80,7 @@
       <div class="flex min-w-0 flex-1 items-center gap-2">
         <input
           #newDescriptionInput
-          placeholder="Ex.: Pré-treino"
+          [placeholder]="'mealManager.newMealPlaceholder' | transloco"
           (input)="newDescription.set(newDescriptionInput.value)"
           class="min-w-0 flex-1 border-0 bg-transparent p-0 text-[13.5px] font-semibold text-fg outline-none placeholder:text-fg-subtle"
         />
@@ -102,7 +102,7 @@
         @if (saving()) {
           <vtp-plate-loader tamanho="xs" cor="herdada" />
         }
-        Salvar
+        {{ 'common.actions.save' | transloco }}
       </button>
     </div>
   } @else {
@@ -111,7 +111,7 @@
       type="button"
       (click)="adding.set(true)"
     >
-      <svg lucidePlus size="15" aria-hidden="true"></svg> Nova estação
+      <svg lucidePlus size="15" aria-hidden="true"></svg> {{ 'mealManager.newStation' | transloco }}
     </button>
   }
 </bd-modal>

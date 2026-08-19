@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { LucideCheck, LucideDynamicIcon, LucideFlag, type LucideIcon } from '@lucide/angular';
 
 import type { FaseDiario } from '../../utils/diary-day.util';
@@ -22,25 +23,19 @@ interface NoTrilha {
   classesDisco: string;
 }
 
-/**
- * O dia como um caminho: uma fase por refeição, ligadas por uma trilha que fica
- * sólida conforme você anda, e uma bandeira no fim. Substitui a lista/abas de
- * refeições — o objetivo é responder "onde estou no meu dia?" de relance, e dar
- * um destino inequívoco para cada registro.
- *
- * Presentation-only: recebe as fases prontas (`montarFases`) e só emite cliques.
- */
 @Component({
   selector: 'vtp-journey-map',
   standalone: true,
   // LucideCheck não entra aqui: é usado como dado em `[lucideIcon]`, não como
   // diretiva no template — quem resolve isso é o LucideDynamicIcon.
-  imports: [DecimalPipe, LucideDynamicIcon, LucideFlag],
+  imports: [DecimalPipe, TranslocoPipe, LucideDynamicIcon, LucideFlag],
   templateUrl: './journey-map.component.html',
   styleUrl: './journey-map.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JourneyMapComponent {
+  private readonly transloco = inject(TranslocoService);
+
   readonly fases = input.required<FaseDiario[]>();
   readonly selecionada = input(0);
   /** Fase que está sendo preenchida agora — ganha um anel pulsando, para o mapa
@@ -112,7 +107,9 @@ export class JourneyMapComponent {
 
   protected legenda(fase: FaseDiario): string | null {
     if (fase.estado === 'concluida') return null;
-    return fase.estado === 'atual' ? 'fase atual' : 'aberta';
+    return this.transloco.translate(
+      fase.estado === 'atual' ? 'journeyMap.currentPhaseCaption' : 'journeyMap.openPhaseCaption',
+    );
   }
 
   /**
