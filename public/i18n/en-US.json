@@ -300,9 +300,8 @@
   "dashboard": {
     "badgeCard": {
       "xpLabel": "Today",
-      "streak": "{{count}}-day streak",
-      "streakZero": "Start your streak today",
-      "streakBroken": "Streak reset · record of {{record}} days"
+      "level": "Level {{level}}",
+      "xpToNext": "{{xp}} / {{next}} XP"
     },
     "mission": {
       "eyebrow": "Next mission",
@@ -317,6 +316,11 @@
     },
     "week": {
       "title": "Your week"
+    },
+    "missions": {
+      "today": "Today",
+      "week": "This week",
+      "milestones": "Milestones"
     },
     "shortcuts": {
       "diary": "Diary",

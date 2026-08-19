@@ -9,37 +9,20 @@
   }}</span>
 </vtp-macro-summary>
 
-@if (streak().dias > 0) {
-  <div
+<div class="flex w-full max-w-[220px] flex-col items-center gap-1.5">
+  <span
     class="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[11.5px] font-bold text-accent"
   >
-    <svg lucideFlame size="13" aria-hidden="true"></svg>
-    {{ 'dashboard.badgeCard.streak' | transloco: { count: streak().dias } }}
+    {{ 'dashboard.badgeCard.level' | transloco: { level: progressao().nivel } }}
+  </span>
+  <div class="h-1.5 w-full overflow-hidden rounded-full bg-border">
+    <span
+      class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
+      [style.width.%]="progressao().progresso_percent"
+    ></span>
   </div>
-} @else if (streak().recorde > 0) {
-  <div
-    class="inline-flex items-center gap-1.5 rounded-full bg-surface-hover px-3 py-1.5 text-[11.5px] font-bold text-fg-muted"
-  >
-    <svg lucideFlame size="13" aria-hidden="true"></svg>
-    {{ 'dashboard.badgeCard.streakBroken' | transloco: { record: streak().recorde } }}
-  </div>
-} @else {
-  <div
-    class="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[11.5px] font-bold text-accent"
-  >
-    <svg lucideFlame size="13" aria-hidden="true"></svg>
-    {{ 'dashboard.badgeCard.streakZero' | transloco }}
-  </div>
-}
-
-@if (badges().length) {
-  <div class="flex gap-1.5">
-    @for (badge of badges(); track badge.codigo) {
-      <vtp-achievement-badge
-        [icone]="badge.icone"
-        [titulo]="badge.titulo"
-        [conquistado]="badge.conquistado"
-      />
-    }
-  </div>
-}
+  <span class="text-[10.5px] text-fg-muted">{{
+    'dashboard.badgeCard.xpToNext'
+      | transloco: { xp: progressao().xp, next: progressao().xp_proximo_nivel }
+  }}</span>
+</div>
