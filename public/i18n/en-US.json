@@ -200,6 +200,17 @@
     "stepsLabel": "New plan steps",
     "loadingHint": "Fetching your goal and preferences.",
     "defaultTitle": "My daily plan",
+    "actions": {
+      "defineGoals": "Set my goals",
+      "generateNew": "Generate new plan",
+      "buildFirst": "Build my plan",
+      "edit": "Edit",
+      "archive": "Archive",
+      "delete": "Delete",
+      "editLabel": "Edit plan",
+      "archiveLabel": "Archive plan",
+      "deleteLabel": "Delete plan"
+    },
     "adjustPreferences": "Adjust preferences",
     "calorieReference": "We'll use your goal of {{calories}} kcal as a reference.",
     "planNameLabel": "Plan name",

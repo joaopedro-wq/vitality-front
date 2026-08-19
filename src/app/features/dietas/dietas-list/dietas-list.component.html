@@ -16,7 +16,9 @@
       subtitulo="Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo."
       centralizado
     />
-    <button bdButton (click)="openGenerator()">Definir minhas metas</button>
+    <button bdButton (click)="openGenerator()">
+      {{ 'dietPlan.actions.defineGoals' | transloco }}
+    </button>
   </section>
 } @else {
   <vtp-back-button class="page-shell-wide" />
@@ -28,7 +30,8 @@
         subtitulo="Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar."
       />
       <button bdButton size="sm" (click)="openGenerator()">
-        <svg lucidePlus size="16" aria-hidden="true"></svg> Gerar novo plano
+        <svg lucidePlus size="16" aria-hidden="true"></svg>
+        {{ 'dietPlan.actions.generateNew' | transloco }}
       </button>
     </header>
     @if (!plans().length) {
@@ -39,7 +42,9 @@
         <p class="m-0 mt-2 text-fg-muted">
           Conte como é a sua rotina e a gente monta o primeiro dia.
         </p>
-        <button class="mt-5" bdButton (click)="openGenerator()">Montar meu plano</button>
+        <button class="mt-5" bdButton (click)="openGenerator()">
+          {{ 'dietPlan.actions.buildFirst' | transloco }}
+        </button>
       </div>
     } @else {
       <div
@@ -116,9 +121,9 @@
                 size="sm"
                 type="button"
                 iconOnly
-                bdTooltip="Editar plano"
+                [bdTooltip]="'dietPlan.actions.editLabel' | transloco"
                 placement="top"
-                aria-label="Editar plano"
+                [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
                 class="!h-8 !min-h-8 !w-8 !p-0"
                 (click)="editPlan(plan)"
               >
@@ -130,9 +135,9 @@
                 size="sm"
                 type="button"
                 iconOnly
-                bdTooltip="Arquivar plano"
+                [bdTooltip]="'dietPlan.actions.archiveLabel' | transloco"
                 placement="top"
-                aria-label="Arquivar plano"
+                [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
                 class="!h-8 !min-h-8 !w-8 !p-0"
                 (click)="solicitarArquivamento(plan)"
               >
@@ -144,9 +149,9 @@
                 size="sm"
                 type="button"
                 iconOnly
-                bdTooltip="Excluir plano"
+                [bdTooltip]="'dietPlan.actions.deleteLabel' | transloco"
                 placement="top"
-                aria-label="Excluir plano"
+                [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
                 [disabled]="removendo() === plan.id"
                 [attr.aria-busy]="removendo() === plan.id ? true : null"
                 (click)="solicitarExclusao(plan)"
@@ -163,38 +168,38 @@
                 variant="subtle"
                 size="sm"
                 type="button"
-                aria-label="Editar plano"
+                [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
                 class="!min-w-0 !px-1.5 !text-[12px]"
                 (click)="editPlan(plan)"
               >
                 <svg lucidePencil size="12" aria-hidden="true"></svg>
-                Editar
+                {{ 'dietPlan.actions.edit' | transloco }}
               </button>
               <button
                 bdButton
                 variant="ghost"
                 size="sm"
                 type="button"
-                aria-label="Arquivar plano"
+                [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
                 class="!min-w-0 !px-1.5 !text-[12px]"
                 (click)="solicitarArquivamento(plan)"
               >
                 <svg lucideArchive size="12" aria-hidden="true"></svg>
-                Arquivar
+                {{ 'dietPlan.actions.archive' | transloco }}
               </button>
               <button
                 bdButton
                 variant="ghost"
                 size="sm"
                 type="button"
-                aria-label="Excluir plano"
+                [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
                 class="!min-w-0 !px-1.5 !text-[12px] enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
                 [disabled]="removendo() === plan.id"
                 [attr.aria-busy]="removendo() === plan.id ? true : null"
                 (click)="solicitarExclusao(plan)"
               >
                 <svg lucideTrash2 size="12" aria-hidden="true"></svg>
-                Excluir
+                {{ 'dietPlan.actions.delete' | transloco }}
               </button>
             </div>
           </article>

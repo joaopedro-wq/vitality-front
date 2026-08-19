@@ -200,6 +200,17 @@
     "stepsLabel": "Etapas do novo plano",
     "loadingHint": "Buscando sua meta e suas preferências.",
     "defaultTitle": "Meu plano do dia",
+    "actions": {
+      "defineGoals": "Definir minhas metas",
+      "generateNew": "Gerar novo plano",
+      "buildFirst": "Montar meu plano",
+      "edit": "Editar",
+      "archive": "Arquivar",
+      "delete": "Excluir",
+      "editLabel": "Editar plano",
+      "archiveLabel": "Arquivar plano",
+      "deleteLabel": "Excluir plano"
+    },
     "adjustPreferences": "Ajustar preferências",
     "calorieReference": "Usaremos sua meta de {{calories}} kcal como referência.",
     "planNameLabel": "Nome do plano",
