@@ -1,14 +1,5 @@
 import { environment } from '../../../environments/environment';
 
-/**
- * Centraliza os endpoints do backend. `login` e `criarUsuario` foram
- * movidos no backend de `routes/auth.php` (grupo `web`, sessão + CSRF) para
- * `routes/api.php` (grupo `api`, stateless) — era a causa do "CSRF token
- * mismatch" ao criar conta. `register`/`forgotPassword`/`resetPassword`
- * continuam fora de `/api` (scaffold do Breeze, não usado por este front).
- * Usar sempre este arquivo em vez de montar strings de URL na mão nos
- * services — evita alguém esquecer o `/api` (ou colocar de mais).
- */
 export const authPaths = {
   login: () => `${environment.apiBaseUrl}/login`,
   criarUsuario: () => `${environment.apiBaseUrl}/criar-usuario`,
@@ -21,6 +12,8 @@ export const authPaths = {
 
 export const apiPaths = {
   me: () => `${environment.apiBaseUrl}/user/get-with-token`,
+
+  dashboardSummary: () => `${environment.apiBaseUrl}/dashboard/summary`,
   users: () => `${environment.apiBaseUrl}/users`,
   user: (id: number | string) => `${environment.apiBaseUrl}/user/${id}`,
   userAvatar: () => `${environment.apiBaseUrl}/user/avatar`,
@@ -67,6 +60,7 @@ export const apiPaths = {
   mealPlanEditDraft: (id: number | string) =>
     `${environment.apiBaseUrl}/meal-plans/${id}/edit-draft`,
   mealPlanArchive: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}/archive`,
+  mealPlanFavorite: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}/favorite`,
 
   registros: () => `${environment.apiBaseUrl}/registro`,
   registro: (id: number | string) => `${environment.apiBaseUrl}/registro/${id}`,

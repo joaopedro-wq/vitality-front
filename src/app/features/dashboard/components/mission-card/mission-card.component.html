@@ -1,0 +1,41 @@
+@if (proximaRefeicao(); as refeicao) {
+  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
+    {{ 'dashboard.mission.eyebrow' | transloco }}
+  </p>
+  <h3 class="m-0 text-[21px] font-extrabold text-fg">
+    {{ 'dashboard.mission.title' | transloco: { meal: refeicao.descricao } }}
+  </h3>
+  <p class="m-0 max-w-[38ch] text-[13px] text-fg-muted">
+    @if (refeicao.sugestao_plano; as sugestao) {
+      {{
+        'dashboard.mission.descriptionWithPlan'
+          | transloco: { food: sugestao, time: refeicao.horario }
+      }}
+    } @else {
+      {{ 'dashboard.mission.description' | transloco: { time: refeicao.horario } }}
+    }
+  </p>
+  <a
+    bdButton
+    variant="primary"
+    class="cta-glow"
+    [routerLink]="['/diario']"
+    [queryParams]="{ registrar: 1 }"
+  >
+    <svg lucidePlus size="16" aria-hidden="true"></svg>
+    {{ 'dashboard.mission.cta' | transloco: { meal: refeicao.descricao } }}
+  </a>
+} @else {
+  <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-primary-strong">
+    {{ 'dashboard.mission.eyebrowDone' | transloco }}
+  </p>
+  <h3 class="m-0 text-[21px] font-extrabold text-fg">
+    {{ 'dashboard.mission.titleDone' | transloco }}
+  </h3>
+  <p class="m-0 max-w-[38ch] text-[13px] text-fg-muted">
+    {{ 'dashboard.mission.descriptionDone' | transloco }}
+  </p>
+  <a bdButton variant="ghost" [routerLink]="['/diario']">{{
+    'dashboard.mission.ctaDone' | transloco
+  }}</a>
+}

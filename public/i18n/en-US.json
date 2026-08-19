@@ -209,7 +209,9 @@
       "delete": "Delete",
       "editLabel": "Edit plan",
       "archiveLabel": "Archive plan",
-      "deleteLabel": "Delete plan"
+      "deleteLabel": "Delete plan",
+      "favoriteLabel": "Mark as favorite",
+      "unfavoriteLabel": "Remove from favorites"
     },
     "adjustPreferences": "Adjust preferences",
     "calorieReference": "We'll use your goal of {{calories}} kcal as a reference.",
@@ -274,6 +276,9 @@
       "archived": "Meal plan archived.",
       "deleted": "Meal plan deleted.",
       "deleteError": "We couldn't delete this plan right now.",
+      "favorited": "Plan marked as favorite — it now shows on the Dashboard.",
+      "unfavorited": "Plan is no longer the favorite.",
+      "favoriteError": "We couldn't update the favorite right now.",
       "mealRegenerated": "Meal reorganized with a new combination.",
       "itemReplaced": "Food replaced while keeping the meal's goal.",
       "dayRecreated": "New day generated.",
@@ -291,5 +296,41 @@
     },
     "confirmRecreate": "Generating a new day recreates ALL meals from scratch. Any manual swap made in them will be replaced or lost. Continue?",
     "swapFailureFallback": "We couldn't find a single swap that keeps this meal close to the goal. Reorganize the whole meal to find a more coherent combination."
+  },
+  "dashboard": {
+    "badgeCard": {
+      "xpLabel": "Today",
+      "streak": "{{count}}-day streak",
+      "streakZero": "Start your streak today",
+      "streakBroken": "Streak reset · record of {{record}} days"
+    },
+    "mission": {
+      "eyebrow": "Next mission",
+      "title": "Log {{meal}}",
+      "description": "Suggested for {{time}}.",
+      "descriptionWithPlan": "{{food}} — suggested by your plan for {{time}}.",
+      "cta": "Log {{meal}}",
+      "eyebrowDone": "Dashboard",
+      "titleDone": "Day complete!",
+      "descriptionDone": "You've already logged every meal today.",
+      "ctaDone": "View diary"
+    },
+    "week": {
+      "title": "Your week"
+    },
+    "shortcuts": {
+      "diary": "Diary",
+      "diaryPending": "Missing {{meal}}",
+      "diaryDone": "Day complete",
+      "plan": "Meal plan",
+      "planAdherence": "{{pct}}% adherence in 7 days",
+      "planNone": "No active plan",
+      "goals": "Goals",
+      "goalsSet": "Goal set",
+      "goalsUnset": "Set your goal",
+      "foods": "Foods",
+      "foodsTop": "Most eaten: {{food}}",
+      "foodsExplore": "Explore catalog"
+    }
   }
 }

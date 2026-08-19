@@ -130,4 +130,14 @@ export class MealPlanService {
   remove(id: number): Observable<void> {
     return this.http.delete<void>(apiPaths.mealPlan(id));
   }
+
+  favorite(id: number): Observable<MealPlan> {
+    return this.http
+      .post<ApiResponse<MealPlan>>(apiPaths.mealPlanFavorite(id), {})
+      .pipe(map((res) => res.data));
+  }
+
+  unfavorite(id: number): Observable<void> {
+    return this.http.delete<void>(apiPaths.mealPlanFavorite(id));
+  }
 }

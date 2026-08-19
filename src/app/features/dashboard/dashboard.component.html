@@ -1,0 +1,18 @@
+<div class="page-shell-wide p-4 sm:p-6 lg:p-8">
+  @if (carregandoVisivel()) {
+    <vtp-loading-state />
+  } @else if (resumo(); as r) {
+    <div class="flex flex-col gap-4 sm:gap-5">
+      <div class="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-[260px_minmax(0,1fr)]">
+        <vtp-badge-card [hoje]="r.hoje" [streak]="r.streak" [badges]="r.badges" />
+        <vtp-mission-card [proximaRefeicao]="r.proxima_refeicao" />
+      </div>
+
+      <vtp-next-badge-card [badges]="r.badges" />
+
+      <vtp-week-trail [dias]="r.semana" [hoje]="r.date" />
+
+      <vtp-shortcuts-row [resumo]="r" />
+    </div>
+  }
+</div>

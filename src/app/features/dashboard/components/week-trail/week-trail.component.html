@@ -1,0 +1,33 @@
+<p class="m-0 mb-3.5 text-[11px] font-extrabold uppercase tracking-wide text-fg-muted">
+  {{ 'dashboard.week.title' | transloco }}
+</p>
+
+<div class="flex items-center justify-between gap-1 overflow-x-auto pb-1 sm:gap-2">
+  @for (dia of diasComRotulo(); track dia.data) {
+    <div class="flex min-w-[38px] flex-1 flex-col items-center gap-1.5">
+      <div
+        class="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full border-2 text-[10px] font-bold sm:h-8 sm:w-8"
+        [class.border-primary]="dia.dentro_da_meta"
+        [class.bg-primary]="dia.dentro_da_meta"
+        [class.text-primary-contrast]="dia.dentro_da_meta"
+        [class.border-border-strong]="!dia.dentro_da_meta && !dia.hoje"
+        [class.text-fg-muted]="!dia.dentro_da_meta && !dia.hoje"
+        [class.border-accent]="!dia.dentro_da_meta && dia.hoje"
+        [class.text-accent]="!dia.dentro_da_meta && dia.hoje"
+      >
+        @if (dia.dentro_da_meta) {
+          ✓
+        } @else if (dia.hoje) {
+          {{ dia.percentual }}%
+        } @else {
+          ·
+        }
+      </div>
+      <span
+        class="text-[9.5px] font-bold uppercase text-fg-subtle"
+        [class.text-accent]="dia.hoje"
+        >{{ dia.rotulo }}</span
+      >
+    </div>
+  }
+</div>

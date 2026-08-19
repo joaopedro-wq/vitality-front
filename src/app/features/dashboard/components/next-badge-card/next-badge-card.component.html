@@ -1,0 +1,22 @@
+@if (proxima(); as badge) {
+  <div class="card animate-reveal flex items-center gap-3.5 p-4">
+    <span
+      class="grid h-10 w-10 flex-shrink-0 place-items-center rounded-[11px] border border-dashed border-border-strong bg-surface-hover text-[17px] opacity-70"
+      aria-hidden="true"
+    >
+      {{ badge.icone }}
+    </span>
+    <div class="min-w-0 flex-1">
+      <p class="m-0 text-[12.5px] font-bold text-fg">{{ badge.titulo }}</p>
+      <div class="mt-1.5 h-1.5 max-w-[280px] overflow-hidden rounded-full bg-border">
+        <span
+          class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
+          [style.width.%]="badge.progresso"
+        ></span>
+      </div>
+    </div>
+    <span class="flex-shrink-0 text-[11px] font-bold tabular-nums text-fg-muted"
+      >{{ badge.progresso }}%</span
+    >
+  </div>
+}

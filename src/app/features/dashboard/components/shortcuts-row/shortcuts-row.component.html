@@ -1,0 +1,21 @@
+<div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+  @for (atalho of atalhos(); track atalho.path) {
+    <a
+      [routerLink]="atalho.path"
+      class="card animate-reveal flex flex-col gap-2.5 p-4 no-underline transition-[box-shadow,transform,border-color] duration-150 hover:-translate-y-0.5 hover:border-border-strong hover:shadow-[0_10px_22px_-12px_rgba(0,0,0,.2)]"
+    >
+      <div class="flex items-center justify-between">
+        <span
+          class="grid h-8 w-8 place-items-center rounded-[9px] bg-primary-soft text-primary-strong"
+        >
+          <svg [lucideIcon]="atalho.icone" size="16" aria-hidden="true"></svg>
+        </span>
+        <svg lucideChevronRight size="15" class="text-fg-subtle" aria-hidden="true"></svg>
+      </div>
+      <div class="min-w-0">
+        <p class="m-0 text-[12.5px] font-bold text-fg">{{ atalho.nome }}</p>
+        <p class="m-0 mt-0.5 truncate text-[11px] text-fg-muted">{{ atalho.status }}</p>
+      </div>
+    </a>
+  }
+</div>

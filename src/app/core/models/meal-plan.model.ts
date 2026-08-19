@@ -73,6 +73,7 @@ export interface MealPlan extends Omit<MealPlanDraft, 'draft_id'> {
   id: number;
   titulo: string;
   archived_at: string | null;
+  favorited_at: string | null;
   created_at: string;
   updated_at: string;
 }

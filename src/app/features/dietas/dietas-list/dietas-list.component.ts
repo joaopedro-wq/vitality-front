@@ -15,6 +15,7 @@ import {
   LucidePencil,
   LucidePlus,
   LucideSparkles,
+  LucideStar,
   LucideTrash2,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
@@ -43,6 +44,7 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
     LucidePencil,
     LucidePlus,
     LucideSparkles,
+    LucideStar,
     LucideTrash2,
     BackButtonComponent,
     ConfirmDialogComponent,
@@ -68,6 +70,7 @@ export class DietasListComponent implements OnDestroy {
   protected readonly meta = signal<MetaDiaria | null>(null);
   protected readonly plans = signal<MealPlan[]>([]);
   protected readonly removendo = signal<number | null>(null);
+  protected readonly favoritando = signal<number | null>(null);
   protected readonly confirmacao = signal<{
     acao: 'arquivar' | 'excluir';
     plano: MealPlan;
@@ -121,6 +124,57 @@ export class DietasListComponent implements OnDestroy {
 
   protected fecharConfirmacao(): void {
     this.confirmacao.set(null);
+  }
+
+  /** Não destrutivo (sem confirm-dialog) — só um favorito por vez, o backend já desfavorita
+   * qualquer outro plano do usuário ao marcar este (ver `MealPlanController::favorite`). É o
+   * plano que o Painel usa como "plano ativo" (`DashboardService::resolverPlano`). */
+  protected favoritar(plan: MealPlan): void {
+    if (this.favoritando() !== null) return;
+    this.favoritando.set(plan.id);
+
+    const favoritadoAgora = !plan.favorited_at;
+    const aoConcluir = (): void => {
+      this.plans.update((plans) =>
+        plans.map((item) => ({
+          ...item,
+          favorited_at:
+            item.id === plan.id
+              ? favoritadoAgora
+                ? new Date().toISOString()
+                : null
+              : favoritadoAgora
+                ? null
+                : item.favorited_at,
+        })),
+      );
+      this.toastr.success(
+        this.transloco.translate(
+          favoritadoAgora ? 'dietPlan.toast.favorited' : 'dietPlan.toast.unfavorited',
+        ),
+      );
+    };
+    const aoFalhar = (): void => {
+      this.toastr.error(this.transloco.translate('dietPlan.toast.favoriteError'));
+    };
+
+    if (plan.favorited_at) {
+      this.plansService
+        .unfavorite(plan.id)
+        .pipe(
+          finalize(() => this.favoritando.set(null)),
+          takeUntil(this.destruido),
+        )
+        .subscribe({ next: aoConcluir, error: aoFalhar });
+    } else {
+      this.plansService
+        .favorite(plan.id)
+        .pipe(
+          finalize(() => this.favoritando.set(null)),
+          takeUntil(this.destruido),
+        )
+        .subscribe({ next: aoConcluir, error: aoFalhar });
+    }
   }
 
   private arquivar(plan: MealPlan): void {

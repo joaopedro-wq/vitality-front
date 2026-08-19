@@ -117,6 +117,38 @@
             <div class="mt-auto flex w-full justify-center gap-1.5 pt-1.5 @[280px]:hidden">
               <button
                 bdButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                iconOnly
+                [bdTooltip]="
+                  (plan.favorited_at
+                    ? 'dietPlan.actions.unfavoriteLabel'
+                    : 'dietPlan.actions.favoriteLabel'
+                  ) | transloco
+                "
+                placement="top"
+                [attr.aria-label]="
+                  (plan.favorited_at
+                    ? 'dietPlan.actions.unfavoriteLabel'
+                    : 'dietPlan.actions.favoriteLabel'
+                  ) | transloco
+                "
+                [disabled]="favoritando() === plan.id"
+                [attr.aria-busy]="favoritando() === plan.id ? true : null"
+                (click)="favoritar(plan)"
+                class="!h-8 !min-h-8 !w-8 !p-0"
+                [class.!text-accent]="plan.favorited_at"
+              >
+                <svg
+                  lucideStar
+                  size="14"
+                  [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
+                  aria-hidden="true"
+                ></svg>
+              </button>
+              <button
+                bdButton
                 variant="subtle"
                 size="sm"
                 type="button"
@@ -161,8 +193,40 @@
               </button>
             </div>
 
-            <!-- Card a partir de 280px: três ações lado a lado com texto. -->
-            <div class="mt-auto hidden w-full grid-cols-3 gap-1 pt-1.5 @[280px]:grid">
+            <!-- Card a partir de 280px: ações lado a lado com texto. -->
+            <div class="mt-auto hidden w-full grid-cols-4 gap-1 pt-1.5 @[280px]:grid">
+              <button
+                bdButton
+                variant="ghost"
+                size="sm"
+                type="button"
+                iconOnly
+                [bdTooltip]="
+                  (plan.favorited_at
+                    ? 'dietPlan.actions.unfavoriteLabel'
+                    : 'dietPlan.actions.favoriteLabel'
+                  ) | transloco
+                "
+                placement="top"
+                [attr.aria-label]="
+                  (plan.favorited_at
+                    ? 'dietPlan.actions.unfavoriteLabel'
+                    : 'dietPlan.actions.favoriteLabel'
+                  ) | transloco
+                "
+                [disabled]="favoritando() === plan.id"
+                [attr.aria-busy]="favoritando() === plan.id ? true : null"
+                (click)="favoritar(plan)"
+                class="!min-w-0 !px-1.5"
+                [class.!text-accent]="plan.favorited_at"
+              >
+                <svg
+                  lucideStar
+                  size="14"
+                  [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
+                  aria-hidden="true"
+                ></svg>
+              </button>
               <button
                 bdButton
                 variant="subtle"

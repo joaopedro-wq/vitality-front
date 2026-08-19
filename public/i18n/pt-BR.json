@@ -209,7 +209,9 @@
       "delete": "Excluir",
       "editLabel": "Editar plano",
       "archiveLabel": "Arquivar plano",
-      "deleteLabel": "Excluir plano"
+      "deleteLabel": "Excluir plano",
+      "favoriteLabel": "Marcar como favorito",
+      "unfavoriteLabel": "Remover dos favoritos"
     },
     "adjustPreferences": "Ajustar preferências",
     "calorieReference": "Usaremos sua meta de {{calories}} kcal como referência.",
@@ -274,6 +276,9 @@
       "archived": "Plano arquivado.",
       "deleted": "Plano excluído.",
       "deleteError": "Não foi possível excluir este plano agora.",
+      "favorited": "Plano marcado como favorito — ele aparece no Painel.",
+      "unfavorited": "Plano deixou de ser o favorito.",
+      "favoriteError": "Não foi possível atualizar o favorito agora.",
       "mealRegenerated": "Refeição reorganizada com uma nova combinação.",
       "itemReplaced": "Alimento substituído mantendo a meta da refeição.",
       "dayRecreated": "Novo dia gerado.",
@@ -291,5 +296,41 @@
     },
     "confirmRecreate": "Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?",
     "swapFailureFallback": "Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente."
+  },
+  "dashboard": {
+    "badgeCard": {
+      "xpLabel": "Hoje",
+      "streak": "{{count}} dias seguidos",
+      "streakZero": "Comece sua sequência hoje",
+      "streakBroken": "Sequência zerada · recorde de {{record}} dias"
+    },
+    "mission": {
+      "eyebrow": "Próxima missão",
+      "title": "Registrar {{meal}}",
+      "description": "Sugerido para {{time}}.",
+      "descriptionWithPlan": "{{food}} — sugerido pelo seu plano para {{time}}.",
+      "cta": "Registrar {{meal}}",
+      "eyebrowDone": "Painel",
+      "titleDone": "Dia completo!",
+      "descriptionDone": "Você já registrou todas as refeições de hoje.",
+      "ctaDone": "Ver diário"
+    },
+    "week": {
+      "title": "Sua semana"
+    },
+    "shortcuts": {
+      "diary": "Diário",
+      "diaryPending": "Falta {{meal}}",
+      "diaryDone": "Dia completo",
+      "plan": "Plano alimentar",
+      "planAdherence": "{{pct}}% aderência em 7 dias",
+      "planNone": "Nenhum plano ativo",
+      "goals": "Metas",
+      "goalsSet": "Meta definida",
+      "goalsUnset": "Defina sua meta",
+      "foods": "Alimentos",
+      "foodsTop": "Mais comido: {{food}}",
+      "foodsExplore": "Explorar catálogo"
+    }
   }
 }

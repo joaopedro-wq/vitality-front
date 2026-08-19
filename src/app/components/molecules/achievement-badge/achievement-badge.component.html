@@ -1,0 +1,12 @@
+<span
+  class="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[10px] border text-base"
+  [class]="
+    conquistado()
+      ? 'border-border bg-primary-soft opacity-100'
+      : 'border-dashed border-border-strong bg-surface-hover opacity-70'
+  "
+  [attr.title]="titulo()"
+  [attr.aria-label]="titulo()"
+>
+  {{ icone() }}
+</span>
