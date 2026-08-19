@@ -2,14 +2,14 @@
 <div class="food-library page-shell-wide">
   <header class="food-library__header">
     <vtp-page-title
-      contexto="Biblioteca"
-      titulo="Alimentos"
-      subtitulo="Encontre itens do catálogo TACO e guarde os que você usa com frequência."
+      [contexto]="'pageTitle.library' | transloco"
+      [titulo]="'pageTitle.foods' | transloco"
+      [subtitulo]="'pageTitle.foodsSubtitle' | transloco"
     />
     @if (auth.currentUser()?.is_admin) {
       <a bdButton size="sm" routerLink="/admin/alimentos"
         ><svg lucideShieldCheck size="16" aria-hidden="true"></svg
-        ><span>Gerenciar catálogo</span></a
+        ><span>{{ 'foodsPage.manageCatalog' | transloco }}</span></a
       >
     }
   </header>
@@ -38,7 +38,7 @@
           ><input
             #termo
             type="search"
-            placeholder="Buscar alimento"
+            [placeholder]="'ui2.foodFilters.search' | transloco"
             [value]="busca()"
             (input)="atualizarBusca(termo.value)"
         /></label>
@@ -49,21 +49,23 @@
           type="button"
           (click)="abrirFiltros()"
         >
-          <svg lucideFilter size="16" aria-hidden="true"></svg>Filtros
+          <svg lucideFilter size="16" aria-hidden="true"></svg
+          >{{ 'ui2.foodFilters.title' | transloco }}
           @if (filtrosAtivos()) {
             <span>{{ filtrosAtivos() }}</span>
           }
         </button>
-        <div class="tabs" role="tablist" aria-label="Exibir alimentos">
+        <div class="tabs" role="tablist" [attr.aria-label]="'foodsPage.ariaDisplay' | transloco">
           <button type="button" [class.active]="tab() === 'all'" (click)="selecionarTab('all')">
-            Todos
+            {{ 'foodsPage.tabAll' | transloco }}
           </button>
           <button
             type="button"
             [class.active]="tab() === 'favorites'"
             (click)="selecionarTab('favorites')"
           >
-            <svg lucideHeart size="13" aria-hidden="true"></svg>Favoritos
+            <svg lucideHeart size="13" aria-hidden="true"></svg
+            >{{ 'ui2.foodFilters.favorites' | transloco }}
           </button>
         </div>
         <div class="sort-and-view">
@@ -76,7 +78,7 @@
             (ordemChange)="definirOrdem($event)"
           />
           <vtp-view-mode-toggle
-            [options]="viewModeOptions"
+            [options]="viewModeOptions()"
             [value]="viewMode()"
             (valueChange)="onViewModeChange($event)"
           />
@@ -84,35 +86,41 @@
       </section>
 
       <div class="results-meta">
-        <span>{{ totalRegistros() }} alimentos encontrados</span>
+        <span>{{ 'foodsPage.resultsCount' | transloco: { count: totalRegistros() } }}</span>
         @if (recarregando()) {
-          <vtp-plate-loader tamanho="xs" rotulo="Atualizando resultados" />
+          <vtp-plate-loader tamanho="xs" [rotulo]="'foodsPage.refreshingResults' | transloco" />
         }
       </div>
 
       @if (primeiraCargaVisivel()) {
         <vtp-loading-state
-          titulo="Abrindo o catálogo"
-          descricao="Buscando os alimentos e os grupos disponíveis."
+          [titulo]="'uiLoading.catalogOpening' | transloco"
+          [descricao]="'foodsPage.catalogOpeningDesc' | transloco"
         />
       } @else if (vazio()) {
         <section class="empty card">
           <svg lucideHeart size="24" aria-hidden="true"></svg>
           <h2>
-            {{ tab() === 'favorites' ? 'Nenhum favorito ainda' : 'Nenhum alimento encontrado' }}
+            {{
+              (tab() === 'favorites'
+                ? 'foodsPage.emptyFavoritesTitle'
+                : 'foodsPage.emptyResultsTitle'
+              ) | transloco
+            }}
           </h2>
           <p>
             {{
-              tab() === 'favorites'
-                ? 'Use o coração em qualquer alimento para montar sua lista rápida.'
-                : 'Tente outro termo ou ajuste os filtros.'
+              (tab() === 'favorites'
+                ? 'foodsPage.emptyFavoritesDesc'
+                : 'foodsPage.emptyResultsDesc'
+              ) | transloco
             }}
           </p>
         </section>
       } @else if (viewMode() === 'cards') {
         <div
           class="food-grid"
-          aria-label="Resultados do catálogo"
+          [attr.aria-label]="'foodsPage.ariaResults' | transloco"
           [class.food-grid--recarregando]="recarregando()"
         >
           @for (food of alimentos(); track food.id) {
@@ -127,7 +135,7 @@
         <div class="table-scroll">
           <vtp-data-table
             [value]="alimentos()"
-            [cols]="tableColumns"
+            [cols]="tableColumns()"
             [loading]="carregando()"
             [sortField]="sortField()"
             [sortOrder]="sortOrder()"
@@ -148,23 +156,27 @@
   </div>
 
   @if (filtrosAbertos()) {
-    <button class="overlay-scrim" aria-label="Fechar filtros" (click)="fecharFiltros()"></button>
+    <button
+      class="overlay-scrim"
+      [attr.aria-label]="'foodsPage.closeFilters' | transloco"
+      (click)="fecharFiltros()"
+    ></button>
     <aside
       class="filter-drawer"
       cdkTrapFocus
       role="dialog"
       aria-modal="true"
-      aria-label="Filtros de alimentos"
+      [attr.aria-label]="'foodsPage.ariaFilters' | transloco"
     >
       <div class="filter-drawer__handle" aria-hidden="true"></div>
       <div class="filter-drawer__header">
-        <h2>Filtros</h2>
+        <h2>{{ 'ui2.foodFilters.title' | transloco }}</h2>
         <button
           bdButton
           variant="ghost"
           size="sm"
           iconOnly
-          aria-label="Fechar filtros"
+          [attr.aria-label]="'foodsPage.closeFilters' | transloco"
           (click)="fecharFiltros()"
         >
           <svg lucideX size="18" aria-hidden="true"></svg>
@@ -189,7 +201,7 @@
   @if (detalhe(); as food) {
     <button
       class="overlay-scrim detail-scrim"
-      aria-label="Fechar detalhes"
+      [attr.aria-label]="'foodsPage.closeDetails' | transloco"
       (click)="fecharDetalhe()"
     ></button>
     <aside
@@ -206,14 +218,14 @@
         variant="ghost"
         size="sm"
         iconOnly
-        aria-label="Fechar detalhes"
+        [attr.aria-label]="'foodsPage.closeDetails' | transloco"
         (click)="fecharDetalhe()"
       >
         <svg lucideX size="18" aria-hidden="true"></svg>
       </button>
       @if (detalheCarregandoVisivel()) {
         <div class="detail-loading">
-          <vtp-loading-state tamanho="sm" titulo="Carregando detalhes" />
+          <vtp-loading-state tamanho="sm" [titulo]="'uiLoading.details' | transloco" />
         </div>
       } @else {
         <div class="food-detail__hero">
@@ -225,7 +237,7 @@
             </div>
           }
           <div>
-            <span>{{ food.grupo || 'Catálogo geral' }}</span>
+            <span>{{ food.grupo || ('foodsPage.fallbackGroup' | transloco) }}</span>
             <h2>{{ food.descricao }}</h2>
             @if (food.detalhe_exibicao) {
               <p class="food-detail__detalhe">{{ food.detalhe_exibicao }}</p>
@@ -235,25 +247,25 @@
         </div>
         <div class="food-detail__kcal">
           {{ food.caloria | number: '1.0-0' }}
-          <small>kcal / {{ food.qtd | number: '1.0-0' }}g</small>
+          <small>{{ 'nutrition.kcal' | transloco }} / {{ food.qtd | number: '1.0-0' }}g</small>
         </div>
         <dl class="food-detail__macros">
           <div>
-            <dt>Proteína</dt>
+            <dt>{{ 'nutrition.protein' | transloco }}</dt>
             <dd>{{ food.proteina | number: '1.0-1' }}g</dd>
           </div>
           <div>
-            <dt>Carboidrato</dt>
+            <dt>{{ 'nutrition.carbs' | transloco }}</dt>
             <dd>{{ food.carbo | number: '1.0-1' }}g</dd>
           </div>
           <div>
-            <dt>Gordura</dt>
+            <dt>{{ 'nutrition.fat' | transloco }}</dt>
             <dd>{{ food.gordura | number: '1.0-1' }}g</dd>
           </div>
         </dl>
         @if (food.nutrientes?.length) {
           <section class="food-detail__nutrients">
-            <h3>Nutrientes</h3>
+            <h3>{{ 'foodsPage.nutrientsHeading' | transloco }}</h3>
             @for (nutriente of food.nutrientes; track nutriente.codigo) {
               <div>
                 <span>{{ nutriente.nome }}</span

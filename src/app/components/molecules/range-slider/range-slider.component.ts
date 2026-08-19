@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'vtp-range-slider',
   standalone: true,
+  imports: [TranslocoPipe],
   templateUrl: './range-slider.component.html',
   styleUrl: './range-slider.component.scss',
   host: { class: 'block' },

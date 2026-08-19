@@ -1,8 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { BdButtonComponent, BdModalComponent } from 'bandeira-ui';
 import { LucideArchive, LucideCheck, LucideDynamicIcon, LucidePlus } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs';
+import { Subject, finalize, takeUntil } from 'rxjs';
 
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { ICONE_POR_MOMENTO, momentoDaRefeicao } from '../../../components/utils/diary-day.util';
@@ -25,17 +33,23 @@ import { DiarioService } from '../../../services/diario.service';
   styles: [':host { display: contents; }'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MealManagerComponent {
+export class MealManagerComponent implements OnDestroy {
   readonly meals = input.required<DiaryMeal[]>();
   readonly closed = output<void>();
   readonly changed = output<void>();
 
   private readonly diary = inject(DiarioService);
   private readonly toastr = inject(ToastrService);
+  private readonly destruido = new Subject<void>();
   protected readonly adding = signal(false);
   protected readonly saving = signal(false);
   protected readonly newDescription = signal('');
   protected readonly newTime = signal('12:00');
+
+  ngOnDestroy(): void {
+    this.destruido.next();
+    this.destruido.complete();
+  }
 
   /** Mesmo ícone que o disco da fase usa na trilha — a estação aqui é o mesmo
    * dado, só num modo de edição, não uma tela à parte. */
@@ -53,7 +67,10 @@ export class MealManagerComponent {
     this.saving.set(true);
     this.diary
       .updateMeal(meal.id, { descricao: description, horario: time, ordem: order })
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.saving.set(false)),
+      )
       .subscribe({
         next: () => {
           this.toastr.success('Refeição atualizada.');
@@ -72,7 +89,10 @@ export class MealManagerComponent {
         horario: this.newTime(),
         ordem: this.meals().length + 1,
       })
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.saving.set(false)),
+      )
       .subscribe({
         next: () => {
           this.adding.set(false);
@@ -86,12 +106,15 @@ export class MealManagerComponent {
   protected archive(meal: DiaryMeal): void {
     if (!window.confirm(`Arquivar ${meal.descricao}? Os registros antigos continuarão visíveis.`))
       return;
-    this.diary.archiveMeal(meal.id).subscribe({
-      next: () => {
-        this.toastr.success('Refeição arquivada.');
-        this.changed.emit();
-      },
-      error: () => this.toastr.error('Não foi possível arquivar a refeição.'),
-    });
+    this.diary
+      .archiveMeal(meal.id)
+      .pipe(takeUntil(this.destruido))
+      .subscribe({
+        next: () => {
+          this.toastr.success('Refeição arquivada.');
+          this.changed.emit();
+        },
+        error: () => this.toastr.error('Não foi possível arquivar a refeição.'),
+      });
   }
 }

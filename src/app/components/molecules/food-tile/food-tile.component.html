@@ -11,7 +11,9 @@
     type="button"
     class="food-tile__favorite"
     [class.food-tile__favorite--active]="food().is_favorite"
-    [attr.aria-label]="food().is_favorite ? 'Remover dos favoritos' : 'Favoritar'"
+    [attr.aria-label]="
+      (food().is_favorite ? 'foodsPage.unfavorite' : 'foodsPage.favorite') | transloco
+    "
     (click)="onFavorite($event)"
   >
     <svg
@@ -46,25 +48,28 @@
   </div>
 
   <div class="food-tile__energy">
-    <strong>{{ food().caloria | number: '1.0-0' }} <small>kcal</small></strong>
-    <span>por {{ food().qtd | number: '1.0-0' }}g</span>
+    <strong
+      >{{ food().caloria | number: '1.0-0' }}
+      <small>{{ 'nutrition.kcal' | transloco }}</small></strong
+    >
+    <span>{{ 'foodsPage.per' | transloco }} {{ food().qtd | number: '1.0-0' }}g</span>
   </div>
 
   <div class="food-tile__macros">
     <span>
       <i class="protein"></i>
       <b>{{ food().proteina | number: '1.0-1' }}g</b>
-      <small>Prot</small>
+      <small>{{ 'foodsPage.protAbbr' | transloco }}</small>
     </span>
     <span>
       <i class="carbo"></i>
       <b>{{ food().carbo | number: '1.0-1' }}g</b>
-      <small>Carbo</small>
+      <small>{{ 'foodsPage.carboAbbr' | transloco }}</small>
     </span>
     <span>
       <i class="fat"></i>
       <b>{{ food().gordura | number: '1.0-1' }}g</b>
-      <small>Gord</small>
+      <small>{{ 'foodsPage.gordAbbr' | transloco }}</small>
     </span>
   </div>
 </article>

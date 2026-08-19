@@ -33,7 +33,7 @@ interface Atalho {
   standalone: true,
   imports: [RouterLink, ShortcutTrailNodeComponent],
   templateUrl: './shortcuts-row.component.html',
-  host: { class: 'card animate-reveal p-5 sm:p-6' },
+  host: { class: 'card animate-reveal p-5' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShortcutsRowComponent {
@@ -51,8 +51,6 @@ export class ShortcutsRowComponent {
       this.transloco.translate(key, params);
     const resumo = this.resumo();
 
-    // Nó "ativo" = o que pede atenção agora — só o primeiro critério verdadeiro nessa ordem
-    // ganha o halo; se o dia já está em dia em tudo, nenhum nó força uma urgência falsa.
     const diarioAtivo = resumo.proxima_refeicao !== null;
     const metasAtivo = !diarioAtivo && resumo.hoje.meta === null;
     const planoAtivo = !diarioAtivo && !metasAtivo && resumo.plano_ativo === null;

@@ -8,7 +8,7 @@
       <span>{{ labels().results }}</span>
       <p>
         {{ labels().showing }}
-        <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> de
+        <b>{{ intervaloResultados().inicio }}–{{ intervaloResultados().fim }}</b> {{ labels().of }}
         <b>{{ totalRegistros() }}</b> {{ labels().items }}
       </p>
     </div>
@@ -41,7 +41,7 @@
         }
       </div>
       <span class="food-pagination__status"
-        >{{ labels().page }} {{ pagina() }} de {{ totalPaginas() }}</span
+        >{{ labels().page }} {{ pagina() }} {{ labels().of }} {{ totalPaginas() }}</span
       >
       <button
         type="button"

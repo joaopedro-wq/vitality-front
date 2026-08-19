@@ -32,6 +32,7 @@ export class PaginationControlsComponent {
       selectPage: this.transloco.translate('ui.pagination.selectPage'),
       page: this.transloco.translate('ui.pagination.page'),
       next: this.transloco.translate('ui.pagination.next'),
+      of: this.transloco.translate('ui.pagination.of'),
     };
   });
 

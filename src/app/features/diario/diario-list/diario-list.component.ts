@@ -1,9 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LucideArrowLeft, LucideArrowRight, LucideSettings2 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, forkJoin, type Observable } from 'rxjs';
+import { Subject, finalize, forkJoin, takeUntil, type Observable } from 'rxjs';
+
+import { LanguageService } from '../../../core/i18n/language.service';
 
 import { MacroGoalStripComponent } from '../../../components/molecules/macro-goal-strip/macro-goal-strip.component';
 import { OverflowMenuComponent } from '../../../components/molecules/overflow-menu/overflow-menu.component';
@@ -59,12 +69,14 @@ type Modo = 'cartao' | 'compor';
   templateUrl: './diario-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DiarioListComponent {
+export class DiarioListComponent implements OnDestroy {
   private readonly diaryService = inject(DiarioService);
   private readonly metaService = inject(MetaService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
+  private readonly language = inject(LanguageService);
+  private readonly destruido = new Subject<void>();
 
   protected readonly today = this.dateString(new Date());
   protected readonly selectedDate = signal(this.today);
@@ -133,14 +145,36 @@ export class DiarioListComponent {
     }).format(date);
   });
 
+  /** `effect()` roda uma vez na inicialização — a primeira carga já é disparada pelo `load()`
+   * logo abaixo, então esse disparo inicial só marca a flag (mesmo padrão de
+   * `AlimentosListComponent`). */
+  private idiomaInicializado = false;
+
   constructor() {
     this.load();
-    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntil(this.destruido)).subscribe((params) => {
       if (params.get('registrar') !== '1') return;
       const planMeal = Number(params.get('planMeal'));
       this.pendingPlanMeal = Number.isInteger(planMeal) && planMeal >= 0 ? planMeal : null;
       this.abrirSolicitado();
     });
+
+    effect(() => {
+      this.language.locale();
+      if (!this.idiomaInicializado) {
+        this.idiomaInicializado = true;
+
+        return;
+      }
+      // Nome de refeição/alimento no dia já carregado vem do backend no idioma da busca
+      // original — sem recarregar, trocar de idioma não retraduz o que já está na tela.
+      untracked(() => this.load());
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destruido.next();
+    this.destruido.complete();
   }
 
   protected previousDay(): void {
@@ -235,13 +269,18 @@ export class DiarioListComponent {
       ? this.diaryService.updateEntry(entry.id, payload)
       : this.diaryService.deleteEntry(entry.id);
 
-    requisicao.pipe(finalize(() => this.removendo.set(null))).subscribe({
-      next: () => {
-        this.toastr.success(`${item.descricao} removido.`);
-        this.loadDay();
-      },
-      error: () => this.toastr.error('Não foi possível remover este alimento agora.'),
-    });
+    requisicao
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.removendo.set(null)),
+      )
+      .subscribe({
+        next: () => {
+          this.toastr.success(`${item.descricao} removido.`);
+          this.loadDay();
+        },
+        error: () => this.toastr.error('Não foi possível remover este alimento agora.'),
+      });
   }
 
   protected onMealsChanged(): void {
@@ -280,7 +319,10 @@ export class DiarioListComponent {
       meals: this.diaryService.meals(),
       metas: this.metaService.list(),
     })
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: ({ day, meals, metas }) => {
           this.day.set(day);
@@ -300,10 +342,13 @@ export class DiarioListComponent {
   }
 
   private loadDay(): void {
-    this.diaryService.day(this.selectedDate()).subscribe({
-      next: (day) => this.day.set(day),
-      error: () => this.toastr.error('Não foi possível atualizar os lançamentos.'),
-    });
+    this.diaryService
+      .day(this.selectedDate())
+      .pipe(takeUntil(this.destruido))
+      .subscribe({
+        next: (day) => this.day.set(day),
+        error: () => this.toastr.error('Não foi possível atualizar os lançamentos.'),
+      });
   }
 
   private abrirSolicitado(): void {
@@ -316,13 +361,16 @@ export class DiarioListComponent {
   }
 
   private loadMeals(): void {
-    this.diaryService.meals().subscribe({
-      next: (meals) => {
-        this.meals.set(meals);
-        this.sincronizarFase();
-      },
-      error: () => this.toastr.error('Não foi possível atualizar as refeições.'),
-    });
+    this.diaryService
+      .meals()
+      .pipe(takeUntil(this.destruido))
+      .subscribe({
+        next: (meals) => {
+          this.meals.set(meals);
+          this.sincronizarFase();
+        },
+        error: () => this.toastr.error('Não foi possível atualizar as refeições.'),
+      });
   }
 
   private dateString(date: Date): string {

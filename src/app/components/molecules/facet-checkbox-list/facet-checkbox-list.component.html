@@ -8,10 +8,12 @@
   @if (loading()) {
     <p class="m-0 flex items-center gap-2 text-[12px] text-fg-muted">
       <vtp-plate-loader tamanho="xs" />
-      Carregando…
+      {{ 'common.actions.loadingEllipsis' | transloco }}
     </p>
   } @else if (options().length === 0) {
-    <p class="m-0 text-[12px] text-fg-muted">{{ emptyLabel() }}</p>
+    <p class="m-0 text-[12px] text-fg-muted">
+      {{ emptyLabel() || ('foodsPage.noOptions' | transloco) }}
+    </p>
   } @else {
     @for (opt of options(); track opt.value) {
       <div class="flex items-center justify-between gap-2 py-0.5 text-[12.5px] text-fg">

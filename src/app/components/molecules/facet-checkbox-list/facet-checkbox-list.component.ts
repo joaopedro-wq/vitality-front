@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { BdCheckboxComponent } from 'bandeira-ui';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { PlateLoaderComponent } from '../../atoms/plate-loader/plate-loader.component';
 
@@ -12,7 +13,7 @@ export interface FacetOption {
 @Component({
   selector: 'vtp-facet-checkbox-list',
   standalone: true,
-  imports: [BdCheckboxComponent, PlateLoaderComponent],
+  imports: [BdCheckboxComponent, PlateLoaderComponent, TranslocoPipe],
   templateUrl: './facet-checkbox-list.component.html',
   host: { class: 'block' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +23,8 @@ export class FacetCheckboxListComponent {
   readonly options = input.required<FacetOption[]>();
   readonly selected = input.required<string[]>();
   readonly loading = input(false);
-  readonly emptyLabel = input('Nenhuma opção disponível');
+
+  readonly emptyLabel = input('');
 
   readonly selectedChange = output<string[]>();
 

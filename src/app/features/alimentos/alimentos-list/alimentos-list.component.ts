@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
+  OnDestroy,
   computed,
   effect,
   inject,
@@ -21,9 +22,10 @@ import {
   LucideTable,
   LucideX,
 } from '@lucide/angular';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ToastrService } from 'ngx-toastr';
 import type { TableLazyLoadEvent } from 'primeng/table';
-import { Subject, debounceTime, finalize, skip } from 'rxjs';
+import { Subject, debounceTime, finalize, skip, takeUntil } from 'rxjs';
 
 import {
   DataTableComponent,
@@ -54,45 +56,6 @@ import { AlimentosFiltrosComponent } from '../alimentos-filtros/alimentos-filtro
 
 const CALORIA_BOUNDS: [number, number] = [0, 900];
 const PAGE_SIZE = 20;
-const VIEW_MODE_OPTIONS: ViewModeOption[] = [
-  { value: 'cards', label: 'Cards', icon: LucideLayoutGrid },
-  { value: 'tabela', label: 'Tabela', icon: LucideTable },
-];
-const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
-  { field: 'descricao', header: 'Alimento', width: '260px', frozen: true },
-  {
-    field: 'grupo',
-    header: 'Grupo',
-    secondary: true,
-    width: '180px',
-    value: (row) => row.grupo || 'Catálogo geral',
-  },
-  { field: 'caloria', header: 'Kcal', align: 'end', decimals: 0, width: '110px' },
-  {
-    field: 'proteina',
-    header: 'Prot. (g)',
-    align: 'end',
-    decimals: 1,
-    secondary: true,
-    width: '110px',
-  },
-  {
-    field: 'carbo',
-    header: 'Carbo (g)',
-    align: 'end',
-    decimals: 1,
-    secondary: true,
-    width: '110px',
-  },
-  {
-    field: 'gordura',
-    header: 'Gord. (g)',
-    align: 'end',
-    decimals: 1,
-    secondary: true,
-    width: '110px',
-  },
-];
 
 @Component({
   selector: 'vtp-alimentos-list',
@@ -101,6 +64,7 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
     CdkTrapFocus,
     DecimalPipe,
     UpperCasePipe,
+    TranslocoPipe,
     RouterLink,
     BdButtonComponent,
     DataTableComponent,
@@ -123,7 +87,7 @@ const TABLE_COLUMNS: DataTableColumn<Alimento>[] = [
   styleUrl: './alimentos-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlimentosListComponent {
+export class AlimentosListComponent implements OnDestroy {
   private readonly alimentosService = inject(AlimentoService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -131,8 +95,10 @@ export class AlimentosListComponent {
   protected readonly auth = inject(AuthService);
   private readonly toastr = inject(ToastrService);
   private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
   private readonly buscaChange$ = new Subject<string>();
   private readonly caloriaRangeChange$ = new Subject<[number, number]>();
+  private readonly destruido = new Subject<void>();
   /** `effect()` roda uma vez na inicialização também — a primeira carga já é
    * feita explicitamente no constructor, então esta flag evita buscar tudo
    * de novo assim que o componente monta. */
@@ -141,7 +107,14 @@ export class AlimentosListComponent {
   protected readonly tab = signal<'all' | 'favorites'>('all');
   protected readonly busca = signal('');
   protected readonly viewMode = signal<'cards' | 'tabela'>('cards');
-  protected readonly viewModeOptions = VIEW_MODE_OPTIONS;
+  protected readonly viewModeOptions = computed<ViewModeOption[]>(() => {
+    this.language.locale();
+    const t = (key: string) => this.transloco.translate(key);
+    return [
+      { value: 'cards', label: t('foodsPage.viewCards'), icon: LucideLayoutGrid },
+      { value: 'tabela', label: t('foodsPage.viewTable'), icon: LucideTable },
+    ];
+  });
   protected readonly filtrosAbertos = signal(false);
 
   protected readonly grupos = signal<AlimentoGrupo[]>([]);
@@ -187,7 +160,51 @@ export class AlimentosListComponent {
   protected readonly direcaoOrdenacao = computed(() =>
     direcaoOrdenacaoLabel(this.sortField(), this.sortOrder()),
   );
-  protected readonly tableColumns = TABLE_COLUMNS;
+  protected readonly tableColumns = computed<DataTableColumn<Alimento>[]>(() => {
+    this.language.locale();
+    const t = (key: string) => this.transloco.translate(key);
+    return [
+      { field: 'descricao', header: t('foodsPage.colFood'), width: '260px', frozen: true },
+      {
+        field: 'grupo',
+        header: t('foodsPage.colGroup'),
+        secondary: true,
+        width: '180px',
+        value: (row) => row.grupo || t('foodsPage.fallbackGroup'),
+      },
+      {
+        field: 'caloria',
+        header: t('foodsPage.colKcal'),
+        align: 'end',
+        decimals: 0,
+        width: '110px',
+      },
+      {
+        field: 'proteina',
+        header: t('foodsPage.colProtein'),
+        align: 'end',
+        decimals: 1,
+        secondary: true,
+        width: '110px',
+      },
+      {
+        field: 'carbo',
+        header: t('foodsPage.colCarbo'),
+        align: 'end',
+        decimals: 1,
+        secondary: true,
+        width: '110px',
+      },
+      {
+        field: 'gordura',
+        header: t('foodsPage.colFat'),
+        align: 'end',
+        decimals: 1,
+        secondary: true,
+        width: '110px',
+      },
+    ];
+  });
   protected readonly tableStateKey = computed(() => {
     const userId = this.auth.currentUser()?.id;
     return userId ? `vtp-alimentos-table-cols-${userId}` : undefined;
@@ -199,7 +216,7 @@ export class AlimentosListComponent {
 
     this.loadGrupos();
     this.load();
-    this.route.queryParamMap.pipe(skip(1)).subscribe((params) => {
+    this.route.queryParamMap.pipe(skip(1), takeUntil(this.destruido)).subscribe((params) => {
       const paginaUrl = Number(params.get('page'));
       const proximaPagina = Number.isInteger(paginaUrl) && paginaUrl > 1 ? paginaUrl : 1;
       if (proximaPagina === this.pagina()) return;
@@ -207,16 +224,18 @@ export class AlimentosListComponent {
       this.rolarParaResultados();
       this.load();
     });
-    this.buscaChange$.pipe(debounceTime(300)).subscribe((busca) => {
+    this.buscaChange$.pipe(debounceTime(300), takeUntil(this.destruido)).subscribe((busca) => {
       this.busca.set(busca);
       this.reiniciarPaginacao();
       this.load();
     });
-    this.caloriaRangeChange$.pipe(debounceTime(300)).subscribe((range) => {
-      this.caloriaRange.set(range);
-      this.reiniciarPaginacao();
-      this.load();
-    });
+    this.caloriaRangeChange$
+      .pipe(debounceTime(300), takeUntil(this.destruido))
+      .subscribe((range) => {
+        this.caloriaRange.set(range);
+        this.reiniciarPaginacao();
+        this.load();
+      });
 
     effect(() => {
       this.language.locale();
@@ -231,6 +250,11 @@ export class AlimentosListComponent {
         this.load();
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destruido.next();
+    this.destruido.complete();
   }
 
   @HostListener('document:keydown.escape')
@@ -310,10 +334,13 @@ export class AlimentosListComponent {
     this.detalheCarregando.set(true);
     this.alimentosService
       .get(food.id)
-      .pipe(finalize(() => this.detalheCarregando.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.detalheCarregando.set(false)),
+      )
       .subscribe({
         next: (detalhe) => this.detalhe.set(detalhe),
-        error: () => this.toastr.error('Não foi possível carregar os detalhes deste alimento.'),
+        error: () => this.toastr.error(this.transloco.translate('foodsPage.errorDetails')),
       });
   }
 
@@ -334,10 +361,19 @@ export class AlimentosListComponent {
       );
       if (this.detalhe()?.id === food.id)
         this.detalhe.update((item) => (item ? { ...item, is_favorite: anterior } : item));
-      this.toastr.error('Não foi possível atualizar seus favoritos.');
+      this.toastr.error(this.transloco.translate('foodsPage.errorFavorite'));
     };
-    if (anterior) this.alimentosService.unfavorite(food.id).subscribe({ error: onError });
-    else this.alimentosService.favorite(food.id).subscribe({ error: onError });
+    if (anterior) {
+      this.alimentosService
+        .unfavorite(food.id)
+        .pipe(takeUntil(this.destruido))
+        .subscribe({ error: onError });
+    } else {
+      this.alimentosService
+        .favorite(food.id)
+        .pipe(takeUntil(this.destruido))
+        .subscribe({ error: onError });
+    }
   }
 
   onLazyLoad(event: TableLazyLoadEvent): void {
@@ -381,10 +417,13 @@ export class AlimentosListComponent {
     // preso para sempre. Padrão do resto do projeto.
     this.alimentosService
       .groups()
-      .pipe(finalize(() => this.grupoLoading.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.grupoLoading.set(false)),
+      )
       .subscribe({
         next: (grupos) => this.grupos.set(grupos),
-        error: () => this.toastr.error('Não foi possível carregar os grupos alimentares.'),
+        error: () => this.toastr.error(this.transloco.translate('foodsPage.errorGroups')),
       });
   }
 
@@ -404,13 +443,16 @@ export class AlimentosListComponent {
         sort_field: this.sortField() ?? undefined,
         sort_order: this.sortOrder() === -1 ? 'desc' : 'asc',
       })
-      .pipe(finalize(() => this.carregando.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.carregando.set(false)),
+      )
       .subscribe({
         next: (response) => {
           this.alimentos.set(response.data);
           this.totalRegistros.set(response.meta.total);
         },
-        error: () => this.toastr.error('Não foi possível carregar o catálogo agora.'),
+        error: () => this.toastr.error(this.transloco.translate('foodsPage.errorCatalog')),
       });
   }
 }

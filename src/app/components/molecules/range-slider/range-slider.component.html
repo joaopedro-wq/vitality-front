@@ -18,7 +18,11 @@
       [max]="max()"
       [step]="step()"
       [value]="value()[0]"
-      [attr.aria-label]="label() ? label() + ' — mínimo' : 'Valor mínimo'"
+      [attr.aria-label]="
+        label()
+          ? label() + ('foodsPage.rangeMinSuffix' | transloco)
+          : ('foodsPage.rangeMinValue' | transloco)
+      "
       (input)="onMinInput($event)"
     />
     <input
@@ -28,7 +32,11 @@
       [max]="max()"
       [step]="step()"
       [value]="value()[1]"
-      [attr.aria-label]="label() ? label() + ' — máximo' : 'Valor máximo'"
+      [attr.aria-label]="
+        label()
+          ? label() + ('foodsPage.rangeMaxSuffix' | transloco)
+          : ('foodsPage.rangeMaxValue' | transloco)
+      "
       (input)="onMaxInput($event)"
     />
   </div>

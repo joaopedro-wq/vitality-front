@@ -548,10 +548,15 @@ export class EntryComposerComponent implements OnDestroy {
 
     // Sem toast de erro próprio: o `errorInterceptor` já mostra a mensagem real do
     // backend — inclusive a de consumo futuro, que é a que mais aparece aqui.
-    requisicao.pipe(finalize(() => this.salvando.set(false))).subscribe({
-      next: () => this.salvo.emit(),
-      error: () => undefined,
-    });
+    requisicao
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.salvando.set(false)),
+      )
+      .subscribe({
+        next: () => this.salvo.emit(),
+        error: () => undefined,
+      });
   }
 
   private abrirRevisao(): void {
@@ -599,12 +604,18 @@ export class EntryComposerComponent implements OnDestroy {
   private carregarAtalhos(): void {
     this.diary
       .recentFoods()
-      .pipe(catchError(() => of<Alimento[]>([])))
+      .pipe(
+        catchError(() => of<Alimento[]>([])),
+        takeUntil(this.destruido),
+      )
       .subscribe((recentes) => this.recentes.set(recentes));
 
     this.foodsService
       .list({ tab: 'favorites', page: 1 })
-      .pipe(catchError(() => of({ data: [] as Alimento[] })))
+      .pipe(
+        catchError(() => of({ data: [] as Alimento[] })),
+        takeUntil(this.destruido),
+      )
       .subscribe((pagina) => this.favoritos.set(pagina.data));
   }
 
@@ -613,7 +624,10 @@ export class EntryComposerComponent implements OnDestroy {
   private carregarPlanosSugeridos(): void {
     this.plansService
       .list()
-      .pipe(catchError(() => of<MealPlan[]>([])))
+      .pipe(
+        catchError(() => of<MealPlan[]>([])),
+        takeUntil(this.destruido),
+      )
       .subscribe((planos) => {
         const ativos = planos.filter((plano) => !plano.archived_at);
         this.planosDisponiveis.set(ativos);
@@ -637,7 +651,10 @@ export class EntryComposerComponent implements OnDestroy {
     };
     this.foodsService
       .list(filters)
-      .pipe(finalize(() => this.carregandoFoods.set(false)))
+      .pipe(
+        takeUntil(this.destruido),
+        finalize(() => this.carregandoFoods.set(false)),
+      )
       .subscribe({
         next: (resposta) => {
           this.resultadosBusca.set(resposta.data);
@@ -653,7 +670,10 @@ export class EntryComposerComponent implements OnDestroy {
   private carregarCategorias(): void {
     this.foodsService
       .gruposNormalizados()
-      .pipe(catchError(() => of<AlimentoGrupo[]>([])))
+      .pipe(
+        catchError(() => of<AlimentoGrupo[]>([])),
+        takeUntil(this.destruido),
+      )
       .subscribe((categorias) => this.categorias.set(categorias));
   }
 
