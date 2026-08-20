@@ -16,6 +16,7 @@ export interface MealPlanPreferences {
   meal_times: string[];
   style: MealPlanStyle;
   excluded_food_ids: number[];
+  included_food_ids: number[];
   diet_type: MealPlanDietType;
   restriction_slugs: string[];
 }

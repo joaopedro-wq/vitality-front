@@ -20,12 +20,23 @@
     <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.style' | transloco }}</span>
     <strong>{{ formatStyle(style()) }}</strong>
   </div>
-  <div class="flex items-center justify-between text-sm">
+  <div
+    class="flex items-center justify-between border-b border-dashed border-border-strong pb-2.5 text-sm"
+  >
     <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.avoiding' | transloco }}</span>
     <strong>{{
       excluded().length
         ? excluded().length +
           ((excluded().length === 1 ? 'dietPlan.itemSingular' : 'dietPlan.itemPlural') | transloco)
+        : ('dietPlan.nothing' | transloco)
+    }}</strong>
+  </div>
+  <div class="flex items-center justify-between text-sm">
+    <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.including' | transloco }}</span>
+    <strong>{{
+      included().length
+        ? included().length +
+          ((included().length === 1 ? 'dietPlan.itemSingular' : 'dietPlan.itemPlural') | transloco)
         : ('dietPlan.nothing' | transloco)
     }}</strong>
   </div>

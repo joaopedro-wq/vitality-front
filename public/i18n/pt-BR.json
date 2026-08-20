@@ -402,7 +402,8 @@
     "reviewLabels": {
       "meals": "Refeições",
       "style": "Estilo",
-      "avoiding": "Evitando"
+      "avoiding": "Evitando",
+      "including": "Incluindo sempre"
     },
     "generating": {
       "step1": "Escolhendo alimentos para o seu dia…",
@@ -424,11 +425,15 @@
         "hint": "Isso ajusta somente praticidade, preparo e custo entre refeições que já fazem sentido. Não muda sua meta nem a coerência do prato.",
         "legend": "Rápido prioriza montagens simples; Caseiro, pratos tradicionais; Econômico, alimentos acessíveis."
       },
-      "avoid": {
-        "title": "Evitar",
+      "preferences": {
+        "title": "Preferências",
         "description": "Opcional",
-        "question": "Algum alimento pra evitar?",
-        "hint": "Pode pular — só entra se você já sabe do que não gosta."
+        "avoidQuestion": "Algum alimento pra evitar?",
+        "avoidHint": "Pode pular — só entra se você já sabe do que não gosta.",
+        "avoidLabel": "Evitar",
+        "includeQuestion": "Algum alimento que não pode faltar?",
+        "includeHint": "Ele entra garantido no plano, na refeição onde fizer mais sentido.",
+        "includeLabel": "Incluir sempre"
       },
       "review": {
         "title": "Revisar",

@@ -1,0 +1,36 @@
+<p class="m-0 text-[11px] font-extrabold uppercase tracking-[0.1em] text-primary-strong">
+  {{ 'dietPlan.stepProgress' | transloco: { current: 3, total: 4 }
+  }}{{ 'dietPlan.optionalSuffix' | transloco }}
+</p>
+
+<section class="mt-6">
+  <h2 class="m-0 text-xl font-bold tracking-tight">
+    {{ 'dietPlan.steps.preferences.avoidQuestion' | transloco }}
+  </h2>
+  <p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
+    {{ 'dietPlan.steps.preferences.avoidHint' | transloco }}
+  </p>
+  <vtp-food-preference-picker
+    [selecionadosIniciais]="excluidosIniciais()"
+    [bloqueados]="incluidosIds()"
+    [label]="'dietPlan.steps.preferences.avoidLabel' | transloco"
+    (selecaoChange)="evitados.set($event)"
+  />
+</section>
+
+<section class="mt-8 border-t border-dashed border-border-strong pt-8">
+  <h2 class="m-0 text-xl font-bold tracking-tight">
+    {{ 'dietPlan.steps.preferences.includeQuestion' | transloco }}
+  </h2>
+  <p class="m-0 mt-2 text-sm leading-relaxed text-fg-muted">
+    {{ 'dietPlan.steps.preferences.includeHint' | transloco }}
+  </p>
+  <vtp-food-preference-picker
+    [selecionadosIniciais]="incluidosIniciais()"
+    [bloqueados]="evitadosIds()"
+    [label]="'dietPlan.steps.preferences.includeLabel' | transloco"
+    (selecaoChange)="incluidos.set($event)"
+  />
+</section>
+
+<vtp-step-footer (voltar)="voltar.emit()" (avancar)="avancar()" />

@@ -21,6 +21,7 @@ export class RevisarStepComponent {
   readonly mealCount = input.required<3 | 4 | 5>();
   readonly style = input.required<MealPlanStyle>();
   readonly excluded = input.required<Alimento[]>();
+  readonly included = input.required<Alimento[]>();
   readonly gerando = input(false);
 
   readonly voltar = output<void>();

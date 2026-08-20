@@ -42,7 +42,7 @@ import type {
 import { MealPlanPreviewComponent } from '../meal-plan-preview/meal-plan-preview.component';
 import { RefeicoesStepComponent } from './steps/refeicoes-step/refeicoes-step.component';
 import { EstiloStepComponent } from './steps/estilo-step/estilo-step.component';
-import { EvitarStepComponent } from './steps/evitar-step/evitar-step.component';
+import { PreferenciasStepComponent } from './steps/preferencias-step/preferencias-step.component';
 import { RevisarStepComponent } from './steps/revisar-step/revisar-step.component';
 
 @Component({
@@ -58,7 +58,7 @@ import { RevisarStepComponent } from './steps/revisar-step/revisar-step.componen
     MealPlanPreviewComponent,
     RefeicoesStepComponent,
     EstiloStepComponent,
-    EvitarStepComponent,
+    PreferenciasStepComponent,
     RevisarStepComponent,
     TranslocoPipe,
   ],
@@ -105,6 +105,7 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly style = signal<MealPlanStyle>('rapido');
   protected readonly title = signal('');
   protected readonly excluded = signal<Alimento[]>([]);
+  protected readonly included = signal<Alimento[]>([]);
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
   protected readonly swapFailureMessage = signal<string | null>(null);
@@ -112,7 +113,7 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly passosForm = computed<StepTrackItem[]>(() => {
     this.language.locale();
 
-    return (['meals', 'style', 'avoid', 'review'] as const).map((step) => ({
+    return (['meals', 'style', 'preferences', 'review'] as const).map((step) => ({
       titulo: this.transloco.translate(`dietPlan.steps.${step}.title`),
       descricao: this.transloco.translate(`dietPlan.steps.${step}.description`),
     }));
@@ -176,8 +177,9 @@ export class DietaFormComponent implements OnDestroy {
     this.passo.set(2);
   }
 
-  protected onEvitarConcluido(itens: Alimento[]): void {
-    this.excluded.set(itens);
+  protected onPreferenciasConcluido(valor: { evitados: Alimento[]; incluidos: Alimento[] }): void {
+    this.excluded.set(valor.evitados);
+    this.included.set(valor.incluidos);
     this.passo.set(3);
   }
 
@@ -187,6 +189,7 @@ export class DietaFormComponent implements OnDestroy {
       meal_times: horariosPadrao(this.mealCount()),
       style: this.style(),
       excluded_food_ids: this.excluded().map((food) => food.id),
+      included_food_ids: this.included().map((food) => food.id),
       diet_type: 'onivora',
       restriction_slugs: [],
     };

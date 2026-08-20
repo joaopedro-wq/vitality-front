@@ -43,10 +43,11 @@
             />
           }
           @case (2) {
-            <vtp-evitar-step
+            <vtp-preferencias-step
               [excluidosIniciais]="excluded()"
+              [incluidosIniciais]="included()"
               (voltar)="irParaPasso(1)"
-              (concluido)="onEvitarConcluido($event)"
+              (concluido)="onPreferenciasConcluido($event)"
             />
           }
           @case (3) {
@@ -54,6 +55,7 @@
               [mealCount]="mealCount()"
               [style]="style()"
               [excluded]="excluded()"
+              [included]="included()"
               [gerando]="generating()"
               (voltar)="irParaPasso(2)"
               (gerar)="generate()"

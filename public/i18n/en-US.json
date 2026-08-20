@@ -402,7 +402,8 @@
     "reviewLabels": {
       "meals": "Meals",
       "style": "Style",
-      "avoiding": "Avoiding"
+      "avoiding": "Avoiding",
+      "including": "Always including"
     },
     "generating": {
       "step1": "Choosing foods for your day…",
@@ -424,11 +425,15 @@
         "hint": "This only adjusts convenience, prep, and cost among meals that already make sense. It doesn't change your goal or the dish's coherence.",
         "legend": "Fast favors simple assemblies; Homemade, traditional dishes; Budget, affordable foods."
       },
-      "avoid": {
-        "title": "Avoid",
+      "preferences": {
+        "title": "Preferences",
         "description": "Optional",
-        "question": "Any foods to avoid?",
-        "hint": "You can skip this — only fill it in if you already know what you don't like."
+        "avoidQuestion": "Any foods to avoid?",
+        "avoidHint": "You can skip this — only fill it in if you already know what you don't like.",
+        "avoidLabel": "Avoid",
+        "includeQuestion": "Any food that can't be missing?",
+        "includeHint": "It's guaranteed to be in the plan, in whichever meal makes the most sense.",
+        "includeLabel": "Always include"
       },
       "review": {
         "title": "Review",
