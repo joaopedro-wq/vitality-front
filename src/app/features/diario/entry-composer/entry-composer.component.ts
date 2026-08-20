@@ -638,8 +638,6 @@ export class EntryComposerComponent implements OnDestroy {
       .subscribe((pagina) => this.favoritos.set(pagina.data));
   }
 
-  /** Carrega todos os planos ativos do usuário — alimenta a carta de sugestão
-   * e o seletor embutido nela, sem esperar o usuário abrir diálogo nenhum. */
   private carregarPlanosSugeridos(): void {
     this.plansService
       .list()
@@ -650,13 +648,11 @@ export class EntryComposerComponent implements OnDestroy {
       .subscribe((planos) => {
         const ativos = planos.filter((plano) => !plano.archived_at);
         this.planosDisponiveis.set(ativos);
-        this.planoSelecionadoHero.set(ativos[0] ?? null);
+        const favoritado = ativos.find((plano) => plano.favorited_at !== null);
+        this.planoSelecionadoHero.set(favoritado ?? ativos[0] ?? null);
       });
   }
 
-  /** Busca por texto (vence sobre categoria) ou por `categoria` (slug de
-   * `AlimentoGrupo.id`) ativo, com paginação real igual `/alimentos` —
-   * nunca os dois ao mesmo tempo, mesma regra de `catalogo()`. */
   private buscarResultados(pagina: number): void {
     this.carregandoFoods.set(true);
     const filtro = this.filtroRapido();
