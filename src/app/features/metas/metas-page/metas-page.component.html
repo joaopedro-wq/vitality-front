@@ -8,31 +8,27 @@
     @case ('configurado') {
       <vtp-back-button class="page-shell-wide" />
       <div class="page-shell-wide flex flex-col gap-7">
-        <div
-          class="flex max-[640px]:flex-col justify-between items-end max-[640px]:items-stretch gap-6 flex-wrap pb-6 border-b border-border"
-        >
+        <div class="pb-6 border-b border-border">
           <vtp-page-title
             contexto="Meta atual"
             titulo="Sua meta diária está pronta"
             subtitulo="Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
           />
-          <button
-            bdButton
-            size="sm"
-            class="max-[640px]:w-full max-[640px]:justify-center"
-            (click)="irParaDashboard()"
-          >
-            Ir para o painel <svg lucideArrowRight size="15" aria-hidden="true"></svg>
-          </button>
         </div>
 
-        <div class="card py-9 px-8 flex justify-center">
-          <vtp-meta-reveal [valores]="sugestao()!" tamanho="lg" label="Build completo" />
-        </div>
-
-        <div class="flex justify-center">
-          <button bdButton variant="ghost" (click)="refazer()">Refazer metas</button>
-        </div>
+        @if (perfilFicha(); as perfil) {
+          @if (calculoFicha(); as calculo) {
+            <div class="card py-9 px-8">
+              <vtp-meta-ficha
+                [perfil]="perfil"
+                [calculo]="calculo"
+                [valores]="sugestao()!"
+                (irParaPainel)="irParaDashboard()"
+                (refazer)="refazer()"
+              />
+            </div>
+          }
+        }
       </div>
     }
 

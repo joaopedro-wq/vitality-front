@@ -1,0 +1,164 @@
+<div class="grid grid-cols-2 gap-8 max-[560px]:grid-cols-1 max-[560px]:gap-5">
+  <div class="flex flex-col gap-2.5">
+    <p
+      class="animate-ficha-pop m-0 text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+    >
+      {{ 'goalLabels.profileStep' | transloco }}
+    </p>
+
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(0)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.weight' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{ perfil().peso }}kg</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(1)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.height' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{ perfil().altura }}cm</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(2)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.age' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.ageValue' | transloco: { age: perfil().idade }
+      }}</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 py-2 text-[13px]"
+      [style.animationDelay]="delay(3)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.gender' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.genderOptions.' + perfil().genero | transloco
+      }}</span>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2.5">
+    <p
+      class="animate-ficha-pop m-0 text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+    >
+      {{ 'metas.ficha.calcStep' | transloco }}
+    </p>
+
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(0)"
+    >
+      <span class="font-semibold text-fg-muted"
+        >{{ 'metas.ficha.basalMetabolism' | transloco }} · TMB</span
+      >
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.kcalValue' | transloco: { value: calculo().tmb }
+      }}</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(1)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.activityLevel' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.activityOptions.' + calculo().nivelAtividade | transloco
+      }}</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 border-b border-border py-2 text-[13px]"
+      [style.animationDelay]="delay(2)"
+    >
+      <span class="font-semibold text-fg-muted"
+        >{{ 'metas.ficha.totalExpenditure' | transloco }} · GET</span
+      >
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.kcalValue' | transloco: { value: calculo().get }
+      }}</span>
+    </div>
+    <div
+      class="animate-ficha-pop flex items-baseline justify-between gap-3 py-2 text-[13px]"
+      [style.animationDelay]="delay(3)"
+    >
+      <span class="font-semibold text-fg-muted">{{ 'metas.ficha.goal' | transloco }}</span>
+      <span class="font-extrabold tabular-nums text-fg">{{
+        'metas.ficha.goalOptions.' + calculo().objetivo | transloco
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<div
+  class="mt-8 flex flex-col items-center gap-5 border-t border-border pt-8 max-[560px]:mt-6 max-[560px]:pt-6"
+>
+  <vtp-progress-ring-icon
+    tamanho="lg"
+    [progresso]="100"
+    corVar="--bd-primary"
+    class="animate-ficha-pop"
+    style="animation-delay: 0.42s"
+  >
+    <div class="flex flex-col items-center gap-0.5">
+      <span class="text-[22px] font-black tabular-nums text-fg"
+        ><vtp-animated-number [valor]="valores().caloria" [atrasoMs]="420"
+      /></span>
+      <span class="text-[9px] font-bold uppercase tracking-wide text-fg-muted">{{
+        'nutrition.kcal' | transloco
+      }}</span>
+    </div>
+  </vtp-progress-ring-icon>
+
+  <div class="flex gap-6">
+    <div class="animate-ficha-pop flex flex-col items-center gap-1" style="animation-delay: 0.58s">
+      <span class="size-[7px] rounded-full bg-primary"></span>
+      <b class="text-[13px] font-extrabold tabular-nums"
+        ><vtp-animated-number [valor]="valores().proteina" [atrasoMs]="580" />g</b
+      >
+      <small class="text-[8.5px] font-bold uppercase text-fg-muted">{{
+        'nutrition.protein' | transloco
+      }}</small>
+    </div>
+    <div class="animate-ficha-pop flex flex-col items-center gap-1" style="animation-delay: 0.65s">
+      <span class="size-[7px] rounded-full bg-accent"></span>
+      <b class="text-[13px] font-extrabold tabular-nums"
+        ><vtp-animated-number [valor]="valores().carbo" [atrasoMs]="650" />g</b
+      >
+      <small class="text-[8.5px] font-bold uppercase text-fg-muted">{{
+        'nutrition.carbs' | transloco
+      }}</small>
+    </div>
+    <div class="animate-ficha-pop flex flex-col items-center gap-1" style="animation-delay: 0.72s">
+      <span class="size-[7px] rounded-full bg-fat"></span>
+      <b class="text-[13px] font-extrabold tabular-nums"
+        ><vtp-animated-number [valor]="valores().gordura" [atrasoMs]="720" />g</b
+      >
+      <small class="text-[8.5px] font-bold uppercase text-fg-muted">{{
+        'nutrition.fat' | transloco
+      }}</small>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-center gap-2">
+    <button
+      bdButton
+      size="sm"
+      class="animate-ficha-pop"
+      style="animation-delay: 0.85s"
+      (click)="irParaPainel.emit()"
+    >
+      {{ 'metas.ficha.goToDashboard' | transloco }}
+    </button>
+    <button
+      bdButton
+      variant="ghost"
+      size="sm"
+      class="animate-ficha-pop"
+      style="animation-delay: 0.92s"
+      (click)="refazer.emit()"
+    >
+      {{ 'metas.ficha.redoGoals' | transloco }}
+    </button>
+  </div>
+</div>

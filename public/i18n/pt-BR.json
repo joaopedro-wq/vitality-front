@@ -30,7 +30,9 @@
       "attention": "Atenção",
       "close": "Fechar confirmação"
     },
-    "errors": { "generic": "Não foi possível completar a operação. Tente novamente." },
+    "errors": {
+      "generic": "Não foi possível completar a operação. Tente novamente."
+    },
     "shell": {
       "morning": "Bom dia",
       "afternoon": "Boa tarde",
@@ -79,7 +81,9 @@
     }
   },
   "ui2": {
-    "actions": { "clear": "Limpar" },
+    "actions": {
+      "clear": "Limpar"
+    },
     "foodFilters": {
       "title": "Filtros",
       "search": "Buscar alimento",
@@ -205,7 +209,12 @@
     "searchingFoods": "Buscando alimentos",
     "goals": "Preparando suas metas"
   },
-  "nutrition": { "kcal": "kcal", "protein": "Proteína", "carbs": "Carboidrato", "fat": "Gordura" },
+  "nutrition": {
+    "kcal": "kcal",
+    "protein": "Proteína",
+    "carbs": "Carboidrato",
+    "fat": "Gordura"
+  },
   "entry": {
     "adjusting": "Ajustando lançamento",
     "new": "Novo registro",
@@ -376,9 +385,21 @@
     "nothing": "Nada",
     "itemSingular": " item",
     "itemPlural": " itens",
-    "macroShort": { "protein": "Prot", "carbs": "Carbo", "fat": "Gord" },
-    "styleLabels": { "rapido": "Rápido", "caseiro": "Caseiro", "economico": "Econômico" },
-    "reviewLabels": { "meals": "Refeições", "style": "Estilo", "avoiding": "Evitando" },
+    "macroShort": {
+      "protein": "Prot",
+      "carbs": "Carbo",
+      "fat": "Gord"
+    },
+    "styleLabels": {
+      "rapido": "Rápido",
+      "caseiro": "Caseiro",
+      "economico": "Econômico"
+    },
+    "reviewLabels": {
+      "meals": "Refeições",
+      "style": "Estilo",
+      "avoiding": "Evitando"
+    },
     "generating": {
       "step1": "Escolhendo alimentos para o seu dia…",
       "step2": "Equilibrando proteína, carbo e gordura…",
@@ -476,6 +497,40 @@
       "foods": "Alimentos",
       "foodsTop": "Mais comido: {{food}}",
       "foodsExplore": "Explorar catálogo"
+    }
+  },
+  "metas": {
+    "ficha": {
+      "calcStep": "Seu cálculo",
+      "weight": "Peso",
+      "height": "Altura",
+      "age": "Idade",
+      "ageValue": "{{age}} anos",
+      "gender": "Gênero",
+      "genderOptions": {
+        "M": "Masculino",
+        "F": "Feminino",
+        "O": "Outro"
+      },
+      "basalMetabolism": "Metabolismo basal",
+      "activityLevel": "Nível de atividade",
+      "activityOptions": {
+        "sedentario": "Sedentário",
+        "leve": "Leve",
+        "moderado": "Moderado",
+        "intenso": "Intenso",
+        "muito_intenso": "Muito intenso"
+      },
+      "totalExpenditure": "Gasto total",
+      "kcalValue": "{{value}} kcal",
+      "goal": "Objetivo",
+      "goalOptions": {
+        "emagrecer": "Perder gordura",
+        "manter": "Manter o peso",
+        "ganhar_massa": "Ganhar massa"
+      },
+      "goToDashboard": "Ir para o painel",
+      "redoGoals": "Refazer metas"
     }
   }
 }

@@ -1,19 +1,22 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BdButtonComponent } from 'bandeira-ui';
-import { LucideArrowRight } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 
 import { AuthService } from '../../../core/auth/auth.service';
 import {
+  calcularIdade,
   calcularSugestaoRecomendacao,
   type SugestaoRecomendacao,
 } from '../../../components/utils/recomendacao-calc.util';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
-import { MetaRevealComponent } from '../../../components/molecules/meta-reveal/meta-reveal.component';
+import {
+  MetaFichaComponent,
+  type MetaFichaCalculo,
+  type MetaFichaPerfil,
+} from '../../../components/molecules/meta-ficha/meta-ficha.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
   StepTrackComponent,
@@ -39,11 +42,9 @@ const PASSOS: StepTrackItem[] = [
   selector: 'vtp-metas-page',
   standalone: true,
   imports: [
-    BdButtonComponent,
-    LucideArrowRight,
     BackButtonComponent,
     LoadingStateComponent,
-    MetaRevealComponent,
+    MetaFichaComponent,
     PageTitleComponent,
     StepTrackComponent,
     PerfilStepComponent,
@@ -71,6 +72,32 @@ export class MetasPageComponent {
   );
   protected readonly passo = signal(0);
   protected readonly sugestao = signal<SugestaoRecomendacao | null>(null);
+
+  /** Deriva os dois blocos da "Ficha em duas colunas" a partir do que já está em memória (perfil
+   * do usuário + sugestão vigente) — sem chamada de API nova. `null` até os dois estarem prontos,
+   * o que só acontece na fase 'configurado'. */
+  protected readonly perfilFicha = computed<MetaFichaPerfil | null>(() => {
+    const user = this.authService.currentUser();
+    if (!user || !user.peso || !user.altura || !user.data_nascimento || !user.genero) return null;
+    return {
+      peso: user.peso,
+      altura: user.altura,
+      idade: calcularIdade(user.data_nascimento),
+      genero: user.genero,
+    };
+  });
+
+  protected readonly calculoFicha = computed<MetaFichaCalculo | null>(() => {
+    const user = this.authService.currentUser();
+    const sugestao = this.sugestao();
+    if (!user || !sugestao || !user.nivel_atividade || !user.objetivo) return null;
+    return {
+      tmb: sugestao.tmb,
+      nivelAtividade: user.nivel_atividade,
+      get: sugestao.get,
+      objetivo: user.objetivo,
+    };
+  });
 
   constructor() {
     forkJoin([this.metaService.list(), this.recomendacaoService.list()]).subscribe({

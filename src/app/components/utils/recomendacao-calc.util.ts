@@ -23,6 +23,10 @@ export interface SugestaoRecomendacao {
   gordura: number;
 }
 
+export function calcularIdade(dataNascimento: string): number {
+  return idadeAPartirDe(dataNascimento);
+}
+
 function idadeAPartirDe(dataNascimento: string): number {
   const nascimento = new Date(dataNascimento);
   const hoje = new Date();
@@ -41,11 +45,19 @@ function idadeAPartirDe(dataNascimento: string): number {
  * Retorna `null` quando o perfil (Fase 8) ainda não tem os dados necessários.
  */
 export function calcularSugestaoRecomendacao(user: User | null): SugestaoRecomendacao | null {
-  if (!user || !user.peso || !user.altura || !user.data_nascimento || !user.genero || !user.nivel_atividade || !user.objetivo) {
+  if (
+    !user ||
+    !user.peso ||
+    !user.altura ||
+    !user.data_nascimento ||
+    !user.genero ||
+    !user.nivel_atividade ||
+    !user.objetivo
+  ) {
     return null;
   }
 
-  const idade = idadeAPartirDe(user.data_nascimento);
+  const idade = calcularIdade(user.data_nascimento);
   const base = 10 * user.peso + 6.25 * user.altura - 5 * idade;
   const tmb = user.genero === 'M' ? base + 5 : user.genero === 'F' ? base - 161 : base - 78;
 
