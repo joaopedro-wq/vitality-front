@@ -48,11 +48,29 @@ rotina e objetivo → sugestão calculada → confirmação), com a identidade d
 verdade: cartões tocáveis, revelação animada do resultado, trilha de progresso navegável a
 qualquer momento. O cálculo usa a fórmula de Mifflin-St Jeor (TMB) mais fator de atividade — a
 mesma base científica usada por nutricionistas, sem exigir que o usuário saiba o que isso
-significa.
+significa. Meta configurada vira uma **ficha em duas colunas** — perfil de um lado, o cálculo
+(TMB → GET → meta) do outro — com o anel de calorias e os macros contando de verdade até o valor
+final, não só aparecendo prontos.
 
 </td>
 <td width="50%" valign="top">
-<img src="docs/screenshots/metas.png" alt="Tela de metas do Vitality PLUS — revelação animada da meta calórica e de macros">
+<img src="docs/screenshots/metas.png" alt="Tela de metas do Vitality PLUS — ficha em duas colunas com perfil, cálculo e anel de macros">
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 📊 Painel
+
+A tela inicial resume o dia num relance: anel de calorias consumidas, a próxima refeição sugerida
+pelo plano ativo (com o horário no centro de um segundo anel e os alimentos sugeridos em chips), a
+trilha do dia com as cinco refeições e seus horários, e um bloco de progressão — nível, XP e
+missões diárias/semanais que se completam sozinhas conforme o uso real do diário, sem precisar de
+nenhuma ação extra.
+
+</td>
+<td width="50%" valign="top">
+<img src="docs/screenshots/dashboard.png" alt="Painel do Vitality PLUS — anel de calorias, próxima missão com anel de horário, trilha do dia e missões">
 </td>
 </tr>
 <tr>
@@ -92,13 +110,14 @@ quiser sem remontar a lista do zero, e pronto pra virar sugestão dentro do Diá
 - 🍽️ **Diário alimentar** — uma jornada diária de checkpoints: registra refeições num mini-quiz de
   momento → prato → porções, compara com a meta e mantém o histórico editável (screenshot no topo
   da página).
-- 📊 **Painel de acompanhamento** — meta vs. consumido, num relance.
 - 👤 **Perfil em etapas** — identidade e avatar → corpo → rotina e confirmação. Cada avanço é salvo
   imediatamente, reduzindo perda de dados e mantendo a meta alinhada ao perfil atual.
+- 🌐 **Bilíngue de verdade** — português e inglês, trocados em tempo real (sem recarregar a
+  página) direto pela topbar.
 
 Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
-metas/recomendação nutricional, perfil completo (dados pessoais, rotina e avatar) e Diário Alimentar.
-Dietas e dashboard seguem em desenvolvimento incremental.
+metas/recomendação nutricional, painel/dashboard, perfil completo (dados pessoais, rotina e avatar)
+e Diário Alimentar. Dietas segue em desenvolvimento incremental.
 
 ## Identidade visual
 
