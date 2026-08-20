@@ -67,6 +67,7 @@ export interface MealPlanDraft {
   warning: string | null;
   summary?: string;
   meals: MealPlanMeal[];
+  source?: 'gemini' | 'manual';
 }
 
 export interface MealPlan extends Omit<MealPlanDraft, 'draft_id'> {

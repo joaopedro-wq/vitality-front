@@ -1,0 +1,41 @@
+<div class="inline-flex items-stretch">
+  <div class="flex items-center gap-2.5 rounded-l-[16px] border border-r-0 border-border bg-bg px-4 py-2.5">
+    <div>
+      <p class="m-0 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-subtle">
+        {{ 'dietPlan.planGenerated' | transloco }}
+      </p>
+      <p class="m-0 mt-0.5 flex items-baseline gap-1 leading-none">
+        <strong class="text-xl font-extrabold tabular-nums sm:text-2xl">{{
+          valores()?.caloria ?? '—'
+        }}</strong>
+        <span class="text-xs font-bold text-fg-muted">kcal</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="w-0 border-l-2 border-dashed border-border-strong"></div>
+
+  <div class="flex items-center gap-4 rounded-r-[16px] border border-l-0 border-border bg-bg px-4 py-2.5">
+    <div class="flex flex-col items-center gap-0.5">
+      <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+        ><span class="size-1.5 rounded-full bg-primary"></span
+        >{{ 'dietPlan.macroShort.protein' | transloco }}</span
+      >
+      <strong class="text-sm font-extrabold tabular-nums">{{ valores()?.proteina ?? '—' }}g</strong>
+    </div>
+    <div class="flex flex-col items-center gap-0.5">
+      <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+        ><span class="size-1.5 rounded-full bg-accent"></span
+        >{{ 'dietPlan.macroShort.carbs' | transloco }}</span
+      >
+      <strong class="text-sm font-extrabold tabular-nums">{{ valores()?.carbo ?? '—' }}g</strong>
+    </div>
+    <div class="flex flex-col items-center gap-0.5">
+      <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
+        ><span class="size-1.5 rounded-full bg-fat"></span
+        >{{ 'dietPlan.macroShort.fat' | transloco }}</span
+      >
+      <strong class="text-sm font-extrabold tabular-nums">{{ valores()?.gordura ?? '—' }}g</strong>
+    </div>
+  </div>
+</div>

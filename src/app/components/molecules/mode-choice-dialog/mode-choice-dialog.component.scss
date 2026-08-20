@@ -1,0 +1,35 @@
+// Anel cônico atrás do ícone de cada opção — estende a linguagem "RPG" do
+// MetaRevealComponent/StepFooterComponent (glow em --bd-primary) pro modal
+// de escolha de modo do plano alimentar. Tailwind genuinamente não expressa
+// `conic-gradient` + máscara via pseudo-elemento, daí o SCSS (ver CLAUDE.md,
+// "Preferir classe Tailwind a CSS/SCSS próprio").
+.ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  padding: 3px;
+  background: conic-gradient(from 200deg, var(--bd-primary), var(--bd-accent), var(--bd-primary));
+  transition: box-shadow 0.2s ease;
+}
+
+.ring::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  background: var(--bd-surface);
+}
+
+.ring svg {
+  position: relative;
+  z-index: 1;
+  color: var(--bd-primary);
+}
+
+.mode-card:hover .ring,
+.mode-card:focus-visible .ring {
+  box-shadow: 0 0 0 5px var(--bd-primary-soft);
+}

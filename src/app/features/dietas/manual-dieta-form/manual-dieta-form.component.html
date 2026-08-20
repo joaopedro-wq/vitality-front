@@ -1,0 +1,141 @@
+@if (loadingVisivel()) {
+  <vtp-loading-state
+    [titulo]="'dietPlan.loadingTitle' | transloco"
+    [descricao]="'dietPlan.loadingHint' | transloco"
+  />
+} @else if (revelando()) {
+  <section class="page-shell-wide card flex flex-col items-center p-8">
+    <vtp-nutrition-reveal
+      [totals]="draft()?.totals ?? { caloria: 0, proteina: 0, carbo: 0, gordura: 0 }"
+      [animar]="true"
+      tamanho="lg"
+      [label]="'dietPlan.manual.revealTitle' | transloco"
+      [labelCalculando]="'dietPlan.manual.revealTitle' | transloco"
+    />
+  </section>
+} @else if (mode() === 'form' || mode() === 'build') {
+  <vtp-back-button class="page-shell-wide" fallbackRota="/dietas" />
+  <section class="page-shell-wide">
+    <header class="border-b border-border pb-6">
+      <vtp-page-title
+        [contexto]="'dietPlan.newPlanContext' | transloco"
+        [titulo]="'dietPlan.dayQuestionTitle' | transloco"
+        [subtitulo]="
+          'dietPlan.calorieReference'
+            | transloco: { calories: meta()!.meta_calorias | number: '1.0-0' }
+        "
+      />
+    </header>
+
+    <div class="page-shell mt-4 card p-4 sm:p-6 lg:p-8">
+      <vtp-step-track
+        class="mt-7 block"
+        [steps]="passosTopo()"
+        [ativo]="passoTopoAtivo()"
+        orientacao="horizontal"
+        [label]="'dietPlan.stepsLabel' | transloco"
+      />
+
+      <div class="mt-6">
+        @if (mode() === 'form') {
+          <vtp-refeicoes-step
+            [valorInicial]="mealCount()"
+            (concluido)="onRefeicoesConcluido($event)"
+          />
+        } @else {
+          <div class="md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
+            <nav
+              class="hidden gap-2 md:sticky md:top-6 md:flex md:flex-col"
+              role="tablist"
+              [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
+            >
+              @for (meal of mealsView(); track meal.position) {
+                <vtp-meal-plate
+                  orientacao="linha"
+                  class="md:w-full"
+                  [meal]="meal"
+                  [ativo]="mealAtivo() === meal.position"
+                  [icone]="iconeRefeicao"
+                  (select)="irParaMeal(meal.position)"
+                />
+              }
+            </nav>
+
+            <div
+              class="flex items-center gap-2 md:hidden"
+              role="tablist"
+              [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
+            >
+              @if (mealsView()[mealAtivo()]; as mealAtual) {
+                <vtp-meal-plate
+                  orientacao="linha"
+                  class="w-full"
+                  [meal]="mealAtual"
+                  [ativo]="true"
+                  [icone]="iconeRefeicao"
+                  (select)="irParaMeal(mealAtual.position)"
+                />
+              }
+            </div>
+
+            <div class="card animate-reveal mt-4 p-6 md:mt-0">
+              <vtp-meal-builder
+                [mealIndex]="mealAtivo()"
+                [horario]="mealsView()[mealAtivo()]?.horario ?? ''"
+                [itensIniciais]="refeicoesLocais()[mealAtivo()]?.items ?? []"
+                (itensChange)="onItensChange($event)"
+                (voltarFase)="onVoltarFaseMeal()"
+                (concluir)="onConcluirMeal($event)"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+} @else if (draft(); as plan) {
+  <section class="page-shell-wide card p-4 sm:p-6 lg:p-8">
+    <header class="border-b border-border pb-6">
+      <vtp-page-title
+        [contexto]="'dietPlan.previewContext' | transloco"
+        [titulo]="'dietPlan.previewTitle' | transloco"
+      />
+    </header>
+
+    <vtp-meal-plan-preview
+      [draft]="plan"
+      [editando]="editando()"
+      [saving]="saving()"
+      [dirty]="dirty()"
+      [titulo]="title()"
+      [isManual]="true"
+      [regeneratingMeal]="regeneratingMeal()"
+      [suggesting]="suggesting()"
+      [applyingChange]="applyingChange()"
+      [suggestions]="suggestions()"
+      [swapFailureMessage]="swapFailureMessage()"
+      [swapTarget]="swapTarget()"
+      (tituloChange)="onTituloChange($event)"
+      (save)="save()"
+      (ajustarPreferencias)="pedirAjustarPreferencias()"
+      (useMealFromDrawer)="useMealFromDrawer($event)"
+    />
+  </section>
+}
+
+<vtp-loading-overlay
+  [ativo]="building()"
+  [titulo]="'uiLoading.buildingPlan' | transloco"
+  [mensagens]="mensagensBuilding()"
+/>
+
+<vtp-confirm-dialog
+  [aberto]="confirmAjustarAberto()"
+  variante="soft"
+  [titulo]="'dietPlan.manual.adjustConfirmTitle' | transloco"
+  [descricao]="'dietPlan.manual.adjustConfirmDescription' | transloco"
+  [confirmarTexto]="'dietPlan.manual.adjustConfirmAction' | transloco"
+  [cancelarTexto]="'common.actions.cancel' | transloco"
+  (confirmado)="confirmarAjustarPreferencias()"
+  (cancelado)="cancelarAjustarPreferencias()"
+/>

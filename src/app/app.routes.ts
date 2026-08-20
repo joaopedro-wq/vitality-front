@@ -64,6 +64,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'dietas/novo/manual',
+        loadComponent: () =>
+          import('./features/dietas/manual-dieta-form/manual-dieta-form.component').then(
+            (m) => m.ManualDietaFormComponent,
+          ),
+      },
+      {
         path: 'metas',
         loadComponent: () =>
           import('./features/metas/metas-page/metas-page.component').then(

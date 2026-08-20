@@ -281,4 +281,9 @@
     (cancelado)="fecharConfirmacao()"
     (confirmado)="confirmarAcao()"
   />
+  <vtp-mode-choice-dialog
+    [aberto]="modalModoAberto()"
+    (escolhido)="onModoEscolhido($event)"
+    (cancelado)="fecharModalModo()"
+  />
 }

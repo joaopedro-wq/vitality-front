@@ -1,0 +1,66 @@
+@if (aberto()) {
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-black/45 p-4 sm:p-6"
+    role="presentation"
+    (click)="cancelar()"
+  >
+    <section
+      class="card animate-reveal relative w-full max-w-2xl p-6 sm:p-8"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="mode-choice-dialog-title"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        class="absolute right-4 top-4"
+        bdButton
+        variant="ghost"
+        size="sm"
+        iconOnly
+        type="button"
+        [attr.aria-label]="'common.confirmation.close' | transloco"
+        (click)="cancelar()"
+      >
+        <svg lucideX size="17" aria-hidden="true"></svg>
+      </button>
+
+      <h2 id="mode-choice-dialog-title" class="m-0 pr-10 text-xl font-bold tracking-tight">
+        {{ 'dietPlan.modeChoice.title' | transloco }}
+      </h2>
+
+      <div class="mt-6 grid gap-4 sm:grid-cols-2">
+        <button
+          type="button"
+          class="mode-card flex flex-col items-center gap-3 rounded-2xl border-2 border-border bg-surface px-5 py-7 text-center transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:scale-[1.015] hover:border-primary focus-visible:[box-shadow:var(--bd-focus-ring)]"
+          (click)="escolher('ia')"
+        >
+          <span class="ring">
+            <svg lucideSparkles size="24" aria-hidden="true"></svg>
+          </span>
+          <span class="text-base font-extrabold tracking-tight">{{
+            'dietPlan.modeChoice.ia.title' | transloco
+          }}</span>
+          <span class="max-w-[24ch] text-[13px] leading-relaxed text-fg-muted">{{
+            'dietPlan.modeChoice.ia.description' | transloco
+          }}</span>
+        </button>
+
+        <button
+          type="button"
+          class="mode-card flex flex-col items-center gap-3 rounded-2xl border-2 border-border bg-surface px-5 py-7 text-center transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-0.5 hover:scale-[1.015] hover:border-primary focus-visible:[box-shadow:var(--bd-focus-ring)]"
+          (click)="escolher('manual')"
+        >
+          <span class="ring">
+            <svg lucideListChecks size="24" aria-hidden="true"></svg>
+          </span>
+          <span class="text-base font-extrabold tracking-tight">{{
+            'dietPlan.modeChoice.manual.title' | transloco
+          }}</span>
+          <span class="max-w-[24ch] text-[13px] leading-relaxed text-fg-muted">{{
+            'dietPlan.modeChoice.manual.description' | transloco
+          }}</span>
+        </button>
+      </div>
+    </section>
+  </div>
+}

@@ -14,28 +14,17 @@ import { BdModalComponent } from 'bandeira-ui';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   LucideArrowLeftRight,
-  LucideBean,
-  LucideBeef,
-  LucideCandy,
   LucideCheck,
-  LucideCherry,
   LucideClipboardList,
   LucideClock,
-  LucideCupSoda,
-  LucideDroplet,
   LucideDynamicIcon,
   LucideEdit3,
   LucideFilter,
   LucideHeart,
-  LucideMilk,
-  LucideNut,
-  LucidePackage,
   LucidePlus,
-  LucideSalad,
   LucideSearch,
   LucideTrash2,
   LucideUtensils,
-  LucideWheat,
   type LucideIcon,
 } from '@lucide/angular';
 import { Subject, catchError, debounceTime, finalize, forkJoin, of, takeUntil } from 'rxjs';
@@ -70,6 +59,10 @@ import { PaginationControlsComponent } from '../../../components/molecules/pagin
 import { SortControlComponent } from '../../../components/molecules/sort-control/sort-control.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import {
+  ICONE_CATEGORIA_PADRAO,
+  ICONE_POR_CATEGORIA,
+} from '../../../components/utils/food-category-icons.util';
+import {
   FOOD_SORT_OPTIONS,
   compararAlimentos,
   direcaoOrdenacaoLabel,
@@ -98,22 +91,6 @@ const FILTROS_FIXOS_ICONES: Record<FiltroFixoId, LucideIcon> = {
   favoritos: LucideHeart,
 };
 
-const ICONE_POR_CATEGORIA: Record<string, LucideIcon> = {
-  'carnes-e-aves': LucideBeef,
-  'peixes-e-frutos-do-mar': LucideBeef,
-  ovos: LucideMilk,
-  'graos-cereais-e-massas': LucideWheat,
-  'paes-e-preparacoes': LucideWheat,
-  leguminosas: LucideBean,
-  'verduras-e-legumes': LucideSalad,
-  frutas: LucideCherry,
-  'leites-e-derivados': LucideMilk,
-  'oleaginosas-e-sementes': LucideNut,
-  'oleos-e-gorduras': LucideDroplet,
-  'doces-e-sobremesas': LucideCandy,
-  bebidas: LucideCupSoda,
-};
-const ICONE_PADRAO = LucidePackage;
 const TAMANHO_PAGINA = 20;
 
 @Component({
@@ -230,7 +207,7 @@ export class EntryComposerComponent implements OnDestroy {
       ...this.categorias().map((categoria) => ({
         id: categoria.id,
         label: categoria.label,
-        icon: ICONE_POR_CATEGORIA[categoria.id] ?? ICONE_PADRAO,
+        icon: ICONE_POR_CATEGORIA[categoria.id] ?? ICONE_CATEGORIA_PADRAO,
       })),
     ];
   });

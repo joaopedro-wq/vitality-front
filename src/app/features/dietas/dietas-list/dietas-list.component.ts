@@ -24,6 +24,10 @@ import { Subject, finalize, forkJoin, takeUntil } from 'rxjs';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import {
+  ModeChoiceDialogComponent,
+  type ModoGeracaoPlano,
+} from '../../../components/molecules/mode-choice-dialog/mode-choice-dialog.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { calcularProporcaoMacro } from '../../../components/utils/macro-percent.util';
@@ -48,6 +52,7 @@ import type { MealPlan, MealPlanStyle } from '../../../core/models/meal-plan.mod
     LucideTrash2,
     BackButtonComponent,
     ConfirmDialogComponent,
+    ModeChoiceDialogComponent,
     LoadingStateComponent,
     PageTitleComponent,
   ],
@@ -77,6 +82,7 @@ export class DietasListComponent implements OnDestroy {
   } | null>(null);
 
   protected readonly hasMeta = computed(() => this.meta() !== null);
+  protected readonly modalModoAberto = signal(false);
 
   constructor() {
     this.load();
@@ -92,11 +98,25 @@ export class DietasListComponent implements OnDestroy {
       this.router.navigateByUrl('/metas');
       return;
     }
+    this.modalModoAberto.set(true);
+  }
+
+  protected onModoEscolhido(modo: ModoGeracaoPlano): void {
+    this.modalModoAberto.set(false);
+    if (modo === 'manual') {
+      this.router.navigateByUrl('/dietas/novo/manual');
+      return;
+    }
     this.router.navigateByUrl('/dietas/novo');
   }
 
+  protected fecharModalModo(): void {
+    this.modalModoAberto.set(false);
+  }
+
   protected editPlan(plan: MealPlan): void {
-    this.router.navigate(['/dietas/novo'], {
+    const rota = plan.source === 'manual' ? '/dietas/novo/manual' : '/dietas/novo';
+    this.router.navigate([rota], {
       queryParams: { planoId: plan.id, planoNome: plan.titulo },
     });
   }

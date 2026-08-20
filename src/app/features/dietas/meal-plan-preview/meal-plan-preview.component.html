@@ -1,0 +1,169 @@
+@if (draft(); as plan) {
+  <button
+    class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
+    type="button"
+    (click)="ajustarPreferencias.emit()"
+  >
+    <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
+    {{ 'dietPlan.adjustPreferences' | transloco }}
+  </button>
+
+  @if (plan.summary && !editando()) {
+    <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.summary }}</p>
+  }
+
+  <section class="card animate-reveal mt-6 flex flex-col gap-5 p-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div class="min-w-0 flex-1">
+        <label
+          class="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
+          for="plan-title"
+        >
+          {{ 'dietPlan.planNameLabel' | transloco }}
+        </label>
+
+        <input
+          id="plan-title"
+          class="mt-1.5 w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
+          [attr.aria-label]="'dietPlan.planNameLabel' | transloco"
+          [placeholder]="'dietPlan.defaultTitle' | transloco"
+          [value]="titulo()"
+          (input)="onTituloChange($any($event.target).value)"
+        />
+      </div>
+
+      <div class="flex shrink-0 items-center gap-3">
+        <span class="whitespace-nowrap text-[12px] font-bold text-fg-muted">
+          @if (saving()) {
+            {{ 'dietPlan.saving' | transloco }}
+          } @else if (dirty()) {
+            {{ 'dietPlan.unsavedChanges' | transloco }}
+          }
+        </span>
+        <button
+          bdButton
+          size="sm"
+          [variant]="dirty() ? 'primary' : 'subtle'"
+          [disabled]="saving() || !dirty() || !titulo().trim()"
+          [attr.aria-busy]="saving() ? true : null"
+          (click)="save.emit()"
+        >
+          @if (saving()) {
+            <vtp-plate-loader tamanho="xs" cor="herdada" />
+          } @else {
+            <svg lucideSave size="16" aria-hidden="true"></svg>
+          }
+          {{ 'common.actions.save' | transloco }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumo nutricional (ticket: canhoto com kcal, talão com os macros). -->
+    <div class="border-t border-border pt-4">
+      <vtp-macro-ticket [valores]="macroValores()" />
+    </div>
+
+    @if (plan.warning) {
+      <p class="m-0 text-[12.5px] leading-relaxed text-fg-muted">{{ plan.warning }}</p>
+    }
+
+    <p class="m-0 flex items-start gap-2 text-[12.5px] leading-relaxed text-fg-muted">
+      <svg lucideInfo size="15" class="mt-0.5 shrink-0 text-fg-subtle" aria-hidden="true"></svg>
+      {{ 'dietPlan.disclaimer' | transloco }}
+    </p>
+  </section>
+
+  <div class="mt-7 md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
+    <nav
+      class="hidden gap-2 md:sticky md:top-6 md:flex md:flex-col"
+      role="tablist"
+      [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
+    >
+      @for (meal of plan.meals; track meal.position) {
+        <vtp-meal-plate
+          orientacao="linha"
+          class="md:w-full"
+          [meal]="meal"
+          [ativo]="pratoAtivo()?.position === meal.position"
+          [regenerando]="regeneratingMeal() === meal.position"
+          [icone]="iconeRefeicao(meal)"
+          (select)="selecionarPrato(meal.position)"
+        />
+      }
+    </nav>
+
+    <div
+      class="flex items-center gap-2 md:hidden"
+      role="tablist"
+      [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
+    >
+      <button
+        class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent enabled:hover:bg-accent-soft disabled:opacity-30"
+        type="button"
+        [attr.aria-label]="'dietPlan.previousMealLabel' | transloco"
+        [disabled]="indiceAtivo() === 0"
+        (click)="mealAnterior()"
+      >
+        <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
+      </button>
+
+      <div class="min-w-0 flex-1">
+        @if (plan.meals[indiceAtivo()]; as mealAtual) {
+          <vtp-meal-plate
+            orientacao="linha"
+            class="w-full"
+            [meal]="mealAtual"
+            [ativo]="true"
+            [regenerando]="regeneratingMeal() === mealAtual.position"
+            [icone]="iconeRefeicao(mealAtual)"
+            (select)="selecionarPrato(mealAtual.position)"
+          />
+        }
+        <p
+          class="m-0 mt-1.5 text-center text-[11px] font-bold uppercase tracking-[0.08em] text-fg-muted"
+        >
+          {{
+            'dietPlan.mealOfTotal'
+              | transloco: { current: indiceAtivo() + 1, total: plan.meals.length }
+          }}
+        </p>
+      </div>
+
+      <button
+        class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-contrast enabled:hover:bg-primary-strong disabled:opacity-30"
+        type="button"
+        [attr.aria-label]="'dietPlan.nextMealLabel' | transloco"
+        [disabled]="indiceAtivo() === plan.meals.length - 1"
+        (click)="mealSeguinte()"
+      >
+        <svg lucideArrowRight size="15" aria-hidden="true"></svg>
+      </button>
+    </div>
+
+    @if (pratoAtivo(); as meal) {
+      <div
+        [id]="'gaveta-' + meal.position"
+        class="card animate-reveal mt-4 p-6 md:mt-0"
+        role="tabpanel"
+        [attr.aria-labelledby]="'prato-' + meal.position"
+      >
+        <vtp-meal-drawer
+          [meal]="meal"
+          [suggestions]="suggestions()"
+          [swapFailureMessage]="swapFailureMessage()"
+          [swapTarget]="swapTarget()?.item ?? null"
+          [suggesting]="suggesting()"
+          [applyingChange]="applyingChange()"
+          [regenerando]="regeneratingMeal() === meal.position"
+          [acoesIa]="!isManual()"
+          (swapItem)="openItemSwap.emit({ meal, item: $event })"
+          (closeSwap)="closeSwap.emit()"
+          (loadSuggestions)="loadSuggestions.emit()"
+          (applySuggestion)="applySuggestion.emit($event)"
+          (regenerateMeal)="regenerateMeal.emit(meal.position)"
+          (useMeal)="useMealFromDrawer.emit(meal)"
+        />
+      </div>
+    }
+  </div>
+}

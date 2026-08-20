@@ -1,6 +1,6 @@
 @if (loadingVisivel()) {
   <vtp-loading-state
-    titulo="Preparando seu plano"
+    [titulo]="'dietPlan.loadingTitle' | transloco"
     [descricao]="'dietPlan.loadingHint' | transloco"
   />
 } @else if (mode() === 'form') {
@@ -9,7 +9,7 @@
     <header class="border-b border-border pb-6">
       <vtp-page-title
         [contexto]="'dietPlan.newPlanContext' | transloco"
-        titulo="Como é o seu dia?"
+        [titulo]="'dietPlan.dayQuestionTitle' | transloco"
         [subtitulo]="
           'dietPlan.calorieReference'
             | transloco: { calories: meta()!.meta_calorias | number: '1.0-0' }
@@ -65,224 +65,35 @@
   </section>
 } @else if (draft(); as plan) {
   <section class="page-shell-wide card p-4 sm:p-6 lg:p-8">
-    <button
-      class="mb-5 inline-flex items-center gap-1 text-sm font-bold text-fg-muted"
-      type="button"
-      (click)="mode.set('form')"
-    >
-      <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
-      {{ 'dietPlan.adjustPreferences' | transloco }}
-    </button>
     <header class="border-b border-border pb-6">
-      <vtp-page-title contexto="Prévia do plano" titulo="Monte o seu prato" />
+      <vtp-page-title
+        [contexto]="'dietPlan.previewContext' | transloco"
+        [titulo]="'dietPlan.previewTitle' | transloco"
+      />
     </header>
-    @if (plan.summary && !editando()) {
-      <p class="mt-4 rounded-xl bg-accent-soft p-3.5">{{ plan.summary }}</p>
-    }
 
-    <section class="card animate-reveal mt-6 flex flex-col gap-5 p-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div class="min-w-0 flex-1">
-          <label
-            class="block text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
-            for="plan-title"
-          >
-            {{ 'dietPlan.planNameLabel' | transloco }}
-          </label>
-
-          <input
-            id="plan-title"
-            class="mt-1.5 w-full min-w-0 border-0 border-b-2 border-primary bg-transparent p-0 pb-1 text-[17px] font-bold text-fg outline-none"
-            [attr.aria-label]="'dietPlan.planNameLabel' | transloco"
-            [placeholder]="'dietPlan.defaultTitle' | transloco"
-            [value]="title()"
-            (input)="onTituloChange($any($event.target).value)"
-          />
-        </div>
-
-        <div class="flex shrink-0 items-center gap-3">
-          <span class="whitespace-nowrap text-[12px] font-bold text-fg-muted">
-            @if (saving()) {
-              {{ 'dietPlan.saving' | transloco }}
-            } @else if (dirty()) {
-              {{ 'dietPlan.unsavedChanges' | transloco }}
-            }
-          </span>
-          <button
-            bdButton
-            size="sm"
-            [variant]="dirty() ? 'primary' : 'subtle'"
-            [disabled]="saving() || !dirty() || !title().trim()"
-            [attr.aria-busy]="saving() ? true : null"
-            (click)="save()"
-          >
-            @if (saving()) {
-              <vtp-plate-loader tamanho="xs" cor="herdada" />
-            } @else {
-              <svg lucideSave size="16" aria-hidden="true"></svg>
-            }
-            {{ 'common.actions.save' | transloco }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Resumo nutricional (ticket: canhoto com kcal, talão com os macros). -->
-      <div class="border-t border-border pt-4">
-        <div class="inline-flex items-stretch">
-          <div
-            class="flex items-center gap-2.5 rounded-l-[16px] border border-r-0 border-border bg-bg px-4 py-2.5"
-          >
-            <div>
-              <p class="m-0 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-subtle">
-                {{ 'dietPlan.planGenerated' | transloco }}
-              </p>
-              <p class="m-0 mt-0.5 flex items-baseline gap-1 leading-none">
-                <strong class="text-xl font-extrabold tabular-nums sm:text-2xl">{{
-                  macroValores()?.caloria ?? '—'
-                }}</strong>
-                <span class="text-xs font-bold text-fg-muted">kcal</span>
-              </p>
-            </div>
-          </div>
-
-          <div class="w-0 border-l-2 border-dashed border-border-strong"></div>
-
-          <div
-            class="flex items-center gap-4 rounded-r-[16px] border border-l-0 border-border bg-bg px-4 py-2.5"
-          >
-            <div class="flex flex-col items-center gap-0.5">
-              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-primary"></span
-                >{{ 'dietPlan.macroShort.protein' | transloco }}</span
-              >
-              <strong class="text-sm font-extrabold tabular-nums"
-                >{{ macroValores()?.proteina ?? '—' }}g</strong
-              >
-            </div>
-            <div class="flex flex-col items-center gap-0.5">
-              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-accent"></span
-                >{{ 'dietPlan.macroShort.carbs' | transloco }}</span
-              >
-              <strong class="text-sm font-extrabold tabular-nums"
-                >{{ macroValores()?.carbo ?? '—' }}g</strong
-              >
-            </div>
-            <div class="flex flex-col items-center gap-0.5">
-              <span class="flex items-center gap-1 text-[9px] font-bold uppercase text-fg-muted"
-                ><span class="size-1.5 rounded-full bg-fat"></span
-                >{{ 'dietPlan.macroShort.fat' | transloco }}</span
-              >
-              <strong class="text-sm font-extrabold tabular-nums"
-                >{{ macroValores()?.gordura ?? '—' }}g</strong
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-
-      @if (plan.warning) {
-        <p class="m-0 text-[12.5px] leading-relaxed text-fg-muted">{{ plan.warning }}</p>
-      }
-
-      <p class="m-0 flex items-start gap-2 text-[12.5px] leading-relaxed text-fg-muted">
-        <svg lucideInfo size="15" class="mt-0.5 shrink-0 text-fg-subtle" aria-hidden="true"></svg>
-        {{ 'dietPlan.disclaimer' | transloco }}
-      </p>
-    </section>
-
-    <div class="mt-7 md:grid md:grid-cols-[260px_minmax(0,1fr)] md:items-start md:gap-6">
-      <nav
-        class="hidden gap-2 md:sticky md:top-6 md:flex md:flex-col"
-        role="tablist"
-        [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
-      >
-        @for (meal of plan.meals; track meal.position) {
-          <vtp-meal-plate
-            orientacao="linha"
-            class="md:w-full"
-            [meal]="meal"
-            [ativo]="pratoAberto() === meal.position"
-            [regenerando]="regeneratingMeal() === meal.position"
-            [icone]="iconeRefeicao(meal)"
-            (select)="selecionarPrato(meal.position)"
-          />
-        }
-      </nav>
-
-      <div
-        class="flex items-center gap-2 md:hidden"
-        role="tablist"
-        [attr.aria-label]="'dietPlan.dailyMealsLabel' | transloco"
-      >
-        <button
-          class="flex size-11 shrink-0 items-center justify-center rounded-full border-2 border-accent text-accent enabled:hover:bg-accent-soft disabled:opacity-30"
-          type="button"
-          [attr.aria-label]="'dietPlan.previousMealLabel' | transloco"
-          [disabled]="indiceAtivo() === 0"
-          (click)="mealAnterior()"
-        >
-          <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
-        </button>
-
-        <div class="min-w-0 flex-1">
-          @if (plan.meals[indiceAtivo()]; as mealAtual) {
-            <vtp-meal-plate
-              orientacao="linha"
-              class="w-full"
-              [meal]="mealAtual"
-              [ativo]="true"
-              [regenerando]="regeneratingMeal() === mealAtual.position"
-              [icone]="iconeRefeicao(mealAtual)"
-              (select)="selecionarPrato(mealAtual.position)"
-            />
-          }
-          <p
-            class="m-0 mt-1.5 text-center text-[11px] font-bold uppercase tracking-[0.08em] text-fg-muted"
-          >
-            {{
-              'dietPlan.mealOfTotal'
-                | transloco: { current: indiceAtivo() + 1, total: plan.meals.length }
-            }}
-          </p>
-        </div>
-
-        <button
-          class="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-contrast enabled:hover:bg-primary-strong disabled:opacity-30"
-          type="button"
-          [attr.aria-label]="'dietPlan.nextMealLabel' | transloco"
-          [disabled]="indiceAtivo() === plan.meals.length - 1"
-          (click)="mealSeguinte()"
-        >
-          <svg lucideArrowRight size="15" aria-hidden="true"></svg>
-        </button>
-      </div>
-
-      @if (pratoAtivo(); as meal) {
-        <div
-          [id]="'gaveta-' + meal.position"
-          class="card animate-reveal mt-4 p-6 md:mt-0"
-          role="tabpanel"
-          [attr.aria-labelledby]="'prato-' + meal.position"
-        >
-          <vtp-meal-drawer
-            [meal]="meal"
-            [suggestions]="suggestions()"
-            [swapFailureMessage]="swapFailureMessage()"
-            [swapTarget]="swapTarget()?.item ?? null"
-            [suggesting]="suggesting()"
-            [applyingChange]="applyingChange()"
-            [regenerando]="regeneratingMeal() === meal.position"
-            (swapItem)="openItemSwap(meal, $event)"
-            (closeSwap)="closeSwap()"
-            (loadSuggestions)="loadSuggestions()"
-            (applySuggestion)="applySuggestion($event)"
-            (regenerateMeal)="regenerateMeal(meal.position)"
-            (useMeal)="useMealFromDrawer(meal)"
-          />
-        </div>
-      }
-    </div>
+    <vtp-meal-plan-preview
+      [draft]="plan"
+      [editando]="editando()"
+      [saving]="saving()"
+      [dirty]="dirty()"
+      [titulo]="title()"
+      [regeneratingMeal]="regeneratingMeal()"
+      [suggesting]="suggesting()"
+      [applyingChange]="applyingChange()"
+      [suggestions]="suggestions()"
+      [swapFailureMessage]="swapFailureMessage()"
+      [swapTarget]="swapTarget()"
+      (tituloChange)="onTituloChange($event)"
+      (save)="save()"
+      (ajustarPreferencias)="mode.set('form')"
+      (regenerateMeal)="regenerateMeal($event)"
+      (openItemSwap)="openItemSwap($event)"
+      (closeSwap)="closeSwap()"
+      (loadSuggestions)="loadSuggestions()"
+      (applySuggestion)="applySuggestion($event)"
+      (useMealFromDrawer)="useMealFromDrawer($event)"
+    />
   </section>
 }
 

@@ -1,0 +1,247 @@
+@if (subFase() === 'selecionar') {
+  <!-- Tablet/desktop: busca, ordenação e chips sempre visíveis. No mobile os
+       três somem daqui e moram na folha de filtro (ver abaixo) — mesmo
+       padrão do `EntryComposerComponent` (Diário), a linha fica espremida
+       demais tentando caber tudo numa tela estreita. -->
+  <div class="mb-2 hidden items-center gap-2 md:flex">
+    <label
+      class="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+    >
+      <svg lucideSearch size="16" aria-hidden="true"></svg>
+      <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
+      <input
+        class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+        type="search"
+        [placeholder]="'entry.searchPlaceholder' | transloco"
+        [value]="query()"
+        (input)="buscar($any($event.target).value)"
+      />
+    </label>
+
+    <vtp-sort-control
+      class="flex-none"
+      [opcoes]="sortOptions"
+      [campo]="sortField()"
+      [ordem]="sortOrder()"
+      [direcaoLabel]="direcaoOrdenacao()"
+      (campoChange)="alterarCampoOrdenacao($event)"
+      (ordemChange)="alterarOrdem($event)"
+    />
+  </div>
+
+  <div
+    class="mb-3 hidden flex-wrap justify-center gap-2 md:flex"
+    role="group"
+    [attr.aria-label]="'entry.quickFiltersAria' | transloco"
+  >
+    <ng-container [ngTemplateOutlet]="chipsTpl" />
+  </div>
+
+  <!-- Mobile: busca, ordenação e categoria viram uma única folha inferior
+       atrás de um gatilho — mesmo padrão do `EntryComposerComponent`. -->
+  <div class="mb-3 flex md:hidden">
+    <button
+      type="button"
+      class="mx-auto flex max-w-full items-center gap-1.5 rounded-full border border-border-strong bg-surface px-3.5 py-2 text-[12.5px] font-bold text-fg-muted"
+      [attr.aria-expanded]="filtrosAbertos()"
+      (click)="filtrosAbertos.set(true)"
+    >
+      <svg lucideFilter size="14" aria-hidden="true"></svg>
+      <span class="truncate">{{
+        filtroAtivoLabel() ?? ('dietPlan.manual.filters.triggerLabel' | transloco)
+      }}</span>
+    </button>
+  </div>
+
+  @if (filtrosAbertos()) {
+    <button
+      type="button"
+      class="fixed inset-0 z-[70] bg-black/45 md:hidden"
+      [attr.aria-label]="'entry.closeFilters' | transloco"
+      (click)="filtrosAbertos.set(false)"
+    ></button>
+    <div
+      class="fixed inset-x-0 bottom-0 z-[75] flex max-h-[80vh] flex-col rounded-t-[22px] bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] [box-shadow:var(--bd-shadow-lg)] md:hidden"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'entry.filtersAria' | transloco"
+    >
+      <div
+        class="mx-auto mb-3 h-1 w-10 flex-none rounded-full bg-border-strong"
+        aria-hidden="true"
+      ></div>
+
+      <div class="flex-1 overflow-y-auto">
+        <label
+          class="mb-2 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+        >
+          <svg lucideSearch size="16" aria-hidden="true"></svg>
+          <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
+          <input
+            class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+            type="search"
+            [placeholder]="'entry.searchPlaceholder' | transloco"
+            [value]="query()"
+            (input)="buscar($any($event.target).value)"
+          />
+        </label>
+
+        <vtp-sort-control
+          class="mb-3 flex justify-end"
+          [opcoes]="sortOptions"
+          [campo]="sortField()"
+          [ordem]="sortOrder()"
+          [direcaoLabel]="direcaoOrdenacao()"
+          (campoChange)="alterarCampoOrdenacao($event)"
+          (ordemChange)="alterarOrdem($event)"
+        />
+
+        <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
+          {{ 'entry.categories' | transloco }}
+        </p>
+        <div
+          class="flex flex-wrap justify-center gap-2"
+          role="group"
+          [attr.aria-label]="'entry.quickFiltersAria' | transloco"
+        >
+          <ng-container [ngTemplateOutlet]="chipsTpl" />
+        </div>
+      </div>
+    </div>
+  }
+
+  <ng-template #chipsTpl>
+    @for (filtro of filtrosRapidos(); track filtro.id) {
+      <button
+        type="button"
+        class="flex w-[62px] flex-none flex-col items-center justify-center gap-1 rounded-xl border px-1.5 py-2 text-center text-[10px] font-bold leading-tight transition-[transform,border-color,background-color,color] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+        [class]="
+          filtroRapido() === filtro.id
+            ? 'border-primary bg-primary-soft text-primary-strong scale-[1.05]'
+            : 'border-border bg-surface text-fg-muted hover:border-border-strong'
+        "
+        [attr.aria-pressed]="filtroRapido() === filtro.id"
+        (click)="selecionarFiltro(filtro.id)"
+      >
+        <svg [lucideIcon]="filtro.icon" size="18" aria-hidden="true"></svg>
+        {{ filtro.label }}
+      </button>
+    }
+  </ng-template>
+
+  <p class="mb-2 text-[10.5px] font-extrabold uppercase tracking-widest text-fg-subtle">
+    {{ 'dietPlan.manual.pickFoodTitle' | transloco }}
+  </p>
+
+  @if (carregandoVisivel()) {
+    <vtp-loading-state tamanho="sm" [titulo]="'uiLoading.searchingFoods' | transloco" />
+  } @else if (resultados().length) {
+    <div class="grid grid-cols-2 gap-2 md:[grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]">
+      @for (food of resultados(); track food.id) {
+        <vtp-food-pick-card
+          [food]="food"
+          [selecionado]="estaNoPrato(food)"
+          (pick)="escolher($event)"
+        />
+      }
+    </div>
+  } @else {
+    <p class="py-6 text-center text-[13px] text-fg-muted">
+      {{ (query() || filtroRapido() ? 'entry.noFoodsNamed' : 'entry.searchToStart') | transloco }}
+    </p>
+  }
+
+  <vtp-pagination-controls
+    [pagina]="pagina()"
+    [totalRegistros]="totalRegistros()"
+    [tamanhoPagina]="tamanhoPagina"
+    [carregando]="carregando()"
+    (paginaChange)="mudarPagina($event)"
+  />
+
+  <div class="mt-4 overflow-hidden rounded-[13px] border border-border">
+    <h3
+      class="flex items-center gap-2 bg-primary px-3 py-2 text-[11.5px] font-extrabold text-primary-contrast"
+    >
+      <svg lucideUtensils size="14" aria-hidden="true"></svg>
+      {{ itens().length }}
+      {{ (itens().length === 1 ? 'entry.foodSingular' : 'entry.foodPlural') | transloco }}
+      <span class="ml-auto tabular-nums">
+        {{ totais().caloria | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
+      </span>
+    </h3>
+
+    <div class="bg-bg p-3">
+      @if (itens().length) {
+        @for (item of itens(); track item.foodId) {
+          <vtp-plate-row
+            [item]="item"
+            (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
+            (remover)="tirar(item.foodId)"
+          />
+        }
+      } @else {
+        <p class="text-[12.5px] text-fg-subtle">{{ 'entry.nothingChosen' | transloco }}</p>
+      }
+    </div>
+  </div>
+} @else {
+  <div class="flex flex-col items-center py-2">
+    <p class="mb-1 text-[10.5px] font-extrabold uppercase tracking-widest text-primary-strong">
+      {{ 'entry.reviewEyebrow' | transloco }}
+    </p>
+    <h2 class="m-0 text-[19px] font-bold tracking-tight text-balance">
+      {{ 'dietPlan.manual.reviewMealTitle' | transloco }}
+    </h2>
+  </div>
+
+  <div class="mt-4 overflow-hidden rounded-[13px] border border-border">
+    <h3
+      class="flex items-center gap-2 bg-primary px-3 py-2 text-[11.5px] font-extrabold text-primary-contrast"
+    >
+      <svg lucideUtensils size="14" aria-hidden="true"></svg>
+      {{ itens().length }}
+      {{ (itens().length === 1 ? 'entry.foodSingular' : 'entry.foodPlural') | transloco }}
+      <span class="ml-auto tabular-nums">
+        {{ totais().caloria | number: '1.0-0' }} {{ 'nutrition.kcal' | transloco }}
+      </span>
+    </h3>
+
+    <div class="bg-bg p-3">
+      @for (item of itens(); track item.foodId) {
+        <vtp-plate-row
+          [item]="item"
+          (quantidadeChange)="ajustarQuantidade(item.foodId, $event)"
+          (remover)="tirar(item.foodId)"
+        />
+      }
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="mx-auto mt-4 flex items-center gap-1.5 rounded-full border border-danger/40 px-4 py-2 text-[12.5px] font-bold text-danger transition-colors hover:bg-danger/10"
+    (click)="solicitarRemoverRefeicao()"
+  >
+    <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+    {{ 'dietPlan.manual.removeMeal' | transloco }}
+  </button>
+}
+
+<vtp-step-footer
+  [desabilitado]="subFase() === 'selecionar' && !itens().length"
+  [ultimo]="subFase() === 'revisar'"
+  (voltar)="voltar()"
+  (avancar)="avancar()"
+/>
+
+<vtp-confirm-dialog
+  [aberto]="removerRefeicaoAberto()"
+  variante="danger"
+  [titulo]="'dietPlan.manual.removeMealConfirmTitle' | transloco"
+  [descricao]="'dietPlan.manual.removeMealConfirmDescription' | transloco"
+  [confirmarTexto]="'dietPlan.manual.removeMeal' | transloco"
+  [cancelarTexto]="'common.actions.cancel' | transloco"
+  (cancelado)="cancelarRemoverRefeicao()"
+  (confirmado)="confirmarRemoverRefeicao()"
+/>

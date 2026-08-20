@@ -348,7 +348,11 @@
   "dietPlan": {
     "newPlanContext": "Novo plano",
     "stepsLabel": "Etapas do novo plano",
+    "loadingTitle": "Preparando seu plano",
     "loadingHint": "Buscando sua meta e suas preferências.",
+    "dayQuestionTitle": "Como é o seu dia?",
+    "previewContext": "Prévia do plano",
+    "previewTitle": "Monte o seu prato",
     "defaultTitle": "Meu plano do dia",
     "actions": {
       "defineGoals": "Definir minhas metas",
@@ -446,7 +450,10 @@
       "dayRecreated": "Novo dia gerado.",
       "undone": "Última alteração desfeita.",
       "loadPreferencesError": "Não foi possível carregar suas preferências agora.",
-      "loadForEditError": "Não foi possível abrir esse plano para edição."
+      "loadForEditError": "Não foi possível abrir esse plano para edição.",
+      "mealAdded": "Refeição adicionada.",
+      "mealRemoved": "Refeição removida.",
+      "mealItemsUpdated": "Refeição atualizada."
     },
     "confirm": {
       "archiveTitle": "Arquivar este plano?",
@@ -457,7 +464,51 @@
       "deleteAction": "Excluir plano"
     },
     "confirmRecreate": "Gerar um novo dia recria TODAS as refeições do zero. Qualquer troca manual feita nelas será substituída ou perdida. Continuar?",
-    "swapFailureFallback": "Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente."
+    "swapFailureFallback": "Não encontramos uma troca individual que mantenha esta refeição próxima da meta. Reorganize a refeição completa para buscar uma combinação mais coerente.",
+    "modeChoice": {
+      "title": "Como você quer montar seu plano?",
+      "ia": {
+        "title": "Por IA",
+        "description": "A gente monta um dia inteiro pra você, com base na sua meta e nas suas preferências."
+      },
+      "manual": {
+        "title": "Manual",
+        "description": "Você escolhe cada alimento de cada refeição, no seu ritmo."
+      }
+    },
+    "manual": {
+      "steps": {
+        "meals": {
+          "title": "Refeições",
+          "description": "Quantas por dia"
+        },
+        "build": {
+          "title": "Montar",
+          "description": "Escolha os alimentos"
+        }
+      },
+      "mealLabel": "Refeição {{n}}",
+      "pickFoodTitle": "Escolha os alimentos",
+      "reviewMealTitle": "Confira esta refeição",
+      "filters": {
+        "favoritesLabel": "Favoritos",
+        "triggerLabel": "Buscar e filtrar"
+      },
+      "addMeal": "Adicionar refeição",
+      "removeMeal": "Remover refeição",
+      "removeMealConfirmTitle": "Remover esta refeição?",
+      "removeMealConfirmDescription": "Todos os alimentos escolhidos para esta refeição serão descartados.",
+      "building": {
+        "step1": "Organizando as refeições que você montou…",
+        "step2": "Calculando os macros do seu dia…",
+        "step3": "Deixando tudo prontinho pra revisão…"
+      },
+      "emptyMealWarning": "Escolha pelo menos um alimento pra continuar.",
+      "revealTitle": "Seu plano está pronto",
+      "adjustConfirmTitle": "Ajustar preferências?",
+      "adjustConfirmDescription": "Você já escolheu alimentos pra esse plano. Voltar pra esse passo descarta tudo o que foi montado até agora.",
+      "adjustConfirmAction": "Ajustar mesmo assim"
+    }
   },
   "dashboard": {
     "badgeCard": {

@@ -348,7 +348,11 @@
   "dietPlan": {
     "newPlanContext": "New plan",
     "stepsLabel": "New plan steps",
+    "loadingTitle": "Preparing your plan",
     "loadingHint": "Fetching your goal and preferences.",
+    "dayQuestionTitle": "What does your day look like?",
+    "previewContext": "Plan preview",
+    "previewTitle": "Build your plate",
     "defaultTitle": "My daily plan",
     "actions": {
       "defineGoals": "Set my goals",
@@ -446,7 +450,10 @@
       "dayRecreated": "New day generated.",
       "undone": "Last change undone.",
       "loadPreferencesError": "We couldn't load your preferences right now.",
-      "loadForEditError": "We couldn’t open this plan for editing."
+      "loadForEditError": "We couldn’t open this plan for editing.",
+      "mealAdded": "Meal added.",
+      "mealRemoved": "Meal removed.",
+      "mealItemsUpdated": "Meal updated."
     },
     "confirm": {
       "archiveTitle": "Archive this plan?",
@@ -457,7 +464,51 @@
       "deleteAction": "Delete plan"
     },
     "confirmRecreate": "Generating a new day recreates ALL meals from scratch. Any manual swap made in them will be replaced or lost. Continue?",
-    "swapFailureFallback": "We couldn't find a single swap that keeps this meal close to the goal. Reorganize the whole meal to find a more coherent combination."
+    "swapFailureFallback": "We couldn't find a single swap that keeps this meal close to the goal. Reorganize the whole meal to find a more coherent combination.",
+    "modeChoice": {
+      "title": "How do you want to build your plan?",
+      "ia": {
+        "title": "By AI",
+        "description": "We put together a full day for you, based on your goal and preferences."
+      },
+      "manual": {
+        "title": "Manual",
+        "description": "You choose every food in every meal, at your own pace."
+      }
+    },
+    "manual": {
+      "steps": {
+        "meals": {
+          "title": "Meals",
+          "description": "How many per day"
+        },
+        "build": {
+          "title": "Build",
+          "description": "Choose the foods"
+        }
+      },
+      "mealLabel": "Meal {{n}}",
+      "pickFoodTitle": "Choose the foods",
+      "reviewMealTitle": "Review this meal",
+      "filters": {
+        "favoritesLabel": "Favorites",
+        "triggerLabel": "Search and filter"
+      },
+      "addMeal": "Add meal",
+      "removeMeal": "Remove meal",
+      "removeMealConfirmTitle": "Remove this meal?",
+      "removeMealConfirmDescription": "Every food chosen for this meal will be discarded.",
+      "building": {
+        "step1": "Organizing the meals you built…",
+        "step2": "Calculating your day's macros…",
+        "step3": "Getting everything ready for review…"
+      },
+      "emptyMealWarning": "Choose at least one food to continue.",
+      "revealTitle": "Your plan is ready",
+      "adjustConfirmTitle": "Adjust preferences?",
+      "adjustConfirmDescription": "You've already picked foods for this plan. Going back to this step discards everything you've built so far.",
+      "adjustConfirmAction": "Adjust anyway"
+    }
   },
   "dashboard": {
     "badgeCard": {

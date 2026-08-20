@@ -11,42 +11,23 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BdButtonComponent } from 'bandeira-ui';
-import {
-  LucideApple,
-  LucideArrowLeft,
-  LucideArrowRight,
-  LucideSave,
-  LucideCoffee,
-  LucideInfo,
-  LucideMoon,
-  LucideMoonStar,
-  LucideSun,
-  LucideSunrise,
-  LucideSunset,
-  LucideUtensils,
-  LucideUtensilsCrossed,
-  type LucideIcon,
-} from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Subject, finalize, forkJoin, switchMap, takeUntil } from 'rxjs';
 
-import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
-import { MealPlateComponent } from '../../../components/molecules/meal-plate/meal-plate.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import {
   StepTrackComponent,
   type StepTrackItem,
 } from '../../../components/molecules/step-track/step-track.component';
-import { MealDrawerComponent } from '../../../components/organisms/meal-drawer/meal-drawer.component';
 import { LoadingOverlayComponent } from '../../../components/organisms/loading-overlay/loading-overlay.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 import { MealPlanService } from '../../../services/meal-plan.service';
 import { MetaService } from '../../../services/meta.service';
 import { MealPlanDiaryDraftService } from '../../../core/meal-plan/meal-plan-diary-draft.service';
+import { horariosPadrao } from '../../../core/meal-plan/meal-plan-times.util';
 import { LanguageService } from '../../../core/i18n/language.service';
 import type { Alimento } from '../../../core/models/alimento.model';
 import type { MetaDiaria } from '../../../core/models/meta-diaria.model';
@@ -58,60 +39,23 @@ import type {
   MealPlanPreferences,
   MealPlanStyle,
 } from '../../../core/models/meal-plan.model';
+import { MealPlanPreviewComponent } from '../meal-plan-preview/meal-plan-preview.component';
 import { RefeicoesStepComponent } from './steps/refeicoes-step/refeicoes-step.component';
 import { EstiloStepComponent } from './steps/estilo-step/estilo-step.component';
 import { EvitarStepComponent } from './steps/evitar-step/evitar-step.component';
 import { RevisarStepComponent } from './steps/revisar-step/revisar-step.component';
-
-const TIMES: Record<3 | 4 | 5, string[]> = {
-  3: ['08:00', '12:30', '19:30'],
-  4: ['08:00', '12:30', '16:30', '20:00'],
-  5: ['07:30', '10:30', '13:00', '16:30', '20:00'],
-};
-
-/** Ícone de período por horário — fallback quando o nome da refeição não bate com nada conhecido. */
-const ICONES_PERIODO: ReadonlyArray<readonly [limite: number, icone: LucideIcon]> = [
-  [10, LucideSunrise],
-  [15, LucideSun],
-  [18, LucideSunset],
-  [24, LucideMoon],
-];
-
-/**
- * Ícone por tipo de refeição — mais coerente com o momento do dia do que só o
- * horário (ex.: "Lanche da tarde" às 16h vira maçã, não sol de tarde genérico).
- * Casa por palavra-chave no nome; refeição sem nome reconhecido cai no
- * fallback por horário (`ICONES_PERIODO`). `meal.descricao` vem da API já
- * traduzida pro locale ativo (`lang/{pt-BR,en-US}/messages.php`), então cada
- * regra cobre a palavra em português e em inglês — casar só em português
- * faria o ícone cair sempre no fallback genérico quando o app está em inglês.
- */
-const ICONES_REFEICAO: ReadonlyArray<readonly [palavras: string[], icone: LucideIcon]> = [
-  [['café', 'manhã', 'breakfast'], LucideCoffee],
-  [['almoço', 'lunch'], LucideUtensils],
-  [['lanche', 'snack'], LucideApple],
-  [['jantar', 'dinner'], LucideUtensilsCrossed],
-  [['ceia', 'evening'], LucideMoonStar],
-];
 
 @Component({
   selector: 'vtp-dieta-form',
   standalone: true,
   imports: [
     DecimalPipe,
-    BdButtonComponent,
-    LucideArrowLeft,
-    LucideArrowRight,
-    LucideSave,
-    LucideInfo,
-    PlateLoaderComponent,
     BackButtonComponent,
     LoadingStateComponent,
-    MealPlateComponent,
-    MealDrawerComponent,
     PageTitleComponent,
     StepTrackComponent,
     LoadingOverlayComponent,
+    MealPlanPreviewComponent,
     RefeicoesStepComponent,
     EstiloStepComponent,
     EvitarStepComponent,
@@ -164,7 +108,6 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly swapTarget = signal<{ meal: MealPlanMeal; item: MealPlanItem } | null>(null);
   protected readonly suggestions = signal<MealPlanItemSuggestion[]>([]);
   protected readonly swapFailureMessage = signal<string | null>(null);
-  protected readonly pratoAberto = signal<number | null>(null);
   protected readonly passo = signal(0);
   protected readonly passosForm = computed<StepTrackItem[]>(() => {
     this.language.locale();
@@ -178,30 +121,6 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly planoEmEdicaoId = signal<number | null>(null);
 
   protected readonly dirty = signal(false);
-
-  protected readonly pratoAtivo = computed(() => {
-    const aberto = this.pratoAberto();
-    if (aberto === null) return null;
-    return this.draft()?.meals.find((meal) => meal.position === aberto) ?? null;
-  });
-
-  protected readonly indiceAtivo = computed(() => {
-    const meals = this.draft()?.meals ?? [];
-    const aberto = this.pratoAberto();
-    const indice = meals.findIndex((meal) => meal.position === aberto);
-    return indice === -1 ? 0 : indice;
-  });
-
-  protected readonly macroValores = computed(() => {
-    const totals = this.draft()?.totals;
-    if (!totals) return null;
-    return {
-      caloria: Math.round(totals.caloria),
-      proteina: Math.round(totals.proteina),
-      carbo: Math.round(totals.carbo),
-      gordura: Math.round(totals.gordura),
-    };
-  });
 
   /** `effect()` roda uma vez na inicialização também — pula o primeiro disparo pra
    * não tentar retraduzir um draft que ainda nem existe. */
@@ -238,37 +157,6 @@ export class DietaFormComponent implements OnDestroy {
       });
   }
 
-  protected selecionarPrato(position: number): void {
-    if (this.pratoAberto() === position) return;
-    this.pratoAberto.set(position);
-    this.swapTarget.set(null);
-    this.suggestions.set([]);
-    this.swapFailureMessage.set(null);
-  }
-
-  protected mealAnterior(): void {
-    const meals = this.draft()?.meals ?? [];
-    const anterior = meals[this.indiceAtivo() - 1];
-    if (anterior) this.selecionarPrato(anterior.position);
-  }
-
-  protected mealSeguinte(): void {
-    const meals = this.draft()?.meals ?? [];
-    const seguinte = meals[this.indiceAtivo() + 1];
-    if (seguinte) this.selecionarPrato(seguinte.position);
-  }
-
-  /** Ícone Lucide da refeição — por tipo (nome) quando reconhecido, senão por horário. */
-  protected iconeRefeicao(meal: MealPlanMeal): LucideIcon {
-    const nome = meal.descricao.toLowerCase();
-    const porTipo = ICONES_REFEICAO.find(([palavras]) =>
-      palavras.some((palavra) => nome.includes(palavra)),
-    );
-    if (porTipo) return porTipo[1];
-    const hora = Number(meal.horario.split(':')[0]);
-    return ICONES_PERIODO.find(([limite]) => hora < limite)?.[1] ?? LucideMoon;
-  }
-
   protected onTituloChange(valor: string): void {
     this.title.set(valor);
     this.dirty.set(true);
@@ -296,7 +184,7 @@ export class DietaFormComponent implements OnDestroy {
   protected generate(): void {
     const preferences: MealPlanPreferences = {
       meal_count: this.mealCount(),
-      meal_times: TIMES[this.mealCount()],
+      meal_times: horariosPadrao(this.mealCount()),
       style: this.style(),
       excluded_food_ids: this.excluded().map((food) => food.id),
       diet_type: 'onivora',
@@ -314,7 +202,6 @@ export class DietaFormComponent implements OnDestroy {
         next: (draft) => {
           this.draft.set(draft);
           this.mode.set('preview');
-          this.pratoAberto.set(draft.meals[0]?.position ?? null);
           this.dirty.set(true);
           this.closeSwap();
         },
@@ -368,8 +255,8 @@ export class DietaFormComponent implements OnDestroy {
       });
   }
 
-  protected openItemSwap(meal: MealPlanMeal, item: MealPlanItem): void {
-    this.swapTarget.set({ meal, item });
+  protected openItemSwap(target: { meal: MealPlanMeal; item: MealPlanItem }): void {
+    this.swapTarget.set(target);
     this.suggestions.set([]);
     this.swapFailureMessage.set(null);
   }
@@ -540,7 +427,6 @@ export class DietaFormComponent implements OnDestroy {
           this.editando.set(true);
           this.planoEmEdicaoId.set(id);
           this.dirty.set(false);
-          this.pratoAberto.set(draft.meals[0]?.position ?? null);
         },
         error: () => {
           this.toastr.error(this.transloco.translate('dietPlan.toast.loadForEditError'));

@@ -35,6 +35,10 @@ export class MealDrawerComponent {
   readonly suggesting = input(false);
   readonly applyingChange = input(false);
   readonly regenerando = input(false);
+  /** `false` esconde ações que dependem de sugestão por IA (trocar item,
+   * reorganizar refeição) — usado pelo fluxo manual de dietas. Ações que não
+   * dependem de IA (ex.: "Usar no diário") continuam visíveis. */
+  readonly acoesIa = input(true);
 
   readonly swapItem = output<MealPlanItem>();
   readonly closeSwap = output<void>();

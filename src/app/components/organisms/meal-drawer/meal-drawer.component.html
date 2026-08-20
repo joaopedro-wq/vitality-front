@@ -119,13 +119,15 @@
             <small class="block text-xs text-fg-muted">{{ item.detalhe_exibicao }}</small>
           }
         </span>
-        <button
-          class="text-xs font-bold text-primary-strong underline underline-offset-2"
-          type="button"
-          (click)="swapItem.emit(item)"
-        >
-          {{ 'actions.swap' | transloco }}
-        </button>
+        @if (acoesIa()) {
+          <button
+            class="text-xs font-bold text-primary-strong underline underline-offset-2"
+            type="button"
+            (click)="swapItem.emit(item)"
+          >
+            {{ 'actions.swap' | transloco }}
+          </button>
+        }
       </li>
     }
   </ul>
@@ -135,21 +137,25 @@
   }
 
   <div class="mt-5 flex flex-wrap gap-3">
-    <button
-      bdButton
-      variant="subtle"
-      size="sm"
-      bdTooltip="Recria os alimentos dessa refeição mantendo os macros, preferências e restrições"
-      placement="top"
-      [disabled]="regenerando()"
-      [attr.aria-busy]="regenerando() ? true : null"
-      (click)="regenerateMeal.emit()"
-    >
-      @if (regenerando()) {
-        <vtp-plate-loader tamanho="xs" cor="herdada" />
-      }
-      {{ regenerando() ? ('actions.swappingMeal' | transloco) : ('actions.swapMeal' | transloco) }}
-    </button>
+    @if (acoesIa()) {
+      <button
+        bdButton
+        variant="subtle"
+        size="sm"
+        bdTooltip="Recria os alimentos dessa refeição mantendo os macros, preferências e restrições"
+        placement="top"
+        [disabled]="regenerando()"
+        [attr.aria-busy]="regenerando() ? true : null"
+        (click)="regenerateMeal.emit()"
+      >
+        @if (regenerando()) {
+          <vtp-plate-loader tamanho="xs" cor="herdada" />
+        }
+        {{
+          regenerando() ? ('actions.swappingMeal' | transloco) : ('actions.swapMeal' | transloco)
+        }}
+      </button>
+    }
     <button bdButton variant="ghost" size="sm" type="button" (click)="useMeal.emit()">
       Usar no diário
     </button>

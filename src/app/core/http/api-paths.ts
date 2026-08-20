@@ -48,6 +48,10 @@ export const apiPaths = {
   mealPlanProfile: () => `${environment.apiBaseUrl}/meal-plan-profile`,
   mealPlanRestrictions: () => `${environment.apiBaseUrl}/meal-plan-restrictions`,
   mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
+  mealPlanManualPreview: () => `${environment.apiBaseUrl}/meal-plans/manual/preview`,
+  mealPlanManualAddMeal: () => `${environment.apiBaseUrl}/meal-plans/manual/preview/meal`,
+  mealPlanManualMeal: (position: number) =>
+    `${environment.apiBaseUrl}/meal-plans/manual/preview/meal/${position}`,
   mealPlanRecreate: () => `${environment.apiBaseUrl}/meal-plans/preview/recreate`,
   mealPlanUndo: () => `${environment.apiBaseUrl}/meal-plans/preview/undo`,
   mealPlanRefreshLocale: () => `${environment.apiBaseUrl}/meal-plans/preview/refresh-locale`,

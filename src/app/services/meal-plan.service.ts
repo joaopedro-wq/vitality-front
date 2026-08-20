@@ -29,6 +29,59 @@ export class MealPlanService {
       .pipe(map((res) => res.data));
   }
 
+  manualPreview(payload: {
+    meal_count: 3 | 4 | 5;
+    meal_times: string[];
+    meals: Array<{
+      position: number;
+      descricao?: string;
+      horario: string;
+      items: Array<{ food_id: number; quantity: number }>;
+    }>;
+  }): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanManualPreview(), payload)
+      .pipe(map((res) => res.data));
+  }
+
+  manualUpdateMeal(
+    draftId: string,
+    position: number,
+    items: Array<{ food_id: number; quantity: number }>,
+  ): Observable<MealPlanDraft> {
+    return this.http
+      .put<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanManualMeal(position), {
+        draft_id: draftId,
+        items,
+      })
+      .pipe(map((res) => res.data));
+  }
+
+  manualAddMeal(
+    draftId: string,
+    meal: {
+      position: number;
+      descricao?: string;
+      horario: string;
+      items: Array<{ food_id: number; quantity: number }>;
+    },
+  ): Observable<MealPlanDraft> {
+    return this.http
+      .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanManualAddMeal(), {
+        draft_id: draftId,
+        ...meal,
+      })
+      .pipe(map((res) => res.data));
+  }
+
+  manualRemoveMeal(draftId: string, position: number): Observable<MealPlanDraft> {
+    return this.http
+      .delete<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanManualMeal(position), {
+        body: { draft_id: draftId },
+      })
+      .pipe(map((res) => res.data));
+  }
+
   regenerateMeal(draftId: string, position: number): Observable<MealPlanDraft> {
     return this.http
       .post<ApiResponse<MealPlanDraft>>(apiPaths.mealPlanMealPreview(position), {
