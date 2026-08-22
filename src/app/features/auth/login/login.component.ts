@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { LucideEye, LucideEyeOff } from '@lucide/angular';
 import {
   BdAlertComponent,
   BdButtonComponent,
@@ -13,8 +14,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 type LoginStatus = 'idle' | 'sending';
 
@@ -31,7 +32,9 @@ type LoginStatus = 'idle' | 'sending';
     BdInputComponent,
     BdButtonComponent,
     BdAlertComponent,
-    TranslocoDirective,
+    TranslocoPipe,
+    LucideEye,
+    LucideEyeOff,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -43,12 +46,14 @@ export class LoginComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly transloco = inject(TranslocoService);
+  protected readonly language = inject(LanguageService);
 
   protected readonly status = signal<LoginStatus>('idle');
   /** Erro específico do campo — distinto do toast genérico do errorInterceptor. */
   protected readonly emailError = signal<string | null>(null);
   protected readonly passwordError = signal<string | null>(null);
   protected readonly generalError = signal<string | null>(null);
+  protected readonly passwordVisible = signal(false);
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -78,6 +83,10 @@ export class LoginComponent {
     });
   }
 
+  protected togglePasswordVisibility(): void {
+    this.passwordVisible.update((visible) => !visible);
+  }
+
   private handleLoginError(err: unknown): void {
     if (!(err instanceof HttpErrorResponse)) {
       this.generalError.set(this.transloco.translate('auth.genericError'));
@@ -85,12 +94,7 @@ export class LoginComponent {
     }
 
     if (err.status === 401) {
-      this.passwordError.set(this.transloco.translate('auth.wrongPassword'));
-      return;
-    }
-
-    if (err.status === 404) {
-      this.emailError.set(this.transloco.translate('auth.accountNotFound'));
+      this.generalError.set(this.transloco.translate('auth.invalidCredentials'));
       return;
     }
 

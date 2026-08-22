@@ -331,6 +331,8 @@
     "namePlaceholder": "Como te chamam",
     "confirmPasswordPlaceholder": "Repita a senha",
     "passwordHint": "Pelo menos 6 caracteres.",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
     "login": "Entrar",
     "createAccount": "Criar conta",
     "createMyAccount": "Criar minha conta",
@@ -343,6 +345,7 @@
     "passwordMismatch": "As senhas não coincidem.",
     "wrongPassword": "Senha incorreta.",
     "accountNotFound": "Não encontramos uma conta com este e-mail.",
+    "invalidCredentials": "E-mail ou senha inválidos.",
     "genericError": "Não foi possível entrar agora. Tente novamente."
   },
   "dietPlan": {

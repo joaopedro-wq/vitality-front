@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { LucideEye, LucideEyeOff } from '@lucide/angular';
 import {
   BdAlertComponent,
   BdButtonComponent,
@@ -21,8 +22,8 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AuthPosterLayoutComponent } from '../../../components/organisms/auth-poster-layout/auth-poster-layout.component';
 import { PlateLoaderComponent } from '../../../components/atoms/plate-loader/plate-loader.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { LanguageService } from '../../../core/i18n/language.service';
 
 type RegisterStatus = 'idle' | 'sending';
 
@@ -47,7 +48,9 @@ function passwordsMatch(): ValidatorFn {
     BdInputComponent,
     BdButtonComponent,
     BdAlertComponent,
-    TranslocoDirective,
+    TranslocoPipe,
+    LucideEye,
+    LucideEyeOff,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -59,9 +62,12 @@ export class RegisterComponent {
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
   private readonly transloco = inject(TranslocoService);
+  protected readonly language = inject(LanguageService);
 
   protected readonly status = signal<RegisterStatus>('idle');
   protected readonly generalError = signal<string | null>(null);
+  protected readonly passwordVisible = signal(false);
+  protected readonly confirmationVisible = signal(false);
 
   protected readonly form = this.fb.nonNullable.group(
     {
@@ -97,5 +103,13 @@ export class RegisterComponent {
         }
       },
     });
+  }
+
+  protected togglePasswordVisibility(): void {
+    this.passwordVisible.update((visible) => !visible);
+  }
+
+  protected toggleConfirmationVisibility(): void {
+    this.confirmationVisible.update((visible) => !visible);
   }
 }

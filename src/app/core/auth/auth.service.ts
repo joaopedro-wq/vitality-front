@@ -68,7 +68,9 @@ export class AuthService {
   restoreSession(): Observable<User | null> {
     return this.http.get<ApiResponse<User>>(apiPaths.me()).pipe(
       map((res) => res.data),
-      tap((user) => this.currentUserSignal.set(user)),
+      tap((user) => {
+        this.currentUserSignal.set(user);
+      }),
       catchError(() => {
         this.forceLogout();
         return of(null);

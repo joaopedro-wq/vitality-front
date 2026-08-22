@@ -1,69 +1,84 @@
-<div *transloco="let t">
-  <vtp-auth-poster-layout [badge]="t('auth.loginBadge')">
-    <vtp-page-title
-      [titulo]="t('auth.loginTitle')"
-      [subtitulo]="t('auth.loginSubtitle')"
-      variante="autenticacao"
-    />
+<vtp-auth-poster-layout [badge]="'auth.loginBadge' | transloco" [attr.lang]="language.locale()">
+  <vtp-page-title
+    [titulo]="'auth.loginTitle' | transloco"
+    [subtitulo]="'auth.loginSubtitle' | transloco"
+    variante="autenticacao"
+  />
 
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      @if (generalError()) {
-        <bd-alert tone="danger" [title]="generalError()!" />
-      }
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (generalError()) {
+      <bd-alert tone="danger" [title]="generalError()!" />
+    }
 
-      <bd-field
-        [label]="t('auth.email')"
-        required
-        [error]="
-          emailError() ??
-          (form.controls.email.touched && form.controls.email.invalid ? t('auth.invalidEmail') : '')
-        "
-      >
+    <bd-field
+      [label]="'auth.email' | transloco"
+      required
+      [error]="
+        emailError() ??
+        (form.controls.email.touched && form.controls.email.invalid
+          ? ('auth.invalidEmail' | transloco)
+          : '')
+      "
+    >
+      <input
+        bdInput
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [placeholder]="'auth.emailPlaceholder' | transloco"
+      />
+    </bd-field>
+
+    <bd-field
+      [label]="'auth.password' | transloco"
+      required
+      [error]="
+        passwordError() ??
+        (form.controls.password.touched && form.controls.password.invalid
+          ? ('auth.requiredPassword' | transloco)
+          : '')
+      "
+    >
+      <div class="password-control">
         <input
           bdInput
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          [placeholder]="t('auth.emailPlaceholder')"
-        />
-      </bd-field>
-
-      <bd-field
-        [label]="t('auth.password')"
-        required
-        [error]="
-          passwordError() ??
-          (form.controls.password.touched && form.controls.password.invalid
-            ? t('auth.requiredPassword')
-            : '')
-        "
-      >
-        <input
-          bdInput
-          type="password"
+          [type]="passwordVisible() ? 'text' : 'password'"
           formControlName="password"
           autocomplete="current-password"
           placeholder="••••••••"
         />
-      </bd-field>
+        <button
+          class="password-toggle"
+          type="button"
+          [attr.aria-label]="(passwordVisible() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+          [attr.aria-pressed]="passwordVisible()"
+          (click)="togglePasswordVisibility()"
+        >
+          @if (passwordVisible()) {
+            <svg lucideEyeOff size="18" aria-hidden="true"></svg>
+          } @else {
+            <svg lucideEye size="18" aria-hidden="true"></svg>
+          }
+        </button>
+      </div>
+    </bd-field>
 
-      <button
-        bdButton
-        type="submit"
-        block
-        [disabled]="status() === 'sending'"
-        [attr.aria-busy]="status() === 'sending' ? true : null"
-      >
-        @if (status() === 'sending') {
-          <vtp-plate-loader tamanho="xs" cor="herdada" />
-        }
-        {{ t('auth.login') }}
-      </button>
-    </form>
+    <button
+      bdButton
+      type="submit"
+      block
+      [disabled]="status() === 'sending'"
+      [attr.aria-busy]="status() === 'sending' ? true : null"
+    >
+      @if (status() === 'sending') {
+        <vtp-plate-loader tamanho="xs" cor="herdada" />
+      }
+      {{ 'auth.login' | transloco }}
+    </button>
+  </form>
 
-    <p class="switch-line">
-      {{ t('auth.noAccount') }}
-      <a routerLink="/register">{{ t('auth.createAccount') }}</a>
-    </p>
-  </vtp-auth-poster-layout>
-</div>
+  <p class="switch-line">
+    {{ 'auth.noAccount' | transloco }}
+    <a routerLink="/register">{{ 'auth.createAccount' | transloco }}</a>
+  </p>
+</vtp-auth-poster-layout>

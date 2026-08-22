@@ -1,103 +1,135 @@
-<div *transloco="let t">
-  <vtp-auth-poster-layout>
-    <vtp-page-title
-      [titulo]="t('auth.registerTitle')"
-      subtitulo="Junte-se a quem já registrou a primeira refeição hoje."
-      variante="autenticacao"
-    />
+<vtp-auth-poster-layout [attr.lang]="language.locale()">
+  <vtp-page-title
+    [titulo]="'auth.registerTitle' | transloco"
+      [subtitulo]="'auth.registerSubtitle' | transloco"
+    variante="autenticacao"
+  />
 
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      @if (generalError()) {
-        <bd-alert tone="danger" [title]="generalError()!" />
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    @if (generalError()) {
+      <bd-alert tone="danger" [title]="generalError()!" />
+    }
+
+    <bd-field
+      [label]="'auth.name' | transloco"
+      required
+      [error]="
+        form.controls.name.touched && form.controls.name.invalid
+          ? ('auth.requiredName' | transloco)
+          : ''
+      "
+    >
+      <input
+        bdInput
+        type="text"
+        formControlName="name"
+        autocomplete="name"
+        [placeholder]="'auth.namePlaceholder' | transloco"
+      />
+    </bd-field>
+
+    <bd-field
+      [label]="'auth.email' | transloco"
+      required
+      [error]="
+        form.controls.email.touched && form.controls.email.invalid
+          ? ('auth.invalidEmail' | transloco)
+          : ''
+      "
+    >
+      <input
+        bdInput
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        [placeholder]="'auth.emailPlaceholder' | transloco"
+      />
+    </bd-field>
+
+    <bd-field
+      [label]="'auth.password' | transloco"
+      [hint]="'auth.passwordHint' | transloco"
+      required
+      [error]="
+        form.controls.password.touched && form.controls.password.invalid
+          ? ('auth.shortPassword' | transloco)
+          : ''
+      "
+    >
+        <div class="password-control">
+          <input
+            bdInput
+            [type]="passwordVisible() ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="new-password"
+            placeholder="••••••••"
+          />
+          <button
+            class="password-toggle"
+            type="button"
+            [attr.aria-label]="(passwordVisible() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+            [attr.aria-pressed]="passwordVisible()"
+            (click)="togglePasswordVisibility()"
+          >
+            @if (passwordVisible()) {
+              <svg lucideEyeOff size="18" aria-hidden="true"></svg>
+            } @else {
+              <svg lucideEye size="18" aria-hidden="true"></svg>
+            }
+          </button>
+        </div>
+    </bd-field>
+
+    <bd-field
+      [label]="'auth.confirmPassword' | transloco"
+      required
+      [error]="
+        form.controls.password_confirmation.touched &&
+        (form.controls.password_confirmation.invalid || form.errors?.['passwordsMismatch'])
+          ? ('auth.passwordMismatch' | transloco)
+          : ''
+      "
+    >
+        <div class="password-control">
+          <input
+            bdInput
+            [type]="confirmationVisible() ? 'text' : 'password'"
+            formControlName="password_confirmation"
+            autocomplete="new-password"
+            [placeholder]="'auth.confirmPasswordPlaceholder' | transloco"
+          />
+          <button
+            class="password-toggle"
+            type="button"
+            [attr.aria-label]="(confirmationVisible() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+            [attr.aria-pressed]="confirmationVisible()"
+            (click)="toggleConfirmationVisibility()"
+          >
+            @if (confirmationVisible()) {
+              <svg lucideEyeOff size="18" aria-hidden="true"></svg>
+            } @else {
+              <svg lucideEye size="18" aria-hidden="true"></svg>
+            }
+          </button>
+        </div>
+    </bd-field>
+
+    <button
+      bdButton
+      type="submit"
+      block
+      [disabled]="status() === 'sending'"
+      [attr.aria-busy]="status() === 'sending' ? true : null"
+    >
+      @if (status() === 'sending') {
+        <vtp-plate-loader tamanho="xs" cor="herdada" />
       }
+      {{ 'auth.createMyAccount' | transloco }}
+    </button>
+  </form>
 
-      <bd-field
-        [label]="t('auth.name')"
-        required
-        [error]="
-          form.controls.name.touched && form.controls.name.invalid ? t('auth.requiredName') : ''
-        "
-      >
-        <input
-          bdInput
-          type="text"
-          formControlName="name"
-          autocomplete="name"
-          [placeholder]="t('auth.namePlaceholder')"
-        />
-      </bd-field>
-
-      <bd-field
-        [label]="t('auth.email')"
-        required
-        [error]="
-          form.controls.email.touched && form.controls.email.invalid ? t('auth.invalidEmail') : ''
-        "
-      >
-        <input
-          bdInput
-          type="email"
-          formControlName="email"
-          autocomplete="email"
-          [placeholder]="t('auth.emailPlaceholder')"
-        />
-      </bd-field>
-
-      <bd-field
-        [label]="t('auth.password')"
-        [hint]="t('auth.passwordHint')"
-        required
-        [error]="
-          form.controls.password.touched && form.controls.password.invalid
-            ? t('auth.shortPassword')
-            : ''
-        "
-      >
-        <input
-          bdInput
-          type="password"
-          formControlName="password"
-          autocomplete="new-password"
-          placeholder="••••••••"
-        />
-      </bd-field>
-
-      <bd-field
-        [label]="t('auth.confirmPassword')"
-        required
-        [error]="
-          form.controls.password_confirmation.touched &&
-          (form.controls.password_confirmation.invalid || form.errors?.['passwordsMismatch'])
-            ? t('auth.passwordMismatch')
-            : ''
-        "
-      >
-        <input
-          bdInput
-          type="password"
-          formControlName="password_confirmation"
-          autocomplete="new-password"
-          [placeholder]="t('auth.confirmPasswordPlaceholder')"
-        />
-      </bd-field>
-
-      <button
-        bdButton
-        type="submit"
-        block
-        [disabled]="status() === 'sending'"
-        [attr.aria-busy]="status() === 'sending' ? true : null"
-      >
-        @if (status() === 'sending') {
-          <vtp-plate-loader tamanho="xs" cor="herdada" />
-        }
-        {{ t('auth.createMyAccount') }}
-      </button>
-    </form>
-
-    <p class="switch-line">
-      {{ t('auth.hasAccount') }}
-      <a routerLink="/login">{{ t('auth.login') }}</a>
-    </p>
-  </vtp-auth-poster-layout>
-</div>
+  <p class="switch-line">
+    {{ 'auth.hasAccount' | transloco }}
+    <a routerLink="/login">{{ 'auth.login' | transloco }}</a>
+  </p>
+</vtp-auth-poster-layout>

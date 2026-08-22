@@ -1,4 +1,4 @@
-import { Injectable, effect, inject } from '@angular/core';
+import { Injectable, Injector, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -10,24 +10,14 @@ const ACTIVITY_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'focu
 
 @Injectable({ providedIn: 'root' })
 export class SessionInactivityService {
-  private readonly auth = inject(AuthService);
+  private readonly injector = inject(Injector);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
   private warningTimer: ReturnType<typeof setTimeout> | null = null;
   private logoutTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly activity = () => this.reset();
 
-  constructor() {
-    effect(() => {
-      if (this.auth.isAuthenticated()) {
-        this.start();
-      } else {
-        this.stop();
-      }
-    });
-  }
-
-  private start(): void {
+  start(): void {
     this.stop();
     ACTIVITY_EVENTS.forEach((event) =>
       window.addEventListener(event, this.activity, { passive: true }),
@@ -35,13 +25,12 @@ export class SessionInactivityService {
     this.reset();
   }
 
-  private stop(): void {
+  stop(): void {
     ACTIVITY_EVENTS.forEach((event) => window.removeEventListener(event, this.activity));
     this.clearTimers();
   }
 
   private reset(): void {
-    if (!this.auth.isAuthenticated()) return;
     this.clearTimers();
     this.warningTimer = setTimeout(() => {
       this.toastr.info('Sua sessão será encerrada em 2 minutos por inatividade.');
@@ -50,14 +39,17 @@ export class SessionInactivityService {
   }
 
   private expire(): void {
-    this.auth.logout().subscribe({
-      complete: () => this.finish(),
-      error: () => this.finish(),
-    });
+    this.injector
+      .get(AuthService)
+      .logout()
+      .subscribe({
+        complete: () => this.finish(),
+        error: () => this.finish(),
+      });
   }
 
   private finish(): void {
-    this.auth.forceLogout();
+    this.injector.get(AuthService).forceLogout();
     this.router.navigateByUrl('/login?reason=idle');
     this.toastr.info('Sessão encerrada por inatividade.');
   }

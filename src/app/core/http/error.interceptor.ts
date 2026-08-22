@@ -21,8 +21,12 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: unknown) => {
       if (error instanceof HttpErrorResponse && !isAuthRoute) {
         if (error.status === 401 && req.url.startsWith(environment.apiBaseUrl)) {
-          authService.forceLogout();
-          router.navigate(['/login']);
+          // No bootstrap ainda não há usuário em memória. O guard decide a
+          // primeira navegação; redirecionar aqui reentra no Router.
+          if (authService.isAuthenticated()) {
+            authService.forceLogout();
+            router.navigate(['/login']);
+          }
         } else {
           const message =
             (error.error as { message?: string } | null)?.message ??

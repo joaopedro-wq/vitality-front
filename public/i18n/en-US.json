@@ -331,6 +331,8 @@
     "namePlaceholder": "What should we call you?",
     "confirmPasswordPlaceholder": "Repeat your password",
     "passwordHint": "At least 6 characters.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
     "login": "Sign in",
     "createAccount": "Create account",
     "createMyAccount": "Create my account",
@@ -343,6 +345,7 @@
     "passwordMismatch": "Passwords do not match.",
     "wrongPassword": "Incorrect password.",
     "accountNotFound": "We couldn't find an account with this email.",
+    "invalidCredentials": "Invalid email or password.",
     "genericError": "We couldn't sign you in right now. Try again."
   },
   "dietPlan": {

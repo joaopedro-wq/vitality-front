@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SessionInactivityService } from './core/auth/session-inactivity.service';
 
 @Component({
   selector: 'vtp-root',
@@ -9,6 +8,4 @@ import { SessionInactivityService } from './core/auth/session-inactivity.service
   styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  private readonly sessionInactivity = inject(SessionInactivityService);
-}
+export class App {}
