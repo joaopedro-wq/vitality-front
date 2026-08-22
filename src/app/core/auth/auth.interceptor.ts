@@ -6,18 +6,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req);
   }
 
-  const stateChanging = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method);
-  const xsrfToken = stateChanging ? readCookie('XSRF-TOKEN') : null;
+  const token = localStorage.getItem('vitality_token');
 
   return next(req.clone({
-    withCredentials: true,
-    setHeaders: xsrfToken ? { 'X-XSRF-TOKEN': xsrfToken } : {},
+    setHeaders: token ? { Authorization: `Bearer ${token}` } : {},
   }));
 };
-
-function readCookie(name: string): string | null {
-  const prefix = `${encodeURIComponent(name)}=`;
-  const value = document.cookie.split('; ').find((cookie) => cookie.startsWith(prefix));
-
-  return value ? decodeURIComponent(value.slice(prefix.length)) : null;
-}

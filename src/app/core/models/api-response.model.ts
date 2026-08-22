@@ -9,5 +9,6 @@ export interface ApiResponse<T> {
 export interface LoginResponse {
   status: boolean;
   user: User;
+  token: string;
   message: string;
 }

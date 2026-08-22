@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, catchError, finalize, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 
 import { authPaths, apiPaths } from '../http/api-paths';
 import type { ApiResponse, LoginResponse } from '../models/api-response.model';
@@ -40,18 +40,16 @@ export class AuthService {
   }
 
   login(payload: LoginPayload): Observable<LoginResponse> {
-    return this.csrfCookie().pipe(
-      switchMap(() => this.http.post<LoginResponse>(authPaths.login(), payload)),
+    return this.http.post<LoginResponse>(authPaths.login(), payload).pipe(
       tap((res) => {
+        localStorage.setItem('vitality_token', res.token);
         this.currentUserSignal.set(res.user);
       }),
     );
   }
 
   register(payload: RegisterPayload): Observable<RegisterResponse> {
-    return this.csrfCookie().pipe(
-      switchMap(() => this.http.post<RegisterResponse>(authPaths.criarUsuario(), payload)),
-    );
+    return this.http.post<RegisterResponse>(authPaths.criarUsuario(), payload);
   }
 
   logout(): Observable<unknown> {
@@ -62,6 +60,7 @@ export class AuthService {
   }
 
   forceLogout(): void {
+    localStorage.removeItem('vitality_token');
     this.currentUserSignal.set(null);
   }
 
@@ -83,7 +82,4 @@ export class AuthService {
     return this.http.post<void>(apiPaths.sessionRefresh(), {});
   }
 
-  private csrfCookie(): Observable<unknown> {
-    return this.http.get(authPaths.csrfCookie());
-  }
 }
