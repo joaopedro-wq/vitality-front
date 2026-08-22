@@ -28,12 +28,8 @@ em diante, é o hub diário de quem quer comer melhor sem perder a cabeça.
 <br>
 
 Este repositório é o **frontend** do produto: uma single-page application em Angular que consome a
-API do backend Laravel (`../vitality-Back`).
-
-Para preparar o catálogo no backend, execute `php artisan migrate --seed`; o seeder importa a TACO
-de forma idempotente. Para enriquecer o catálogo com os nutrientes detalhados da base USDA
-Foundation Foods, execute também `php artisan foods:import-usda --dataset=foundation`. A primeira conta administrativa é promovida com
-`php artisan user:make-admin email@dominio.com`.
+API Laravel no repositório irmão [`../vitality-Back`](../vitality-Back). Consulte o README do backend
+para banco, seed do catálogo, comandos administrativos e configuração do Gemini.
 
 ## O produto
 
@@ -115,9 +111,9 @@ quiser sem remontar a lista do zero, e pronto pra virar sugestão dentro do Diá
 - 🌐 **Bilíngue de verdade** — português e inglês, trocados em tempo real (sem recarregar a
   página) direto pela topbar.
 
-Áreas com ✅ já implementadas e testadas ponta a ponta contra o backend real: autenticação, quiz de
-metas/recomendação nutricional, painel/dashboard, perfil completo (dados pessoais, rotina e avatar)
-e Diário Alimentar. Dietas segue em desenvolvimento incremental.
+As áreas principais incluem autenticação, metas/recomendação nutricional, painel, perfil, diário
+alimentar e dietas. A cobertura automatizada E2E com Playwright é uma próxima etapa do projeto;
+veja [`RECOMENDACOES.md`](./RECOMENDACOES.md).
 
 ## Identidade visual
 
@@ -146,7 +142,7 @@ incluindo registrar refeição — em controles só de ícone com tooltips posic
 | Notificações      | ngx-toastr                                                                                    |
 | Linguagem         | TypeScript strict                                                                             |
 | Testes            | Jasmine / Karma                                                                               |
-| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back`                                       |
+| Backend consumido | Laravel + Sanctum stateful (sessão por cookie + CSRF), em `../vitality-Back`                  |
 | Geração de planos | IA generativa (Google Gemini), acionada pelo backend a partir das respostas do quiz de dietas |
 
 A organização de pastas do código está detalhada em [`ESTRUTURA.md`](./ESTRUTURA.md).
@@ -157,7 +153,7 @@ Pré-requisitos: Node.js compatível com Angular 20 (LTS atual) e o backend em `
 rodando em paralelo.
 
 ```bash
-npm install
+npm ci             # instalação reproduzível a partir do package-lock.json
 npm start          # http://localhost:4200
 ```
 
@@ -167,8 +163,9 @@ Em outro terminal, dentro de `../vitality-Back`:
 php artisan serve  # http://localhost:8000
 ```
 
-O `.env` do backend precisa ter `FRONTEND_URL=http://localhost:4200` (necessário pro CORS liberar
-o Angular).
+O `.env` do backend precisa definir `FRONTEND_URL=http://localhost:4200` e
+`SANCTUM_STATEFUL_DOMAINS=localhost:4200`. O navegador recebe o cookie CSRF em
+`/sanctum/csrf-cookie`; portanto, mantenha front e API nas URLs configuradas no backend.
 
 ### Scripts disponíveis
 
@@ -177,6 +174,20 @@ o Angular).
 | `npm start`     | Sobe o dev server (`ng serve`) em `http://localhost:4200`, com reload automático. |
 | `npm run build` | Build de produção, otimizado, em `dist/`.                                         |
 | `npm test`      | Roda a suíte de testes (Jasmine/Karma).                                           |
+
+> O build é obrigatório na CI. A suíte E2E com Playwright ainda será adicionada; não há script
+> `test:e2e` disponível neste momento.
+
+## Autenticação e sessão
+
+O frontend usa **Sanctum stateful**, não Bearer token persistido no navegador. Antes de login ou
+cadastro, ele solicita o cookie CSRF; as chamadas para a API seguem com `withCredentials`; a sessão
+é restaurada consultando `GET /api/user`. O logout chama `POST /api/logout` e encerra a sessão no
+servidor.
+
+Não armazene token de acesso em `localStorage` ou adicione manualmente o cabeçalho `Authorization`.
+Para produção, configure no backend os atributos de cookie, CORS, domínios stateful e CSP conforme
+o ambiente de deploy.
 
 ## Internacionalização
 
@@ -187,9 +198,9 @@ do documento.
 
 As traduções ficam centralizadas em [`public/i18n/pt-BR.json`](./public/i18n/pt-BR.json) e
 [`public/i18n/en-US.json`](./public/i18n/en-US.json), organizadas por áreas e componentes. Os textos
-da interface usam Transloco, incluindo títulos, subtítulos, botões, filtros, mensagens de loading,
-etapas de perfil/metas e ações do diário. Ao adicionar uma nova string visível, inclua a chave nos
-dois arquivos de idioma e use a chave no template ou componente em vez de texto fixo.
+da interface usam Transloco e mudam sem recarregar a página, incluindo as telas de login e cadastro.
+Ao adicionar uma nova string visível, inclua a chave nos dois arquivos de idioma e use a chave no
+template ou componente em vez de texto fixo.
 
 O inventário de cobertura e os pontos revisados está em [`docs/i18n-audit.md`](./docs/i18n-audit.md).
 
