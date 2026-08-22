@@ -1,12 +1,21 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { LucideArrowDown, LucideArrowRight, LucideArrowUp, LucideDynamicIcon, type LucideIcon } from '@lucide/angular';
+import {
+  LucideArrowDown,
+  LucideArrowRight,
+  LucideArrowUp,
+  LucideDynamicIcon,
+  type LucideIcon,
+} from '@lucide/angular';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../../../../core/auth/auth.service';
 import type { NivelAtividade, Objetivo } from '../../../../../core/models/user.model';
-import { calcularSugestaoRecomendacao, type SugestaoRecomendacao } from '../../../../../components/utils/recomendacao-calc.util';
+import {
+  calcularSugestaoRecomendacao,
+  type SugestaoRecomendacao,
+} from '../../../../../components/utils/recomendacao-calc.util';
 import { UserService } from '../../../../../services/user.service';
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 
@@ -75,7 +84,10 @@ export class AtividadeStepComponent {
   readonly concluido = output<SugestaoRecomendacao>();
 
   protected readonly salvando = signal(false);
-  protected readonly ativididadeOptions = Object.entries(ATIVIDADE_LABEL) as [NivelAtividade, string][];
+  protected readonly ativididadeOptions = Object.entries(ATIVIDADE_LABEL) as [
+    NivelAtividade,
+    string,
+  ][];
   protected readonly objetivoOptions = Object.entries(OBJETIVO_LABEL) as [Objetivo, string][];
   protected readonly intensidade = ATIVIDADE_INTENSIDADE;
   protected readonly descricaoAtividade = ATIVIDADE_DESCRICAO;
@@ -107,14 +119,16 @@ export class AtividadeStepComponent {
 
     this.salvando.set(true);
     this.userService
-      .updateProfile(user.id, { name: user.name, email: user.email, nivel_atividade, objetivo })
+      .updateProfile({ name: user.name, email: user.email, nivel_atividade, objetivo })
       .pipe(finalize(() => this.salvando.set(false)))
       .subscribe({
         next: (userAtualizado) => {
           this.authService.setCurrentUser(userAtualizado);
           const sugestao = calcularSugestaoRecomendacao(userAtualizado);
           if (!sugestao) {
-            this.toastr.error('Faltou algum dado pra calcular sua sugestão. Revise o passo anterior.');
+            this.toastr.error(
+              'Faltou algum dado pra calcular sua sugestão. Revise o passo anterior.',
+            );
             return;
           }
           this.concluido.emit(sugestao);

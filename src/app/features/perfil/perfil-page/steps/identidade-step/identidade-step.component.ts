@@ -141,7 +141,7 @@ export class IdentidadeStepComponent implements OnDestroy {
     const avatar = this.avatarSelecionado();
     this.salvando.set(true);
     this.userService
-      .updateProfile(user.id, payload)
+      .updateProfile(payload)
       .pipe(
         switchMap((atualizado) => (avatar ? this.userService.uploadAvatar(avatar) : [atualizado])),
         finalize(() => this.salvando.set(false)),

@@ -97,7 +97,7 @@ export class PerfilStepComponent {
 
     this.salvando.set(true);
     this.userService
-      .updateProfile(user.id, {
+      .updateProfile({
         name: user.name,
         email: user.email,
         peso,

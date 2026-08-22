@@ -6,16 +6,17 @@ export const authPaths = {
   register: () => `${environment.apiUrl}/register`,
   forgotPassword: () => `${environment.apiUrl}/forgot-password`,
   resetPassword: () => `${environment.apiUrl}/reset-password`,
-  /** Best-effort — rota de sessão do Breeze, não confiável com Bearer token. */
-  logout: () => `${environment.apiUrl}/logout`,
+  csrfCookie: () => `${environment.apiUrl}/sanctum/csrf-cookie`,
+  logout: () => `${environment.apiBaseUrl}/logout`,
 };
 
 export const apiPaths = {
-  me: () => `${environment.apiBaseUrl}/user/get-with-token`,
+  me: () => `${environment.apiBaseUrl}/user`,
+  sessionRefresh: () => `${environment.apiBaseUrl}/session/refresh`,
 
   dashboardSummary: () => `${environment.apiBaseUrl}/dashboard/summary`,
   users: () => `${environment.apiBaseUrl}/users`,
-  user: (id: number | string) => `${environment.apiBaseUrl}/user/${id}`,
+  user: () => `${environment.apiBaseUrl}/user`,
   userAvatar: () => `${environment.apiBaseUrl}/user/avatar`,
 
   alimentos: () => `${environment.apiBaseUrl}/foods`,

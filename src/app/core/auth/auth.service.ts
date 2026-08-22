@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
+import { Observable, catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 
 import { authPaths, apiPaths } from '../http/api-paths';
 import type { ApiResponse, LoginResponse } from '../models/api-response.model';
 import type { User } from '../models/user.model';
-import { TokenStorage } from './token.storage';
 
 export interface LoginPayload {
   email: string;
@@ -19,7 +18,6 @@ export interface RegisterPayload {
   password_confirmation: string;
 }
 
-
 export interface RegisterResponse {
   message: string;
   data: User;
@@ -29,8 +27,6 @@ export interface RegisterResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly tokenStorage = inject(TokenStorage);
-
   private readonly currentUserSignal = signal<User | null>(null);
   private readonly bootstrappedSignal = signal(false);
 
@@ -43,22 +39,21 @@ export class AuthService {
     this.currentUserSignal.set(user);
   }
 
-  
   login(payload: LoginPayload): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(authPaths.login(), payload).pipe(
+    return this.csrfCookie().pipe(
+      switchMap(() => this.http.post<LoginResponse>(authPaths.login(), payload)),
       tap((res) => {
-        this.tokenStorage.set(res.token);
         this.currentUserSignal.set(res.user);
       }),
     );
   }
 
- 
   register(payload: RegisterPayload): Observable<RegisterResponse> {
-    return this.http.post<RegisterResponse>(authPaths.criarUsuario(), payload);
+    return this.csrfCookie().pipe(
+      switchMap(() => this.http.post<RegisterResponse>(authPaths.criarUsuario(), payload)),
+    );
   }
 
- 
   logout(): Observable<unknown> {
     return this.http.post(authPaths.logout(), {}).pipe(
       catchError(() => of(null)),
@@ -66,19 +61,11 @@ export class AuthService {
     );
   }
 
- 
   forceLogout(): void {
-    this.tokenStorage.clear();
     this.currentUserSignal.set(null);
   }
 
- 
   restoreSession(): Observable<User | null> {
-    if (!this.tokenStorage.get()) {
-      this.bootstrappedSignal.set(true);
-      return of(null);
-    }
-
     return this.http.get<ApiResponse<User>>(apiPaths.me()).pipe(
       map((res) => res.data),
       tap((user) => this.currentUserSignal.set(user)),
@@ -88,5 +75,13 @@ export class AuthService {
       }),
       finalize(() => this.bootstrappedSignal.set(true)),
     );
+  }
+
+  refreshSession(): Observable<void> {
+    return this.http.post<void>(apiPaths.sessionRefresh(), {});
+  }
+
+  private csrfCookie(): Observable<unknown> {
+    return this.http.get(authPaths.csrfCookie());
   }
 }

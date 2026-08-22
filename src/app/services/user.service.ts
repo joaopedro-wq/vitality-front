@@ -7,14 +7,13 @@ import type { ApiResponse } from '../core/models/api-response.model';
 import type { UpdateUserPayload, User } from '../core/models/user.model';
 import { environment } from '../../environments/environment';
 
-
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly http = inject(HttpClient);
 
-  updateProfile(id: number, payload: UpdateUserPayload): Observable<User> {
+  updateProfile(payload: UpdateUserPayload): Observable<User> {
     return this.http
-      .put<ApiResponse<User>>(apiPaths.user(id), payload)
+      .put<ApiResponse<User>>(apiPaths.user(), payload)
       .pipe(map((res) => this.normalizeUser(res.data)));
   }
 

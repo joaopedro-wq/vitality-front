@@ -58,7 +58,7 @@ export class CorpoStepComponent {
     const payload: UpdateUserPayload = { name: user.name, email: user.email, ...valores };
     this.salvando.set(true);
     this.userService
-      .updateProfile(user.id, payload)
+      .updateProfile(payload)
       .pipe(
         finalize(() => this.salvando.set(false)),
         catchError(() => {
