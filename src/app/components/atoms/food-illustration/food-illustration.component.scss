@@ -3,480 +3,342 @@
   width: 100%;
   height: 100%;
 }
+
 .illustration {
   display: block;
   width: 100%;
   height: 100%;
   background-repeat: no-repeat;
-}
-.illustration--rice,
-.illustration--fruit {
-  background-image: url('/images/diary-food-illustrations-transparent-v1.png');
   background-size: 300% 200%;
-}
-.illustration--rice {
-  background-position: 50% 0;
-}
-.illustration--fruit {
-  background-position: 100% 0;
-}
-.illustration--banana,
-.illustration--bread,
-.illustration--beef,
-.illustration--fish,
-.illustration--egg,
-.illustration--milk {
-  background-image: url('/images/diary-food-core-illustrations-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--banana {
-  background-position: 0 0;
-}
-.illustration--bread {
-  background-position: 50% 0;
-}
-.illustration--beef {
-  background-position: 100% 0;
-}
-.illustration--fish {
-  background-position: 0 100%;
-}
-.illustration--egg {
-  background-position: 50% 100%;
-}
-.illustration--milk {
-  background-position: 100% 100%;
-}
-.illustration--beans,
-.illustration--pasta,
-.illustration--root,
-.illustration--leafy,
-.illustration--vegetable,
-.illustration--meal {
-  background-image: url('/images/diary-food-staples-illustrations-v1-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--beans {
-  background-position: 0 0;
-}
-.illustration--pasta {
-  background-position: 50% 0;
-}
-.illustration--root {
-  background-position: 100% 0;
-}
-.illustration--leafy {
-  background-position: 0 100%;
-}
-.illustration--vegetable {
-  background-position: 50% 100%;
-}
-.illustration--meal {
-  background-position: 100% 100%;
-}
-.illustration--pork,
-.illustration--seafood,
-.illustration--oil,
-.illustration--sweet,
-.illustration--drink,
-.illustration--chicken {
-  background-image: url('/images/diary-food-variety-illustrations-v1-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--pork {
-  background-position: 0 0;
-}
-.illustration--seafood {
-  background-position: 50% 0;
-}
-.illustration--oil {
-  background-position: 100% 0;
-}
-.illustration--sweet {
-  background-position: 0 100%;
-}
-.illustration--drink {
-  background-position: 50% 100%;
-}
-.illustration--chicken {
-  background-position: 100% 100%;
-}
-.illustration--fruit-avocado,
-.illustration--fruit-pineapple,
-.illustration--fruit-abiu,
-.illustration--fruit-acai,
-.illustration--fruit-acerola,
-.illustration--fruit-plum {
-  background-image: url('/images/fruit-cartoon-01-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-avocado {
-  background-position: 0 0;
-}
-.illustration--fruit-pineapple {
-  background-position: 50% 0;
-}
-.illustration--fruit-abiu {
-  background-position: 100% 0;
-}
-.illustration--fruit-acai {
-  background-position: 0 100%;
-}
-.illustration--fruit-acerola {
-  background-position: 50% 100%;
-}
-.illustration--fruit-plum {
-  background-position: 100% 100%;
-}
-.illustration--fruit-atemoya,
-.illustration--fruit-cacao,
-.illustration--fruit-caja-manga,
-.illustration--fruit-caja,
-.illustration--fruit-cashew,
-.illustration--fruit-persimmon {
-  background-image: url('/images/fruit-cartoon-02-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-atemoya {
-  background-position: 0 0;
-}
-.illustration--fruit-cacao {
-  background-position: 50% 0;
-}
-.illustration--fruit-caja-manga {
-  background-position: 100% 0;
-}
-.illustration--fruit-caja {
-  background-position: 0 100%;
-}
-.illustration--fruit-cashew {
-  background-position: 50% 100%;
-}
-.illustration--fruit-persimmon {
-  background-position: 100% 100%;
-}
-.illustration--fruit-starfruit,
-.illustration--fruit-ciriguela,
-.illustration--fruit-cupuacu,
-.illustration--fruit-fig,
-.illustration--fruit-breadfruit,
-.illustration--fruit-guava {
-  background-image: url('/images/fruit-cartoon-03-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-starfruit {
-  background-position: 0 0;
-}
-.illustration--fruit-ciriguela {
-  background-position: 50% 0;
-}
-.illustration--fruit-cupuacu {
-  background-position: 100% 0;
-}
-.illustration--fruit-fig {
-  background-position: 0 100%;
-}
-.illustration--fruit-breadfruit {
-  background-position: 50% 100%;
-}
-.illustration--fruit-guava {
-  background-position: 100% 100%;
-}
-.illustration--fruit-soursop,
-.illustration--fruit-jabuticaba,
-.illustration--fruit-jackfruit,
-.illustration--fruit-jambo,
-.illustration--fruit-jamelao,
-.illustration--fruit-kiwi {
-  background-image: url('/images/fruit-cartoon-04-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-soursop {
-  background-position: 0 0;
-}
-.illustration--fruit-jabuticaba {
-  background-position: 50% 0;
-}
-.illustration--fruit-jackfruit {
-  background-position: 100% 0;
-}
-.illustration--fruit-jambo {
-  background-position: 0 100%;
-}
-.illustration--fruit-jamelao {
-  background-position: 50% 100%;
-}
-.illustration--fruit-kiwi {
-  background-position: 100% 100%;
-}
-.illustration--fruit-orange,
-.illustration--fruit-lemon,
-.illustration--fruit-apple,
-.illustration--fruit-macauba,
-.illustration--fruit-papaya,
-.illustration--fruit-mango {
-  background-image: url('/images/fruit-cartoon-05-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-orange {
-  background-position: 0 0;
-}
-.illustration--fruit-lemon {
-  background-position: 50% 0;
-}
-.illustration--fruit-apple {
-  background-position: 100% 0;
-}
-.illustration--fruit-macauba {
-  background-position: 0 100%;
-}
-.illustration--fruit-papaya {
-  background-position: 50% 100%;
-}
-.illustration--fruit-mango {
-  background-position: 100% 100%;
-}
-.illustration--fruit-passionfruit,
-.illustration--fruit-watermelon,
-.illustration--fruit-melon,
-.illustration--fruit-mexerica,
-.illustration--fruit-strawberry,
-.illustration--fruit-loquat {
-  background-image: url('/images/fruit-cartoon-06-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-passionfruit {
-  background-position: 0 0;
-}
-.illustration--fruit-watermelon {
-  background-position: 50% 0;
-}
-.illustration--fruit-melon {
-  background-position: 100% 0;
-}
-.illustration--fruit-mexerica {
-  background-position: 0 100%;
-}
-.illustration--fruit-strawberry {
-  background-position: 50% 100%;
-}
-.illustration--fruit-loquat {
-  background-position: 100% 100%;
-}
-.illustration--fruit-pequi,
-.illustration--fruit-pear,
-.illustration--fruit-peach,
-.illustration--fruit-sugar-apple,
-.illustration--fruit-pitanga,
-.illustration--fruit-pomegranate {
-  background-image: url('/images/fruit-cartoon-07-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-pequi {
-  background-position: 0 0;
-}
-.illustration--fruit-pear {
-  background-position: 50% 0;
-}
-.illustration--fruit-peach {
-  background-position: 100% 0;
-}
-.illustration--fruit-sugar-apple {
-  background-position: 0 100%;
-}
-.illustration--fruit-pitanga {
-  background-position: 50% 100%;
-}
-.illustration--fruit-pomegranate {
-  background-position: 100% 100%;
-}
-.illustration--fruit-tamarind,
-.illustration--fruit-tangerine,
-.illustration--fruit-tucuma,
-.illustration--fruit-umbu,
-.illustration--fruit-grape,
-.illustration--banana {
-  background-image: url('/images/fruit-cartoon-08-transparent-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fruit-tamarind {
-  background-position: 0 0;
-}
-.illustration--fruit-tangerine {
-  background-position: 50% 0;
-}
-.illustration--fruit-tucuma {
-  background-position: 100% 0;
-}
-.illustration--fruit-umbu {
-  background-position: 0 100%;
-}
-.illustration--fruit-grape {
-  background-position: 50% 100%;
-}
-.illustration--banana {
-  background-position: 100% 100%;
-}
-.illustration--vegetable-carrot,
-.illustration--vegetable-tomato,
-.illustration--vegetable-broccoli,
-.illustration--vegetable-cucumber,
-.illustration--vegetable-pumpkin,
-.illustration--vegetable-beetroot {
-  background-image: url('/images/food-vegetables-cartoon-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--vegetable-carrot {
-  background-position: 0 0;
-}
-.illustration--vegetable-tomato {
-  background-position: 50% 0;
-}
-.illustration--vegetable-broccoli {
-  background-position: 100% 0;
-}
-.illustration--vegetable-cucumber {
-  background-position: 0 100%;
-}
-.illustration--vegetable-pumpkin {
-  background-position: 50% 100%;
-}
-.illustration--vegetable-beetroot {
-  background-position: 100% 100%;
-}
-.illustration--staple-rice,
-.illustration--staple-bread,
-.illustration--staple-pasta,
-.illustration--staple-potato,
-.illustration--staple-cassava,
-.illustration--staple-oats {
-  background-image: url('/images/food-staples-cartoon-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--staple-rice {
-  background-position: 0 0;
-}
-.illustration--staple-bread {
-  background-position: 50% 0;
-}
-.illustration--staple-pasta {
-  background-position: 100% 0;
-}
-.illustration--staple-potato {
-  background-position: 0 100%;
-}
-.illustration--staple-cassava {
-  background-position: 50% 100%;
-}
-.illustration--staple-oats {
-  background-position: 100% 100%;
-}
-.illustration--drink-water,
-.illustration--drink-coffee,
-.illustration--drink-tea,
-.illustration--drink-juice,
-.illustration--drink-soda,
-.illustration--drink-wine {
-  background-image: url('/images/food-drinks-cartoon-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--drink-water {
-  background-position: 0 0;
-}
-.illustration--drink-coffee {
-  background-position: 50% 0;
-}
-.illustration--drink-tea {
-  background-position: 100% 0;
-}
-.illustration--drink-juice {
-  background-position: 0 100%;
-}
-.illustration--drink-soda {
-  background-position: 50% 100%;
-}
-.illustration--drink-wine {
-  background-position: 100% 100%;
-}
-.illustration--fat-olive-oil,
-.illustration--fat-oil,
-.illustration--fat-butter,
-.illustration--fat-margarine,
-.illustration--fat-coconut,
-.illustration--fat-peanut-butter {
-  background-image: url('/images/food-fats-cartoon-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--fat-olive-oil {
-  background-position: 0 0;
-}
-.illustration--fat-oil {
-  background-position: 50% 0;
-}
-.illustration--fat-butter {
-  background-position: 100% 0;
-}
-.illustration--fat-margarine {
-  background-position: 0 100%;
-}
-.illustration--fat-coconut {
-  background-position: 50% 100%;
-}
-.illustration--fat-peanut-butter {
-  background-position: 100% 100%;
-}
-.illustration--legume-beans,
-.illustration--legume-lentils,
-.illustration--legume-chickpeas,
-.illustration--legume-peas,
-.illustration--legume-soy,
-.illustration--legume-peanuts {
-  background-image: url('/images/food-legumes-cartoon-v1.png');
-  background-size: 300% 200%;
-}
-.illustration--legume-beans {
-  background-position: 0 0;
-}
-.illustration--legume-lentils {
-  background-position: 50% 0;
-}
-.illustration--legume-chickpeas {
-  background-position: 100% 0;
-}
-.illustration--legume-peas {
-  background-position: 0 100%;
-}
-.illustration--legume-soy {
-  background-position: 50% 100%;
-}
-.illustration--legume-peanuts {
-  background-position: 100% 100%;
+  background-position: var(--illustration-x) var(--illustration-y);
 }
 
-.illustration--dairy-milk,
-.illustration--dairy-yogurt,
-.illustration--dairy-cheese,
-.illustration--dairy-requeijao,
-.illustration--dairy-ricotta,
-.illustration--dairy-cream {
+:is(.illustration--rice, .illustration--fruit) {
+  background-image: url('/images/diary-food-illustrations-transparent-v1.png');
+}
+
+:is(
+  .illustration--banana,
+  .illustration--bread,
+  .illustration--beef,
+  .illustration--fish,
+  .illustration--egg,
+  .illustration--milk
+) {
+  background-image: url('/images/diary-food-core-illustrations-transparent-v1.png');
+}
+
+:is(
+  .illustration--beans,
+  .illustration--pasta,
+  .illustration--root,
+  .illustration--leafy,
+  .illustration--vegetable,
+  .illustration--meal
+) {
+  background-image: url('/images/diary-food-staples-illustrations-v1-transparent-v1.png');
+}
+
+:is(
+  .illustration--pork,
+  .illustration--seafood,
+  .illustration--oil,
+  .illustration--sweet,
+  .illustration--drink,
+  .illustration--chicken
+) {
+  background-image: url('/images/diary-food-variety-illustrations-v1-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-avocado,
+  .illustration--fruit-pineapple,
+  .illustration--fruit-abiu,
+  .illustration--fruit-acai,
+  .illustration--fruit-acerola,
+  .illustration--fruit-plum
+) {
+  background-image: url('/images/fruit-cartoon-01-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-atemoya,
+  .illustration--fruit-cacao,
+  .illustration--fruit-caja-manga,
+  .illustration--fruit-caja,
+  .illustration--fruit-cashew,
+  .illustration--fruit-persimmon
+) {
+  background-image: url('/images/fruit-cartoon-02-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-starfruit,
+  .illustration--fruit-ciriguela,
+  .illustration--fruit-cupuacu,
+  .illustration--fruit-fig,
+  .illustration--fruit-breadfruit,
+  .illustration--fruit-guava
+) {
+  background-image: url('/images/fruit-cartoon-03-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-soursop,
+  .illustration--fruit-jabuticaba,
+  .illustration--fruit-jackfruit,
+  .illustration--fruit-jambo,
+  .illustration--fruit-jamelao,
+  .illustration--fruit-kiwi
+) {
+  background-image: url('/images/fruit-cartoon-04-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-orange,
+  .illustration--fruit-lemon,
+  .illustration--fruit-apple,
+  .illustration--fruit-macauba,
+  .illustration--fruit-papaya,
+  .illustration--fruit-mango
+) {
+  background-image: url('/images/fruit-cartoon-05-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-passionfruit,
+  .illustration--fruit-watermelon,
+  .illustration--fruit-melon,
+  .illustration--fruit-mexerica,
+  .illustration--fruit-strawberry,
+  .illustration--fruit-loquat
+) {
+  background-image: url('/images/fruit-cartoon-06-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-pequi,
+  .illustration--fruit-pear,
+  .illustration--fruit-peach,
+  .illustration--fruit-sugar-apple,
+  .illustration--fruit-pitanga,
+  .illustration--fruit-pomegranate
+) {
+  background-image: url('/images/fruit-cartoon-07-transparent-v1.png');
+}
+
+:is(
+  .illustration--fruit-tamarind,
+  .illustration--fruit-tangerine,
+  .illustration--fruit-tucuma,
+  .illustration--fruit-umbu,
+  .illustration--fruit-grape,
+  .illustration--banana
+) {
+  background-image: url('/images/fruit-cartoon-08-transparent-v1.png');
+}
+
+:is(
+  .illustration--vegetable-carrot,
+  .illustration--vegetable-tomato,
+  .illustration--vegetable-broccoli,
+  .illustration--vegetable-cucumber,
+  .illustration--vegetable-pumpkin,
+  .illustration--vegetable-beetroot
+) {
+  background-image: url('/images/food-vegetables-cartoon-v1.png');
+}
+
+:is(
+  .illustration--staple-rice,
+  .illustration--staple-bread,
+  .illustration--staple-pasta,
+  .illustration--staple-potato,
+  .illustration--staple-cassava,
+  .illustration--staple-oats
+) {
+  background-image: url('/images/food-staples-cartoon-v1.png');
+}
+
+:is(
+  .illustration--drink-water,
+  .illustration--drink-coffee,
+  .illustration--drink-tea,
+  .illustration--drink-juice,
+  .illustration--drink-soda,
+  .illustration--drink-wine
+) {
+  background-image: url('/images/food-drinks-cartoon-v1.png');
+}
+
+:is(
+  .illustration--fat-olive-oil,
+  .illustration--fat-oil,
+  .illustration--fat-butter,
+  .illustration--fat-margarine,
+  .illustration--fat-coconut,
+  .illustration--fat-peanut-butter
+) {
+  background-image: url('/images/food-fats-cartoon-v1.png');
+}
+
+:is(
+  .illustration--legume-beans,
+  .illustration--legume-lentils,
+  .illustration--legume-chickpeas,
+  .illustration--legume-peas,
+  .illustration--legume-soy,
+  .illustration--legume-peanuts
+) {
+  background-image: url('/images/food-legumes-cartoon-v1.png');
+}
+
+:is(
+  .illustration--dairy-milk,
+  .illustration--dairy-yogurt,
+  .illustration--dairy-cheese,
+  .illustration--dairy-requeijao,
+  .illustration--dairy-ricotta,
+  .illustration--dairy-cream
+) {
   background-image: url('/images/food-dairy-cartoon-v1.png');
-  background-size: 300% 200%;
 }
-.illustration--dairy-milk {
-  background-position: 0 0;
+
+:is(
+  .illustration--beans,
+  .illustration--pork,
+  .illustration--fruit-avocado,
+  .illustration--fruit-atemoya,
+  .illustration--fruit-starfruit,
+  .illustration--fruit-soursop,
+  .illustration--fruit-orange,
+  .illustration--fruit-passionfruit,
+  .illustration--fruit-pequi,
+  .illustration--fruit-tamarind,
+  .illustration--vegetable-carrot,
+  .illustration--staple-rice,
+  .illustration--drink-water,
+  .illustration--fat-olive-oil,
+  .illustration--legume-beans,
+  .illustration--dairy-milk
+) {
+  --illustration-x: 0;
+  --illustration-y: 0;
 }
-.illustration--dairy-yogurt {
-  background-position: 50% 0;
+
+:is(
+  .illustration--rice,
+  .illustration--bread,
+  .illustration--pasta,
+  .illustration--seafood,
+  .illustration--fruit-pineapple,
+  .illustration--fruit-cacao,
+  .illustration--fruit-ciriguela,
+  .illustration--fruit-jabuticaba,
+  .illustration--fruit-lemon,
+  .illustration--fruit-watermelon,
+  .illustration--fruit-pear,
+  .illustration--fruit-tangerine,
+  .illustration--vegetable-tomato,
+  .illustration--staple-bread,
+  .illustration--drink-coffee,
+  .illustration--fat-oil,
+  .illustration--legume-lentils,
+  .illustration--dairy-yogurt
+) {
+  --illustration-x: 50%;
+  --illustration-y: 0;
 }
-.illustration--dairy-cheese {
-  background-position: 100% 0;
+
+:is(
+  .illustration--fruit,
+  .illustration--beef,
+  .illustration--root,
+  .illustration--oil,
+  .illustration--fruit-abiu,
+  .illustration--fruit-caja-manga,
+  .illustration--fruit-cupuacu,
+  .illustration--fruit-jackfruit,
+  .illustration--fruit-apple,
+  .illustration--fruit-melon,
+  .illustration--fruit-peach,
+  .illustration--fruit-tucuma,
+  .illustration--vegetable-broccoli,
+  .illustration--staple-pasta,
+  .illustration--drink-tea,
+  .illustration--fat-butter,
+  .illustration--legume-chickpeas,
+  .illustration--dairy-cheese
+) {
+  --illustration-x: 100%;
+  --illustration-y: 0;
 }
-.illustration--dairy-requeijao {
-  background-position: 0 100%;
+
+:is(
+  .illustration--fish,
+  .illustration--leafy,
+  .illustration--sweet,
+  .illustration--fruit-acai,
+  .illustration--fruit-caja,
+  .illustration--fruit-fig,
+  .illustration--fruit-jambo,
+  .illustration--fruit-macauba,
+  .illustration--fruit-mexerica,
+  .illustration--fruit-sugar-apple,
+  .illustration--fruit-umbu,
+  .illustration--vegetable-cucumber,
+  .illustration--staple-potato,
+  .illustration--drink-juice,
+  .illustration--fat-margarine,
+  .illustration--legume-peas,
+  .illustration--dairy-requeijao
+) {
+  --illustration-x: 0;
+  --illustration-y: 100%;
 }
-.illustration--dairy-ricotta {
-  background-position: 50% 100%;
+
+:is(
+  .illustration--egg,
+  .illustration--vegetable,
+  .illustration--drink,
+  .illustration--fruit-acerola,
+  .illustration--fruit-cashew,
+  .illustration--fruit-breadfruit,
+  .illustration--fruit-jamelao,
+  .illustration--fruit-papaya,
+  .illustration--fruit-strawberry,
+  .illustration--fruit-pitanga,
+  .illustration--fruit-grape,
+  .illustration--vegetable-pumpkin,
+  .illustration--staple-cassava,
+  .illustration--drink-soda,
+  .illustration--fat-coconut,
+  .illustration--legume-soy,
+  .illustration--dairy-ricotta
+) {
+  --illustration-x: 50%;
+  --illustration-y: 100%;
 }
-.illustration--dairy-cream {
-  background-position: 100% 100%;
+
+:is(
+  .illustration--milk,
+  .illustration--meal,
+  .illustration--chicken,
+  .illustration--fruit-plum,
+  .illustration--fruit-persimmon,
+  .illustration--fruit-guava,
+  .illustration--fruit-kiwi,
+  .illustration--fruit-mango,
+  .illustration--fruit-loquat,
+  .illustration--fruit-pomegranate,
+  .illustration--banana,
+  .illustration--vegetable-beetroot,
+  .illustration--staple-oats,
+  .illustration--drink-wine,
+  .illustration--fat-peanut-butter,
+  .illustration--legume-peanuts,
+  .illustration--dairy-cream
+) {
+  --illustration-x: 100%;
+  --illustration-y: 100%;
 }

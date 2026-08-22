@@ -1,153 +1,158 @@
 # Recomendações — Vitality PLUS
 
-Levantamento feito em 2026-08-19 analisando `vitality-front` (Angular 20) e `vitality-Back`
-(Laravel) juntos. Lista de problemas encontrados e ações sugeridas para próximas implementações,
-priorizadas por risco. Ao resolver um item, mover para "Resolvidos" com a data e o commit/PR,
-seguindo o mesmo espírito de registro vivo do `CLAUDE.md`.
+Revisão realizada em 2026-08-22 nos repositórios `vitality-front` (Angular 20) e
+`vitality-Back` (Laravel). Itens ordenados por risco e impacto. Este arquivo deve
+ser tratado como registro vivo: ao concluir um item, movê-lo para **Resolvidos**
+com data e referência do commit/PR.
 
-## Prioridade alta — segurança
+## Prioridade crítica — segurança e controle de acesso
 
-### 1. Ausência de Policy para recursos sensíveis (IDOR real)
+### 1. Corrigir IDOR em usuários, dietas, metas e recomendações nutricionais
 
-**Problema:** o backend só tem 2 Policies no projeto inteiro (`DiaryEntryPolicy`, `MealPolicy`).
-Recursos como `Dieta`, `MealPlan`, `MetaDiaria` e `NutricaoRecomendada` não têm checagem de dono —
-qualquer usuário autenticado pode, em teoria, ler/editar/apagar recurso de outro usuário só
-sabendo o ID (`GET /dieta/{id}`, `PUT /meal-plans/{mealPlan}`, `PUT /meta/{id}`, etc). Isso já
-estava anotado como inconsistência conhecida no `CLAUDE.md` para `AlimentoController`/
-`DietaController`/`RefeicaoController`, mas o levantamento confirma que a lacuna é mais ampla que
-o documentado.
-
-**Ação sugerida:**
-
-- Criar `DietaPolicy`, `MealPlanPolicy`, `MetaDiariaPolicy`, `NutricaoRecomendadaPolicy` seguindo o
-  padrão já existente (`DiaryEntryPolicy`).
-- Registrar cada Policy e aplicar `$this->authorize(...)` (ou `Gate::authorize`) em `show`,
-  `update`, `destroy` de cada controller correspondente.
-- Escrever teste de regressão por recurso: usuário B não pode ler/editar/apagar recurso do
-  usuário A (403 esperado).
-
-### 2. `EnsureEmailIsVerified` parece código morto (ou verificação sendo pulada)
-
-**Problema:** o middleware existe em `app/Http/Middleware/EnsureEmailIsVerified.php` mas não
-aparece registrado em nenhum grupo de rota de `routes/api.php`. Duas hipóteses, nenhuma boa sem
-decisão explícita: (a) é código morto que devia ser removido, ou (b) verificação de e-mail está
-sendo pulada silenciosamente em produção.
-
-**Ação sugerida:** decidir se verificação de e-mail é requisito de produto. Se for, registrar o
-middleware no grupo certo de rotas e cobrir com teste. Se não for, remover o arquivo para não
-confundir leitura futura do código.
-
-## Prioridade média — limpeza de contrato de API
-
-### 3. Rotas duplicadas/ambíguas em `routes/api.php`
-
-**Problema:**
-
-- `PUT /atualizar-user/{id}` e `PUT /user/{id}` apontam para o mesmo
-  `UserController::update` — dois caminhos para a mesma ação, aparentemente um legado nunca
-  removido depois que o segundo foi introduzido.
-- `DELETE /registro/{entry}` está declarada duas vezes no arquivo — a segunda ocorrência é morta
-  (o Laravel casa a primeira rota que bate), só polui leitura.
+**Evidência:** as rotas autenticadas `GET /users`, `GET /user/{id}` e
+`PUT /user/{id}` permitem consultar/alterar usuários sem verificar que o recurso
+pertence ao solicitante. O mesmo padrão existe em `DietaController`,
+`MetaDiariaController` e `NutricaoRecomendadaController`: usam `find($id)` em
+`show`, `update` e `destroy`, sem escopo por `id_usuario` nem Policy. Um token
+válido pode ler ou alterar dados de outro usuário ao trocar o ID na URL.
 
 **Ação sugerida:**
 
-- Confirmar no frontend (`api-paths.ts`) qual caminho de update de usuário está realmente em uso
-  (`atualizar-user` ou `user/{id}`) e remover o outro do backend.
-- Remover a segunda declaração de `DELETE /registro/{entry}`.
-- Ao mexer nisso, testar ponta a ponta contra o backend real (padrão já estabelecido no projeto
-  para mudança de contrato de API).
+- Remover `GET /users`, `POST /user` e `GET /user/{id}` da API comum, ou protegê-los
+  por middleware/policy de administrador; o app deve usar apenas o usuário da sessão.
+- Criar Policies (ou consultas sempre escopadas pelo usuário autenticado) para
+  `Dieta`, `Meta_diaria` e `NutricaoRecomendada`; aplicar em leitura, edição e exclusão.
+- Eliminar a rota duplicada `PUT /atualizar-user/{id}` e fazer atualização de perfil
+  operar sobre `request()->user()`.
+- Criar testes de autorização: usuário B recebe 404/403 ao tentar ver, editar ou
+  excluir recursos do usuário A.
 
-### 4. Confirmar identificador do modelo Gemini
+### 2. Implementar logout real e revogação de token Sanctum
 
-**Problema:** `.env.example` define `GEMINI_MODEL=gemini-3.6-flash`. Vale confirmar se esse
-identificador de modelo é válido e atual — um nome errado no exemplo pode levar a uma configuração
-quebrada em ambiente novo, e é justamente o serviço mais complexo do sistema
-(`GeminiMealPlanService`, 856 linhas, geração de plano alimentar) que depende inteiramente dele.
+**Evidência:** o front chama `POST {apiUrl}/logout` (rota web do Breeze, baseada em
+sessão), enquanto a autenticação usada pelo app é Bearer/Sanctum em
+`POST /api/login`. Não há `POST /api/logout` autenticado. Assim, o logout local
+remove o token do navegador, mas não o invalida no servidor; um token copiado ou
+comprometido continua utilizável.
 
-**Ação sugerida:** validar o model id contra a documentação/API atual do Gemini e atualizar o
-`.env.example` se estiver desatualizado. Documentar no `CLAUDE.md` do backend qual é a fonte de
-verdade para esse valor (evitar drift silencioso de novo).
+**Ação sugerida:** criar `POST /api/logout` sob `auth:sanctum` que revogue somente
+o token atual (`$request->user()->currentAccessToken()->delete()`), apontar
+`authPaths.logout()` para ele e testar login → logout → acesso protegido (401).
+Definir também expiração/rotação de tokens em produção.
 
-## Prioridade média — cobertura de teste
+### 3. Proteger login e cadastro contra abuso e enumeração de contas
 
-### 5. Cobertura de teste baixa nos dois lados
+**Evidência:** `AuthController::login` retorna 404 para e-mail inexistente e 401
+para senha incorreta, revelando quais e-mails possuem conta. A rota `/api/login`
+não tem validação de formato nem rate limiting; o limite existente no request do
+Breeze não é usado por essa rota. `storeUser` aceita senha sem tamanho mínimo.
 
-**Problema:**
+**Ação sugerida:** responder sempre com 401 e uma mensagem genérica para credenciais
+inválidas; validar `email` e `password`; aplicar `throttle` ao login e ao cadastro;
+exigir senha forte (por exemplo, `Password::min(12)->mixedCase()->numbers()`).
+Adicionar testes para bloqueio temporário e para resposta indistinguível.
 
-- Frontend: só 4 arquivos `.spec.ts` para ~50+ componentes/features. Praticamente todo o app
-  depende de teste manual ponta a ponta contra o backend real.
-- Backend: 13 arquivos de teste para 15 controllers + 11 services + a lógica de IA de geração de
-  plano alimentar — o componente de maior risco (`GeminiMealPlanService`) provavelmente tem pouco
-  ou nenhum teste automatizado dado o volume de código.
+### 4. Reduzir exposição do token no navegador
 
-**Ação sugerida (nesta ordem, maior risco primeiro):**
+**Evidência:** `TokenStorage` persiste o Bearer token em `localStorage`. Qualquer
+XSS bem-sucedido consegue exfiltrá-lo; a página não declara uma Content Security
+Policy visível no `index.html`.
 
-1. Teste de contrato para `GeminiMealPlanService` — mockar a resposta da IA e validar
-   parsing/regras de negócio (composição de macros, restrições alimentares) sem depender da API
-   real do Gemini em CI.
-2. Smoke test por feature crítica do frontend: login, diário (registro de lançamento), dietas
-   (criar/editar/arquivar). Não precisa ser cobertura completa — só o suficiente para pegar
-   regressão de fluxo principal.
-3. Teste de regressão de autorização citado no item 1 (IDOR).
+**Ação sugerida:** preferir cookie `HttpOnly`, `Secure`, `SameSite` com fluxo Sanctum
+stateful e proteção CSRF. Se a migração não puder ser imediata, estabelecer CSP
+restritiva no servidor, revisar dependências/renderizações e manter tokens de curta
+duração com revogação funcional (item 2).
 
-## Prioridade baixa — débito técnico conhecido
+## Prioridade alta — qualidade de entrega e confiabilidade
 
-### 6. Compatibilidade legada acumulando sem critério de saída
+### 6. Tornar a suíte de testes do back-end executável de forma isolada
 
-**Problema:** `/registro` e `/refeicao` continuam como adaptadores para o contrato novo
-(`/diary/*`), já documentado como temporário no `CLAUDE.md`, mas sem data ou critério definido
-para remoção.
+**Evidência:** `php artisan test` executado em 2026-08-22 resultou em 38 falhas e
+2 sucessos. Trinta e seis testes de feature nem chegaram a rodar: `tests/TestCase.php`
+interrompe quando encontra `bootstrap/cache/config.php`. A suíte depende de estado
+local de cache e não é reproduzível. Permanecem ainda duas falhas reais no teste
+unitário `FoodPlanClassificationServiceTest`, cujas expectativas não acompanham
+as tags retornadas pelo classificador.
 
-**Ação sugerida:** definir critério explícito de descontinuação (ex.: nenhum client interno
-usando a rota legada + N semanas de aviso) e registrar no `CLAUDE.md` do backend, para não virar
-débito permanente por falta de gatilho de remoção.
+**Ação sugerida:** criar um comando de CI/teste que garanta ambiente isolado
+(`APP_ENV=testing`, banco de testes e caches limpos) sem exigir intervenção manual;
+não versionar cache de configuração. Em seguida, decidir e alinhar contrato versus
+expectativas do classificador, restaurando a suíte verde antes de novas features.
 
-### 7. Dependência de lib própria não publicada (`bandeira-ui`)
+### 7. Cobrir fluxos críticos com testes de contrato e autorização
 
-**Problema:** `bandeira-ui` é instalada via tarball local (`vendor/bandeira-ui-*.tgz`), sem
-publicação no npm, sem changelog público, sem CI de compatibilidade próprio. Risco de manutenção
-de longo prazo — qualquer mudança precisa ser gerada e versionada manualmente.
+**Evidência:** o front possui somente quatro arquivos `*.spec.ts`; há ampla lógica
+de formulário, autenticação, diário e geração de planos sem cobertura automatizada.
+No back-end, a geração por IA concentra regras de negócio e integrações externas.
 
-**Ação sugerida:** sem urgência de ação corretiva agora, mas vale manter registrado como decisão
-consciente (já é — ver `CLAUDE.md`, seção Stack) e revisitar se o projeto crescer a ponto de
-justificar publicar a lib num registry privado.
+**Ação sugerida (ordem):**
 
----
+1. Testes de autorização do item 1 e de logout do item 2.
+2. Testes de API para login, diário e criação/edição/arquivamento de plano.
+3. Testes de contrato para `GeminiMealPlanService`, simulando respostas da IA e
+   validando macros, alimentos incluídos/excluídos e expiração de rascunho.
+4. Smoke tests do front para login, lançamento no diário e plano manual.
 
-## Prioridade baixa — débito técnico encontrado implementando o Painel (Fase 6, 2026-08-19)
+## Prioridade média — contrato, arquitetura e operação
 
-### 8. `npm run build` e `npm test` já falham no `master`, sem relação com o Painel
+### 8. Consolidar contratos de autenticação e rotas legadas
 
-**Problema:** confirmado via `git stash -u` (voltando pro `master` limpo) antes de implementar o
-Painel — os dois já falhavam independente do meu trabalho:
+**Evidência:** coexistem o fluxo web do Breeze (`/login`, `/logout`, `/register`)
+e o fluxo API próprio (`/api/login`, `/api/criar-usuario`). O front contém paths
+para ambos, embora use apenas parte deles. Também seguem expostos os adaptadores
+legados `/registro` e `/refeicao`, paralelos a `/diary/*`.
 
-- `npm run build`: `src/app/components/atoms/food-illustration/food-illustration.component.scss`
-  excede o budget de 10KB por só 273 bytes — configurado como `error`, não `warning`, então
-  derruba o build de produção inteiro.
-- `npm test`: `src/app/components/utils/meal-nutrition.util.spec.ts` tem um objeto de teste
-  faltando `detalhe_exibicao`/`descricao_original` do tipo `Alimento` — erro de compilação
-  TypeScript, impede a suíte inteira de rodar (não é só aquele spec que falha).
+**Ação sugerida:** definir Sanctum API ou sessão/cookie como estratégia única;
+remover endpoints e paths não utilizados; documentar proprietário, consumidores e
+data/critério de remoção das rotas legadas. Cobrir mudanças de contrato em testes
+de integração front-back.
 
-**Ação sugerida:** aparar 273 bytes do SCSS do `food-illustration` (ou subir o budget específico
-desse componente em `angular.json`) e completar o objeto de teste em `meal-nutrition.util.spec.ts`
-com os dois campos que faltam. Nenhum dos dois exige decisão de produto — é só dívida acumulada
-que ninguém notou por rodar sempre em modo dev (`npm start`), que não aplica esses budgets.
+### 9. Decidir explicitamente sobre verificação de e-mail
 
-### 9. Backend: 4 testes falhando no `master`, também sem relação com o Painel
+**Evidência:** `EnsureEmailIsVerified` é registrado como alias `verified`, mas
+nenhuma rota de `api.php` o usa. Há rotas web de verificação do Breeze, porém o
+fluxo API de cadastro não evidencia envio ou exigência de verificação.
 
-**Problema:** confirmado da mesma forma (`git stash`, suíte já falhava antes) —
-`AuthenticationTest` (login via scaffold Breeze `/login`, rota que este front não usa —
-`POST /api/login` é a de verdade), `UserAvatarTest` (espera 422 de validação e recebe 302,
-sugere redirect de sessão em vez de erro JSON) e `FoodPlanClassificationServiceTest` (heurística
-de classificação de "banana" não bate mais com o esperado).
+**Ação sugerida:** se e-mail verificado for requisito, implementar o fluxo no
+cadastro API e aplicar o middleware às rotas adequadas; se não for, remover o
+middleware/rotas não utilizados para evitar falsa sensação de proteção.
 
-**Ação sugerida:** decidir se `AuthenticationTest`/rotas do scaffold Breeze ainda fazem sentido no
-repo (ver inconsistência já documentada no `CLAUDE.md`: `/logout` real é sessão Breeze, não usada
-por este front) — se não, remover o teste em vez de deixá-lo vermelho pra sempre. Os outros dois
-(`UserAvatarTest`, `FoodPlanClassificationServiceTest`) parecem regressão real de comportamento;
-valem investigação isolada, fora do escopo do Painel.
+### 10. Validar configuração de produção e serviço Gemini
+
+**Evidência:** o `environment.ts` de produção aponta para
+`https://api.vitalityplus.example.com`, que parece placeholder, e `.env.example`
+do backend declara `GEMINI_MODEL=gemini-3.6-flash`. Ambos precisam de validação
+antes de um deploy novo.
+
+**Ação sugerida:** separar configuração real por pipeline/secret manager, validar
+URL de API, CORS e domínios Sanctum em staging; confirmar o identificador Gemini
+contra a API/documentação em uso e executar um smoke test sem expor a chave.
+
+## Prioridade baixa — manutenção
+
+### 11. Formalizar manutenção de `bandeira-ui`
+
+**Evidência:** a dependência é instalada de um tarball local
+(`vendor/bandeira-ui-0.2.0.tgz`), sem versão publicada/CI de compatibilidade
+visível.
+
+**Ação sugerida:** manter changelog e versionamento do artefato; se a reutilização
+crescer, publicar em registry privado e adicionar teste de compatibilidade com o
+Angular suportado.
+
+### 12. Corrigir a configuração PHP que tenta carregar `pdo_firebird`
+
+**Evidência:** todo `php artisan test` emite aviso de que a extensão dinâmica
+`pdo_firebird` não foi encontrada. Não bloqueou a execução nesta revisão, mas polui
+logs, pode ocultar avisos importantes e torna o ambiente menos reproduzível.
+
+**Ação sugerida:** remover a extensão do `php.ini` usado pelo projeto se Firebird
+não for dependência, ou instalar a DLL compatível e documentar o requisito.
 
 ## Resolvidos
 
-_(vazio até o momento — mover itens para cá conforme forem endereçados, com data e referência do
-commit/PR)_
+- 2026-08-22 — o objeto de teste de `meal-nutrition.util.spec.ts` já contém os
+  campos de apresentação que anteriormente causavam erro de tipagem.
+- 2026-08-22 — build de produção desbloqueado: o CSS de `food-illustration` foi
+  reduzido sem alterar sprites ou classes, mantendo o budget de 10 kB; o workflow
+  GitHub Actions passou a executar `npm ci && npm run build` em pushes e pull requests.
