@@ -9,6 +9,31 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="alternate icon" href="favicon.ico" />
 
+    <meta name="google" content="notranslate" />
+    <meta name="google-translate-customization" content="disabled" />
+    <meta http-equiv="Content-Language" content="pt-BR" />
+
+    <meta name="description" content="Acompanhe metas, diário alimentar e dietas em um só lugar." />
+
+    <meta property="og:title" content="Vitality PLUS — Nutrição e metas diárias" />
+    <meta
+      property="og:description"
+      content="Acompanhe metas, diário alimentar e dietas em um só lugar."
+    />
+    <meta property="og:image" content="/images/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vitality PLUS — Nutrição e metas diárias" />
+    <meta
+      name="twitter:description"
+      content="Acompanhe metas, diário alimentar e dietas em um só lugar."
+    />
+    <meta name="twitter:image" content="/images/og-image.png" />
+
     <!-- Evita flash de tema/paleta errados antes do Angular iniciar -->
     <script>
       (function () {
@@ -28,19 +53,6 @@
       })();
     </script>
 
-    <!--
-    Splash de boot. Cobre a janela entre o parse do HTML e o bootstrap do
-    Angular (que inclui o `restoreSession()` do provideAppInitializer). Some
-    sozinho: o Angular faz `textContent = ''` no elemento host ao criar o
-    componente raiz — por isso o CSS mora aqui no <head>, e não dentro do host.
-
-    É uma cópia do desenho de `components/atoms/plate-loader/` — a fonte de
-    verdade é aquele componente; este trecho existe só porque precisa rodar
-    antes de qualquer JS de aplicação. Se mexer em um, mexa nos dois.
-
-    ATENÇÃO: se um dia a aplicação ligar SSR/hydration, `PRESERVE_HOST_CONTENT`
-    passa a ser true e este splash NÃO será removido.
-  -->
     <style>
       .vtp-splash {
         position: fixed;
