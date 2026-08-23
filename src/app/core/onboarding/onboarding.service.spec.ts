@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ToastrService } from 'ngx-toastr';
 import { BdTourService } from 'bandeira-ui';
@@ -30,6 +31,7 @@ const user = (status: User['onboarding_status'], id = 7): User => ({
 describe('OnboardingService', () => {
   let service: OnboardingService;
   let http: HttpTestingController;
+  let tourTarget: HTMLElement;
   const currentUser = signal<User | null>(null);
   const auth = {
     currentUser: currentUser.asReadonly(),
@@ -42,6 +44,7 @@ describe('OnboardingService', () => {
     outcome: tourOutcome.asReadonly(),
     start: jasmine.createSpy('start').and.callFake(() => tourActive.set(true)),
   };
+  const router = { navigateByUrl: jasmine.createSpy('navigateByUrl').and.resolveTo(true) };
 
   beforeEach(() => {
     currentUser.set(null);
@@ -49,6 +52,7 @@ describe('OnboardingService', () => {
     tourActive.set(false);
     tourOutcome.set(null);
     tour.start.calls.reset();
+    router.navigateByUrl.calls.reset();
     TestBed.configureTestingModule({
       providers: [
         OnboardingService,
@@ -56,15 +60,22 @@ describe('OnboardingService', () => {
         provideHttpClientTesting(),
         { provide: AuthService, useValue: auth },
         { provide: BdTourService, useValue: tour },
+        { provide: Router, useValue: router },
         { provide: ToastrService, useValue: { error: jasmine.createSpy('error') } },
         { provide: TranslocoService, useValue: { translate: () => 'Erro' } },
       ],
     });
     service = TestBed.inject(OnboardingService);
     http = TestBed.inject(HttpTestingController);
+    tourTarget = document.createElement('div');
+    tourTarget.dataset['tour'] = 'onboarding-dashboard';
+    document.body.append(tourTarget);
   });
 
-  afterEach(() => http.verify());
+  afterEach(() => {
+    tourTarget.remove();
+    http.verify();
+  });
 
   it('inicia automaticamente apenas para usuário com onboarding pendente', fakeAsync(() => {
     service.evaluateUser(user('completed'));
@@ -81,23 +92,23 @@ describe('OnboardingService', () => {
     tick();
     tourActive.set(false);
     tourOutcome.set({ completed: false, step: 0 });
-    TestBed.tick();
+    tick();
 
     http.expectNone(apiPaths.userOnboarding());
   }));
 
-  it('persiste a conclusão e atualiza a sessão em memória', fakeAsync(() => {
+  it('persiste o pulo e atualiza a sessão em memória', fakeAsync(() => {
     service.evaluateUser(user('pending'));
     tick();
     tourActive.set(false);
-    tourOutcome.set({ completed: true, step: 2 });
-    TestBed.tick();
+    tourOutcome.set({ completed: false, step: 0 });
+    tick();
 
     const request = http.expectOne(apiPaths.userOnboarding());
     expect(request.request.method).toBe('PUT');
-    expect(request.request.body).toEqual({ status: 'completed' });
-    request.flush({ data: user('completed'), success: true });
+    expect(request.request.body).toEqual({ status: 'skipped' });
+    request.flush({ data: user('skipped'), success: true });
 
-    expect(auth.setCurrentUser).toHaveBeenCalledWith(user('completed'));
+    expect(auth.setCurrentUser).toHaveBeenCalledWith(user('skipped'));
   }));
 });

@@ -16,7 +16,7 @@
       subtitulo="Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo."
       centralizado
     />
-    <button bdButton (click)="openGenerator()">
+    <button bdButton data-tour="onboarding-plans-action" (click)="openGenerator()">
       {{ 'dietPlan.actions.defineGoals' | transloco }}
     </button>
   </section>
@@ -29,7 +29,7 @@
         titulo="Uma rotina que cabe no seu dia"
         subtitulo="Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar."
       />
-      <button bdButton size="sm" (click)="openGenerator()">
+      <button bdButton size="sm" data-tour="onboarding-plans-action" (click)="openGenerator()">
         <svg lucidePlus size="16" aria-hidden="true"></svg>
         {{ 'dietPlan.actions.generateNew' | transloco }}
       </button>
@@ -42,7 +42,7 @@
         <p class="m-0 mt-2 text-fg-muted">
           Conte como é a sua rotina e a gente monta o primeiro dia.
         </p>
-        <button class="mt-5" bdButton (click)="openGenerator()">
+        <button class="mt-5" bdButton data-tour="onboarding-plans-action" (click)="openGenerator()">
           {{ 'dietPlan.actions.buildFirst' | transloco }}
         </button>
       </div>

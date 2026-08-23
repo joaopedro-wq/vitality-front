@@ -18,7 +18,7 @@
 
         @if (perfilFicha(); as perfil) {
           @if (calculoFicha(); as calculo) {
-            <div class="card py-9 px-8">
+            <div class="card py-9 px-8" data-tour="onboarding-goals-action">
               <vtp-meta-ficha
                 [perfil]="perfil"
                 [calculo]="calculo"
@@ -35,7 +35,10 @@
     @case ('quiz') {
       <vtp-back-button class="page-shell-wide" />
       <div class="page-shell-wide">
-        <div class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start">
+        <div
+          class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start"
+          data-tour="onboarding-goals-action"
+        >
           <div class="hidden md:block">
             <vtp-step-track
               [steps]="passos"

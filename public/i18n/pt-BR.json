@@ -598,24 +598,40 @@
   },
   "onboarding": {
     "title": "Conheça a Vitality",
-    "step": "Etapa {{current}} de 3",
+    "step": "Etapa {{current}} de {{total}}",
     "skip": "Pular por agora",
     "back": "Voltar",
     "next": "Avançar",
     "finish": "Começar a usar",
     "restart": "Ver onboarding novamente",
     "saveError": "Não foi possível salvar sua escolha agora. Tente novamente.",
+    "dashboard": {
+      "title": "Seu resumo diário",
+      "description": "O Painel reúne seu progresso, próximas refeições e atalhos para as ações mais importantes."
+    },
     "diary": {
-      "title": "Registre seu dia no Diário",
-      "description": "Adicione refeições, acompanhe alimentos consumidos e veja sua rotina alimentar de um jeito simples."
+      "title": "Abra o Diário",
+      "description": "Use este menu para registrar refeições e acompanhar como seu dia está evoluindo."
+    },
+    "diaryAction": {
+      "title": "Registre uma refeição",
+      "description": "Escolha uma fase do dia e adicione alimentos. Você pode ajustar quantidades antes de salvar."
     },
     "goals": {
-      "title": "Acompanhe suas metas",
-      "description": "Defina seu objetivo e acompanhe calorias e macronutrientes ao longo do dia."
+      "title": "Abra suas Metas",
+      "description": "Aqui você define o objetivo que orienta calorias e macronutrientes do seu dia."
+    },
+    "goalsAction": {
+      "title": "Configure ou revise a meta",
+      "description": "Complete as etapas do perfil e da rotina para receber uma sugestão nutricional personalizada."
     },
     "plans": {
-      "title": "Monte seu plano alimentar",
-      "description": "Crie planos que se encaixem na sua rotina e use sugestões para registrar refeições com mais agilidade."
+      "title": "Abra o Plano alimentar",
+      "description": "Este menu reúne seus planos e permite montar uma rotina alimentar para os próximos dias."
+    },
+    "plansAction": {
+      "title": "Crie um plano alimentar",
+      "description": "Comece um plano novo a partir das suas metas e escolha o formato que combina com sua rotina."
     }
   }
 }

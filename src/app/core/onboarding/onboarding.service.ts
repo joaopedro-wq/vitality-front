@@ -1,14 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, effect, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
+import { BdTourService } from 'bandeira-ui';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
-import { BdTourService, type BdTourStep } from 'bandeira-ui';
 
 import { AuthService } from '../auth/auth.service';
 import { apiPaths } from '../http/api-paths';
 import type { ApiResponse } from '../models/api-response.model';
 import type { OnboardingStatus, User } from '../models/user.model';
+
+interface OnboardingStage {
+  route: string;
+  target: () => string;
+  title: string;
+  content: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class OnboardingService {
@@ -17,11 +25,13 @@ export class OnboardingService {
   private readonly toastr = inject(ToastrService);
   private readonly transloco = inject(TranslocoService);
   private readonly tour = inject(BdTourService);
+  private readonly router = inject(Router);
   private automaticUserId: number | null = null;
   private readonly awaitingOutcome = signal(false);
+  private readonly stage = signal(0);
+  private readonly manualRun = signal(false);
 
   readonly saving = signal(false);
-  private readonly manualRun = signal(false);
 
   constructor() {
     effect(() => {
@@ -29,8 +39,18 @@ export class OnboardingService {
       if (!this.awaitingOutcome() || this.tour.active() || !outcome) return;
 
       this.awaitingOutcome.set(false);
-      if (this.manualRun()) return;
-      this.persist(outcome.completed ? 'completed' : 'skipped');
+      if (!outcome.completed) {
+        if (!this.manualRun()) this.persist('skipped');
+        return;
+      }
+
+      if (this.stage() < this.stages().length - 1) {
+        this.stage.update((current) => current + 1);
+        this.startCurrentStage();
+        return;
+      }
+
+      if (!this.manualRun()) this.persist('completed');
     });
   }
 
@@ -42,9 +62,7 @@ export class OnboardingService {
     if (this.automaticUserId === user.id) return;
 
     this.automaticUserId = user.id;
-    if (user.onboarding_status === 'pending') {
-      this.start(false);
-    }
+    if (user.onboarding_status === 'pending') this.start(false);
   }
 
   restart(): void {
@@ -55,42 +73,90 @@ export class OnboardingService {
     if (this.tour.active() || this.awaitingOutcome()) return;
 
     this.manualRun.set(manual);
-    this.awaitingOutcome.set(true);
-    window.setTimeout(() => {
-      this.tour.start(this.steps(), {
-        next: this.transloco.translate('onboarding.next'),
-        prev: this.transloco.translate('onboarding.back'),
-        finish: this.transloco.translate('onboarding.finish'),
-        skip: this.transloco.translate('onboarding.skip'),
-        counter: (current, total) =>
-          this.transloco.translate('onboarding.step', { current, total }),
-      });
+    this.stage.set(0);
+    this.startCurrentStage();
+  }
+
+  private startCurrentStage(): void {
+    const stage = this.stages()[this.stage()];
+    if (!stage) return;
+
+    this.router.navigateByUrl(stage.route).then(() => {
+      this.openStageWhenReady(stage);
     });
   }
 
-  private steps(): BdTourStep[] {
+  private openStageWhenReady(stage: OnboardingStage, attempts = 0): void {
+    const target = stage.target();
+    if (!document.querySelector(target) && attempts < 30) {
+      window.setTimeout(() => this.openStageWhenReady(stage, attempts + 1), 100);
+      return;
+    }
+
+    this.awaitingOutcome.set(true);
+    this.tour.start([{ target, title: stage.title, content: stage.content, placement: 'auto' }], {
+      next: this.transloco.translate('onboarding.next'),
+      prev: this.transloco.translate('onboarding.back'),
+      finish:
+        this.stage() === this.stages().length - 1
+          ? this.transloco.translate('onboarding.finish')
+          : this.transloco.translate('onboarding.next'),
+      skip: this.transloco.translate('onboarding.skip'),
+      counter: () =>
+        this.transloco.translate('onboarding.step', {
+          current: this.stage() + 1,
+          total: this.stages().length,
+        }),
+    });
+  }
+
+  private stages(): OnboardingStage[] {
     const suffix = window.matchMedia('(max-width: 900px)').matches ? 'mobile' : 'desktop';
-    const target = (item: 'diary' | 'goals' | 'plans') =>
+    const navigationTarget = (item: 'diary' | 'goals' | 'plans') =>
       `[data-tour="onboarding-${item}-${suffix}"]`;
 
     return [
       {
-        target: target('diary'),
+        route: '/dashboard',
+        target: () => '[data-tour="onboarding-dashboard"]',
+        title: this.transloco.translate('onboarding.dashboard.title'),
+        content: this.transloco.translate('onboarding.dashboard.description'),
+      },
+      {
+        route: '/diario',
+        target: () => navigationTarget('diary'),
         title: this.transloco.translate('onboarding.diary.title'),
         content: this.transloco.translate('onboarding.diary.description'),
-        placement: 'auto',
       },
       {
-        target: target('goals'),
+        route: '/diario',
+        target: () => '[data-tour="onboarding-diary-action"]',
+        title: this.transloco.translate('onboarding.diaryAction.title'),
+        content: this.transloco.translate('onboarding.diaryAction.description'),
+      },
+      {
+        route: '/metas',
+        target: () => navigationTarget('goals'),
         title: this.transloco.translate('onboarding.goals.title'),
         content: this.transloco.translate('onboarding.goals.description'),
-        placement: 'auto',
       },
       {
-        target: target('plans'),
+        route: '/metas',
+        target: () => '[data-tour="onboarding-goals-action"]',
+        title: this.transloco.translate('onboarding.goalsAction.title'),
+        content: this.transloco.translate('onboarding.goalsAction.description'),
+      },
+      {
+        route: '/dietas',
+        target: () => navigationTarget('plans'),
         title: this.transloco.translate('onboarding.plans.title'),
         content: this.transloco.translate('onboarding.plans.description'),
-        placement: 'auto',
+      },
+      {
+        route: '/dietas',
+        target: () => '[data-tour="onboarding-plans-action"]',
+        title: this.transloco.translate('onboarding.plansAction.title'),
+        content: this.transloco.translate('onboarding.plansAction.description'),
       },
     ];
   }
@@ -103,9 +169,7 @@ export class OnboardingService {
       .put<ApiResponse<User>>(apiPaths.userOnboarding(), { status })
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
-        next: (response) => {
-          this.auth.setCurrentUser(response.data);
-        },
+        next: (response) => this.auth.setCurrentUser(response.data),
         error: () => this.toastr.error(this.transloco.translate('onboarding.saveError')),
       });
   }
