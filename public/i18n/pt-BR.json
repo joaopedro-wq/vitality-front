@@ -633,5 +633,113 @@
       "title": "Crie um plano alimentar",
       "description": "Comece um plano novo a partir das suas metas e escolha o formato que combina com sua rotina."
     }
+  },
+  "landing": {
+    "nav": {
+      "howItWorks": "Como funciona",
+      "faq": "Perguntas",
+      "login": "Entrar",
+      "signup": "Criar conta grátis"
+    },
+    "hero": {
+      "title": "Chega de adivinhar sua meta calórica.",
+      "lede": "Meta calórica sem planilha, sem fórmula que ninguém entende. Um quiz guiado calcula, passo a passo, a meta ideal de calorias e macros pra você, a partir do seu perfil e da sua rotina.",
+      "ctaPrimary": "Criar conta grátis",
+      "ctaSecondary": "Ver como funciona",
+      "note": "Leva menos de 3 minutos, é gratuito e você começa agora mesmo.",
+      "shotAlt": "Painel do Vitality PLUS: anel de calorias, próxima refeição e trilha do dia"
+    },
+    "showcase": {
+      "eyebrow": "O produto, ao vivo",
+      "title": "Não é protótipo. É a tela que te espera no primeiro login.",
+      "lede": "Sem versão maquiada só pra vender. O que você vê abaixo é exatamente o Painel que abre assim que você entra.",
+      "shotAlt": "Painel completo do Vitality PLUS",
+      "callout1Title": "Anel de calorias consumidas",
+      "callout1Body": "Conta de verdade até o valor final, não aparece pronto.",
+      "callout2Title": "Próxima refeição sugerida",
+      "callout2Body": "Horário no centro de um segundo anel, com os alimentos em chips.",
+      "callout3Title": "Missões que se completam sozinhas",
+      "callout3Body": "Nível e XP avançam com o uso real do diário, sem ação extra."
+    },
+    "problem": {
+      "eyebrow": "O problema real",
+      "title": "Calcular meta calórica por conta própria é planilha, fórmula e achismo.",
+      "body": "A maioria dos apps de nutrição pede pra você já chegar sabendo sua meta, ou te entrega um número genérico sem explicar de onde veio. O Vitality PLUS faz a conta por você e mostra cada etapa até o resultado, sem nada escondido."
+    },
+    "howItWorks": {
+      "eyebrow": "Como funciona, de verdade",
+      "title": "Quatro passos simples até o app ser seu de verdade.",
+      "lede": "Sem tela de \"em breve\". Cada print abaixo é o produto de verdade, hoje.",
+      "step1Title": "Responda um quiz de 4 passos",
+      "step1Body": "Perfil, rotina e objetivo: a fórmula de Mifflin-St Jeor calcula sua meta de calorias e macros.",
+      "step1Alt": "Quiz de metas",
+      "step2Title": "Busque em 600+ alimentos reais",
+      "step2Body": "Catálogo TACO + USDA Foundation Foods, com busca facetada e favoritos.",
+      "step2Alt": "Biblioteca de alimentos",
+      "step3Title": "Registre seu dia em segundos",
+      "step3Body": "Cada refeição é um checkpoint rápido: momento, prato, porção.",
+      "step3Alt": "Diário alimentar",
+      "step4Title": "Deixe a IA montar seu cardápio",
+      "step4Body": "Um quiz curto e o Gemini gera o plano do zero, dentro da sua meta.",
+      "step4Alt": "Plano alimentar gerado por IA"
+    },
+    "aiDiet": {
+      "eyebrow": "Cardápio sob medida",
+      "title": "Da resposta ao prato pronto, sem enrolação.",
+      "lede": "Um quiz curto (quantas refeições por dia, o que evitar) e o Gemini monta o cardápio do zero, dentro da sua meta. Nada de lista fixa nem sorteio entre alimentos prontos.",
+      "generating": "Gerando",
+      "ready": "Pronto",
+      "generatingAlt": "Vitality PLUS montando um plano alimentar com IA",
+      "readyAlt": "Plano alimentar gerado pela IA no Vitality PLUS",
+      "quote": "Plano alimentar brasileiro de 4 refeições diárias, equilibrado entre arroz, feijão, proteínas magras e vegetais frescos, respeitando sua meta calórica diária.",
+      "quoteCite": "escrito pela própria IA a partir da sua meta, não um texto fixo de exemplo"
+    },
+    "trust": {
+      "eyebrow": "Por que confiar no número",
+      "title": "Sem caixa-preta. Você vê exatamente de onde vem cada cálculo.",
+      "body": "Não existe usuário nem avaliação pra mostrar aqui ainda porque o produto é novo. O que dá pra mostrar é o método, aberto, e o produto funcionando de verdade nos prints acima.",
+      "flowTmb": "TMB",
+      "flowTmbSub": "Taxa Metabólica Basal",
+      "flowGet": "GET",
+      "flowGetSub": "× fator de atividade",
+      "flowMeta": "Meta",
+      "flowMetaSub": "calorias e macros",
+      "item1Title": "Fórmula nomeada, não secreta",
+      "item1Body": "Taxa Metabólica Basal por Mifflin-St Jeor, multiplicada pelo seu fator de atividade.",
+      "item2Title": "Dados de fontes citáveis",
+      "item2Body": "Tabela TACO (base brasileira) mais USDA Foundation Foods: não é uma lista inventada.",
+      "item3Title": "Gratuito, sem pegadinha",
+      "item3Body": "Sem cartão de crédito no cadastro, sem período de teste que vira cobrança sozinho."
+    },
+    "quickFacts": {
+      "fact1Title": "Anel de macro",
+      "fact1Body": "proteína, carbo e gordura num relance",
+      "fact2Title": "Nível e missões",
+      "fact2Body": "XP que sobe sozinho com o uso do diário",
+      "fact3Title": "PT/EN em tempo real",
+      "fact3Body": "troca de idioma sem recarregar a página",
+      "fact4Title": "alimentos",
+      "fact4Body": "TACO nacional mais USDA Foundation Foods"
+    },
+    "faq": {
+      "eyebrow": "Perguntas frequentes",
+      "title": "Antes de criar conta, as dúvidas mais diretas.",
+      "q1": "Isso é gratuito de verdade, ou vira cobrança depois?",
+      "a1": "É gratuito. Não existe plano pago hoje, então não há upgrade forçado nem cartão pedido no cadastro.",
+      "q2": "Preciso entender de nutrição pra usar?",
+      "a2": "Não. O quiz de metas calcula por você: é só responder perfil, rotina e objetivo.",
+      "q3": "A dieta é genérica ou pensada pra mim?",
+      "a3": "Gerada por IA (Google Gemini) a partir das suas respostas e da sua meta calculada. Não é uma lista fixa nem sorteio entre alimentos prontos, e dá pra regenerar refeição por refeição.",
+      "q4": "Funciona em inglês também?",
+      "a4": "Sim: português e inglês, trocados em tempo real pela barra superior, sem recarregar a página.",
+      "q5": "De onde vêm os dados nutricionais dos alimentos?",
+      "a5": "Tabela TACO (referência brasileira) como base, complementada pela USDA Foundation Foods: mais de 600 itens, por 100g."
+    },
+    "finalCta": {
+      "title": "Leva 3 minutos pra saber sua meta de verdade.",
+      "body": "Sem cartão, sem prazo pra decidir. Crie a conta, responda o quiz, veja o número.",
+      "cta": "Criar conta grátis"
+    },
+    "footer": "vitality plus · nutrição com propósito"
   }
 }

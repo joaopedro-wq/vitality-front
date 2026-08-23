@@ -12,6 +12,15 @@ export const routes: Routes = [
       import('./features/ui-check/ui-check.component').then((m) => m.UiCheckComponent),
   },
   {
+    path: '',
+    pathMatch: 'full',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./features/landing/landing-page/landing-page.component').then(
+        (m) => m.LandingPageComponent,
+      ),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
@@ -29,7 +38,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./core/layout/app-shell/app-shell.component').then((m) => m.AppShellComponent),
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      // Sem redirect próprio pra `''` aqui: a rota pública da landing lá em
+      // cima já intercepta qualquer visita a `/` antes do Router sequer
+      // considerar esta subárvore — chegar até aqui com path vazio é
+      // impossível. Visitar `/` autenticado passa pelo `guestGuard` da
+      // landing, que redireciona pro `/dashboard` e cai direto no filho
+      // abaixo.
       {
         path: 'dashboard',
         loadComponent: () =>
