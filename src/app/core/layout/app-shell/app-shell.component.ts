@@ -11,7 +11,12 @@ import {
   signal,
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { BdAvatarComponent, BdButtonComponent, BdTooltipDirective } from 'bandeira-ui';
+import {
+  BdAvatarComponent,
+  BdButtonComponent,
+  BdTooltipDirective,
+  BdTourComponent,
+} from 'bandeira-ui';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoService } from '@jsverse/transloco';
 import {
@@ -48,7 +53,6 @@ import { LanguageSelectorComponent } from '../../../components/molecules/languag
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { SessionInactivityService } from '../../auth/session-inactivity.service';
 import { OnboardingService } from '../../onboarding/onboarding.service';
-import { OnboardingGuideComponent } from '../../../features/onboarding/onboarding-guide/onboarding-guide.component';
 
 interface NavItem {
   path: string;
@@ -102,7 +106,7 @@ const NAV_ITEMS: NavItem[] = [
     LoadingStateComponent,
     LanguageSelectorComponent,
     ConfirmDialogComponent,
-    OnboardingGuideComponent,
+    BdTourComponent,
     TranslocoDirective,
   ],
   templateUrl: './app-shell.component.html',
@@ -163,6 +167,18 @@ export class AppShellComponent implements OnDestroy {
 
   isMobileMoreActive(): boolean {
     return this.mobileMoreItems().some((item) => this.router.url.startsWith(item.path));
+  }
+
+  protected tourTarget(path: string, surface: 'desktop' | 'mobile'): string | null {
+    const item =
+      path === '/diario'
+        ? 'diary'
+        : path === '/metas'
+          ? 'goals'
+          : path === '/dietas'
+            ? 'plans'
+            : null;
+    return item ? `onboarding-${item}-${surface}` : null;
   }
 
   togglePaletaMenu(): void {

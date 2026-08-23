@@ -25,7 +25,12 @@
 
       <nav [attr.aria-label]="t('common.navigation.main')">
         @for (item of navItemsVisiveis(); track item.path) {
-          <a [routerLink]="item.path" routerLinkActive="active" class="nav-item">
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            class="nav-item"
+            [attr.data-tour]="tourTarget(item.path, 'desktop')"
+          >
             <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
             {{ t(item.label) }}
           </a>
@@ -161,7 +166,12 @@
       <nav class="horizontal-nav" [attr.aria-label]="t('common.navigation.main')">
         <div class="horizontal-nav__inner">
           @for (item of navItemsVisiveis(); track item.path) {
-            <a [routerLink]="item.path" routerLinkActive="active" class="horizontal-nav__item">
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              class="horizontal-nav__item"
+              [attr.data-tour]="tourTarget(item.path, 'desktop')"
+            >
               <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
               {{ t(item.label) }}
             </a>
@@ -213,7 +223,12 @@
 
   <nav class="mobile-nav" [attr.aria-label]="t('common.navigation.main')">
     @for (item of mobileNavItems(); track item.path) {
-      <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav__item">
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="mobile-nav__item"
+        [attr.data-tour]="tourTarget(item.path, 'mobile')"
+      >
         <svg [lucideIcon]="item.icon" size="19" aria-hidden="true"></svg>
         <span>{{ t(item.mobileLabel ?? item.label) }}</span>
       </a>
@@ -240,5 +255,5 @@
     [confirmarTexto]="t('auth.sessionWarning.continue')"
     (confirmado)="inactivity.continueSession()"
   />
-  <vtp-onboarding-guide />
+  <bd-tour [scrollIntoView]="true" />
 </div>
