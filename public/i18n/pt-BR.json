@@ -346,7 +346,12 @@
     "wrongPassword": "Senha incorreta.",
     "accountNotFound": "Não encontramos uma conta com este e-mail.",
     "invalidCredentials": "E-mail ou senha inválidos.",
-    "genericError": "Não foi possível entrar agora. Tente novamente."
+    "genericError": "Não foi possível entrar agora. Tente novamente.",
+    "sessionWarning": {
+      "title": "Sua sessão está quase terminando",
+      "description": "Você será desconectado em 2 minutos por inatividade.",
+      "continue": "Continuar conectado"
+    }
   },
   "dietPlan": {
     "newPlanContext": "Novo plano",

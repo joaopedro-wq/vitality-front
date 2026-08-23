@@ -2,7 +2,7 @@
   <div
     class="confirm-dialog fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
     role="presentation"
-    (click)="cancelar()"
+    (click)="cancelarSePermitido()"
   >
     <div class="confirm-dialog__backdrop absolute inset-0"></div>
     <section
@@ -13,18 +13,20 @@
       aria-describedby="confirm-dialog-description"
       (click)="$event.stopPropagation()"
     >
-      <button
-        class="confirm-dialog__close"
-        bdButton
-        variant="ghost"
-        size="sm"
-        iconOnly
-        type="button"
-        [attr.aria-label]="'common.confirmation.close' | transloco"
-        (click)="cancelar()"
-      >
-        <svg lucideX size="17" aria-hidden="true"></svg>
-      </button>
+      @if (dismissible()) {
+        <button
+          class="confirm-dialog__close"
+          bdButton
+          variant="ghost"
+          size="sm"
+          iconOnly
+          type="button"
+          [attr.aria-label]="'common.confirmation.close' | transloco"
+          (click)="cancelar()"
+        >
+          <svg lucideX size="17" aria-hidden="true"></svg>
+        </button>
+      }
 
       <div class="confirm-dialog__icon" aria-hidden="true">
         @switch (variante()) {
@@ -54,16 +56,18 @@
       </div>
 
       <div class="confirm-dialog__actions">
-        <button
-          class="confirm-dialog__action confirm-dialog__action--secondary"
-          bdButton
-          variant="ghost"
-          size="sm"
-          type="button"
-          (click)="cancelar()"
-        >
-          {{ cancelarTexto() }}
-        </button>
+        @if (mostrarCancelar()) {
+          <button
+            class="confirm-dialog__action confirm-dialog__action--secondary"
+            bdButton
+            variant="ghost"
+            size="sm"
+            type="button"
+            (click)="cancelar()"
+          >
+            {{ cancelarTexto() }}
+          </button>
+        }
         <button
           class="confirm-dialog__action"
           bdButton

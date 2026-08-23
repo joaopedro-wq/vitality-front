@@ -27,6 +27,8 @@ export class ConfirmDialogComponent {
   readonly descricao = input('Essa ação não poderá ser desfeita.');
   readonly confirmarTexto = input('Confirmar');
   readonly cancelarTexto = input('Cancelar');
+  readonly dismissible = input(true);
+  readonly mostrarCancelar = input(true);
   readonly confirmado = output<void>();
   readonly cancelado = output<void>();
 
@@ -40,5 +42,9 @@ export class ConfirmDialogComponent {
 
   protected cancelar(): void {
     this.cancelado.emit();
+  }
+
+  protected cancelarSePermitido(): void {
+    if (this.dismissible()) this.cancelar();
   }
 }

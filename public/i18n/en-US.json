@@ -346,7 +346,12 @@
     "wrongPassword": "Incorrect password.",
     "accountNotFound": "We couldn't find an account with this email.",
     "invalidCredentials": "Invalid email or password.",
-    "genericError": "We couldn't sign you in right now. Try again."
+    "genericError": "We couldn't sign you in right now. Try again.",
+    "sessionWarning": {
+      "title": "Your session is about to end",
+      "description": "You will be signed out in 2 minutes due to inactivity.",
+      "continue": "Stay signed in"
+    }
   },
   "dietPlan": {
     "newPlanContext": "New plan",

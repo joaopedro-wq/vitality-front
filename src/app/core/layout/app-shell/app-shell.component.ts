@@ -3,8 +3,10 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnDestroy,
   ViewChild,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -42,6 +44,8 @@ import { PaletteService, type PaletteId } from '../palette.service';
 import { ThemeService } from '../theme.service';
 import { LanguageService } from '../../i18n/language.service';
 import { LanguageSelectorComponent } from '../../../components/molecules/language-selector/language-selector.component';
+import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
+import { SessionInactivityService } from '../../auth/session-inactivity.service';
 
 interface NavItem {
   path: string;
@@ -87,13 +91,14 @@ const NAV_ITEMS: NavItem[] = [
     PalettePickerComponent,
     LoadingStateComponent,
     LanguageSelectorComponent,
+    ConfirmDialogComponent,
     TranslocoDirective,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppShellComponent {
+export class AppShellComponent implements OnDestroy {
   protected readonly auth = inject(AuthService);
   protected readonly theme = inject(ThemeService);
   protected readonly language = inject(LanguageService);
@@ -103,7 +108,19 @@ export class AppShellComponent {
   private readonly navegacao = inject(NavegacaoService);
   protected readonly navegandoVisivel = gateCarregamento(this.navegacao.navegando);
   private readonly router = inject(Router);
+  protected readonly inactivity = inject(SessionInactivityService);
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
+
+  constructor() {
+    effect(() => {
+      if (this.auth.isAuthenticated()) this.inactivity.start();
+      else this.inactivity.stop();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.inactivity.stop();
+  }
 
   protected readonly navItemsVisiveis = computed(() =>
     NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin),

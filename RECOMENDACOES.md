@@ -4,20 +4,6 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
 
 ## Features
 
-### Logout automático por inatividade
-
-- **Status:** Pendente
-- **Prioridade:** Alta
-- **Descrição:** Encerrar a sessão após 30 minutos sem interação relevante do usuário. Considerar clique, toque, navegação e digitação como atividades que reiniciam a contagem. Antes do encerramento, avaliar um aviso que permita confirmar a atividade e manter a sessão. Considerar também o comportamento em múltiplas abas.
-- **Critérios de aceite:**
-  - Usuário é desconectado após 30 minutos de inatividade;
-  - Interações relevantes reiniciam a contagem;
-  - Tokens e dados de sessão são limpos corretamente;
-  - Usuário é redirecionado para o login;
-  - Não ocorre logout durante uso ativo;
-  - Funciona em desktop e mobile;
-  - O comportamento é coberto por testes E2E.
-
 ### Painel administrativo de usuários e uso da plataforma
 
 - **Status:** Pendente

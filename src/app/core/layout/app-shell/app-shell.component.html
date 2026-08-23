@@ -233,4 +233,15 @@
       <span>{{ t('common.navigation.more') }}</span>
     </button>
   </nav>
+
+  <vtp-confirm-dialog
+    [aberto]="inactivity.warningOpen()"
+    variante="soft"
+    [dismissible]="false"
+    [mostrarCancelar]="false"
+    [titulo]="t('auth.sessionWarning.title')"
+    [descricao]="t('auth.sessionWarning.description')"
+    [confirmarTexto]="t('auth.sessionWarning.continue')"
+    (confirmado)="inactivity.continueSession()"
+  />
 </div>
