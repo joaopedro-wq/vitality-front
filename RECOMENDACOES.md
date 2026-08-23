@@ -4,19 +4,6 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
 
 ## Features
 
-### Painel administrativo de usuários e uso da plataforma
-
-- **Status:** Pendente
-- **Prioridade:** Média
-- **Descrição:** Criar uma área administrativa restrita para consultar todos os usuários cadastrados e seus indicadores de uso da plataforma. Exibir dados essenciais do cadastro, situação da conta, última atividade e percentual de uso no período selecionado, com critério de cálculo documentado. Incluir busca, filtros e paginação para facilitar a operação.
-- **Critérios de aceite:**
-  - O acesso é restrito a usuários administradores;
-  - A listagem apresenta todos os usuários cadastrados com paginação;
-  - Busca e filtros permitem localizar usuários rapidamente;
-  - Cada usuário apresenta dados essenciais, última atividade e percentual de uso no período;
-  - O critério de cálculo do percentual de uso é exibido ou documentado;
-  - Dados administrativos não ficam disponíveis para usuários comuns.
-
 ### Recuperação de senha pelo front-end
 
 - **Status:** Pendente
