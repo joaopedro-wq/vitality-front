@@ -47,6 +47,8 @@ import { LanguageService } from '../../i18n/language.service';
 import { LanguageSelectorComponent } from '../../../components/molecules/language-selector/language-selector.component';
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { SessionInactivityService } from '../../auth/session-inactivity.service';
+import { OnboardingService } from '../../onboarding/onboarding.service';
+import { OnboardingGuideComponent } from '../../../features/onboarding/onboarding-guide/onboarding-guide.component';
 
 interface NavItem {
   path: string;
@@ -100,6 +102,7 @@ const NAV_ITEMS: NavItem[] = [
     LoadingStateComponent,
     LanguageSelectorComponent,
     ConfirmDialogComponent,
+    OnboardingGuideComponent,
     TranslocoDirective,
   ],
   templateUrl: './app-shell.component.html',
@@ -117,6 +120,7 @@ export class AppShellComponent implements OnDestroy {
   protected readonly navegandoVisivel = gateCarregamento(this.navegacao.navegando);
   private readonly router = inject(Router);
   protected readonly inactivity = inject(SessionInactivityService);
+  private readonly onboarding = inject(OnboardingService);
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
   constructor() {
@@ -124,6 +128,7 @@ export class AppShellComponent implements OnDestroy {
       if (this.auth.isAuthenticated()) this.inactivity.start();
       else this.inactivity.stop();
     });
+    effect(() => this.onboarding.evaluateUser(this.auth.currentUser()));
   }
 
   ngOnDestroy(): void {

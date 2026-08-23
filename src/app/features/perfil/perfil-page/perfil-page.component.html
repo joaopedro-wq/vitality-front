@@ -6,6 +6,9 @@
       titulo="Perfil e preferências"
       subtitulo="Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso."
     />
+    <button class="mt-4" bdButton variant="ghost" (click)="abrirOnboarding()">
+      {{ 'onboarding.restart' | transloco }}
+    </button>
   </header>
 
   @if (concluido()) {

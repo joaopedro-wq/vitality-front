@@ -3,6 +3,7 @@ export type Genero = 'M' | 'F' | 'O';
 export type NivelAtividade = 'sedentario' | 'leve' | 'moderado' | 'intenso' | 'muito_intenso';
 
 export type Objetivo = 'emagrecer' | 'manter' | 'ganhar_massa';
+export type OnboardingStatus = 'pending' | 'completed' | 'skipped';
 
 export interface User {
   id: number;
@@ -16,6 +17,8 @@ export interface User {
   nivel_atividade: NivelAtividade | null;
   objetivo: Objetivo | null;
   is_admin: boolean;
+  onboarding_status: OnboardingStatus;
+  onboarding_finished_at: string | null;
 }
 
 /** Payload de `PUT /api/user/{id}` — todos os campos opcionais (update parcial). */

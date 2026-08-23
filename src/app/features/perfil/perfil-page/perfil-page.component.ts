@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { BdButtonComponent } from 'bandeira-ui';
 
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
@@ -10,6 +11,7 @@ import {
 } from '../../../components/molecules/step-track/step-track.component';
 import { calcularProgressoPerfil } from '../../../components/utils/perfil-progresso.util';
 import { AuthService } from '../../../core/auth/auth.service';
+import { OnboardingService } from '../../../core/onboarding/onboarding.service';
 import type { User } from '../../../core/models/user.model';
 import { CorpoStepComponent } from './steps/corpo-step/corpo-step.component';
 import { IdentidadeStepComponent } from './steps/identidade-step/identidade-step.component';
@@ -26,6 +28,7 @@ const PASSOS: StepTrackItem[] = [
   standalone: true,
   imports: [
     BdButtonComponent,
+    TranslocoPipe,
     BackButtonComponent,
     ProfilePhotoCardComponent,
     PageTitleComponent,
@@ -39,6 +42,7 @@ const PASSOS: StepTrackItem[] = [
 })
 export class PerfilPageComponent {
   private readonly auth = inject(AuthService);
+  private readonly onboarding = inject(OnboardingService);
 
   protected readonly passos = PASSOS;
   protected readonly user = this.auth.currentUser;
@@ -62,5 +66,9 @@ export class PerfilPageComponent {
   editarNovamente(): void {
     this.concluido.set(false);
     this.passo.set(0);
+  }
+
+  abrirOnboarding(): void {
+    this.onboarding.restart();
   }
 }

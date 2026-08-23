@@ -17,6 +17,7 @@ export const apiPaths = {
   dashboardSummary: () => `${environment.apiBaseUrl}/dashboard/summary`,
   users: () => `${environment.apiBaseUrl}/users`,
   user: () => `${environment.apiBaseUrl}/user`,
+  userOnboarding: () => `${environment.apiBaseUrl}/user/onboarding`,
   userAvatar: () => `${environment.apiBaseUrl}/user/avatar`,
 
   alimentos: () => `${environment.apiBaseUrl}/foods`,

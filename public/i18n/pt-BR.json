@@ -595,5 +595,27 @@
       "goToDashboard": "Ir para o painel",
       "redoGoals": "Refazer metas"
     }
+  },
+  "onboarding": {
+    "title": "Conheça a Vitality",
+    "step": "Etapa {{current}} de 3",
+    "skip": "Pular por agora",
+    "back": "Voltar",
+    "next": "Avançar",
+    "finish": "Começar a usar",
+    "restart": "Ver onboarding novamente",
+    "saveError": "Não foi possível salvar sua escolha agora. Tente novamente.",
+    "diary": {
+      "title": "Registre seu dia no Diário",
+      "description": "Adicione refeições, acompanhe alimentos consumidos e veja sua rotina alimentar de um jeito simples."
+    },
+    "goals": {
+      "title": "Acompanhe suas metas",
+      "description": "Defina seu objetivo e acompanhe calorias e macronutrientes ao longo do dia."
+    },
+    "plans": {
+      "title": "Monte seu plano alimentar",
+      "description": "Crie planos que se encaixem na sua rotina e use sugestões para registrar refeições com mais agilidade."
+    }
   }
 }

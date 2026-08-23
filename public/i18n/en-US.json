@@ -595,5 +595,27 @@
       "goToDashboard": "Go to dashboard",
       "redoGoals": "Redo goals"
     }
+  },
+  "onboarding": {
+    "title": "Get to know Vitality",
+    "step": "Step {{current}} of 3",
+    "skip": "Skip for now",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Start using it",
+    "restart": "View onboarding again",
+    "saveError": "We could not save your choice. Please try again.",
+    "diary": {
+      "title": "Log your day in the Diary",
+      "description": "Add meals, track the foods you eat, and see your eating routine in a simple way."
+    },
+    "goals": {
+      "title": "Track your goals",
+      "description": "Set your goal and follow calories and macronutrients throughout the day."
+    },
+    "plans": {
+      "title": "Build your meal plan",
+      "description": "Create plans that fit your routine and use suggestions to log meals more quickly."
+    }
   }
 }
