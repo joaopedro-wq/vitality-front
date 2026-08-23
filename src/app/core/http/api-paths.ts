@@ -25,6 +25,8 @@ export const apiPaths = {
   gruposNormalizadosAlimentos: () => `${environment.apiBaseUrl}/foods/groups-normalized`,
   favoritoAlimento: (id: number | string) => `${environment.apiBaseUrl}/foods/${id}/favorite`,
   adminAlimentos: () => `${environment.apiBaseUrl}/admin/foods`,
+  adminUsuarios: () => `${environment.apiBaseUrl}/admin/users`,
+  adminUsuario: (id: number | string) => `${environment.apiBaseUrl}/admin/users/${id}`,
   adminAlimento: (id: number | string) => `${environment.apiBaseUrl}/admin/foods/${id}`,
   adminArquivarAlimento: (id: number | string) =>
     `${environment.apiBaseUrl}/admin/foods/${id}/archive`,

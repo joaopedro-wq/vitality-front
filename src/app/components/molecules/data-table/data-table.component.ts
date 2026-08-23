@@ -12,6 +12,8 @@ export interface DataTableColumn<T> {
   decimals?: number;
   width?: string;
   frozen?: boolean;
+  multiline?: boolean;
+  badge?: (row: T) => string;
   value?: (row: T) => string | number | null | undefined;
 }
 

@@ -37,50 +37,48 @@
   );
 }
 
-.dots {
+.poster-ring {
   position: fixed;
+  top: 6%;
+  right: 4%;
   z-index: 0;
+  width: 190px;
+  height: 190px;
+  opacity: 0.32;
+  pointer-events: none;
+}
+.poster-ring svg {
+  width: 100%;
+  height: 100%;
+}
+.poster-ring circle {
+  stroke: var(--sidebar-fg);
 }
 
-.dots.d1 {
-  top: 8%;
-  right: 6%;
-}
-.dots.d2 {
-  bottom: 10%;
+// A própria marca (coração + pulso), no canto onde a fruta "manga" vivia
+// antes (d2) — sempre fora da coluna central onde o card fica, em vez de
+// atrás dele. Substitui as bolinhas soltas que não tinham relação com
+// nenhum componente do produto.
+.poster-mark {
+  position: fixed;
+  bottom: 9%;
   left: 5%;
+  z-index: 0;
+  width: 68px;
+  height: 68px;
+  opacity: 0.92;
+  pointer-events: none;
 }
-
-.fruit {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.poster-mark svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
 }
-
-.dot {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  box-shadow: 0 3px 0 color-mix(in srgb, var(--sidebar-bg) 32%, transparent);
+.poster-mark path:first-child {
+  fill: var(--sidebar-fg);
 }
-
-.dot.sm {
-  width: 12px;
-  height: 12px;
-}
-.dot.lg {
-  width: 22px;
-  height: 22px;
-}
-.dot.sun {
-  background: var(--bd-accent);
-}
-.dot.leaf {
-  background: var(--sidebar-fg-muted);
-}
-.dot.mango {
-  background: var(--bd-primary-strong);
+.poster-mark path:last-child {
+  stroke: var(--bd-primary);
 }
 
 .stage {
@@ -154,7 +152,8 @@
 }
 
 @media (max-width: 480px) {
-  .dots {
+  .poster-ring,
+  .poster-mark {
     display: none;
   }
 }

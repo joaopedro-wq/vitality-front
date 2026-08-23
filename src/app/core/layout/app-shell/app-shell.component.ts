@@ -30,6 +30,7 @@ import {
   LucideSun,
   LucideTarget,
   LucideUser,
+  LucideUsers,
   LucideUtensils,
   type LucideIcon,
 } from '@lucide/angular';
@@ -67,6 +68,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: LucideShieldCheck,
     adminOnly: true,
   },
+  { path: '/admin/usuarios', label: 'Usuários', icon: LucideUsers, adminOnly: true },
 ];
 
 @Component({
@@ -127,12 +129,12 @@ export class AppShellComponent implements OnDestroy {
   );
   protected readonly mobileNavItems = computed(() =>
     this.navItemsVisiveis().filter(
-      (item) => !['/dietas', '/perfil', '/admin/alimentos'].includes(item.path),
+      (item) => !['/dietas', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
     ),
   );
   protected readonly mobileMoreItems = computed(() =>
     this.navItemsVisiveis().filter((item) =>
-      ['/dietas', '/perfil', '/admin/alimentos'].includes(item.path),
+      ['/dietas', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
     ),
   );
 

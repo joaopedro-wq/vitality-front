@@ -92,6 +92,14 @@ export const routes: Routes = [
             (m) => m.AdminFoodsComponent,
           ),
       },
+      {
+        path: 'admin/usuarios',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/admin/admin-users/admin-users.component').then(
+            (m) => m.AdminUsersComponent,
+          ),
+      },
     ],
   },
   { path: '**', redirectTo: 'login' },

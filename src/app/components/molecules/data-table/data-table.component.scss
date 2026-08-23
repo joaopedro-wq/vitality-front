@@ -3,3 +3,34 @@
     display: none;
   }
 }
+
+.data-table__multiline {
+  white-space: pre-line;
+}
+.data-table__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+.data-table__badge--novo {
+  background: var(--bd-primary-soft);
+  color: var(--bd-primary-strong);
+}
+.data-table__badge--em_ativacao {
+  background: var(--bd-accent-soft);
+  color: var(--bd-accent-contrast);
+}
+.data-table__badge--engajado {
+  background: color-mix(in srgb, var(--bd-success) 16%, transparent);
+  color: var(--bd-success);
+}
+.data-table__badge--inativo {
+  background: var(--bd-surface-hover);
+  color: var(--bd-fg-muted);
+}

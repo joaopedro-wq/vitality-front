@@ -1,0 +1,161 @@
+<vtp-back-button class="page-shell-wide" rotulo="Administração" fallbackRota="/dashboard" />
+<main class="admin-users page-shell-wide">
+  <header>
+    <vtp-page-title
+      contexto="Administração"
+      titulo="Usuários"
+      subtitulo="Acompanhe a ativação e o uso dos recursos da plataforma."
+    />
+    <label
+      >Período
+      <select [value]="period()" (change)="changePeriod($any($event.target).value)">
+        <option value="7">Últimos 7 dias</option>
+        <option value="30">Últimos 30 dias</option>
+        <option value="90">Últimos 90 dias</option>
+      </select>
+    </label>
+  </header>
+
+  @if (meta()?.summary; as summary) {
+    <section class="metrics" aria-label="Resumo de usuários">
+      <article>
+        <span>Total</span><b>{{ summary.total_users }}</b>
+      </article>
+      <article>
+        <span>Novos</span><b>{{ summary.new_users }}</b>
+      </article>
+      <article>
+        <span>Engajados</span><b>{{ summary.engaged_users }}</b>
+      </article>
+      <article>
+        <span>Inativos</span><b>{{ summary.inactive_users }}</b>
+      </article>
+    </section>
+  }
+
+  <section class="directory">
+    <div class="filters discovery-bar">
+      <label class="search"
+        ><svg lucideSearch size="16"></svg
+        ><input
+          bdInput
+          type="search"
+          placeholder="Buscar por nome ou e-mail"
+          [value]="search()"
+          (input)="searchUsers($any($event.target).value)"
+      /></label>
+      <div class="filter-field">
+        <span>Conta</span>
+        <select
+          [value]="accountType()"
+          (change)="changeAccountType($any($event.target).value)"
+          aria-label="Filtrar por tipo de conta"
+        >
+          <option value="all">Todas</option>
+          <option value="member">Usuários</option>
+          <option value="admin">Administradores</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <span>Engajamento</span>
+        <select
+          [value]="engagementStatus()"
+          (change)="changeEngagementStatus($any($event.target).value)"
+          aria-label="Filtrar por engajamento"
+        >
+          <option value="all">Todos os status</option>
+          <option value="novo">Novo</option>
+          <option value="em_ativacao">Em ativação</option>
+          <option value="engajado">Engajado</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+      @if (search() || accountType() !== 'all' || engagementStatus() !== 'all' || period() !== 30) {
+        <button bdButton variant="ghost" size="sm" class="clear-filters" (click)="clearFilters()">
+          Limpar filtros
+        </button>
+      }
+    </div>
+    @if (loading()) {
+      <vtp-loading-state tamanho="sm" titulo="Carregando usuários" />
+    } @else {
+      <div class="table-wrap">
+        <vtp-data-table
+          [value]="users()"
+          [cols]="tableColumns"
+          [loading]="loading()"
+          [sortField]="sortField()"
+          [sortOrder]="sortOrder()"
+          stateKey="admin-users-table"
+          (lazyLoad)="onLazyLoad($event)"
+          (rowClick)="openDetail($event)"
+        />
+      </div>
+      <vtp-pagination-controls
+        [pagina]="meta()?.current_page ?? 1"
+        [totalRegistros]="meta()?.total ?? 0"
+        [tamanhoPagina]="meta()?.per_page ?? 25"
+        [carregando]="loading()"
+        (paginaChange)="goToPage($event)"
+      />
+    }
+  </section>
+
+  @if (selected() || detailLoading()) {
+    <aside class="detail" role="dialog" aria-modal="true">
+      <button class="close" bdButton variant="ghost" size="sm" (click)="closeDetail()">
+        <svg lucideX size="18"></svg>
+      </button>
+      @if (detailLoading()) {
+        <vtp-loading-state tamanho="sm" titulo="Carregando usuário" />
+      }
+      @if (selected(); as user) {
+        <div class="detail__heading">
+          <span><svg lucideUsers size="20"></svg></span>
+          <div>
+            <h2>{{ user.name }}</h2>
+            <p>{{ user.email }}</p>
+          </div>
+        </div>
+        <span class="status" [class]="user.engagement_status">{{
+          statusLabel(user.engagement_status)
+        }}</span>
+        <dl>
+          <div>
+            <dt>Última ação</dt>
+            <dd>
+              {{
+                user.last_action_at
+                  ? (user.last_action_at | date: 'dd/MM/yyyy HH:mm')
+                  : 'Sem atividade'
+              }}
+            </dd>
+          </div>
+          <div>
+            <dt>Dias ativos</dt>
+            <dd>{{ user.active_days }}</dd>
+          </div>
+          <div>
+            <dt>Registros no Diário</dt>
+            <dd>{{ user.diary_entries_count }}</dd>
+          </div>
+          <div>
+            <dt>Planos usados</dt>
+            <dd>{{ user.plans_count }}</dd>
+          </div>
+        </dl>
+        <h3>Atividade recente</h3>
+        <ul>
+          @for (entry of user.recent_diary_entries; track entry.id) {
+            <li>
+              {{ entry.descricao_refeicao_snapshot || 'Registro no Diário' }} ·
+              {{ entry.created_at | date: 'dd/MM' }}
+            </li>
+          } @empty {
+            <li>Sem registros recentes.</li>
+          }
+        </ul>
+      }
+    </aside>
+  }
+</main>

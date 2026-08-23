@@ -57,7 +57,13 @@
           [class.tabular-nums]="col.decimals !== undefined"
           [class.data-table__secondary]="col.secondary"
         >
-          {{ displayValue(col, row) }}
+          @if (col.badge) {
+            <span class="data-table__badge" [class]="'data-table__badge--' + col.badge(row)">
+              {{ displayValue(col, row) }}
+            </span>
+          } @else {
+            <span [class.data-table__multiline]="col.multiline">{{ displayValue(col, row) }}</span>
+          }
         </td>
       }
     </tr>
