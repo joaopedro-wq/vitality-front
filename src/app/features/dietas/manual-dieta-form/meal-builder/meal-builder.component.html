@@ -1,11 +1,37 @@
 @if (subFase() === 'selecionar') {
-  <!-- Tablet/desktop: busca, ordenação e chips sempre visíveis. No mobile os
-       três somem daqui e moram na folha de filtro (ver abaixo) — mesmo
-       padrão do `EntryComposerComponent` (Diário), a linha fica espremida
-       demais tentando caber tudo numa tela estreita. -->
+  <!-- Tablet/desktop: busca, ordenação e chips sempre visíveis. -->
   <div class="mb-2 hidden items-center gap-2 md:flex">
     <label
       class="flex min-w-0 flex-1 items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
+    >
+      <svg lucideSearch size="16" aria-hidden="true"></svg>
+      <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
+      <input
+        class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
+        type="search"
+        [placeholder]="'entry.searchPlaceholder' | transloco"
+        [value]="query()"
+        (input)="buscar($any($event.target).value)"
+      />
+    </label>
+
+    <vtp-sort-control
+      class="flex-none"
+      [opcoes]="sortOptions"
+      [campo]="sortField()"
+      [ordem]="sortOrder()"
+      [direcaoLabel]="direcaoOrdenacao()"
+      (campoChange)="alterarCampoOrdenacao($event)"
+      (ordemChange)="alterarOrdem($event)"
+    />
+  </div>
+
+
+  <div
+    class="mb-3 flex min-w-0 items-center gap-2 rounded-[16px] border border-border bg-surface p-2 md:hidden"
+  >
+    <label
+      class="flex min-w-0 flex-1 items-center gap-2 rounded-[12px] border border-border bg-bg px-3 py-2 text-fg-subtle focus-within:border-primary"
     >
       <svg lucideSearch size="16" aria-hidden="true"></svg>
       <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
@@ -37,8 +63,7 @@
     <ng-container [ngTemplateOutlet]="chipsTpl" />
   </div>
 
-  <!-- Mobile: busca, ordenação e categoria viram uma única folha inferior
-       atrás de um gatilho — mesmo padrão do `EntryComposerComponent`. -->
+  <!-- Mobile: categorias e atalhos rápidos permanecem na folha inferior. -->
   <div class="mb-3 flex md:hidden">
     <button
       type="button"
@@ -48,7 +73,7 @@
     >
       <svg lucideFilter size="14" aria-hidden="true"></svg>
       <span class="truncate">{{
-        filtroAtivoLabel() ?? ('dietPlan.manual.filters.triggerLabel' | transloco)
+        filtroAtivoLabel() ?? ('entry.categories' | transloco)
       }}</span>
     </button>
   </div>
@@ -72,30 +97,6 @@
       ></div>
 
       <div class="flex-1 overflow-y-auto">
-        <label
-          class="mb-2 flex items-center gap-2.5 rounded-[14px] border border-border bg-bg px-3.5 py-2.5 text-fg-subtle focus-within:border-primary"
-        >
-          <svg lucideSearch size="16" aria-hidden="true"></svg>
-          <span class="sr-only">{{ 'entry.searchCatalogSr' | transloco }}</span>
-          <input
-            class="min-w-0 flex-1 bg-transparent text-[14px] text-fg outline-none"
-            type="search"
-            [placeholder]="'entry.searchPlaceholder' | transloco"
-            [value]="query()"
-            (input)="buscar($any($event.target).value)"
-          />
-        </label>
-
-        <vtp-sort-control
-          class="mb-3 flex justify-end"
-          [opcoes]="sortOptions"
-          [campo]="sortField()"
-          [ordem]="sortOrder()"
-          [direcaoLabel]="direcaoOrdenacao()"
-          (campoChange)="alterarCampoOrdenacao($event)"
-          (ordemChange)="alterarOrdem($event)"
-        />
-
         <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-fg-subtle">
           {{ 'entry.categories' | transloco }}
         </p>

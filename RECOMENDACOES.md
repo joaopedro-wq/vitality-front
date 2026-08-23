@@ -1,96 +1,134 @@
-# Recomendações — Vitality PLUS
+# Recomendações e próximas demandas
 
-Backlog técnico revisado em 2026-08-22 para `vitality-front` (Angular 20) e
-`vitality-Back` (Laravel 11). Este documento contém somente trabalho futuro;
-entregas concluídas devem ser registradas no histórico do commit/PR correspondente.
+Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Laravel 11), revisado em 2026-08-23.
 
-## Prioridade crítica — segurança e confiabilidade
+## Features
 
-### 1. Validar e endurecer a sessão Sanctum em produção
+### Logout automático por inatividade
 
-Confirmar em staging e produção a combinação de CORS, `SANCTUM_STATEFUL_DOMAINS`,
-`SESSION_DOMAIN`, `Secure`, `HttpOnly` e `SameSite` para o domínio real do front.
-Adicionar uma Content Security Policy restritiva no servidor e revisar o fluxo de
-CSRF após cada alteração de domínio ou proxy reverso.
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Encerrar a sessão após 30 minutos sem interação relevante do usuário. Considerar clique, toque, navegação e digitação como atividades que reiniciam a contagem. Antes do encerramento, avaliar um aviso que permita confirmar a atividade e manter a sessão. Considerar também o comportamento em múltiplas abas.
+- **Critérios de aceite:**
+  - Usuário é desconectado após 30 minutos de inatividade;
+  - Interações relevantes reiniciam a contagem;
+  - Tokens e dados de sessão são limpos corretamente;
+  - Usuário é redirecionado para o login;
+  - Não ocorre logout durante uso ativo;
+  - Funciona em desktop e mobile;
+  - O comportamento é coberto por testes E2E.
 
-**Critério de aceite:** login, renovação e logout funcionam entre os domínios reais;
-cookies não são enviados por HTTP nem para origens não autorizadas; CSP não bloqueia
-recursos legítimos e reduz superfícies de XSS.
+### Política de verificação de e-mail
 
-### 2. Restaurar uma suíte de testes de backend isolada e verde
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Definir se a verificação de e-mail será requisito da aplicação. Caso seja, implementar envio e confirmação antes do acesso a rotas sensíveis; caso não seja, remover aliases e rotas sem uso que possam sugerir uma proteção inexistente.
+- **Critérios de aceite:**
+  - A política de verificação de e-mail está definida e documentada;
+  - Se adotada, a confirmação é exigida nas rotas sensíveis definidas;
+  - Se não adotada, aliases e rotas não utilizados são removidos.
 
-Eliminar a dependência de cache/configuração local que interrompe `php artisan test`,
-assegurar banco de testes isolado e alinhar os testes do classificador de planos ao
-contrato atual.
+## Bugs / Fixes
 
-**Critério de aceite:** `php artisan test` roda do zero em CI, sem cache prévio ou
-banco local, e finaliza sem falhas.
+### Regra de senha e tradução das validações
 
-### 3. Cobrir autorização, rate limit e sessão com testes de feature
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Problema:** Cadastro e login exigem senha com mínimo de 12 caracteres, e as mensagens de validação de senha são retornadas em inglês.
+- **Comportamento esperado:** A validação do back-end deve aceitar senhas com 6 ou mais caracteres e retornar as mensagens no idioma ativo da sessão, sem alterar outras regras de autenticação sem necessidade.
+- **Critérios de aceite:**
+  - Senha com 6 ou mais caracteres é aceita;
+  - Senha com menos de 6 caracteres exibe mensagem clara;
+  - A mensagem respeita o idioma atual da sessão;
+  - Outras regras de autenticação não são alteradas sem necessidade.
 
-Criar testes Laravel para provar que um usuário não lê, edita ou exclui recursos de
-outro; validar limite de login/cadastro, resposta genérica de credenciais e fluxo
-login → logout → acesso protegido (`401`).
+### Corrigir a configuração PHP de `pdo_firebird`
 
-**Critério de aceite:** os cenários A × B, abuso de autenticação e encerramento de
-sessão fazem parte da suíte obrigatória de CI.
+- **Status:** Pendente
+- **Prioridade:** Baixa
+- **Problema:** A extensão `pdo_firebird` configurada no `php.ini` gera avisos durante a execução de comandos Artisan.
+- **Comportamento esperado:** O ambiente PHP deve carregar apenas extensões disponíveis e necessárias ao projeto.
+- **Critérios de aceite:**
+  - A extensão é removida do `php.ini` se Firebird não for dependência, ou a DLL compatível é instalada;
+  - Comandos Artisan deixam de exibir o aviso relacionado ao `pdo_firebird`.
 
-## Prioridade alta — qualidade de entrega
+## Melhorias / Ajustes
 
-### 4. Adotar testes E2E do front com Playwright
+### Validar e endurecer a sessão Sanctum em produção
 
-Adicionar Playwright ao frontend, scripts de execução local/CI e uma aplicação de
-teste com API controlada (ou ambiente dedicado). Cobrir login, troca instantânea de
-idioma, mostrar/ocultar senha, logout, proteção de rota, criação de lançamento no
-diário e fluxo de plano manual.
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Confirmar em staging e produção a configuração de CORS, `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`, `Secure`, `HttpOnly` e `SameSite` para os domínios reais do front-end. Adicionar uma Content Security Policy restritiva e revisar o fluxo de CSRF após alterações de domínio ou proxy reverso.
+- **Critérios de aceite:**
+  - Login, renovação e logout funcionam entre os domínios reais;
+  - Cookies não são enviados por HTTP ou para origens não autorizadas;
+  - A CSP não bloqueia recursos legítimos e reduz a superfície de XSS.
 
-**Critério de aceite:** `npm run test:e2e` executa de forma reproduzível em CI e
-gera relatório, screenshots e trace quando houver falha.
+### Restaurar uma suíte de testes de backend isolada e verde
 
-### 5. Concluir a expiração por inatividade
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Eliminar dependências de cache ou configuração local que interrompem `php artisan test`, assegurar banco de testes isolado e alinhar os testes do classificador de planos ao contrato atual.
+- **Critérios de aceite:**
+  - `php artisan test` executa do zero em CI, sem cache prévio ou banco local;
+  - A suíte finaliza sem falhas.
 
-Integrar o serviço de inatividade ao ciclo de autenticação, avisar o usuário antes
-do encerramento e renovar a sessão quando ele continuar ativo. Definir o tratamento
-em múltiplas abas e cobrir o comportamento nos testes E2E.
+### Cobrir autorização, rate limit e sessão com testes de feature
 
-**Critério de aceite:** após o limite configurado a sessão é encerrada de forma
-visível e segura; a atividade válida a mantém ativa sem reiniciar o estado da tela.
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Criar testes Laravel que comprovem o isolamento de recursos entre usuários, o limite de tentativas de login e cadastro, a resposta genérica para credenciais inválidas e o fluxo login → logout → acesso protegido (`401`).
+- **Critérios de aceite:**
+  - Cenários de acesso entre usuários são cobertos na suíte;
+  - Abuso de autenticação e encerramento de sessão são validados;
+  - Os testes passam a fazer parte da suíte obrigatória de CI.
 
-### 6. Reduzir o bundle inicial do Angular
+### Adotar testes E2E do front com Playwright
 
-O build já é gerado, porém o bundle inicial excede o aviso de 620 kB. Investigar
-dependências carregadas no bootstrap, dividir recursos não críticos e acompanhar o
-orçamento no CI.
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Adicionar Playwright ao front-end, scripts de execução local e em CI, além de uma aplicação de teste com API controlada ou ambiente dedicado. Cobrir login, troca instantânea de idioma, mostrar e ocultar senha, logout, proteção de rota, criação de lançamento no diário e fluxo de plano manual.
+- **Critérios de aceite:**
+  - `npm run test:e2e` executa de forma reproduzível em CI;
+  - O fluxo cobre os cenários definidos;
+  - Relatório, screenshots e trace são gerados em caso de falha.
 
-**Critério de aceite:** bundle inicial dentro do budget acordado, sem regressão de
-carregamento das rotas lazy.
+### Reduzir o bundle inicial do Angular
 
-## Prioridade média — contrato e operação
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Investigar dependências carregadas no bootstrap, dividir recursos não críticos e acompanhar o orçamento de bundle no CI. O bundle inicial atual excede o aviso de 620 kB.
+- **Critérios de aceite:**
+  - O bundle inicial fica dentro do budget acordado;
+  - Não há regressão no carregamento das rotas lazy;
+  - O orçamento é acompanhado no CI.
 
-### 7. Consolidar rotas e contratos legados
+### Consolidar rotas e contratos legados
 
-Mapear e remover endpoints/paths não consumidos, documentar o contrato público da
-API e definir uma data de remoção para os adaptadores legados restantes.
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Mapear e remover endpoints e paths não consumidos, documentar o contrato público da API e definir uma data de remoção para os adaptadores legados restantes.
+- **Critérios de aceite:**
+  - Endpoints e paths não utilizados são identificados;
+  - O contrato público da API está documentado;
+  - Adaptadores legados restantes possuem prazo de remoção definido.
 
-### 8. Decidir e implementar a política de verificação de e-mail
+### Validar configurações de deploy e Gemini
 
-Definir se verificação é requisito. Se for, enviar e exigir confirmação antes de
-rotas sensíveis; se não for, remover aliases e rotas sem uso para evitar falsa
-sensação de proteção.
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Substituir placeholders por configuração via secrets e pipeline, testar CORS e API em staging e confirmar que o modelo Gemini configurado corresponde à conta e à API efetivamente utilizadas.
+- **Critérios de aceite:**
+  - Placeholders são removidos em favor de secrets ou pipeline;
+  - CORS e API são validados em staging;
+  - A configuração do Gemini é confirmada com a conta e API em uso.
 
-### 9. Validar configurações de deploy e Gemini
+### Formalizar a manutenção do `bandeira-ui`
 
-Substituir placeholders por configuração via secrets/pipeline, testar CORS e API em
-staging e confirmar o modelo Gemini configurado com a conta e API efetivamente usadas.
-
-## Prioridade baixa — manutenção
-
-### 10. Formalizar manutenção do `bandeira-ui`
-
-Versionar e publicar o artefato em registry apropriado, com changelog e teste de
-compatibilidade com as versões suportadas do Angular.
-
-### 11. Corrigir a configuração PHP de `pdo_firebird`
-
-Remover a extensão do `php.ini` se Firebird não for dependência ou instalar a DLL
-compatível, eliminando o aviso que hoje polui os comandos Artisan.
+- **Status:** Pendente
+- **Prioridade:** Baixa
+- **Descrição:** Versionar e publicar o artefato em um registry apropriado, mantendo changelog e testes de compatibilidade com as versões suportadas do Angular.
+- **Critérios de aceite:**
+  - O pacote possui versionamento e publicação definidos;
+  - Um changelog é mantido;
+  - Há teste de compatibilidade com as versões suportadas do Angular.

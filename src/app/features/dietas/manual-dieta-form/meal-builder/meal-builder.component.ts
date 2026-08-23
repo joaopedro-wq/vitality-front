@@ -28,7 +28,10 @@ import { ConfirmDialogComponent } from '../../../../components/molecules/confirm
 import { FoodPickCardComponent } from '../../../../components/molecules/food-pick-card/food-pick-card.component';
 import { LoadingStateComponent } from '../../../../components/molecules/loading-state/loading-state.component';
 import { PaginationControlsComponent } from '../../../../components/molecules/pagination-controls/pagination-controls.component';
-import { PlateRowComponent, type PlateItem } from '../../../../components/molecules/plate-row/plate-row.component';
+import {
+  PlateRowComponent,
+  type PlateItem,
+} from '../../../../components/molecules/plate-row/plate-row.component';
 import { SortControlComponent } from '../../../../components/molecules/sort-control/sort-control.component';
 import { StepFooterComponent } from '../../../../components/molecules/step-footer/step-footer.component';
 import { gateCarregamento } from '../../../../components/utils/loading-gate.util';
@@ -156,7 +159,6 @@ export class MealBuilderComponent implements OnInit, OnDestroy {
   });
 
   protected readonly filtroAtivoLabel = computed(() => {
-    if (this.query()) return `"${this.query()}"`;
     return this.filtrosRapidos().find((filtro) => filtro.id === this.filtroRapido())?.label ?? null;
   });
 
