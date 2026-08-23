@@ -215,7 +215,7 @@
     @for (item of mobileNavItems(); track item.path) {
       <a [routerLink]="item.path" routerLinkActive="active" class="mobile-nav__item">
         <svg [lucideIcon]="item.icon" size="19" aria-hidden="true"></svg>
-        <span>{{ t(item.label) }}</span>
+        <span>{{ t(item.mobileLabel ?? item.label) }}</span>
       </a>
     }
     <button

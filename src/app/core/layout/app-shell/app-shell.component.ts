@@ -51,6 +51,7 @@ import { SessionInactivityService } from '../../auth/session-inactivity.service'
 interface NavItem {
   path: string;
   label: string;
+  mobileLabel?: string;
   icon: LucideIcon;
   adminOnly?: boolean;
 }
@@ -59,7 +60,12 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/dashboard', label: 'common.shell.nav.dashboard', icon: LucideHouse },
   { path: '/diario', label: 'common.shell.nav.diary', icon: LucideUtensils },
   { path: '/alimentos', label: 'common.shell.nav.foods', icon: LucideCarrot },
-  { path: '/dietas', label: 'common.shell.nav.diets', icon: LucideClipboardList },
+  {
+    path: '/dietas',
+    label: 'common.shell.nav.diets',
+    mobileLabel: 'common.shell.nav.plan',
+    icon: LucideClipboardList,
+  },
   { path: '/metas', label: 'common.shell.nav.goals', icon: LucideTarget },
   { path: '/perfil', label: 'common.shell.nav.profile', icon: LucideUser },
   {
@@ -129,12 +135,13 @@ export class AppShellComponent implements OnDestroy {
   );
   protected readonly mobileNavItems = computed(() =>
     this.navItemsVisiveis().filter(
-      (item) => !['/dietas', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
+      (item) =>
+        !['/alimentos', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
     ),
   );
   protected readonly mobileMoreItems = computed(() =>
     this.navItemsVisiveis().filter((item) =>
-      ['/dietas', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
+      ['/alimentos', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
     ),
   );
 

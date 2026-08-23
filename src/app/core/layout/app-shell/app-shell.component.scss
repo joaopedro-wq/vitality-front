@@ -301,6 +301,12 @@
     line-height: 1.2;
     text-decoration: none;
   }
+  .mobile-nav__item > span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .mobile-nav__item.active {
     color: var(--bd-primary);
   }
