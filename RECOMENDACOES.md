@@ -18,6 +18,19 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
   - Funciona em desktop e mobile;
   - O comportamento é coberto por testes E2E.
 
+### Painel administrativo de usuários e uso da plataforma
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Criar uma área administrativa restrita para consultar todos os usuários cadastrados e seus indicadores de uso da plataforma. Exibir dados essenciais do cadastro, situação da conta, última atividade e percentual de uso no período selecionado, com critério de cálculo documentado. Incluir busca, filtros e paginação para facilitar a operação.
+- **Critérios de aceite:**
+  - O acesso é restrito a usuários administradores;
+  - A listagem apresenta todos os usuários cadastrados com paginação;
+  - Busca e filtros permitem localizar usuários rapidamente;
+  - Cada usuário apresenta dados essenciais, última atividade e percentual de uso no período;
+  - O critério de cálculo do percentual de uso é exibido ou documentado;
+  - Dados administrativos não ficam disponíveis para usuários comuns.
+
 ### Política de verificação de e-mail
 
 - **Status:** Pendente
@@ -29,18 +42,6 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
   - Se não adotada, aliases e rotas não utilizados são removidos.
 
 ## Bugs / Fixes
-
-### Regra de senha e tradução das validações
-
-- **Status:** Pendente
-- **Prioridade:** Alta
-- **Problema:** Cadastro e login exigem senha com mínimo de 12 caracteres, e as mensagens de validação de senha são retornadas em inglês.
-- **Comportamento esperado:** A validação do back-end deve aceitar senhas com 6 ou mais caracteres e retornar as mensagens no idioma ativo da sessão, sem alterar outras regras de autenticação sem necessidade.
-- **Critérios de aceite:**
-  - Senha com 6 ou mais caracteres é aceita;
-  - Senha com menos de 6 caracteres exibe mensagem clara;
-  - A mensagem respeita o idioma atual da sessão;
-  - Outras regras de autenticação não são alteradas sem necessidade.
 
 ### Corrigir a configuração PHP de `pdo_firebird`
 
