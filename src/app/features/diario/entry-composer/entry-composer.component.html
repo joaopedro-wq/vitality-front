@@ -191,7 +191,7 @@
       <!-- Mobile: busca e ordenação ficam no mesmo bloco compacto e sempre
            acessível. Categorias e atalhos continuam na folha inferior. -->
       <div
-        class="mb-3 flex min-w-0 items-center gap-2 rounded-[16px] border border-border bg-surface p-2 md:hidden"
+        class="mb-3 flex min-w-0 flex-col gap-2 rounded-[16px] border border-border bg-surface p-2 md:hidden"
       >
         <label
           class="flex min-w-0 flex-1 items-center gap-2 rounded-[12px] border border-border bg-bg px-3 py-2 text-fg-subtle focus-within:border-primary"
@@ -208,7 +208,7 @@
         </label>
 
         <vtp-sort-control
-          class="flex-none"
+          class="sort-control--mobile flex-none"
           [opcoes]="sortOptions"
           [campo]="sortField()"
           [ordem]="sortOrder()"
@@ -302,7 +302,7 @@
           <vtp-loading-state tamanho="sm" [titulo]="'uiLoading.searchingFoods' | transloco" />
         } @else if (catalogo().length) {
           <div
-            class="grid grid-cols-2 gap-2 md:[grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]"
+            class="grid min-w-0 grid-cols-2 gap-2 md:[grid-template-columns:repeat(auto-fill,minmax(152px,1fr))]"
           >
             @for (food of catalogo(); track food.id) {
               <vtp-food-pick-card

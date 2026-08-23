@@ -1,4 +1,4 @@
-<vtp-auth-poster-layout [badge]="'auth.loginBadge' | transloco" [attr.lang]="language.locale()">
+<vtp-auth-poster-layout [attr.lang]="language.locale()">
   <vtp-page-title
     [titulo]="'auth.loginTitle' | transloco"
     [subtitulo]="'auth.loginSubtitle' | transloco"
@@ -50,7 +50,9 @@
         <button
           class="password-toggle"
           type="button"
-          [attr.aria-label]="(passwordVisible() ? 'auth.hidePassword' : 'auth.showPassword') | transloco"
+          [attr.aria-label]="
+            (passwordVisible() ? 'auth.hidePassword' : 'auth.showPassword') | transloco
+          "
           [attr.aria-pressed]="passwordVisible()"
           (click)="togglePasswordVisibility()"
         >

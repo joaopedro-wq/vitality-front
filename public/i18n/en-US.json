@@ -317,11 +317,9 @@
   "auth": {
     "accountCreated": "Account created! Sign in to continue.",
     "registerError": "We couldn't create your account right now. Try again.",
-    "eyebrow": "Vitality Plus · today's harvest",
-    "loginBadge": "68% hit their goal",
     "loginTitle": "Welcome back",
     "loginSubtitle": "Your goal for today is waiting. Sign in and log your first meal.",
-    "registerTitle": "Join the circle",
+    "registerTitle": "Start your journey",
     "registerSubtitle": "Join everyone who has logged their first meal today.",
     "email": "Email",
     "password": "Password",

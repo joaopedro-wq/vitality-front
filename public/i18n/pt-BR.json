@@ -317,11 +317,9 @@
   "auth": {
     "accountCreated": "Conta criada! Faça login para continuar.",
     "registerError": "Não foi possível criar sua conta agora. Tente novamente.",
-    "eyebrow": "Vitality Plus · feira de hoje",
-    "loginBadge": "68% batem a meta",
-    "loginTitle": "Volta pra roda",
+    "loginTitle": "Bem-vindo de volta",
     "loginSubtitle": "Sua meta de hoje está esperando. Entra e registra a primeira refeição.",
-    "registerTitle": "Entra na roda",
+    "registerTitle": "Comece sua jornada",
     "registerSubtitle": "Junte-se a quem já registrou a primeira refeição hoje.",
     "email": "E-mail",
     "password": "Senha",

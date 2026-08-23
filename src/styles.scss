@@ -533,6 +533,12 @@ a[bdButton] {
 // generoso do lg/md ficava esticado demais -- sm e o unico tamanho pensado
 // pra nao depender de largura de conteudo.
 @media (max-width: 640px) {
+  .sort-control--mobile .sort-control {
+    width: 100%;
+  }
+  .sort-control--mobile .sort-criterion {
+    flex: 1;
+  }
   button[bdButton].bd-button--lg,
   a[bdButton].bd-button--lg,
   button[bdButton].bd-button--md,

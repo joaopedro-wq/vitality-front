@@ -1,5 +1,5 @@
 <div
-  class="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border py-2.5 first:border-t-0"
+  class="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border py-2.5 first:border-t-0 max-sm:gap-x-2"
 >
   <span
     class="grid size-7 flex-none place-items-center overflow-hidden rounded-[9px] bg-primary-soft"
@@ -7,7 +7,7 @@
     <vtp-food-illustration [illustrationKey]="item().illustrationKey" />
   </span>
 
-  <span class="min-w-[120px] flex-1">
+  <span class="min-w-0 flex-1 max-sm:basis-[calc(100%-40px)]">
     <b class="block truncate text-[13px] font-semibold">{{ item().descricao }}</b>
     @if (item().detalheExibicao) {
       <small class="block truncate text-[11px] text-fg-muted">{{ item().detalheExibicao }}</small>
@@ -38,7 +38,7 @@
     </span>
   }
 
-  <label class="flex items-center gap-1.5">
+  <label class="flex items-center gap-1.5 max-sm:ml-auto max-sm:order-3">
     <span class="sr-only">Quantidade de {{ item().descricao }} em gramas</span>
     <input
       class="w-[68px] rounded-lg border border-border bg-bg px-2 py-1 text-right text-[12.5px] tabular-nums text-fg outline-none focus-visible:border-primary"
@@ -53,7 +53,7 @@
   </label>
 
   <button
-    class="grid size-7 flex-none place-items-center rounded-lg text-fg-subtle transition-colors hover:bg-danger/10 hover:text-danger"
+    class="grid size-7 flex-none place-items-center rounded-lg text-fg-subtle transition-colors hover:bg-danger/10 hover:text-danger max-sm:order-4"
     type="button"
     [attr.aria-label]="'Tirar ' + item().descricao + ' do prato'"
     (click)="remover.emit()"

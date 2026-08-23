@@ -5,15 +5,15 @@
   />
 } @else {
   <vtp-back-button class="page-shell-wide" />
-  <section class="page-shell-wide flex flex-col gap-4 animate-reveal card p-4 sm:p-6 lg:p-8">
-    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+  <section class="page-shell-wide flex min-w-0 flex-col gap-4 overflow-x-clip animate-reveal card p-4 sm:p-6 lg:p-8">
+    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5 max-sm:items-stretch">
       <vtp-page-title
         [contexto]="'diaryPage.eyebrow' | transloco"
         [titulo]="'pageTitle.diary' | transloco"
         [subtitulo]="'pageTitle.diarySubtitle' | transloco"
       />
 
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex min-w-0 flex-wrap items-center gap-3 max-sm:w-full max-sm:justify-between">
         <div class="flex items-center gap-1">
           <button
             class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
@@ -24,9 +24,9 @@
             <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
           </button>
 
-          <span class="px-2">
-            <b class="block text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
-            <small class="text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
+          <span class="min-w-0 px-2">
+            <b class="block truncate text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
+            <small class="block truncate text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
               selectedDate() === today ? ('diaryPage.today' | transloco) : selectedDate()
             }}</small>
           </span>

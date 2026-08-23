@@ -55,30 +55,111 @@
   stroke: var(--sidebar-fg);
 }
 
-// A própria marca (coração + pulso), no canto onde a fruta "manga" vivia
-// antes (d2) — sempre fora da coluna central onde o card fica, em vez de
-// atrás dele. Substitui as bolinhas soltas que não tinham relação com
-// nenhum componente do produto.
-.poster-mark {
+.poster-heart {
   position: fixed;
-  bottom: 9%;
-  left: 5%;
   z-index: 0;
-  width: 68px;
-  height: 68px;
-  opacity: 0.92;
   pointer-events: none;
 }
-.poster-mark svg {
+.poster-heart svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
 }
-.poster-mark path:first-child {
+
+// coluna esquerda, topo → base
+.poster-heart--2 {
+  top: 8%;
+  left: 6%;
+  width: 36px;
+  height: 36px;
+  opacity: 0.22;
+}
+.poster-heart--2 path {
+  stroke: var(--sidebar-fg);
+}
+.poster-heart--6 {
+  top: 27%;
+  left: 10%;
+  width: 22px;
+  height: 22px;
+  opacity: 0.18;
+}
+.poster-heart--6 path {
   fill: var(--sidebar-fg);
 }
-.poster-mark path:last-child {
+.poster-heart--4 {
+  top: 47%;
+  left: 5%;
+  width: 30px;
+  height: 30px;
+  opacity: 0.24;
+}
+.poster-heart--4 path {
+  stroke: var(--sidebar-fg);
+}
+.poster-heart--8 {
+  top: 68%;
+  left: 9%;
+  width: 24px;
+  height: 24px;
+  opacity: 0.2;
+}
+.poster-heart--8 path {
+  fill: var(--sidebar-fg);
+}
+.poster-heart--1 {
+  bottom: 5%;
+  left: 24px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.55;
+}
+.poster-heart--1 path:first-child {
+  fill: var(--sidebar-fg);
+}
+.poster-heart--1 path:last-child {
   stroke: var(--bd-primary);
+}
+
+// coluna direita, abaixo do anel → base
+.poster-heart--3 {
+  top: 34%;
+  right: 6%;
+  width: 26px;
+  height: 26px;
+  opacity: 0.3;
+}
+.poster-heart--3 path {
+  fill: var(--sidebar-fg);
+}
+.poster-heart--7 {
+  top: 52%;
+  right: 4%;
+  width: 32px;
+  height: 32px;
+  opacity: 0.2;
+}
+.poster-heart--7 path {
+  stroke: var(--sidebar-fg);
+}
+.poster-heart--5 {
+  top: 70%;
+  right: 7%;
+  width: 22px;
+  height: 22px;
+  opacity: 0.28;
+}
+.poster-heart--5 path {
+  fill: var(--sidebar-fg);
+}
+.poster-heart--9 {
+  top: 87%;
+  right: 5%;
+  width: 26px;
+  height: 26px;
+  opacity: 0.2;
+}
+.poster-heart--9 path {
+  stroke: var(--sidebar-fg);
 }
 
 .stage {
@@ -111,30 +192,6 @@
   }
 }
 
-.badge {
-  position: absolute;
-  top: -18px;
-  right: 28px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--bd-accent);
-  color: var(--bd-accent-contrast);
-  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--sidebar-bg) 55%, transparent);
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  transform: rotate(4deg);
-}
-
-.eyebrow {
-  margin: 0 0 12px;
-  color: var(--bd-primary-strong);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -151,9 +208,13 @@
   color: var(--bd-accent);
 }
 
-@media (max-width: 480px) {
+// Abaixo de ~900px a margem entre o card (max-width 440px, centralizado) e
+// as bordas da tela fica pequena demais pros corações e o anel não
+// invadirem a coluna do formulário — mais seguro esconder tudo do que
+// arriscar sobreposição num tablet estreito.
+@media (max-width: 900px) {
   .poster-ring,
-  .poster-mark {
+  .poster-heart {
     display: none;
   }
 }
