@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .vtp-fav-heart { fill: #5c7a3f; }
+    .vtp-fav-pulse { stroke: #fffdf7; }
+    @media (prefers-color-scheme: dark) {
+      .vtp-fav-heart { fill: #7c9a5c; }
+      .vtp-fav-pulse { stroke: #201c14; }
+    }
+  </style>
+  <path
+    class="vtp-fav-heart"
+    d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
+  />
+  <path
+    class="vtp-fav-pulse"
+    d="M10 46 L31 46 L39 29 L50 64 L59 38 L67 46 L90 46"
+    fill="none"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🌱 Vitality PLUS
+<img src="public/favicon.svg" alt="Logo do Vitality PLUS" width="64" height="64">
+
+# Vitality PLUS
 
 ![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
@@ -117,9 +119,14 @@ veja [`RECOMENDACOES.md`](./RECOMENDACOES.md).
 
 ## Identidade visual
 
-A identidade visual é única e acompanha a escolha de cada pessoa em todo o produto — área
-autenticada, login e cadastro. O seletor de paleta fica na topbar e a preferência é persistida no
-navegador; ela também é aplicada antes do Angular iniciar para evitar flash de cor incorreta.
+A marca é um coração com uma linha de pulso — vitalidade no sentido mais literal, não um mascote.
+Aparece no favicon, no menu lateral e no pôster de login/cadastro sempre do mesmo jeito
+(`public/favicon.svg` é a fonte única do ícone).
+
+A identidade de cor, por sua vez, é única e acompanha a escolha de cada pessoa em todo o produto —
+área autenticada, login e cadastro. O seletor de paleta fica na topbar e a preferência é
+persistida no navegador; ela também é aplicada antes do Angular iniciar para evitar flash de cor
+incorreta.
 
 - **Horta** (padrão) — primary verde, com menu/poster verde-floresta.
 - **Especiaria** — primary terracota, com menu/poster ameixa.
@@ -142,7 +149,7 @@ incluindo registrar refeição — em controles só de ícone com tooltips posic
 | Notificações      | ngx-toastr                                                                                    |
 | Linguagem         | TypeScript strict                                                                             |
 | Testes            | Jasmine / Karma                                                                               |
-| Backend consumido | Laravel + Sanctum stateful (sessão por cookie + CSRF), em `../vitality-Back`                  |
+| Backend consumido | Laravel + Sanctum (Bearer token), em `../vitality-Back`                                       |
 | Geração de planos | IA generativa (Google Gemini), acionada pelo backend a partir das respostas do quiz de dietas |
 
 A organização de pastas do código está detalhada em [`ESTRUTURA.md`](./ESTRUTURA.md).
@@ -163,9 +170,8 @@ Em outro terminal, dentro de `../vitality-Back`:
 php artisan serve  # http://localhost:8000
 ```
 
-O `.env` do backend precisa definir `FRONTEND_URL=http://localhost:4200` e
-`SANCTUM_STATEFUL_DOMAINS=localhost:4200`. O navegador recebe o cookie CSRF em
-`/sanctum/csrf-cookie`; portanto, mantenha front e API nas URLs configuradas no backend.
+O `.env` do backend precisa definir `FRONTEND_URL=http://localhost:4200` (necessário para o CORS
+liberar o Angular — `config/cors.php` do backend aceita só uma origin por vez).
 
 ### Scripts disponíveis
 
@@ -180,14 +186,15 @@ O `.env` do backend precisa definir `FRONTEND_URL=http://localhost:4200` e
 
 ## Autenticação e sessão
 
-O frontend usa **Sanctum stateful**, não Bearer token persistido no navegador. Antes de login ou
-cadastro, ele solicita o cookie CSRF; as chamadas para a API seguem com `withCredentials`; a sessão
-é restaurada consultando `GET /api/user`. O logout chama `POST /api/logout` e encerra a sessão no
-servidor.
+O frontend usa **Bearer token puro** (Laravel Sanctum), sem cookies nem CSRF. `POST /api/login`
+devolve um token que fica em `localStorage`; o `authInterceptor` anexa `Authorization: Bearer
+<token>` em toda chamada para a API protegida, exceto nas próprias rotas de autenticação. A sessão
+é restaurada no boot (`provideAppInitializer`), então um refresh de página não desloga quem já
+tinha token válido. Um 401 numa rota protegida é tratado como sessão expirada: logout local e
+redirecionamento para `/login`.
 
-Não armazene token de acesso em `localStorage` ou adicione manualmente o cabeçalho `Authorization`.
-Para produção, configure no backend os atributos de cookie, CORS, domínios stateful e CSP conforme
-o ambiente de deploy.
+`POST /logout` no backend ainda roda em sessão Breeze e não é confiável com Bearer token — o
+logout deste frontend é só client-side (apaga o token e redireciona).
 
 ## Internacionalização
 
@@ -201,8 +208,6 @@ As traduções ficam centralizadas em [`public/i18n/pt-BR.json`](./public/i18n/p
 da interface usam Transloco e mudam sem recarregar a página, incluindo as telas de login e cadastro.
 Ao adicionar uma nova string visível, inclua a chave nos dois arquivos de idioma e use a chave no
 template ou componente em vez de texto fixo.
-
-O inventário de cobertura e os pontos revisados está em [`docs/i18n-audit.md`](./docs/i18n-audit.md).
 
 ## Estrutura de pastas
 

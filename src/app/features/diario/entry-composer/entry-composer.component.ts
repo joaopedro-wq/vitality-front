@@ -342,7 +342,7 @@ export class EntryComposerComponent implements OnDestroy {
             macrosRef: item.macros,
           })),
         );
-        this.resolverPorcoesBase(entry.items.map((item) => item.food_id));
+        this.resolverDadosBase(entry.items.map((item) => item.food_id));
         return;
       }
 
@@ -363,7 +363,7 @@ export class EntryComposerComponent implements OnDestroy {
           macrosRef: item.macros,
         })),
       );
-      this.resolverPorcoesBase(planDraft.items.map((item) => item.food_id));
+      this.resolverDadosBase(planDraft.items.map((item) => item.food_id));
     });
   }
 
@@ -456,7 +456,15 @@ export class EntryComposerComponent implements OnDestroy {
         macrosRef: item.macros,
       })),
     );
-    this.resolverPorcoesBase(refeicao.items.map((item) => item.food_id));
+    this.resolverDadosBase(refeicao.items.map((item) => item.food_id));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // O rodapé é a última ação do editor. Rola o documento até o fim para
+        // deixar Voltar/Avançar integralmente visíveis, inclusive no mobile.
+        const fimDaPagina = document.documentElement.scrollHeight - window.innerHeight;
+        window.scrollTo({ top: Math.max(0, fimDaPagina), behavior: 'smooth' });
+      });
+    });
   }
 
   protected escolher(food: Alimento): void {
@@ -665,14 +673,17 @@ export class EntryComposerComponent implements OnDestroy {
       .subscribe((categorias) => this.categorias.set(categorias));
   }
 
-  private resolverPorcoesBase(foodIds: number[]): void {
-    const bases = new Map<number, number>(
-      [...this.atalhos(), ...this.resultadosBusca()].map((food) => [food.id, food.qtd]),
+  private resolverDadosBase(foodIds: number[]): void {
+    const bases = new Map<number, Pick<Alimento, 'qtd' | 'illustration_key'>>(
+      [...this.atalhos(), ...this.resultadosBusca()].map((food) => [
+        food.id,
+        { qtd: food.qtd, illustration_key: food.illustration_key },
+      ]),
     );
     const faltantes = foodIds.filter((id) => !bases.has(id));
 
     if (!faltantes.length) {
-      this.aplicarPorcoesBase(bases);
+      this.aplicarDadosBase(bases);
       return;
     }
 
@@ -680,15 +691,24 @@ export class EntryComposerComponent implements OnDestroy {
       .pipe(takeUntil(this.destruido))
       .subscribe((resultados) => {
         for (const food of resultados) {
-          if (food) bases.set(food.id, food.qtd);
+          if (food) {
+            bases.set(food.id, { qtd: food.qtd, illustration_key: food.illustration_key });
+          }
         }
-        this.aplicarPorcoesBase(bases);
+        this.aplicarDadosBase(bases);
       });
   }
 
-  private aplicarPorcoesBase(bases: Map<number, number>): void {
+  private aplicarDadosBase(bases: Map<number, Pick<Alimento, 'qtd' | 'illustration_key'>>): void {
     this.itens.update((itens) =>
-      itens.map((item) => ({ ...item, porcaoBase: bases.get(item.foodId) })),
+      itens.map((item) => {
+        const alimento = bases.get(item.foodId);
+        return {
+          ...item,
+          porcaoBase: alimento?.qtd ?? item.porcaoBase,
+          illustrationKey: alimento?.illustration_key ?? item.illustrationKey,
+        };
+      }),
     );
   }
 

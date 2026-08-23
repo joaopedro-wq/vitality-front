@@ -17,6 +17,106 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
   - O critério de cálculo do percentual de uso é exibido ou documentado;
   - Dados administrativos não ficam disponíveis para usuários comuns.
 
+### Recuperação de senha pelo front-end
+
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Implementar no front-end o fluxo completo de recuperação e redefinição de senha usando os endpoints já disponíveis no back-end. O usuário deve solicitar o link, acessar a tela de nova senha e receber confirmações claras em cada etapa.
+- **Critérios de aceite:**
+  - Usuário pode solicitar a recuperação informando o e-mail;
+  - Link válido direciona para uma tela de redefinição de senha;
+  - Nova senha segue a política atual de validação;
+  - Mensagens de sucesso e erro respeitam o idioma ativo;
+  - O fluxo não expõe se um e-mail possui ou não conta cadastrada.
+
+### Notificações e lembretes de refeições
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Permitir que o usuário configure lembretes para registrar refeições em horários definidos, com opção de ativar, editar ou desativar cada lembrete.
+- **Critérios de aceite:**
+  - Usuário pode criar, editar e remover lembretes por horário;
+  - Lembretes respeitam as permissões de notificação do dispositivo;
+  - Usuário consegue desativar todos os lembretes a qualquer momento;
+  - O comportamento funciona em desktop e mobile dentro das capacidades da plataforma.
+
+### Metas semanais e acompanhamento de progresso
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Complementar a meta diária com uma visão semanal de consistência, exibindo dias com meta atingida, progresso acumulado e evolução no período.
+- **Critérios de aceite:**
+  - Usuário visualiza o progresso da semana atual;
+  - Dias com e sem meta atingida são identificados claramente;
+  - Indicadores semanais são calculados a partir dos registros existentes;
+  - A interface funciona em desktop e mobile.
+
+### Histórico e comparativo de planos alimentares
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Permitir consultar planos alimentares anteriores, comparar informações relevantes entre versões e reutilizar um plano existente como base para um novo planejamento.
+- **Critérios de aceite:**
+  - Usuário acessa o histórico de planos próprios;
+  - É possível comparar informações essenciais entre dois planos;
+  - Um plano anterior pode ser duplicado como base para edição;
+  - Nenhuma alteração é aplicada ao plano original sem confirmação.
+
+### Refeições salvas e favoritas
+
+- **Status:** Pendente
+- **Prioridade:** Alta
+- **Descrição:** Permitir salvar combinações de alimentos ou refeições frequentes para lançamento rápido no Diário.
+- **Critérios de aceite:**
+  - Usuário pode salvar, editar e remover refeições favoritas;
+  - Refeições salvas podem ser adicionadas ao Diário com poucos passos;
+  - Quantidades e alimentos da refeição são preservados no lançamento;
+  - Dados são isolados por usuário.
+
+### Relatório de evolução por período
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Criar uma visão de evolução com consumo médio, adesão às metas e principais indicadores nutricionais em um período selecionado, com opção de exportação simples.
+- **Critérios de aceite:**
+  - Usuário seleciona o período do relatório;
+  - Relatório exibe métricas e evolução calculadas a partir dos registros;
+  - Dados sem registros suficientes são tratados com estado vazio claro;
+  - Relatório pode ser exportado em formato definido pelo produto.
+
+### Onboarding guiado para novos usuários
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Criar um onboarding opcional para apresentar Diário, metas e planos alimentares nas primeiras sessões do usuário.
+- **Critérios de aceite:**
+  - Novos usuários recebem o onboarding após o primeiro acesso;
+  - Usuário pode avançar, pular e retomar as orientações;
+  - A conclusão ou dispensa é persistida por usuário;
+  - O fluxo é responsivo e acessível.
+
+### Compartilhamento de acompanhamento com nutricionista
+
+- **Status:** Pendente
+- **Prioridade:** Baixa
+- **Descrição:** Permitir gerar um link ou relatório controlado para compartilhar diário, metas e planos alimentares com um nutricionista ou profissional autorizado.
+- **Critérios de aceite:**
+  - Usuário escolhe quais informações compartilhar;
+  - Compartilhamento possui prazo de validade e pode ser revogado;
+  - Dados compartilhados ficam indisponíveis após revogação ou expiração;
+  - Acesso compartilhado não permite alteração dos dados do usuário.
+
+### Central de notificações internas
+
+- **Status:** Pendente
+- **Prioridade:** Média
+- **Descrição:** Criar uma central de avisos dentro da aplicação para informar plano vencido, meta não definida, lembretes e atualizações relevantes.
+- **Critérios de aceite:**
+  - Usuário visualiza notificações não lidas e histórico recente;
+  - Notificações podem ser marcadas como lidas;
+  - Cada aviso direciona para a ação ou tela relacionada quando aplicável;
+  - Usuário não recebe notificações de outros usuários.
+
 ### Política de verificação de e-mail
 
 - **Status:** Pendente
