@@ -602,36 +602,36 @@
     "skip": "Skip for now",
     "back": "Back",
     "next": "Next",
-    "finish": "Start using it",
+    "finish": "All set, let’s begin",
     "restart": "View onboarding again",
     "saveError": "We could not save your choice. Please try again.",
     "dashboard": {
-      "title": "Your daily overview",
-      "description": "The Dashboard brings together your progress, upcoming meals, and shortcuts to the most important actions."
+      "title": "Start with a meal",
+      "description": "This shortcut takes you straight to logging. You do not need to understand everything before getting started."
     },
     "diary": {
       "title": "Log your day in the Diary",
       "description": "This is the logging screen: choose a meal, add foods, and immediately follow your calories and macros."
     },
     "diaryAction": {
-      "title": "Log a meal",
-      "description": "Choose a phase of your day and add foods. You can adjust quantities before saving."
+      "title": "Log the meal you are having",
+      "description": "Choose a meal from your day and add foods at your own pace. You can adjust quantities before saving."
     },
     "goals": {
       "title": "Set your Goals",
       "description": "Set up your objective and routine. Your daily goal guides the Dashboard, Diary, and food suggestions."
     },
     "goalsAction": {
-      "title": "Set up or review your goal",
-      "description": "Complete the profile and routine steps to receive a personalized nutrition suggestion."
+      "title": "Adjust your goal when your routine changes",
+      "description": "Share your objectives and preferences. This reference helps organize your plan and daily tracking."
     },
     "plans": {
       "title": "Build your Meal plan",
       "description": "Create, review, and favorite plans to turn your goal into a practical meal routine."
     },
     "plansAction": {
-      "title": "Create a meal plan",
-      "description": "Start a new plan from your goals and choose the format that best fits your routine."
+      "title": "Organize your next meals",
+      "description": "Build a plan from your goal and adapt the choices to your routine."
     }
   },
   "landing": {

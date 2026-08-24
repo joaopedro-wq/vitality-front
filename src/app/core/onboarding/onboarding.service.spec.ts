@@ -68,7 +68,11 @@ describe('OnboardingService', () => {
     service = TestBed.inject(OnboardingService);
     http = TestBed.inject(HttpTestingController);
     tourTarget = document.createElement('div');
-    tourTarget.dataset['tour'] = 'onboarding-dashboard';
+    tourTarget.dataset['tour'] = 'onboarding-register-meal';
+    spyOn(tourTarget, 'getBoundingClientRect').and.returnValue({
+      width: 44,
+      height: 44,
+    } as DOMRect);
     document.body.append(tourTarget);
   });
 
@@ -85,6 +89,10 @@ describe('OnboardingService', () => {
     service.evaluateUser(user('pending', 8));
     tick();
     expect(tour.start).toHaveBeenCalled();
+    expect(tour.start).toHaveBeenCalledWith(
+      [jasmine.objectContaining({ target: '[data-tour="onboarding-register-meal"]' })],
+      jasmine.any(Object),
+    );
   }));
 
   it('permite reabrir manualmente sem alterar o status persistido', fakeAsync(() => {

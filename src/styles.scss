@@ -24,6 +24,23 @@
   --bd-radius: 0.875rem;
 }
 
+.bd-tour__spot {
+  border-radius: var(--vitality-tour-spot-radius, var(--bd-radius, 0.875rem)) !important;
+  outline-offset: 3px;
+  transition-duration: 0.42s !important;
+}
+
+.bd-tour__popover {
+  transition-duration: 0.42s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-tour__spot,
+  .bd-tour__popover {
+    transition: none !important;
+  }
+}
+
 :root[data-theme='dark'] {
   --bd-bg: #171410;
   --bd-bg-elevated: #201c14;

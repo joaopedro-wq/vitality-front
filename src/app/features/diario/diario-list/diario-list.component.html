@@ -1,4 +1,4 @@
-<div data-tour="onboarding-diary-page">
+<div>
   @if (loadingVisivel()) {
     <vtp-loading-state
       [titulo]="'uiLoading.diary' | transloco"
@@ -86,6 +86,7 @@
       <div class="grid items-start gap-4 md:grid-cols-[330px_minmax(0,1fr)]">
         <div
           class="card px-3 py-5 md:block"
+          data-tour="onboarding-diary-map"
           [class.hidden]="modo() === 'compor'"
           [class.max-md:hidden]="faseMobileAberta()"
           style="

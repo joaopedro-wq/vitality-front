@@ -138,6 +138,7 @@
           routerLink="/diario"
           [queryParams]="{ registrar: 1 }"
           class="cta"
+          data-tour="onboarding-register-meal"
           [bdTooltip]="t('common.shell.registerMeal')"
           placement="bottom"
           [attr.aria-label]="t('common.shell.registerMeal')"
@@ -255,5 +256,5 @@
     [confirmarTexto]="t('auth.sessionWarning.continue')"
     (confirmado)="inactivity.continueSession()"
   />
-  <bd-tour [scrollIntoView]="true" />
+  <bd-tour [scrollIntoView]="true" [spotPadding]="10" />
 </div>

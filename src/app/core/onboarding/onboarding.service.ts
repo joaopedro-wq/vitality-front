@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { BdTourService } from 'bandeira-ui';
@@ -13,10 +14,13 @@ import type { OnboardingStatus, User } from '../models/user.model';
 
 interface OnboardingStage {
   route: string;
-  target: () => string;
+  targets: readonly string[];
   title: string;
   content: string;
 }
+
+const TARGET_WAIT_TIMEOUT_MS = 2_400;
+const TARGET_RETRY_INTERVAL_MS = 80;
 
 @Injectable({ providedIn: 'root' })
 export class OnboardingService {
@@ -26,10 +30,14 @@ export class OnboardingService {
   private readonly transloco = inject(TranslocoService);
   private readonly tour = inject(BdTourService);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   private automaticUserId: number | null = null;
   private readonly awaitingOutcome = signal(false);
+  private readonly preparingStage = signal(false);
   private readonly stage = signal(0);
   private readonly manualRun = signal(false);
+  private runId = 0;
 
   readonly saving = signal(false);
 
@@ -39,6 +47,7 @@ export class OnboardingService {
       if (!this.awaitingOutcome() || this.tour.active() || !outcome) return;
 
       this.awaitingOutcome.set(false);
+      this.clearSpotShape();
       if (!outcome.completed) {
         if (!this.manualRun()) this.persist('skipped');
         return;
@@ -70,7 +79,7 @@ export class OnboardingService {
   }
 
   private start(manual: boolean): void {
-    if (this.tour.active() || this.awaitingOutcome()) return;
+    if (this.tour.active() || this.awaitingOutcome() || this.preparingStage()) return;
 
     this.manualRun.set(manual);
     this.stage.set(0);
@@ -81,16 +90,27 @@ export class OnboardingService {
     const stage = this.stages()[this.stage()];
     if (!stage) return;
 
-    this.router.navigateByUrl(stage.route).then(() => {
-      // A rota já foi ativada neste ponto. Um frame dá tempo apenas para o Angular
-      // desenhar o contêiner estável da página, sem criar uma espera perceptível.
-      window.requestAnimationFrame(() => this.openStage(stage));
+    const currentRunId = ++this.runId;
+    this.preparingStage.set(true);
+    this.router.navigateByUrl(stage.route).then(async (navigated) => {
+      if (!navigated || currentRunId !== this.runId) {
+        this.preparingStage.set(false);
+        return;
+      }
+
+      const target = await this.waitForVisibleTarget(stage.targets, currentRunId);
+      if (currentRunId !== this.runId) return;
+
+      this.preparingStage.set(false);
+      if (!target) return;
+
+      this.applySpotShape(target);
+      this.openStage(stage, target);
     });
   }
 
-  private openStage(stage: OnboardingStage): void {
+  private openStage(stage: OnboardingStage, target: string): void {
     this.awaitingOutcome.set(true);
-    const target = stage.target();
     this.tour.start([{ target, title: stage.title, content: stage.content, placement: 'auto' }], {
       next: this.transloco.translate('onboarding.next'),
       prev: this.transloco.translate('onboarding.back'),
@@ -111,29 +131,96 @@ export class OnboardingService {
     return [
       {
         route: '/dashboard',
-        target: () => '[data-tour="onboarding-dashboard"]',
+        targets: ['[data-tour="onboarding-register-meal"]'],
         title: this.transloco.translate('onboarding.dashboard.title'),
         content: this.transloco.translate('onboarding.dashboard.description'),
       },
       {
         route: '/diario',
-        target: () => '[data-tour="onboarding-diary-page"]',
-        title: this.transloco.translate('onboarding.diary.title'),
-        content: this.transloco.translate('onboarding.diary.description'),
+        targets: [
+          '[data-tour="onboarding-diary-action"]',
+          '[data-tour="onboarding-diary-map"]',
+          '[data-tour="onboarding-diary-desktop"]',
+          '[data-tour="onboarding-diary-mobile"]',
+        ],
+        title: this.transloco.translate('onboarding.diaryAction.title'),
+        content: this.transloco.translate('onboarding.diaryAction.description'),
       },
       {
         route: '/metas',
-        target: () => '[data-tour="onboarding-goals-page"]',
-        title: this.transloco.translate('onboarding.goals.title'),
-        content: this.transloco.translate('onboarding.goals.description'),
+        targets: [
+          '[data-tour="onboarding-goals-action"]',
+          '[data-tour="onboarding-goals-desktop"]',
+          '[data-tour="onboarding-goals-mobile"]',
+        ],
+        title: this.transloco.translate('onboarding.goalsAction.title'),
+        content: this.transloco.translate('onboarding.goalsAction.description'),
       },
       {
         route: '/dietas',
-        target: () => '[data-tour="onboarding-plans-page"]',
-        title: this.transloco.translate('onboarding.plans.title'),
-        content: this.transloco.translate('onboarding.plans.description'),
+        targets: [
+          '[data-tour="onboarding-plans-action"]',
+          '[data-tour="onboarding-plans-desktop"]',
+          '[data-tour="onboarding-plans-mobile"]',
+        ],
+        title: this.transloco.translate('onboarding.plansAction.title'),
+        content: this.transloco.translate('onboarding.plansAction.description'),
       },
     ];
+  }
+
+  private async waitForVisibleTarget(
+    selectors: readonly string[],
+    currentRunId: number,
+  ): Promise<string | null> {
+    if (!isPlatformBrowser(this.platformId)) return null;
+
+    const deadline = Date.now() + TARGET_WAIT_TIMEOUT_MS;
+    do {
+      const target = this.findVisibleTarget(selectors);
+      if (target) return target;
+
+      await new Promise<void>((resolve) => window.setTimeout(resolve, TARGET_RETRY_INTERVAL_MS));
+    } while (Date.now() < deadline && currentRunId === this.runId);
+
+    return null;
+  }
+
+  private findVisibleTarget(selectors: readonly string[]): string | null {
+    for (const selector of selectors) {
+      const target = Array.from(this.document.querySelectorAll<HTMLElement>(selector)).find(
+        (element) => {
+          const rect = element.getBoundingClientRect();
+          const styles = window.getComputedStyle(element);
+          return rect.width > 0 && rect.height > 0 && styles.visibility !== 'hidden';
+        },
+      );
+      if (target) return selector;
+    }
+    return null;
+  }
+
+  private applySpotShape(selector: string): void {
+    const target = this.document.querySelector<HTMLElement>(selector);
+    if (!target) return;
+
+    const styles = window.getComputedStyle(target);
+    // O spot tem 10px de respiro; somar esse valor preserva a curvatura visual
+    // do alvo em vez de deixar o recorte maior com cantos aparentemente retos.
+    const radius = [
+      styles.borderTopLeftRadius,
+      styles.borderTopRightRadius,
+      styles.borderBottomRightRadius,
+      styles.borderBottomLeftRadius,
+    ]
+      .map((value) => `calc(${value} + 10px)`)
+      .join(' ');
+
+    this.document.documentElement.style.setProperty('--vitality-tour-spot-radius', radius);
+  }
+
+  private clearSpotShape(): void {
+    this.document.documentElement.style.removeProperty('--vitality-tour-spot-radius');
   }
 
   private persist(status: Exclude<OnboardingStatus, 'pending'>): void {

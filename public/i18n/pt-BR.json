@@ -602,36 +602,36 @@
     "skip": "Pular por agora",
     "back": "Voltar",
     "next": "Avançar",
-    "finish": "Começar a usar",
+    "finish": "Pronto, vamos começar",
     "restart": "Ver onboarding novamente",
     "saveError": "Não foi possível salvar sua escolha agora. Tente novamente.",
     "dashboard": {
-      "title": "Seu resumo diário",
-      "description": "O Painel reúne seu progresso, próximas refeições e atalhos para as ações mais importantes."
+      "title": "Comece por uma refeição",
+      "description": "Este atalho leva você direto ao registro. Não precisa entender tudo antes de começar."
     },
     "diary": {
       "title": "Registre o seu dia no Diário",
       "description": "Esta é a tela de registro: escolha uma refeição, adicione os alimentos e acompanhe na hora o consumo de calorias e macros."
     },
     "diaryAction": {
-      "title": "Registre uma refeição",
-      "description": "Escolha uma fase do dia e adicione alimentos. Você pode ajustar quantidades antes de salvar."
+      "title": "Registre a refeição que está fazendo",
+      "description": "Escolha uma refeição do dia e adicione os alimentos no seu ritmo. Você pode ajustar quantidades antes de salvar."
     },
     "goals": {
       "title": "Defina suas Metas",
       "description": "Configure seu objetivo e sua rotina. A meta diária orienta o Painel, o Diário e as sugestões alimentares."
     },
     "goalsAction": {
-      "title": "Configure ou revise a meta",
-      "description": "Complete as etapas do perfil e da rotina para receber uma sugestão nutricional personalizada."
+      "title": "Ajuste sua meta quando a rotina mudar",
+      "description": "Informe seus objetivos e preferências. Essa referência ajuda a organizar o plano e o acompanhamento do dia."
     },
     "plans": {
       "title": "Monte seu Plano alimentar",
       "description": "Crie, revise e favorite planos para transformar sua meta em uma rotina prática de refeições."
     },
     "plansAction": {
-      "title": "Crie um plano alimentar",
-      "description": "Comece um plano novo a partir das suas metas e escolha o formato que combina com sua rotina."
+      "title": "Organize as próximas refeições",
+      "description": "Monte um plano a partir da sua meta e adapte as escolhas à sua rotina."
     }
   },
   "landing": {
