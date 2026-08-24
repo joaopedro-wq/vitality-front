@@ -23,11 +23,11 @@
           <p class="landing-eyebrow landing-eyebrow--inverse" bdReveal>
             {{ t('landing.hero.eyebrow') }}
           </p>
-          <h1 class="landing-hero-title" bdReveal [revealDelay]="60">
+          <h1 class="landing-hero-title" bdReveal [revealDelay]="110">
             {{ t('landing.hero.title') }}
           </h1>
-          <p class="landing-hero-lede" bdReveal [revealDelay]="120">{{ t('landing.hero.lede') }}</p>
-          <div class="landing-hero-actions" bdReveal [revealDelay]="180">
+          <p class="landing-hero-lede" bdReveal [revealDelay]="220">{{ t('landing.hero.lede') }}</p>
+          <div class="landing-hero-actions" bdReveal [revealDelay]="330">
             <a routerLink="/register" bdButton size="lg">{{ t('landing.hero.ctaPrimary') }}</a>
             <a href="#recursos" bdButton variant="ghost" size="lg">
               {{ t('landing.hero.ctaSecondary') }}
@@ -35,7 +35,7 @@
             </a>
           </div>
         </div>
-        <div class="landing-hero-visual" bdReveal="scale" [revealDelay]="120">
+        <div class="landing-hero-visual" bdReveal="scale" [revealDelay]="160">
           <div class="landing-window-bar" aria-hidden="true">
             <span></span><span></span><span></span>
           </div>
@@ -58,22 +58,22 @@
         <p class="landing-body">{{ t('landing.benefits.lede') }}</p>
       </div>
       <div class="landing-benefit-grid">
-        <article class="landing-benefit card" bdReveal>
+        <article class="landing-benefit card" bdReveal="left">
           <svg lucideClipboardList aria-hidden="true"></svg>
           <h3>{{ t('landing.benefits.planTitle') }}</h3>
           <p>{{ t('landing.benefits.planBody') }}</p>
         </article>
-        <article class="landing-benefit card" bdReveal [revealDelay]="70">
+        <article class="landing-benefit card" bdReveal="left" [revealDelay]="110">
           <svg lucideChartNoAxesCombined aria-hidden="true"></svg>
           <h3>{{ t('landing.benefits.macrosTitle') }}</h3>
           <p>{{ t('landing.benefits.macrosBody') }}</p>
         </article>
-        <article class="landing-benefit card" bdReveal [revealDelay]="140">
+        <article class="landing-benefit card" bdReveal="right" [revealDelay]="220">
           <svg lucideCalendarCheck aria-hidden="true"></svg>
           <h3>{{ t('landing.benefits.diaryTitle') }}</h3>
           <p>{{ t('landing.benefits.diaryBody') }}</p>
         </article>
-        <article class="landing-benefit card" bdReveal [revealDelay]="210">
+        <article class="landing-benefit card" bdReveal="right" [revealDelay]="330">
           <svg lucideRefreshCw aria-hidden="true"></svg>
           <h3>{{ t('landing.benefits.swapsTitle') }}</h3>
           <p>{{ t('landing.benefits.swapsBody') }}</p>
@@ -92,18 +92,18 @@
           <h2 id="como-funciona-titulo" class="landing-h2">{{ t('landing.howItWorks.title') }}</h2>
           <p class="landing-body">{{ t('landing.howItWorks.lede') }}</p>
         </div>
-        <ol class="landing-steps">
+        <ol class="landing-steps" bdReveal [revealDelay]="120">
           <li bdReveal>
             <span class="landing-step-number">1</span>
             <h3>{{ t('landing.howItWorks.step1Title') }}</h3>
             <p>{{ t('landing.howItWorks.step1Body') }}</p>
           </li>
-          <li bdReveal [revealDelay]="90">
+          <li bdReveal [revealDelay]="130">
             <span class="landing-step-number">2</span>
             <h3>{{ t('landing.howItWorks.step2Title') }}</h3>
             <p>{{ t('landing.howItWorks.step2Body') }}</p>
           </li>
-          <li bdReveal [revealDelay]="180">
+          <li bdReveal [revealDelay]="260">
             <span class="landing-step-number">3</span>
             <h3>{{ t('landing.howItWorks.step3Title') }}</h3>
             <p>{{ t('landing.howItWorks.step3Body') }}</p>
@@ -139,7 +139,7 @@
           </div>
           @for (feature of features; track feature.id) {
             @if (featureAtiva() === feature.id) {
-              <div class="landing-feature-description" bdReveal [revealDelay]="30">
+              <div class="landing-feature-description" bdReveal="left" [revealDelay]="30">
                 <h3>{{ t('landing.features.' + feature.id + 'Title') }}</h3>
                 <p>{{ t('landing.features.' + feature.id + 'Body') }}</p>
                 <span
@@ -175,7 +175,7 @@
       class="page-shell landing-section landing-section--compact"
       aria-labelledby="orientacao-titulo"
     >
-      <aside class="landing-guidance card" role="note" bdReveal>
+      <aside class="landing-guidance card" role="note" bdReveal="left">
         <svg lucideInfo aria-hidden="true"></svg>
         <div>
           <p class="landing-eyebrow">{{ t('landing.guidance.eyebrow') }}</p>
@@ -200,7 +200,7 @@
     </section>
 
     <section class="page-shell landing-section">
-      <div class="landing-final-cta" bdReveal>
+      <div class="landing-final-cta" bdReveal="scale">
         <h2>{{ t('landing.finalCta.title') }}</h2>
         <p>{{ t('landing.finalCta.body') }}</p>
         <a routerLink="/register" bdButton size="lg">{{ t('landing.finalCta.cta') }}</a>

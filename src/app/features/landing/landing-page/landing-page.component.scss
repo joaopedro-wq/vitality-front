@@ -3,6 +3,9 @@
 }
 
 .landing {
+  --bd-duration-slow: 0.72s;
+  --landing-motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
   overflow: hidden;
   background: var(--bd-bg);
   color: var(--bd-fg);
@@ -148,6 +151,7 @@
 }
 .landing-hero-visual {
   border-color: color-mix(in srgb, var(--sidebar-fg) 22%, transparent);
+  transform-origin: center;
 }
 .landing-window-bar {
   display: flex;
@@ -193,10 +197,25 @@
 }
 .landing-benefit {
   padding: 1.25rem;
+  transition:
+    transform 0.36s var(--landing-motion-ease),
+    border-color 0.36s var(--landing-motion-ease),
+    box-shadow 0.36s var(--landing-motion-ease);
+}
+.landing-benefit:hover {
+  transform: translateY(-0.25rem);
+  border-color: var(--bd-border-strong);
+  box-shadow: var(--bd-shadow-md);
 }
 .landing-benefit svg,
 .landing-guidance > svg {
   color: var(--bd-primary-strong);
+}
+.landing-benefit svg {
+  transition: transform 0.36s var(--landing-motion-ease);
+}
+.landing-benefit:hover svg {
+  transform: translateY(-0.125rem);
 }
 .landing-benefit h3,
 .landing-steps h3,
@@ -220,10 +239,28 @@
   background: var(--bd-surface-hover);
 }
 .landing-steps {
+  position: relative;
   padding: 0;
   list-style: none;
 }
+.landing-steps::before {
+  position: absolute;
+  top: 2.25rem;
+  right: 16.666%;
+  left: 16.666%;
+  z-index: 0;
+  height: 1px;
+  background: var(--bd-border-strong);
+  content: '';
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.landing-steps.is-visible::before {
+  animation: landing-steps-line 0.82s var(--landing-motion-ease) 0.2s both;
+}
 .landing-steps li {
+  position: relative;
+  z-index: 1;
   padding: 1.25rem;
   border-radius: 1rem;
   background: var(--bd-surface);
@@ -239,6 +276,15 @@
   font-family: var(--bd-font-mono);
   font-size: 0.75rem;
   font-weight: 800;
+}
+.landing-steps.is-visible li .landing-step-number {
+  animation: landing-step-number 0.52s var(--landing-motion-ease) both;
+}
+.landing-steps.is-visible li:nth-child(2) .landing-step-number {
+  animation-delay: 0.24s;
+}
+.landing-steps.is-visible li:nth-child(3) .landing-step-number {
+  animation-delay: 0.38s;
 }
 .landing-steps h3 {
   margin-top: 1.25rem;
@@ -292,7 +338,10 @@
   font-weight: 700;
 }
 .landing-feature-preview {
-  animation: landing-preview-in 0.28s var(--bd-ease) both;
+  animation: landing-preview-in 0.56s var(--landing-motion-ease) both;
+}
+.landing-feature-preview img {
+  animation: landing-preview-image-in 0.68s var(--landing-motion-ease) both;
 }
 
 .landing-guidance {
@@ -358,6 +407,34 @@
   }
 }
 
+@keyframes landing-preview-image-in {
+  from {
+    opacity: 0.65;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes landing-steps-line {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes landing-step-number {
+  from {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (min-width: 640px) {
   .landing-nav {
     padding-inline: 1.5rem;
@@ -380,6 +457,12 @@
   }
   .landing-final-cta {
     padding: 3.5rem 2rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .landing-steps::before {
+    display: none;
   }
 }
 
@@ -418,10 +501,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .landing-benefit,
+  .landing-benefit svg,
   .landing-feature-tabs button {
     transition: none;
   }
-  .landing-feature-preview {
+  .landing-feature-preview,
+  .landing-feature-preview img,
+  .landing-steps::before,
+  .landing-steps.is-visible li .landing-step-number {
     animation: none;
   }
 }
