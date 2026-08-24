@@ -1,8 +1,8 @@
-<div class="page-shell-wide p-4 sm:p-6 lg:p-8">
+<div class="page-shell-wide p-4 sm:p-6 lg:p-8" data-tour="onboarding-dashboard">
   @if (carregandoVisivel()) {
     <vtp-loading-state />
   } @else if (resumo(); as r) {
-    <div class="flex flex-col gap-4 sm:gap-5" data-tour="onboarding-dashboard">
+    <div class="flex flex-col gap-4 sm:gap-5">
       <div class="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-[260px_minmax(0,1fr)]">
         <vtp-badge-card [hoje]="r.hoje" [progressao]="r.progressao" />
         <vtp-mission-card [proximaRefeicao]="r.proxima_refeicao" />

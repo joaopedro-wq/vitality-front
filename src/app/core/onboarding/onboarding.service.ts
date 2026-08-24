@@ -82,18 +82,15 @@ export class OnboardingService {
     if (!stage) return;
 
     this.router.navigateByUrl(stage.route).then(() => {
-      this.openStageWhenReady(stage);
+      // A rota já foi ativada neste ponto. Um frame dá tempo apenas para o Angular
+      // desenhar o contêiner estável da página, sem criar uma espera perceptível.
+      window.requestAnimationFrame(() => this.openStage(stage));
     });
   }
 
-  private openStageWhenReady(stage: OnboardingStage, attempts = 0): void {
-    const target = stage.target();
-    if (!document.querySelector(target) && attempts < 30) {
-      window.setTimeout(() => this.openStageWhenReady(stage, attempts + 1), 100);
-      return;
-    }
-
+  private openStage(stage: OnboardingStage): void {
     this.awaitingOutcome.set(true);
+    const target = stage.target();
     this.tour.start([{ target, title: stage.title, content: stage.content, placement: 'auto' }], {
       next: this.transloco.translate('onboarding.next'),
       prev: this.transloco.translate('onboarding.back'),
@@ -111,10 +108,6 @@ export class OnboardingService {
   }
 
   private stages(): OnboardingStage[] {
-    const suffix = window.matchMedia('(max-width: 900px)').matches ? 'mobile' : 'desktop';
-    const navigationTarget = (item: 'diary' | 'goals' | 'plans') =>
-      `[data-tour="onboarding-${item}-${suffix}"]`;
-
     return [
       {
         route: '/dashboard',
@@ -124,39 +117,21 @@ export class OnboardingService {
       },
       {
         route: '/diario',
-        target: () => navigationTarget('diary'),
+        target: () => '[data-tour="onboarding-diary-page"]',
         title: this.transloco.translate('onboarding.diary.title'),
         content: this.transloco.translate('onboarding.diary.description'),
       },
       {
-        route: '/diario',
-        target: () => '[data-tour="onboarding-diary-action"]',
-        title: this.transloco.translate('onboarding.diaryAction.title'),
-        content: this.transloco.translate('onboarding.diaryAction.description'),
-      },
-      {
         route: '/metas',
-        target: () => navigationTarget('goals'),
+        target: () => '[data-tour="onboarding-goals-page"]',
         title: this.transloco.translate('onboarding.goals.title'),
         content: this.transloco.translate('onboarding.goals.description'),
       },
       {
-        route: '/metas',
-        target: () => '[data-tour="onboarding-goals-action"]',
-        title: this.transloco.translate('onboarding.goalsAction.title'),
-        content: this.transloco.translate('onboarding.goalsAction.description'),
-      },
-      {
         route: '/dietas',
-        target: () => navigationTarget('plans'),
+        target: () => '[data-tour="onboarding-plans-page"]',
         title: this.transloco.translate('onboarding.plans.title'),
         content: this.transloco.translate('onboarding.plans.description'),
-      },
-      {
-        route: '/dietas',
-        target: () => '[data-tour="onboarding-plans-action"]',
-        title: this.transloco.translate('onboarding.plansAction.title'),
-        content: this.transloco.translate('onboarding.plansAction.description'),
       },
     ];
   }

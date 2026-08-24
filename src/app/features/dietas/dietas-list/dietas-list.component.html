@@ -1,289 +1,296 @@
-@if (loadingVisivel()) {
-  <vtp-loading-state
-    titulo="Carregando seu plano alimentar"
-    descricao="Buscando os planos salvos e a sua meta."
-  />
-} @else if (!hasMeta()) {
-  <section
-    class="mx-auto grid max-w-2xl place-items-center gap-5 rounded-[28px] border border-border bg-surface p-8 text-center shadow-sm"
-  >
-    <div class="grid h-14 w-14 place-items-center rounded-2xl bg-primary-soft text-primary">
-      <svg lucideSparkles size="28" aria-hidden="true"></svg>
-    </div>
-    <vtp-page-title
-      contexto="Plano alimentar"
-      titulo="Primeiro, vamos definir sua meta"
-      subtitulo="Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo."
-      centralizado
+<div data-tour="onboarding-plans-page">
+  @if (loadingVisivel()) {
+    <vtp-loading-state
+      titulo="Carregando seu plano alimentar"
+      descricao="Buscando os planos salvos e a sua meta."
     />
-    <button bdButton data-tour="onboarding-plans-action" (click)="openGenerator()">
-      {{ 'dietPlan.actions.defineGoals' | transloco }}
-    </button>
-  </section>
-} @else {
-  <vtp-back-button class="page-shell-wide" />
-  <section class="page-shell-wide">
-    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+  } @else if (!hasMeta()) {
+    <section
+      class="mx-auto grid max-w-2xl place-items-center gap-5 rounded-[28px] border border-border bg-surface p-8 text-center shadow-sm"
+    >
+      <div class="grid h-14 w-14 place-items-center rounded-2xl bg-primary-soft text-primary">
+        <svg lucideSparkles size="28" aria-hidden="true"></svg>
+      </div>
       <vtp-page-title
         contexto="Plano alimentar"
-        titulo="Uma rotina que cabe no seu dia"
-        subtitulo="Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar."
+        titulo="Primeiro, vamos definir sua meta"
+        subtitulo="Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo."
+        centralizado
       />
-      <button bdButton size="sm" data-tour="onboarding-plans-action" (click)="openGenerator()">
-        <svg lucidePlus size="16" aria-hidden="true"></svg>
-        {{ 'dietPlan.actions.generateNew' | transloco }}
+      <button bdButton data-tour="onboarding-plans-action" (click)="openGenerator()">
+        {{ 'dietPlan.actions.defineGoals' | transloco }}
       </button>
-    </header>
-    @if (!plans().length) {
-      <div
-        class="mt-8 rounded-[28px] border border-dashed border-primary/40 bg-primary-soft/35 p-8 text-center"
-      >
-        <h2 class="m-0 text-xl">Sem plano salvo ainda</h2>
-        <p class="m-0 mt-2 text-fg-muted">
-          Conte como é a sua rotina e a gente monta o primeiro dia.
-        </p>
-        <button class="mt-5" bdButton data-tour="onboarding-plans-action" (click)="openGenerator()">
-          {{ 'dietPlan.actions.buildFirst' | transloco }}
+    </section>
+  } @else {
+    <vtp-back-button class="page-shell-wide" />
+    <section class="page-shell-wide">
+      <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+        <vtp-page-title
+          contexto="Plano alimentar"
+          titulo="Uma rotina que cabe no seu dia"
+          subtitulo="Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar."
+        />
+        <button bdButton size="sm" data-tour="onboarding-plans-action" (click)="openGenerator()">
+          <svg lucidePlus size="16" aria-hidden="true"></svg>
+          {{ 'dietPlan.actions.generateNew' | transloco }}
         </button>
-      </div>
-    } @else {
-      <div
-        class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] lg:gap-4"
-      >
-        @for (plan of plans(); track plan.id) {
-          <article
-            class="card @container flex min-w-0 flex-col items-center gap-2 rounded-[24px] p-3 text-center sm:p-4"
+      </header>
+      @if (!plans().length) {
+        <div
+          class="mt-8 rounded-[28px] border border-dashed border-primary/40 bg-primary-soft/35 p-8 text-center"
+        >
+          <h2 class="m-0 text-xl">Sem plano salvo ainda</h2>
+          <p class="m-0 mt-2 text-fg-muted">
+            Conte como é a sua rotina e a gente monta o primeiro dia.
+          </p>
+          <button
+            class="mt-5"
+            bdButton
+            data-tour="onboarding-plans-action"
+            (click)="openGenerator()"
           >
-            <span
-              class="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-strong sm:text-xs"
-              >{{ formatStyle(plan.preferences.style) }}</span
+            {{ 'dietPlan.actions.buildFirst' | transloco }}
+          </button>
+        </div>
+      } @else {
+        <div
+          class="mt-8 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 2xl:grid-cols-5"
+        >
+          @for (plan of plans(); track plan.id) {
+            <article
+              class="card @container flex min-w-0 flex-col items-center gap-2 rounded-[24px] p-3 text-center sm:p-4"
             >
-
-            <div class="relative">
-              <div
-                class="grid size-20 shrink-0 place-items-center rounded-full sm:size-24 [box-shadow:0_0_0_5px_var(--bd-surface),0_0_22px_-6px_var(--bd-accent)]"
-                [style.background]="ringBackground(plan)"
+              <span
+                class="rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-primary-strong sm:text-xs"
+                >{{ formatStyle(plan.preferences.style) }}</span
               >
-                <span class="absolute inset-[9px] rounded-full bg-surface sm:inset-[11px]"></span>
-                <span class="relative flex flex-col items-center leading-none">
-                  <strong class="text-base font-extrabold tabular-nums sm:text-lg">{{
-                    plan.totals.caloria | number: '1.0-0'
-                  }}</strong>
-                  <span class="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-fg-muted"
-                    >kcal</span
-                  >
+
+              <div class="relative">
+                <div
+                  class="grid size-20 shrink-0 place-items-center rounded-full sm:size-24 [box-shadow:0_0_0_5px_var(--bd-surface),0_0_22px_-6px_var(--bd-accent)]"
+                  [style.background]="ringBackground(plan)"
+                >
+                  <span class="absolute inset-[9px] rounded-full bg-surface sm:inset-[11px]"></span>
+                  <span class="relative flex flex-col items-center leading-none">
+                    <strong class="text-base font-extrabold tabular-nums sm:text-lg">{{
+                      plan.totals.caloria | number: '1.0-0'
+                    }}</strong>
+                    <span class="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-fg-muted"
+                      >kcal</span
+                    >
+                  </span>
+                </div>
+                <span
+                  class="absolute -bottom-1 -right-1 grid size-6 place-items-center rounded-full border-[3px] border-surface bg-accent text-[11px] font-extrabold text-primary-contrast sm:size-7 sm:text-xs"
+                  [attr.title]="plan.meals.length + ' refeições'"
+                  >{{ plan.meals.length }}</span
+                >
+              </div>
+
+              <h2
+                class="m-0 line-clamp-2 min-h-9 max-w-full break-words text-sm font-bold leading-5 sm:text-base"
+                [attr.title]="plan.titulo"
+              >
+                {{ plan.titulo }}
+              </h2>
+
+              <div class="flex flex-wrap items-baseline justify-center gap-1.5">
+                <span
+                  class="inline-flex items-baseline gap-1 rounded-full bg-primary-soft px-2 py-1 text-[10px] font-bold text-primary-strong"
+                >
+                  <strong class="text-xs tabular-nums"
+                    >{{ plan.totals.proteina | number: '1.0-0' }}g</strong
+                  >Prot
+                </span>
+                <span
+                  class="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2 py-1 text-[10px] font-bold text-accent"
+                >
+                  <strong class="text-xs tabular-nums"
+                    >{{ plan.totals.carbo | number: '1.0-0' }}g</strong
+                  >Carbo
+                </span>
+                <span
+                  class="inline-flex items-baseline gap-1 rounded-full bg-fat/15 px-2 py-1 text-[10px] font-bold text-fat"
+                >
+                  <strong class="text-xs tabular-nums"
+                    >{{ plan.totals.gordura | number: '1.0-0' }}g</strong
+                  >Gord
                 </span>
               </div>
-              <span
-                class="absolute -bottom-1 -right-1 grid size-6 place-items-center rounded-full border-[3px] border-surface bg-accent text-[11px] font-extrabold text-primary-contrast sm:size-7 sm:text-xs"
-                [attr.title]="plan.meals.length + ' refeições'"
-                >{{ plan.meals.length }}</span
-              >
-            </div>
 
-            <h2
-              class="m-0 line-clamp-2 min-h-9 max-w-full break-words text-sm font-bold leading-5 sm:text-base"
-              [attr.title]="plan.titulo"
-            >
-              {{ plan.titulo }}
-            </h2>
-
-            <div class="flex flex-wrap items-baseline justify-center gap-1.5">
-              <span
-                class="inline-flex items-baseline gap-1 rounded-full bg-primary-soft px-2 py-1 text-[10px] font-bold text-primary-strong"
-              >
-                <strong class="text-xs tabular-nums"
-                  >{{ plan.totals.proteina | number: '1.0-0' }}g</strong
-                >Prot
-              </span>
-              <span
-                class="inline-flex items-baseline gap-1 rounded-full bg-accent-soft px-2 py-1 text-[10px] font-bold text-accent"
-              >
-                <strong class="text-xs tabular-nums"
-                  >{{ plan.totals.carbo | number: '1.0-0' }}g</strong
-                >Carbo
-              </span>
-              <span
-                class="inline-flex items-baseline gap-1 rounded-full bg-fat/15 px-2 py-1 text-[10px] font-bold text-fat"
-              >
-                <strong class="text-xs tabular-nums"
-                  >{{ plan.totals.gordura | number: '1.0-0' }}g</strong
-                >Gord
-              </span>
-            </div>
-
-            <!-- Card estreito: trio compacto por ícone. A troca considera a largura
+              <!-- Card estreito: trio compacto por ícone. A troca considera a largura
                  do card, inclusive quando a sidebar reduz o espaço disponível. -->
-            <div class="mt-auto flex w-full justify-center gap-1.5 pt-1.5 @[280px]:hidden">
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                iconOnly
-                [bdTooltip]="
-                  (plan.favorited_at
-                    ? 'dietPlan.actions.unfavoriteLabel'
-                    : 'dietPlan.actions.favoriteLabel'
-                  ) | transloco
-                "
-                placement="top"
-                [attr.aria-label]="
-                  (plan.favorited_at
-                    ? 'dietPlan.actions.unfavoriteLabel'
-                    : 'dietPlan.actions.favoriteLabel'
-                  ) | transloco
-                "
-                [disabled]="favoritando() === plan.id"
-                [attr.aria-busy]="favoritando() === plan.id ? true : null"
-                (click)="favoritar(plan)"
-                class="!h-8 !min-h-8 !w-8 !p-0"
-                [class.!text-accent]="plan.favorited_at"
-              >
-                <svg
-                  lucideStar
-                  size="14"
-                  [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
-                  aria-hidden="true"
-                ></svg>
-              </button>
-              <button
-                bdButton
-                variant="subtle"
-                size="sm"
-                type="button"
-                iconOnly
-                [bdTooltip]="'dietPlan.actions.editLabel' | transloco"
-                placement="top"
-                [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
-                class="!h-8 !min-h-8 !w-8 !p-0"
-                (click)="editPlan(plan)"
-              >
-                <svg lucidePencil size="14" aria-hidden="true"></svg>
-              </button>
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                iconOnly
-                [bdTooltip]="'dietPlan.actions.archiveLabel' | transloco"
-                placement="top"
-                [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
-                class="!h-8 !min-h-8 !w-8 !p-0"
-                (click)="solicitarArquivamento(plan)"
-              >
-                <svg lucideArchive size="14" aria-hidden="true"></svg>
-              </button>
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                iconOnly
-                [bdTooltip]="'dietPlan.actions.deleteLabel' | transloco"
-                placement="top"
-                [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
-                [disabled]="removendo() === plan.id"
-                [attr.aria-busy]="removendo() === plan.id ? true : null"
-                (click)="solicitarExclusao(plan)"
-                class="!h-8 !min-h-8 !w-8 !p-0 enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
-              >
-                <svg lucideTrash2 size="14" aria-hidden="true"></svg>
-              </button>
-            </div>
+              <div class="mt-auto flex w-full justify-center gap-1.5 pt-1.5 @[280px]:hidden">
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  iconOnly
+                  [bdTooltip]="
+                    (plan.favorited_at
+                      ? 'dietPlan.actions.unfavoriteLabel'
+                      : 'dietPlan.actions.favoriteLabel'
+                    ) | transloco
+                  "
+                  placement="top"
+                  [attr.aria-label]="
+                    (plan.favorited_at
+                      ? 'dietPlan.actions.unfavoriteLabel'
+                      : 'dietPlan.actions.favoriteLabel'
+                    ) | transloco
+                  "
+                  [disabled]="favoritando() === plan.id"
+                  [attr.aria-busy]="favoritando() === plan.id ? true : null"
+                  (click)="favoritar(plan)"
+                  class="!h-8 !min-h-8 !w-8 !p-0"
+                  [class.!text-accent]="plan.favorited_at"
+                >
+                  <svg
+                    lucideStar
+                    size="14"
+                    [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
+                    aria-hidden="true"
+                  ></svg>
+                </button>
+                <button
+                  bdButton
+                  variant="subtle"
+                  size="sm"
+                  type="button"
+                  iconOnly
+                  [bdTooltip]="'dietPlan.actions.editLabel' | transloco"
+                  placement="top"
+                  [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
+                  class="!h-8 !min-h-8 !w-8 !p-0"
+                  (click)="editPlan(plan)"
+                >
+                  <svg lucidePencil size="14" aria-hidden="true"></svg>
+                </button>
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  iconOnly
+                  [bdTooltip]="'dietPlan.actions.archiveLabel' | transloco"
+                  placement="top"
+                  [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
+                  class="!h-8 !min-h-8 !w-8 !p-0"
+                  (click)="solicitarArquivamento(plan)"
+                >
+                  <svg lucideArchive size="14" aria-hidden="true"></svg>
+                </button>
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  iconOnly
+                  [bdTooltip]="'dietPlan.actions.deleteLabel' | transloco"
+                  placement="top"
+                  [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
+                  [disabled]="removendo() === plan.id"
+                  [attr.aria-busy]="removendo() === plan.id ? true : null"
+                  (click)="solicitarExclusao(plan)"
+                  class="!h-8 !min-h-8 !w-8 !p-0 enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
+                >
+                  <svg lucideTrash2 size="14" aria-hidden="true"></svg>
+                </button>
+              </div>
 
-            <!-- Card a partir de 280px: ações lado a lado com texto. -->
-            <div class="mt-auto hidden w-full grid-cols-4 gap-1 pt-1.5 @[280px]:grid">
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                iconOnly
-                [bdTooltip]="
-                  (plan.favorited_at
-                    ? 'dietPlan.actions.unfavoriteLabel'
-                    : 'dietPlan.actions.favoriteLabel'
-                  ) | transloco
-                "
-                placement="top"
-                [attr.aria-label]="
-                  (plan.favorited_at
-                    ? 'dietPlan.actions.unfavoriteLabel'
-                    : 'dietPlan.actions.favoriteLabel'
-                  ) | transloco
-                "
-                [disabled]="favoritando() === plan.id"
-                [attr.aria-busy]="favoritando() === plan.id ? true : null"
-                (click)="favoritar(plan)"
-                class="!min-w-0 !px-1.5"
-                [class.!text-accent]="plan.favorited_at"
-              >
-                <svg
-                  lucideStar
-                  size="14"
-                  [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
-                  aria-hidden="true"
-                ></svg>
-              </button>
-              <button
-                bdButton
-                variant="subtle"
-                size="sm"
-                type="button"
-                [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
-                class="!min-w-0 !px-1.5 !text-[12px]"
-                (click)="editPlan(plan)"
-              >
-                <svg lucidePencil size="12" aria-hidden="true"></svg>
-                {{ 'dietPlan.actions.edit' | transloco }}
-              </button>
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
-                class="!min-w-0 !px-1.5 !text-[12px]"
-                (click)="solicitarArquivamento(plan)"
-              >
-                <svg lucideArchive size="12" aria-hidden="true"></svg>
-                {{ 'dietPlan.actions.archive' | transloco }}
-              </button>
-              <button
-                bdButton
-                variant="ghost"
-                size="sm"
-                type="button"
-                [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
-                class="!min-w-0 !px-1.5 !text-[12px] enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
-                [disabled]="removendo() === plan.id"
-                [attr.aria-busy]="removendo() === plan.id ? true : null"
-                (click)="solicitarExclusao(plan)"
-              >
-                <svg lucideTrash2 size="12" aria-hidden="true"></svg>
-                {{ 'dietPlan.actions.delete' | transloco }}
-              </button>
-            </div>
-          </article>
-        }
-      </div>
-    }
-  </section>
-  <vtp-confirm-dialog
-    [aberto]="confirmacao() !== null"
-    [variante]="varianteConfirmacao()"
-    [titulo]="tituloConfirmacao() | transloco"
-    [descricao]="descricaoConfirmacao() | transloco"
-    [confirmarTexto]="textoConfirmacao() | transloco"
-    [cancelarTexto]="'common.actions.cancel' | transloco"
-    (cancelado)="fecharConfirmacao()"
-    (confirmado)="confirmarAcao()"
-  />
-  <vtp-mode-choice-dialog
-    [aberto]="modalModoAberto()"
-    (escolhido)="onModoEscolhido($event)"
-    (cancelado)="fecharModalModo()"
-  />
-}
+              <!-- Card a partir de 280px: ações lado a lado com texto. -->
+              <div class="mt-auto hidden w-full grid-cols-4 gap-1 pt-1.5 @[280px]:grid">
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  iconOnly
+                  [bdTooltip]="
+                    (plan.favorited_at
+                      ? 'dietPlan.actions.unfavoriteLabel'
+                      : 'dietPlan.actions.favoriteLabel'
+                    ) | transloco
+                  "
+                  placement="top"
+                  [attr.aria-label]="
+                    (plan.favorited_at
+                      ? 'dietPlan.actions.unfavoriteLabel'
+                      : 'dietPlan.actions.favoriteLabel'
+                    ) | transloco
+                  "
+                  [disabled]="favoritando() === plan.id"
+                  [attr.aria-busy]="favoritando() === plan.id ? true : null"
+                  (click)="favoritar(plan)"
+                  class="!min-w-0 !px-1.5"
+                  [class.!text-accent]="plan.favorited_at"
+                >
+                  <svg
+                    lucideStar
+                    size="14"
+                    [attr.fill]="plan.favorited_at ? 'currentColor' : 'none'"
+                    aria-hidden="true"
+                  ></svg>
+                </button>
+                <button
+                  bdButton
+                  variant="subtle"
+                  size="sm"
+                  type="button"
+                  [attr.aria-label]="'dietPlan.actions.editLabel' | transloco"
+                  class="!min-w-0 !px-1.5 !text-[12px]"
+                  (click)="editPlan(plan)"
+                >
+                  <svg lucidePencil size="12" aria-hidden="true"></svg>
+                  {{ 'dietPlan.actions.edit' | transloco }}
+                </button>
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  [attr.aria-label]="'dietPlan.actions.archiveLabel' | transloco"
+                  class="!min-w-0 !px-1.5 !text-[12px]"
+                  (click)="solicitarArquivamento(plan)"
+                >
+                  <svg lucideArchive size="12" aria-hidden="true"></svg>
+                  {{ 'dietPlan.actions.archive' | transloco }}
+                </button>
+                <button
+                  bdButton
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  [attr.aria-label]="'dietPlan.actions.deleteLabel' | transloco"
+                  class="!min-w-0 !px-1.5 !text-[12px] enabled:hover:!bg-danger/10 enabled:hover:!text-danger"
+                  [disabled]="removendo() === plan.id"
+                  [attr.aria-busy]="removendo() === plan.id ? true : null"
+                  (click)="solicitarExclusao(plan)"
+                >
+                  <svg lucideTrash2 size="12" aria-hidden="true"></svg>
+                  {{ 'dietPlan.actions.delete' | transloco }}
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+    <vtp-confirm-dialog
+      [aberto]="confirmacao() !== null"
+      [variante]="varianteConfirmacao()"
+      [titulo]="tituloConfirmacao() | transloco"
+      [descricao]="descricaoConfirmacao() | transloco"
+      [confirmarTexto]="textoConfirmacao() | transloco"
+      [cancelarTexto]="'common.actions.cancel' | transloco"
+      (cancelado)="fecharConfirmacao()"
+      (confirmado)="confirmarAcao()"
+    />
+    <vtp-mode-choice-dialog
+      [aberto]="modalModoAberto()"
+      (escolhido)="onModoEscolhido($event)"
+      (cancelado)="fecharModalModo()"
+    />
+  }
+</div>

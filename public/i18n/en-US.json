@@ -610,24 +610,24 @@
       "description": "The Dashboard brings together your progress, upcoming meals, and shortcuts to the most important actions."
     },
     "diary": {
-      "title": "Open the Diary",
-      "description": "Use this menu to log meals and follow how your day is progressing."
+      "title": "Log your day in the Diary",
+      "description": "This is the logging screen: choose a meal, add foods, and immediately follow your calories and macros."
     },
     "diaryAction": {
       "title": "Log a meal",
       "description": "Choose a phase of your day and add foods. You can adjust quantities before saving."
     },
     "goals": {
-      "title": "Open your Goals",
-      "description": "Here you set the goal that guides your daily calories and macronutrients."
+      "title": "Set your Goals",
+      "description": "Set up your objective and routine. Your daily goal guides the Dashboard, Diary, and food suggestions."
     },
     "goalsAction": {
       "title": "Set up or review your goal",
       "description": "Complete the profile and routine steps to receive a personalized nutrition suggestion."
     },
     "plans": {
-      "title": "Open Meal plan",
-      "description": "This menu gathers your plans and lets you build a food routine for the next few days."
+      "title": "Build your Meal plan",
+      "description": "Create, review, and favorite plans to turn your goal into a practical meal routine."
     },
     "plansAction": {
       "title": "Create a meal plan",

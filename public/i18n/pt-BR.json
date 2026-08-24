@@ -610,24 +610,24 @@
       "description": "O Painel reúne seu progresso, próximas refeições e atalhos para as ações mais importantes."
     },
     "diary": {
-      "title": "Abra o Diário",
-      "description": "Use este menu para registrar refeições e acompanhar como seu dia está evoluindo."
+      "title": "Registre o seu dia no Diário",
+      "description": "Esta é a tela de registro: escolha uma refeição, adicione os alimentos e acompanhe na hora o consumo de calorias e macros."
     },
     "diaryAction": {
       "title": "Registre uma refeição",
       "description": "Escolha uma fase do dia e adicione alimentos. Você pode ajustar quantidades antes de salvar."
     },
     "goals": {
-      "title": "Abra suas Metas",
-      "description": "Aqui você define o objetivo que orienta calorias e macronutrientes do seu dia."
+      "title": "Defina suas Metas",
+      "description": "Configure seu objetivo e sua rotina. A meta diária orienta o Painel, o Diário e as sugestões alimentares."
     },
     "goalsAction": {
       "title": "Configure ou revise a meta",
       "description": "Complete as etapas do perfil e da rotina para receber uma sugestão nutricional personalizada."
     },
     "plans": {
-      "title": "Abra o Plano alimentar",
-      "description": "Este menu reúne seus planos e permite montar uma rotina alimentar para os próximos dias."
+      "title": "Monte seu Plano alimentar",
+      "description": "Crie, revise e favorite planos para transformar sua meta em uma rotina prática de refeições."
     },
     "plansAction": {
       "title": "Crie um plano alimentar",

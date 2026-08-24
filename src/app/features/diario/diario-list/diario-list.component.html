@@ -1,174 +1,185 @@
-@if (loadingVisivel()) {
-  <vtp-loading-state
-    [titulo]="'uiLoading.diary' | transloco"
-    [descricao]="'diaryPage.loadingDesc' | transloco"
-  />
-} @else {
-  <vtp-back-button class="page-shell-wide" />
-  <section class="page-shell-wide flex min-w-0 flex-col gap-4 overflow-x-clip animate-reveal card p-4 sm:p-6 lg:p-8">
-    <header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5 max-sm:items-stretch">
-      <vtp-page-title
-        [contexto]="'diaryPage.eyebrow' | transloco"
-        [titulo]="'pageTitle.diary' | transloco"
-        [subtitulo]="'pageTitle.diarySubtitle' | transloco"
-      />
-
-      <div class="flex min-w-0 flex-wrap items-center gap-3 max-sm:w-full max-sm:justify-between">
-        <div class="flex items-center gap-1">
-          <button
-            class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
-            type="button"
-            [attr.aria-label]="'diaryPage.previousDay' | transloco"
-            (click)="previousDay()"
-          >
-            <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
-          </button>
-
-          <span class="min-w-0 px-2">
-            <b class="block truncate text-[14px] font-semibold leading-tight">{{ dateLabel() }}</b>
-            <small class="block truncate text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle">{{
-              selectedDate() === today ? ('diaryPage.today' | transloco) : selectedDate()
-            }}</small>
-          </span>
-
-          <button
-            class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
-            type="button"
-            [attr.aria-label]="'diaryPage.nextDay' | transloco"
-            [disabled]="!canGoNext()"
-            (click)="nextDay()"
-          >
-            <svg lucideArrowRight size="16" aria-hidden="true"></svg>
-          </button>
-
-          @if (selectedDate() !== today) {
-            <button
-              class="ml-1 rounded-full border border-border px-3 py-1 text-[12px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
-              type="button"
-              (click)="goToday()"
-            >
-              {{ 'diaryPage.today' | transloco }}
-            </button>
-          }
-        </div>
-
-        <vtp-overflow-menu
-          [rotulo]="'diaryPage.moreActions' | transloco"
-          [aberto]="menuAberto()"
-          (alternar)="menuAberto.set(!menuAberto())"
-          (fechar)="menuAberto.set(false)"
-        >
-          <button
-            class="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-[13.5px] font-semibold text-fg transition-colors hover:bg-surface-hover md:px-3 md:py-2"
-            type="button"
-            role="menuitem"
-            (click)="menuAberto.set(false); managerOpen.set(true)"
-          >
-            <svg lucideSettings2 size="16" aria-hidden="true"></svg>
-            {{ 'diaryPage.organizeMeals' | transloco }}
-          </button>
-        </vtp-overflow-menu>
-      </div>
-    </header>
-
-    <vtp-macro-goal-strip [totals]="totals()" [meta]="meta()" />
-
-    <div class="grid items-start gap-4 md:grid-cols-[330px_minmax(0,1fr)]">
-      <div
-        class="card px-3 py-5 md:block"
-        [class.hidden]="modo() === 'compor'"
-        [class.max-md:hidden]="faseMobileAberta()"
-        style="
-          background:
-            radial-gradient(90% 55% at 50% 0%, var(--bd-primary-soft) 0%, transparent 55%),
-            radial-gradient(70% 45% at 40% 100%, var(--bd-accent-soft) 0%, transparent 60%),
-            var(--bd-surface);
-        "
+<div data-tour="onboarding-diary-page">
+  @if (loadingVisivel()) {
+    <vtp-loading-state
+      [titulo]="'uiLoading.diary' | transloco"
+      [descricao]="'diaryPage.loadingDesc' | transloco"
+    />
+  } @else {
+    <vtp-back-button class="page-shell-wide" />
+    <section
+      class="page-shell-wide flex min-w-0 flex-col gap-4 overflow-x-clip animate-reveal card p-4 sm:p-6 lg:p-8"
+    >
+      <header
+        class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5 max-sm:items-stretch"
       >
-        <vtp-journey-map
-          [fases]="fases()"
-          [selecionada]="faseSelecionada()"
-          [preenchendo]="modo() === 'compor'"
-          [carimbo]="carimbo()"
-          [dica]="
-            (modo() === 'compor' ? 'diaryPage.composerHint' : 'diaryPage.chooseHint') | transloco
-          "
-          [progresso]="progressoMeta()"
-          [resumoBandeira]="resumoBandeira()"
-          (faseClick)="selecionarFase($event)"
-          (bandeiraClick)="revelacaoAberta.set(true)"
-          (carimboFim)="carimbo.set(null)"
+        <vtp-page-title
+          [contexto]="'diaryPage.eyebrow' | transloco"
+          [titulo]="'pageTitle.diary' | transloco"
+          [subtitulo]="'pageTitle.diarySubtitle' | transloco"
         />
-      </div>
 
-      @if (modo() === 'compor' && mealAtual(); as meal) {
-        <vtp-entry-composer
-          [meal]="meal"
-          [meals]="meals()"
-          [date]="selectedDate()"
-          [entry]="entryEmEdicao()"
-          [itensRegistrados]="faseAtual()?.itens ?? []"
-          [removendo]="removendo()"
-          (cancelado)="cancelarComposer()"
-          (salvo)="onEntrySaved()"
-          (trocarMeal)="trocarDestino($event)"
-          (editarLancamento)="editarLancamento($event)"
-          (removerItem)="removerItem($event)"
-        />
-      } @else if (faseAtual(); as fase) {
-        <div class="md:block" [class.max-md:hidden]="!faseMobileAberta()">
-          <button
-            class="mb-2 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-fg-muted transition-colors hover:text-primary-strong md:hidden"
-            type="button"
-            (click)="fecharFaseMobile()"
+        <div class="flex min-w-0 flex-wrap items-center gap-3 max-sm:w-full max-sm:justify-between">
+          <div class="flex items-center gap-1">
+            <button
+              class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong"
+              type="button"
+              [attr.aria-label]="'diaryPage.previousDay' | transloco"
+              (click)="previousDay()"
+            >
+              <svg lucideArrowLeft size="16" aria-hidden="true"></svg>
+            </button>
+
+            <span class="min-w-0 px-2">
+              <b class="block truncate text-[14px] font-semibold leading-tight">{{
+                dateLabel()
+              }}</b>
+              <small
+                class="block truncate text-[10.5px] font-bold uppercase tracking-widest text-fg-subtle"
+                >{{
+                  selectedDate() === today ? ('diaryPage.today' | transloco) : selectedDate()
+                }}</small
+              >
+            </span>
+
+            <button
+              class="grid size-[30px] place-items-center rounded-full border border-border text-fg-muted transition-colors hover:border-primary hover:text-primary-strong disabled:opacity-35 disabled:hover:border-border disabled:hover:text-fg-muted"
+              type="button"
+              [attr.aria-label]="'diaryPage.nextDay' | transloco"
+              [disabled]="!canGoNext()"
+              (click)="nextDay()"
+            >
+              <svg lucideArrowRight size="16" aria-hidden="true"></svg>
+            </button>
+
+            @if (selectedDate() !== today) {
+              <button
+                class="ml-1 rounded-full border border-border px-3 py-1 text-[12px] text-fg-muted transition-colors hover:border-border-strong hover:text-fg"
+                type="button"
+                (click)="goToday()"
+              >
+                {{ 'diaryPage.today' | transloco }}
+              </button>
+            }
+          </div>
+
+          <vtp-overflow-menu
+            [rotulo]="'diaryPage.moreActions' | transloco"
+            [aberto]="menuAberto()"
+            (alternar)="menuAberto.set(!menuAberto())"
+            (fechar)="menuAberto.set(false)"
           >
-            <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
-            {{ 'diaryPage.backToMap' | transloco }}
-          </button>
+            <button
+              class="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-left text-[13.5px] font-semibold text-fg transition-colors hover:bg-surface-hover md:px-3 md:py-2"
+              type="button"
+              role="menuitem"
+              (click)="menuAberto.set(false); managerOpen.set(true)"
+            >
+              <svg lucideSettings2 size="16" aria-hidden="true"></svg>
+              {{ 'diaryPage.organizeMeals' | transloco }}
+            </button>
+          </vtp-overflow-menu>
+        </div>
+      </header>
 
-          <vtp-diary-phase-card
-            [fase]="fase"
-            [indice]="faseSelecionada()"
-            [totalFases]="fases().length"
-            [fasesRestantes]="fasesRestantes()"
-            [mensagemVazia]="mensagemVazia()"
-            [flash]="flash()"
-            [removendo]="removendo()"
-            (adicionar)="abrirComposerDaFase()"
-            (removerItem)="removerItem($event)"
-            (editarLancamento)="editarLancamento($event)"
+      <vtp-macro-goal-strip [totals]="totals()" [meta]="meta()" />
+
+      <div class="grid items-start gap-4 md:grid-cols-[330px_minmax(0,1fr)]">
+        <div
+          class="card px-3 py-5 md:block"
+          [class.hidden]="modo() === 'compor'"
+          [class.max-md:hidden]="faseMobileAberta()"
+          style="
+            background:
+              radial-gradient(90% 55% at 50% 0%, var(--bd-primary-soft) 0%, transparent 55%),
+              radial-gradient(70% 45% at 40% 100%, var(--bd-accent-soft) 0%, transparent 60%),
+              var(--bd-surface);
+          "
+        >
+          <vtp-journey-map
+            [fases]="fases()"
+            [selecionada]="faseSelecionada()"
+            [preenchendo]="modo() === 'compor'"
+            [carimbo]="carimbo()"
+            [dica]="
+              (modo() === 'compor' ? 'diaryPage.composerHint' : 'diaryPage.chooseHint') | transloco
+            "
+            [progresso]="progressoMeta()"
+            [resumoBandeira]="resumoBandeira()"
+            (faseClick)="selecionarFase($event)"
+            (bandeiraClick)="revelacaoAberta.set(true)"
+            (carimboFim)="carimbo.set(null)"
           />
         </div>
-      } @else {
-        <div class="card p-6 text-[13.5px] text-fg-muted">
-          {{ 'diaryPage.noMealsYet' | transloco }}
-        </div>
-      }
-    </div>
-  </section>
-}
 
-@if (revelacaoAberta()) {
-  <vtp-day-reveal-overlay
-    [totals]="totals()"
-    [meta]="meta()"
-    [completo]="fasesRestantes() === 0"
-    [titulo]="
-      (fasesRestantes() === 0 ? 'diaryPage.dayClosedTitle' : 'diaryPage.dayInProgressTitle')
-        | transloco
-    "
-    [label]="
-      (fasesRestantes() === 0 ? 'diaryPage.dayCompleteLabel' : 'diaryPage.dayPartialLabel')
-        | transloco
-    "
-    (fechar)="revelacaoAberta.set(false)"
-  />
-}
+        @if (modo() === 'compor' && mealAtual(); as meal) {
+          <vtp-entry-composer
+            [meal]="meal"
+            [meals]="meals()"
+            [date]="selectedDate()"
+            [entry]="entryEmEdicao()"
+            [itensRegistrados]="faseAtual()?.itens ?? []"
+            [removendo]="removendo()"
+            (cancelado)="cancelarComposer()"
+            (salvo)="onEntrySaved()"
+            (trocarMeal)="trocarDestino($event)"
+            (editarLancamento)="editarLancamento($event)"
+            (removerItem)="removerItem($event)"
+          />
+        } @else if (faseAtual(); as fase) {
+          <div class="md:block" [class.max-md:hidden]="!faseMobileAberta()">
+            <button
+              class="mb-2 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-fg-muted transition-colors hover:text-primary-strong md:hidden"
+              type="button"
+              (click)="fecharFaseMobile()"
+            >
+              <svg lucideArrowLeft size="15" aria-hidden="true"></svg>
+              {{ 'diaryPage.backToMap' | transloco }}
+            </button>
 
-@if (managerOpen()) {
-  <vtp-meal-manager
-    [meals]="meals()"
-    (closed)="managerOpen.set(false)"
-    (changed)="onMealsChanged()"
-  />
-}
+            <vtp-diary-phase-card
+              [fase]="fase"
+              [indice]="faseSelecionada()"
+              [totalFases]="fases().length"
+              [fasesRestantes]="fasesRestantes()"
+              [mensagemVazia]="mensagemVazia()"
+              [flash]="flash()"
+              [removendo]="removendo()"
+              (adicionar)="abrirComposerDaFase()"
+              (removerItem)="removerItem($event)"
+              (editarLancamento)="editarLancamento($event)"
+            />
+          </div>
+        } @else {
+          <div class="card p-6 text-[13.5px] text-fg-muted">
+            {{ 'diaryPage.noMealsYet' | transloco }}
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  @if (revelacaoAberta()) {
+    <vtp-day-reveal-overlay
+      [totals]="totals()"
+      [meta]="meta()"
+      [completo]="fasesRestantes() === 0"
+      [titulo]="
+        (fasesRestantes() === 0 ? 'diaryPage.dayClosedTitle' : 'diaryPage.dayInProgressTitle')
+          | transloco
+      "
+      [label]="
+        (fasesRestantes() === 0 ? 'diaryPage.dayCompleteLabel' : 'diaryPage.dayPartialLabel')
+          | transloco
+      "
+      (fechar)="revelacaoAberta.set(false)"
+    />
+  }
+
+  @if (managerOpen()) {
+    <vtp-meal-manager
+      [meals]="meals()"
+      (closed)="managerOpen.set(false)"
+      (changed)="onMealsChanged()"
+    />
+  }
+</div>

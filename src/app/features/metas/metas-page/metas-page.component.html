@@ -1,94 +1,96 @@
-@if (carregandoVisivel()) {
-  <vtp-loading-state
-    titulo="Preparando suas metas"
-    descricao="Buscando a meta vigente e a recomendação nutricional."
-  />
-} @else {
-  @switch (fase()) {
-    @case ('configurado') {
-      <vtp-back-button class="page-shell-wide" />
-      <div class="page-shell-wide flex flex-col gap-7">
-        <div class="pb-6 border-b border-border">
-          <vtp-page-title
-            contexto="Meta atual"
-            titulo="Sua meta diária está pronta"
-            subtitulo="Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
-          />
-        </div>
-
-        @if (perfilFicha(); as perfil) {
-          @if (calculoFicha(); as calculo) {
-            <div class="card py-9 px-8" data-tour="onboarding-goals-action">
-              <vtp-meta-ficha
-                [perfil]="perfil"
-                [calculo]="calculo"
-                [valores]="sugestao()!"
-                (irParaPainel)="irParaDashboard()"
-                (refazer)="refazer()"
-              />
-            </div>
-          }
-        }
-      </div>
-    }
-
-    @case ('quiz') {
-      <vtp-back-button class="page-shell-wide" />
-      <div class="page-shell-wide">
-        <div
-          class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start"
-          data-tour="onboarding-goals-action"
-        >
-          <div class="hidden md:block">
-            <vtp-step-track
-              [steps]="passos"
-              [ativo]="passo()"
-              label="Etapas da configuração de metas"
-              (stepClick)="irPara($event)"
+<div data-tour="onboarding-goals-page">
+  @if (carregandoVisivel()) {
+    <vtp-loading-state
+      titulo="Preparando suas metas"
+      descricao="Buscando a meta vigente e a recomendação nutricional."
+    />
+  } @else {
+    @switch (fase()) {
+      @case ('configurado') {
+        <vtp-back-button class="page-shell-wide" />
+        <div class="page-shell-wide flex flex-col gap-7">
+          <div class="pb-6 border-b border-border">
+            <vtp-page-title
+              contexto="Meta atual"
+              titulo="Sua meta diária está pronta"
+              subtitulo="Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
             />
           </div>
 
-          <div class="flex md:hidden items-center gap-2 mb-3">
-            <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
-              >Passo {{ passo() + 1 }} de {{ passos.length }}</span
-            >
-            <span class="text-fg-subtle">·</span>
-            <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
-          </div>
-
-          <div class="min-w-0">
-            @switch (passo()) {
-              @case (0) {
-                <vtp-perfil-step (concluido)="passo.set(1)" />
-              }
-              @case (1) {
-                <vtp-atividade-step
-                  (voltar)="irPara(0)"
-                  (concluido)="onSugestaoCalculada($event)"
+          @if (perfilFicha(); as perfil) {
+            @if (calculoFicha(); as calculo) {
+              <div class="card py-9 px-8" data-tour="onboarding-goals-action">
+                <vtp-meta-ficha
+                  [perfil]="perfil"
+                  [calculo]="calculo"
+                  [valores]="sugestao()!"
+                  (irParaPainel)="irParaDashboard()"
+                  (refazer)="refazer()"
                 />
-              }
-              @case (2) {
-                @if (sugestao(); as s) {
-                  <vtp-sugestao-step
-                    [sugestao]="s"
-                    (voltar)="irPara(1)"
-                    (continuar)="passo.set(3)"
-                  />
-                }
-              }
-              @case (3) {
-                @if (sugestao(); as s) {
-                  <vtp-revisar-step
-                    [sugestao]="s"
-                    (voltar)="irPara(2)"
-                    (salvo)="fase.set('configurado')"
-                  />
-                }
-              }
+              </div>
             }
+          }
+        </div>
+      }
+
+      @case ('quiz') {
+        <vtp-back-button class="page-shell-wide" />
+        <div class="page-shell-wide">
+          <div
+            class="card p-6 md:grid md:grid-cols-[300px_minmax(0,1fr)] md:gap-6 md:items-start"
+            data-tour="onboarding-goals-action"
+          >
+            <div class="hidden md:block">
+              <vtp-step-track
+                [steps]="passos"
+                [ativo]="passo()"
+                label="Etapas da configuração de metas"
+                (stepClick)="irPara($event)"
+              />
+            </div>
+
+            <div class="flex md:hidden items-center gap-2 mb-3">
+              <span class="text-[11px] font-extrabold uppercase tracking-widest text-fg-subtle"
+                >Passo {{ passo() + 1 }} de {{ passos.length }}</span
+              >
+              <span class="text-fg-subtle">·</span>
+              <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
+            </div>
+
+            <div class="min-w-0">
+              @switch (passo()) {
+                @case (0) {
+                  <vtp-perfil-step (concluido)="passo.set(1)" />
+                }
+                @case (1) {
+                  <vtp-atividade-step
+                    (voltar)="irPara(0)"
+                    (concluido)="onSugestaoCalculada($event)"
+                  />
+                }
+                @case (2) {
+                  @if (sugestao(); as s) {
+                    <vtp-sugestao-step
+                      [sugestao]="s"
+                      (voltar)="irPara(1)"
+                      (continuar)="passo.set(3)"
+                    />
+                  }
+                }
+                @case (3) {
+                  @if (sugestao(); as s) {
+                    <vtp-revisar-step
+                      [sugestao]="s"
+                      (voltar)="irPara(2)"
+                      (salvo)="fase.set('configurado')"
+                    />
+                  }
+                }
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
     }
   }
-}
+</div>
