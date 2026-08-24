@@ -41,36 +41,6 @@
         <p class="landing-hero-note" bdReveal [revealDelay]="220">{{ t('landing.hero.note') }}</p>
       </div>
       <div class="landing-hero-shot-wrap" bdReveal="scale" [revealDelay]="120">
-        <span class="landing-float landing-float--1" aria-hidden="true">
-          <svg viewBox="0 0 100 100">
-            <path
-              d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-            />
-          </svg>
-        </span>
-        <span class="landing-float landing-float--2" aria-hidden="true">
-          <svg viewBox="0 0 100 100">
-            <path
-              d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-            />
-          </svg>
-        </span>
-        <span class="landing-float landing-float--3" aria-hidden="true">
-          <svg viewBox="0 0 100 100">
-            <path
-              d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="6"
-            />
-          </svg>
-        </span>
         <div class="landing-hero-shot">
           <img src="images/landing/dashboard.png" [alt]="t('landing.hero.shotAlt')" />
         </div>
@@ -311,7 +281,7 @@
       <div class="landing-final-cta" bdReveal>
         <h2 class="landing-h2 mx-auto">{{ t('landing.finalCta.title') }}</h2>
         <p class="landing-body mx-auto">{{ t('landing.finalCta.body') }}</p>
-        <a routerLink="/register" bdButton class="landing-cta-shine landing-cta-pulse">
+        <a routerLink="/register" bdButton class="landing-cta-shine">
           {{ t('landing.finalCta.cta') }}
         </a>
       </div>
