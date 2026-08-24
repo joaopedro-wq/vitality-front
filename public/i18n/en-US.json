@@ -636,18 +636,32 @@
   },
   "landing": {
     "nav": {
+      "label": "Home page navigation",
+      "home": "Vitality home page",
       "howItWorks": "How it works",
-      "faq": "FAQ",
       "login": "Sign in",
-      "signup": "Create free account"
+      "signup": "Create account"
     },
     "hero": {
-      "title": "Stop guessing your calorie goal.",
-      "lede": "Calorie goal without spreadsheets, without a formula nobody understands. A guided quiz calculates, step by step, the ideal calorie and macro goal for you, based on your profile and routine.",
-      "ctaPrimary": "Create free account",
-      "ctaSecondary": "See how it works",
-      "note": "Takes less than 3 minutes, it's free, and you start right now.",
-      "shotAlt": "Vitality PLUS dashboard: calorie ring, next meal and daily track"
+      "eyebrow": "Vitality for your routine",
+      "title": "Food planning that fits your routine.",
+      "lede": "Build your plan, track calories and macros, and log your meals in a simple way.",
+      "ctaPrimary": "Get started",
+      "ctaSecondary": "Explore the app",
+      "shotAlt": "Vitality dashboard with a daily summary, meals, and calories"
+    },
+    "benefits": {
+      "eyebrow": "Everything in one place",
+      "title": "More clarity for deciding what comes next.",
+      "lede": "Vitality brings together what helps you follow your eating routine without turning it into a complicated task.",
+      "planTitle": "A plan for your day",
+      "planBody": "Organize meals around your goals and preferences.",
+      "macrosTitle": "Calories and macros in view",
+      "macrosBody": "See your daily summary and follow each meal's composition.",
+      "diaryTitle": "Simple meal logging",
+      "diaryBody": "Log what you ate when it happens, with more context.",
+      "swapsTitle": "Swaps when you need them",
+      "swapsBody": "Adjust foods and meals without losing your plan's organization."
     },
     "showcase": {
       "eyebrow": "The product, live",
@@ -667,21 +681,51 @@
       "body": "Most nutrition apps expect you to already know your goal, or hand you a generic number without explaining where it came from. Vitality PLUS does the math for you and shows every step to the result, nothing hidden."
     },
     "howItWorks": {
-      "eyebrow": "How it actually works",
-      "title": "Four simple steps until the app is really yours.",
-      "lede": "No \"coming soon\" screen. Every screenshot below is the real product, today.",
-      "step1Title": "Answer a 4-step quiz",
-      "step1Body": "Profile, routine and goal: the Mifflin-St Jeor formula calculates your calorie and macro goal.",
+      "eyebrow": "Getting started is simple",
+      "title": "A routine that fits into three steps.",
+      "lede": "You don't need to know nutrition terms to take the first step.",
+      "step1Title": "Share your goals",
+      "step1Body": "Tell us about your preferences and what your routine looks like.",
       "step1Alt": "Goals quiz",
-      "step2Title": "Search 600+ real foods",
-      "step2Body": "TACO + USDA Foundation Foods catalog, with faceted search and favorites.",
+      "step2Title": "See your plan organized",
+      "step2Body": "Keep daily meals together in one place when planning your day.",
       "step2Alt": "Food library",
-      "step3Title": "Log your day in seconds",
-      "step3Body": "Every meal is a quick checkpoint: moment, plate, portion.",
+      "step3Title": "Log and follow along",
+      "step3Body": "Log meals and follow calories and macros through the day.",
       "step3Alt": "Food diary",
       "step4Title": "Let AI build your meal plan",
       "step4Body": "A short quiz and Gemini generates the plan from scratch, within your goal.",
       "step4Alt": "AI-generated meal plan"
+    },
+    "features": {
+      "label": "Vitality features",
+      "eyebrow": "Inside the app",
+      "title": "Follow what matters in each moment.",
+      "lede": "The screens show your plan, your logs, and your daily summary with enough context to keep moving forward.",
+      "detail": "Made to follow your routine, not complicate it.",
+      "tabs": {
+        "plan": "Meal plan",
+        "diary": "Diary",
+        "macros": "Daily summary",
+        "swaps": "Swaps"
+      },
+      "planTitle": "Meal plan",
+      "planBody": "See your daily meals organized and understand how they fit into your plan.",
+      "planAlt": "Vitality meal plan with organized meals",
+      "diaryTitle": "Meal diary",
+      "diaryBody": "Log a meal and keep the day visible while you continue.",
+      "diaryAlt": "Vitality food diary with a meal entry",
+      "macrosTitle": "Calories and macros summary",
+      "macrosBody": "Follow calories, protein, carbs, and fats directly.",
+      "macrosAlt": "Vitality dashboard with daily calories and macros summary",
+      "swapsTitle": "Food swaps",
+      "swapsBody": "Adjust meals when your routine changes, while keeping the plan as a reference.",
+      "swapsAlt": "Vitality meal plan with food swap option"
+    },
+    "guidance": {
+      "eyebrow": "Responsible guidance",
+      "title": "Information to support your choices.",
+      "body": "Vitality offers general food suggestions and does not replace guidance from a nutrition professional, especially for clinical conditions."
     },
     "aiDiet": {
       "eyebrow": "Made-to-measure menu",
@@ -722,24 +766,24 @@
       "fact4Body": "Brazilian TACO table plus USDA Foundation Foods"
     },
     "faq": {
-      "eyebrow": "Frequently asked questions",
-      "title": "Before you sign up, the most direct questions.",
-      "q1": "Is this really free, or does it turn into a charge later?",
-      "a1": "It's free. There's no paid plan today, so there's no forced upgrade and no card requested at signup.",
-      "q2": "Do I need to know about nutrition to use it?",
-      "a2": "No. The goals quiz calculates it for you: just answer profile, routine and goal.",
-      "q3": "Is the diet generic or built for me?",
-      "a3": "Generated by AI (Google Gemini) from your answers and your calculated goal. It's not a fixed list or a shuffle between ready-made foods, and you can regenerate meal by meal.",
+      "eyebrow": "Common questions",
+      "title": "What you need to know to get started.",
+      "q1": "Do I need to understand nutrition to use it?",
+      "a1": "No. Vitality helps you organize routine information in a clearer, more gradual way.",
+      "q2": "What can I follow in the app?",
+      "a2": "You can organize a plan, log meals, and follow calories and macros throughout the day.",
+      "q3": "Does Vitality replace a nutrition professional?",
+      "a3": "No. It offers general suggestions for your routine and does not replace professional care, especially for clinical conditions.",
       "q4": "Does it work in English too?",
       "a4": "Yes: Portuguese and English, switched in real time from the top bar, without reloading the page.",
       "q5": "Where does the food nutrition data come from?",
       "a5": "TACO table (Brazilian reference) as the base, complemented by USDA Foundation Foods: over 600 items, per 100g."
     },
     "finalCta": {
-      "title": "It takes 3 minutes to know your real goal.",
-      "body": "No card, no deadline to decide. Create your account, answer the quiz, see the number.",
-      "cta": "Create free account"
+      "title": "Start taking care of your eating in a lighter way.",
+      "body": "Create your account and organize the next step in your food routine.",
+      "cta": "Create my account"
     },
-    "footer": "vitality plus · nutrition with purpose"
+    "footer": "vitality+ · food planning for everyday life"
   }
 }

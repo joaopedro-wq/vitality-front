@@ -1,0 +1,20 @@
+{
+  "targets": {
+    "landing-page": {
+      "projectId": "2cf3921f-f1e6-456c-8f3a-489d2cb5a26b",
+      "baselineDraftId": "afd7c8fd-af19-43d7-8c2f-48c8f99e4f53",
+      "activeDraftId": "1b0a5576-6e13-430d-aff1-680e33f5c6dc",
+      "currentVersion": 2,
+      "branch": "Concise, routine-focused landing with real product previews",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/features/landing/landing-page/landing-page.component.ts",
+        "src/app/features/landing/landing-page/landing-page.component.html",
+        "src/app/features/landing/landing-page/landing-page.component.scss",
+        "src/styles.scss",
+        "public/i18n/pt-BR.json"
+      ],
+      "brandAssets": { "logo": "public-favicon.svg" }
+    }
+  }
+}

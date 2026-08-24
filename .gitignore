@@ -3,6 +3,7 @@
 # Compiled output
 /dist
 /tmp
+/.superdesign/tmp/
 /out-tsc
 /bazel-out
 

@@ -1,10 +1,6 @@
 <div class="landing" *transloco="let t">
-  <!-- barra de progresso de leitura -->
-  <div class="scroll-progress" [style.width.%]="scrollProgress()" aria-hidden="true"></div>
-
-  <!-- NAV -->
-  <nav class="landing-nav" [class.landing-nav--scrolled]="navScrolled()">
-    <a routerLink="/" class="landing-brand">
+  <nav class="landing-nav" [attr.aria-label]="t('landing.nav.label')">
+    <a routerLink="/" class="landing-brand" [attr.aria-label]="t('landing.nav.home')">
       <svg viewBox="0 0 100 100" class="landing-heart-icon" aria-hidden="true">
         <path
           d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
@@ -13,277 +9,201 @@
       </svg>
       <span class="font-mono font-semibold">vitality<b>+</b></span>
     </a>
-    <div class="flex items-center gap-2 sm:gap-3.5">
-      <a href="#como-funciona" class="landing-nav-link hidden sm:inline">{{
-        t('landing.nav.howItWorks')
-      }}</a>
+    <div class="landing-nav-actions">
+      <a href="#como-funciona" class="landing-nav-link">{{ t('landing.nav.howItWorks') }}</a>
       <a routerLink="/login" bdButton variant="ghost" size="sm">{{ t('landing.nav.login') }}</a>
       <a routerLink="/register" bdButton size="sm">{{ t('landing.nav.signup') }}</a>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <header class="landing-hero">
-    <div class="landing-hero-block" aria-hidden="true"></div>
-    <div class="page-shell landing-hero-grid">
-      <div>
-        <h1 class="landing-hero-title" bdReveal>{{ t('landing.hero.title') }}</h1>
-        <p class="landing-hero-lede" bdReveal [revealDelay]="80">{{ t('landing.hero.lede') }}</p>
-        <div class="flex flex-wrap items-center gap-4" bdReveal [revealDelay]="160">
-          <a routerLink="/register" bdButton class="landing-cta-shine">{{
-            t('landing.hero.ctaPrimary')
-          }}</a>
-          <a href="#como-funciona" bdButton variant="ghost">
-            {{ t('landing.hero.ctaSecondary') }}
-            <svg lucideArrowDown size="15" aria-hidden="true"></svg>
-          </a>
-        </div>
-        <p class="landing-hero-note" bdReveal [revealDelay]="220">{{ t('landing.hero.note') }}</p>
-      </div>
-      <div class="landing-hero-shot-wrap" bdReveal="scale" [revealDelay]="120">
-        <div class="landing-hero-shot">
-          <img src="images/landing/dashboard.png" [alt]="t('landing.hero.shotAlt')" />
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="page-shell landing-main">
-    <!-- VITRINE -->
-    <section class="landing-section">
-      <div class="text-center" bdReveal>
-        <p class="landing-eyebrow justify-center">{{ t('landing.showcase.eyebrow') }}</p>
-        <h2 class="landing-h2 mx-auto">{{ t('landing.showcase.title') }}</h2>
-        <p class="landing-body mx-auto">{{ t('landing.showcase.lede') }}</p>
-      </div>
-      <div class="landing-browser-frame" bdReveal [revealDelay]="80">
-        <div class="landing-browser-bar">
-          <span class="landing-browser-dot"></span>
-          <span class="landing-browser-dot"></span>
-          <span class="landing-browser-dot"></span>
-          <span class="landing-browser-url">vitality-plus.app/dashboard</span>
-        </div>
-        <img src="images/landing/dashboard.png" [alt]="t('landing.showcase.shotAlt')" />
-      </div>
-      <div class="landing-callouts">
-        <div class="landing-callout" bdReveal [revealDelay]="160">
-          <span class="landing-callout-num">1</span>
-          <div>
-            <h4>{{ t('landing.showcase.callout1Title') }}</h4>
-            <p>{{ t('landing.showcase.callout1Body') }}</p>
+  <main>
+    <header class="landing-hero">
+      <div class="page-shell landing-hero-grid">
+        <div class="landing-hero-copy">
+          <p class="landing-eyebrow landing-eyebrow--inverse" bdReveal>
+            {{ t('landing.hero.eyebrow') }}
+          </p>
+          <h1 class="landing-hero-title" bdReveal [revealDelay]="60">
+            {{ t('landing.hero.title') }}
+          </h1>
+          <p class="landing-hero-lede" bdReveal [revealDelay]="120">{{ t('landing.hero.lede') }}</p>
+          <div class="landing-hero-actions" bdReveal [revealDelay]="180">
+            <a routerLink="/register" bdButton size="lg">{{ t('landing.hero.ctaPrimary') }}</a>
+            <a href="#recursos" bdButton variant="ghost" size="lg">
+              {{ t('landing.hero.ctaSecondary') }}
+              <svg lucideArrowDown size="16" aria-hidden="true"></svg>
+            </a>
           </div>
         </div>
-        <div class="landing-callout" bdReveal [revealDelay]="240">
-          <span class="landing-callout-num">2</span>
-          <div>
-            <h4>{{ t('landing.showcase.callout2Title') }}</h4>
-            <p>{{ t('landing.showcase.callout2Body') }}</p>
+        <div class="landing-hero-visual" bdReveal="scale" [revealDelay]="120">
+          <div class="landing-window-bar" aria-hidden="true">
+            <span></span><span></span><span></span>
           </div>
-        </div>
-        <div class="landing-callout" bdReveal [revealDelay]="320">
-          <span class="landing-callout-num">3</span>
-          <div>
-            <h4>{{ t('landing.showcase.callout3Title') }}</h4>
-            <p>{{ t('landing.showcase.callout3Body') }}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROBLEMA -->
-    <section class="landing-section landing-section--tight">
-      <div class="landing-problem-grid" bdReveal>
-        <div>
-          <p class="landing-eyebrow">{{ t('landing.problem.eyebrow') }}</p>
-          <h2 class="landing-h2">{{ t('landing.problem.title') }}</h2>
-          <p class="landing-body">{{ t('landing.problem.body') }}</p>
-        </div>
-        <div class="landing-spreadsheet-wrap">
-          <div class="landing-spreadsheet">
-            <div class="landing-spreadsheet-row">
-              <span>TMB</span><span>=?</span><span>×1.4</span><span>#REF!</span>
-            </div>
-            <div class="landing-spreadsheet-row">
-              <span>meta</span><span>2100</span><span>???</span><span>=SE(</span>
-            </div>
-            <div class="landing-spreadsheet-row">
-              <span>macro</span><span>40%</span><span>30g?</span><span>#N/D</span>
-            </div>
-          </div>
-          <span class="landing-spreadsheet-strike"></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- COMO FUNCIONA -->
-    <section class="landing-section" id="como-funciona">
-      <div bdReveal>
-        <p class="landing-eyebrow">{{ t('landing.howItWorks.eyebrow') }}</p>
-        <h2 class="landing-h2">{{ t('landing.howItWorks.title') }}</h2>
-        <p class="landing-body">{{ t('landing.howItWorks.lede') }}</p>
-      </div>
-      <div class="landing-steps">
-        <div class="landing-step" bdReveal [revealDelay]="0">
-          <span class="landing-step-num">1</span>
-          <div class="landing-step-shot">
-            <img src="images/landing/metas.png" [alt]="t('landing.howItWorks.step1Alt')" />
-          </div>
-          <h3>{{ t('landing.howItWorks.step1Title') }}</h3>
-          <p>{{ t('landing.howItWorks.step1Body') }}</p>
-        </div>
-        <div class="landing-step" bdReveal [revealDelay]="80">
-          <span class="landing-step-num">2</span>
-          <div class="landing-step-shot">
-            <img src="images/landing/alimentos.png" [alt]="t('landing.howItWorks.step2Alt')" />
-          </div>
-          <h3>{{ t('landing.howItWorks.step2Title') }}</h3>
-          <p>{{ t('landing.howItWorks.step2Body') }}</p>
-        </div>
-        <div class="landing-step" bdReveal [revealDelay]="160">
-          <span class="landing-step-num">3</span>
-          <div class="landing-step-shot">
-            <img src="images/landing/diario.png" [alt]="t('landing.howItWorks.step3Alt')" />
-          </div>
-          <h3>{{ t('landing.howItWorks.step3Title') }}</h3>
-          <p>{{ t('landing.howItWorks.step3Body') }}</p>
-        </div>
-        <div class="landing-step" bdReveal [revealDelay]="240">
-          <span class="landing-step-num">4</span>
-          <div class="landing-step-shot">
-            <img
-              src="images/landing/dietas-plano-gerado.png"
-              [alt]="t('landing.howItWorks.step4Alt')"
-            />
-          </div>
-          <h3>{{ t('landing.howItWorks.step4Title') }}</h3>
-          <p>{{ t('landing.howItWorks.step4Body') }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- DIETAS POR IA -->
-    <section class="landing-section">
-      <div bdReveal>
-        <p class="landing-eyebrow">{{ t('landing.aiDiet.eyebrow') }}</p>
-        <h2 class="landing-h2">{{ t('landing.aiDiet.title') }}</h2>
-        <p class="landing-body">{{ t('landing.aiDiet.lede') }}</p>
-      </div>
-      <div class="landing-ai-diet-row">
-        <div class="landing-ai-diet-shot" bdReveal [revealDelay]="80">
-          <span class="landing-ai-diet-tag">{{ t('landing.aiDiet.generating') }}</span>
           <img
-            src="images/landing/dietas-gerando-ia.png"
-            [alt]="t('landing.aiDiet.generatingAlt')"
+            src="images/landing/dashboard.png"
+            [alt]="t('landing.hero.shotAlt')"
+            fetchpriority="high"
           />
         </div>
-        <div class="landing-ai-diet-arrow" bdReveal [revealDelay]="160" aria-hidden="true">
-          <svg lucideArrowRight size="26"></svg>
-        </div>
-        <div class="landing-ai-diet-shot" bdReveal [revealDelay]="240">
-          <span class="landing-ai-diet-tag landing-ai-diet-tag--ready">{{
-            t('landing.aiDiet.ready')
-          }}</span>
-          <img src="images/landing/dietas-plano-gerado.png" [alt]="t('landing.aiDiet.readyAlt')" />
-        </div>
       </div>
-      <blockquote class="landing-ai-quote" bdReveal [revealDelay]="320">
-        “{{ t('landing.aiDiet.quote') }}”
-        <cite>{{ t('landing.aiDiet.quoteCite') }}</cite>
-      </blockquote>
-    </section>
+    </header>
 
-    <!-- TRANSPARENCIA -->
-    <section class="landing-section landing-section--tight">
-      <div class="landing-trust card" bdReveal>
-        <p class="landing-eyebrow">{{ t('landing.trust.eyebrow') }}</p>
-        <h2 class="landing-h2">{{ t('landing.trust.title') }}</h2>
-        <p class="landing-body">{{ t('landing.trust.body') }}</p>
-
-        <div class="landing-method-flow">
-          <div class="landing-method-step">
-            <span>{{ t('landing.trust.flowTmb') }}</span>
-            <small>{{ t('landing.trust.flowTmbSub') }}</small>
-          </div>
-          <svg lucideArrowRight size="18" class="landing-method-arrow" aria-hidden="true"></svg>
-          <div class="landing-method-step">
-            <span>{{ t('landing.trust.flowGet') }}</span>
-            <small>{{ t('landing.trust.flowGetSub') }}</small>
-          </div>
-          <svg lucideArrowRight size="18" class="landing-method-arrow" aria-hidden="true"></svg>
-          <div class="landing-method-step landing-method-step--final">
-            <span>{{ t('landing.trust.flowMeta') }}</span>
-            <small>{{ t('landing.trust.flowMetaSub') }}</small>
-          </div>
-        </div>
-
-        <div class="landing-trust-grid">
-          <div class="landing-trust-item">
-            <svg lucideCalculator size="22" aria-hidden="true"></svg>
-            <h4>{{ t('landing.trust.item1Title') }}</h4>
-            <p>{{ t('landing.trust.item1Body') }}</p>
-          </div>
-          <div class="landing-trust-item">
-            <svg lucideBookOpen size="22" aria-hidden="true"></svg>
-            <h4>{{ t('landing.trust.item2Title') }}</h4>
-            <p>{{ t('landing.trust.item2Body') }}</p>
-          </div>
-          <div class="landing-trust-item">
-            <svg lucideGift size="22" aria-hidden="true"></svg>
-            <h4>{{ t('landing.trust.item3Title') }}</h4>
-            <p>{{ t('landing.trust.item3Body') }}</p>
-          </div>
-        </div>
+    <section
+      class="page-shell landing-section landing-benefits"
+      aria-labelledby="beneficios-titulo"
+    >
+      <div class="landing-section-heading" bdReveal>
+        <p class="landing-eyebrow">{{ t('landing.benefits.eyebrow') }}</p>
+        <h2 id="beneficios-titulo" class="landing-h2">{{ t('landing.benefits.title') }}</h2>
+        <p class="landing-body">{{ t('landing.benefits.lede') }}</p>
+      </div>
+      <div class="landing-benefit-grid">
+        <article class="landing-benefit card" bdReveal>
+          <svg lucideClipboardList aria-hidden="true"></svg>
+          <h3>{{ t('landing.benefits.planTitle') }}</h3>
+          <p>{{ t('landing.benefits.planBody') }}</p>
+        </article>
+        <article class="landing-benefit card" bdReveal [revealDelay]="70">
+          <svg lucideChartNoAxesCombined aria-hidden="true"></svg>
+          <h3>{{ t('landing.benefits.macrosTitle') }}</h3>
+          <p>{{ t('landing.benefits.macrosBody') }}</p>
+        </article>
+        <article class="landing-benefit card" bdReveal [revealDelay]="140">
+          <svg lucideCalendarCheck aria-hidden="true"></svg>
+          <h3>{{ t('landing.benefits.diaryTitle') }}</h3>
+          <p>{{ t('landing.benefits.diaryBody') }}</p>
+        </article>
+        <article class="landing-benefit card" bdReveal [revealDelay]="210">
+          <svg lucideRefreshCw aria-hidden="true"></svg>
+          <h3>{{ t('landing.benefits.swapsTitle') }}</h3>
+          <p>{{ t('landing.benefits.swapsBody') }}</p>
+        </article>
       </div>
     </section>
 
-    <!-- RECURSOS RÁPIDOS -->
-    <section class="landing-section landing-section--tight">
-      <div class="landing-quick-facts">
-        <div class="landing-fact card" bdReveal [revealDelay]="0">
-          <svg lucidePieChart size="22" aria-hidden="true"></svg>
-          <span>{{ t('landing.quickFacts.fact1Title') }}</span>
-          <small>{{ t('landing.quickFacts.fact1Body') }}</small>
+    <section
+      id="como-funciona"
+      class="landing-section landing-how"
+      aria-labelledby="como-funciona-titulo"
+    >
+      <div class="page-shell">
+        <div class="landing-section-heading" bdReveal>
+          <p class="landing-eyebrow">{{ t('landing.howItWorks.eyebrow') }}</p>
+          <h2 id="como-funciona-titulo" class="landing-h2">{{ t('landing.howItWorks.title') }}</h2>
+          <p class="landing-body">{{ t('landing.howItWorks.lede') }}</p>
         </div>
-        <div class="landing-fact card" bdReveal [revealDelay]="80">
-          <svg lucideTrophy size="22" aria-hidden="true"></svg>
-          <span>{{ t('landing.quickFacts.fact2Title') }}</span>
-          <small>{{ t('landing.quickFacts.fact2Body') }}</small>
-        </div>
-        <div class="landing-fact card" bdReveal [revealDelay]="160">
-          <svg lucideGlobe size="22" aria-hidden="true"></svg>
-          <span>{{ t('landing.quickFacts.fact3Title') }}</span>
-          <small>{{ t('landing.quickFacts.fact3Body') }}</small>
-        </div>
-        <div class="landing-fact card" bdReveal [revealDelay]="240">
-          <svg lucideSalad size="22" aria-hidden="true"></svg>
-          <span
-            ><span [bdCountUp]="600" suffix="+"></span>
-            {{ t('landing.quickFacts.fact4Title') }}</span
+        <ol class="landing-steps">
+          <li bdReveal>
+            <span class="landing-step-number">1</span>
+            <h3>{{ t('landing.howItWorks.step1Title') }}</h3>
+            <p>{{ t('landing.howItWorks.step1Body') }}</p>
+          </li>
+          <li bdReveal [revealDelay]="90">
+            <span class="landing-step-number">2</span>
+            <h3>{{ t('landing.howItWorks.step2Title') }}</h3>
+            <p>{{ t('landing.howItWorks.step2Body') }}</p>
+          </li>
+          <li bdReveal [revealDelay]="180">
+            <span class="landing-step-number">3</span>
+            <h3>{{ t('landing.howItWorks.step3Title') }}</h3>
+            <p>{{ t('landing.howItWorks.step3Body') }}</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="recursos" class="page-shell landing-section" aria-labelledby="recursos-titulo">
+      <div class="landing-feature-grid">
+        <div class="landing-feature-copy" bdReveal>
+          <p class="landing-eyebrow">{{ t('landing.features.eyebrow') }}</p>
+          <h2 id="recursos-titulo" class="landing-h2">{{ t('landing.features.title') }}</h2>
+          <p class="landing-body">{{ t('landing.features.lede') }}</p>
+          <div
+            class="landing-feature-tabs"
+            role="tablist"
+            [attr.aria-label]="t('landing.features.label')"
           >
-          <small>{{ t('landing.quickFacts.fact4Body') }}</small>
+            @for (feature of features; track feature.id) {
+              <button
+                type="button"
+                role="tab"
+                [id]="'feature-tab-' + feature.id"
+                [attr.aria-selected]="featureAtiva() === feature.id"
+                [attr.aria-controls]="'feature-panel-' + feature.id"
+                [class.is-active]="featureAtiva() === feature.id"
+                (click)="featureAtiva.set(feature.id)"
+              >
+                {{ t('landing.features.tabs.' + feature.id) }}
+              </button>
+            }
+          </div>
+          @for (feature of features; track feature.id) {
+            @if (featureAtiva() === feature.id) {
+              <div class="landing-feature-description" bdReveal [revealDelay]="30">
+                <h3>{{ t('landing.features.' + feature.id + 'Title') }}</h3>
+                <p>{{ t('landing.features.' + feature.id + 'Body') }}</p>
+                <span
+                  ><svg lucideCheck size="15" aria-hidden="true"></svg
+                  >{{ t('landing.features.detail') }}</span
+                >
+              </div>
+            }
+          }
+        </div>
+        <div class="landing-feature-stage" bdReveal="scale" [revealDelay]="100">
+          @for (feature of features; track feature.id) {
+            @if (featureAtiva() === feature.id) {
+              <div
+                class="landing-feature-preview"
+                [id]="'feature-panel-' + feature.id"
+                role="tabpanel"
+                [attr.aria-labelledby]="'feature-tab-' + feature.id"
+              >
+                <img
+                  [src]="feature.image"
+                  [alt]="t('landing.features.' + feature.id + 'Alt')"
+                  loading="lazy"
+                />
+              </div>
+            }
+          }
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section class="landing-section" id="faq">
-      <div bdReveal>
+    <section
+      class="page-shell landing-section landing-section--compact"
+      aria-labelledby="orientacao-titulo"
+    >
+      <aside class="landing-guidance card" role="note" bdReveal>
+        <svg lucideInfo aria-hidden="true"></svg>
+        <div>
+          <p class="landing-eyebrow">{{ t('landing.guidance.eyebrow') }}</p>
+          <h2 id="orientacao-titulo">{{ t('landing.guidance.title') }}</h2>
+          <p>{{ t('landing.guidance.body') }}</p>
+        </div>
+      </aside>
+    </section>
+
+    <section
+      id="perguntas"
+      class="page-shell landing-section landing-faq"
+      aria-labelledby="perguntas-titulo"
+    >
+      <div class="landing-section-heading" bdReveal>
         <p class="landing-eyebrow">{{ t('landing.faq.eyebrow') }}</p>
-        <h2 class="landing-h2">{{ t('landing.faq.title') }}</h2>
+        <h2 id="perguntas-titulo" class="landing-h2">{{ t('landing.faq.title') }}</h2>
       </div>
-      <div class="landing-faq-wrap" bdReveal [revealDelay]="80">
+      <div bdReveal [revealDelay]="90">
         <bd-accordion [items]="faqItems()" [(opened)]="faqOpened" />
       </div>
     </section>
 
-    <!-- CTA FINAL -->
-    <section class="landing-section">
+    <section class="page-shell landing-section">
       <div class="landing-final-cta" bdReveal>
-        <h2 class="landing-h2 mx-auto">{{ t('landing.finalCta.title') }}</h2>
-        <p class="landing-body mx-auto">{{ t('landing.finalCta.body') }}</p>
-        <a routerLink="/register" bdButton class="landing-cta-shine">
-          {{ t('landing.finalCta.cta') }}
-        </a>
+        <h2>{{ t('landing.finalCta.title') }}</h2>
+        <p>{{ t('landing.finalCta.body') }}</p>
+        <a routerLink="/register" bdButton size="lg">{{ t('landing.finalCta.cta') }}</a>
       </div>
     </section>
   </main>
