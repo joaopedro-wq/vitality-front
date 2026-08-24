@@ -71,17 +71,6 @@ Backlog de demandas do `vitality-front` (Angular 20) e do `vitality-Back` (Larav
   - Dados sem registros suficientes são tratados com estado vazio claro;
   - Relatório pode ser exportado em formato definido pelo produto.
 
-### Onboarding guiado para novos usuários
-
-- **Status:** Pendente
-- **Prioridade:** Média
-- **Descrição:** Criar um onboarding opcional para apresentar Diário, metas e planos alimentares nas primeiras sessões do usuário.
-- **Critérios de aceite:**
-  - Novos usuários recebem o onboarding após o primeiro acesso;
-  - Usuário pode avançar, pular e retomar as orientações;
-  - A conclusão ou dispensa é persistida por usuário;
-  - O fluxo é responsivo e acessível.
-
 ### Compartilhamento de acompanhamento com nutricionista
 
 - **Status:** Pendente

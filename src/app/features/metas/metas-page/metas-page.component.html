@@ -57,7 +57,7 @@
               <span class="text-[13px] font-bold text-fg">{{ passos[passo()].titulo }}</span>
             </div>
 
-            <div class="min-w-0">
+            <div class="min-w-0" data-tour="onboarding-goals-form">
               @switch (passo()) {
                 @case (0) {
                   <vtp-perfil-step (concluido)="passo.set(1)" />

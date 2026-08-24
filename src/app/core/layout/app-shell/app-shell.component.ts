@@ -53,6 +53,7 @@ import { LanguageSelectorComponent } from '../../../components/molecules/languag
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { SessionInactivityService } from '../../auth/session-inactivity.service';
 import { OnboardingService } from '../../onboarding/onboarding.service';
+import { OnboardingWelcomeComponent } from '../../onboarding/onboarding-welcome.component';
 
 interface NavItem {
   path: string;
@@ -107,6 +108,7 @@ const NAV_ITEMS: NavItem[] = [
     LanguageSelectorComponent,
     ConfirmDialogComponent,
     BdTourComponent,
+    OnboardingWelcomeComponent,
     TranslocoDirective,
   ],
   templateUrl: './app-shell.component.html',
@@ -171,13 +173,15 @@ export class AppShellComponent implements OnDestroy {
 
   protected tourTarget(path: string, surface: 'desktop' | 'mobile'): string | null {
     const item =
-      path === '/diario'
-        ? 'diary'
-        : path === '/metas'
-          ? 'goals'
-          : path === '/dietas'
-            ? 'plans'
-            : null;
+      path === '/dashboard'
+        ? 'dashboard'
+        : path === '/diario'
+          ? 'diary'
+          : path === '/metas'
+            ? 'goals'
+            : path === '/dietas'
+              ? 'plans'
+              : null;
     return item ? `onboarding-${item}-${surface}` : null;
   }
 

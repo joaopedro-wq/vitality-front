@@ -603,11 +603,23 @@
     "back": "Back",
     "next": "Next",
     "finish": "All set, let’s begin",
+    "pageHintFinish": "Got it",
+    "quickTip": "Quick tip",
     "restart": "View onboarding again",
+    "welcome": {
+      "modalTitle": "Welcome to Vitality",
+      "close": "Skip introduction",
+      "eyebrow": "Food for your routine",
+      "title": "We are Vitality.",
+      "description": "A simple place to organize meals, follow calories and macros, and understand your day better.",
+      "guide": "We will show you the main paths so you can get started at your own pace.",
+      "guideDetail": "A short introduction through the app menu",
+      "cta": "Explore the app"
+    },
     "saveError": "We could not save your choice. Please try again.",
     "dashboard": {
-      "title": "Start with a meal",
-      "description": "This shortcut takes you straight to logging. You do not need to understand everything before getting started."
+      "title": "Dashboard: follow your day",
+      "description": "Here you can find your routine summary and shortcuts to move forward at your own pace."
     },
     "diary": {
       "title": "Log your day in the Diary",
@@ -617,6 +629,14 @@
       "title": "Log the meal you are having",
       "description": "Choose a meal from your day and add foods at your own pace. You can adjust quantities before saving."
     },
+    "diaryMap": {
+      "title": "Choose a moment in your day",
+      "description": "The map organizes meals by time. Select one to see or fill in the details."
+    },
+    "diaryMacros": {
+      "title": "Follow your daily summary",
+      "description": "Here you can see calories and macros logged so far, compared with your goal when one is set."
+    },
     "goals": {
       "title": "Set your Goals",
       "description": "Set up your objective and routine. Your daily goal guides the Dashboard, Diary, and food suggestions."
@@ -625,6 +645,10 @@
       "title": "Adjust your goal when your routine changes",
       "description": "Share your objectives and preferences. This reference helps organize your plan and daily tracking."
     },
+    "goalsNext": {
+      "title": "Move one step at a time",
+      "description": "Fill in or review the details at your own pace. You can return and adjust your goal whenever you need."
+    },
     "plans": {
       "title": "Build your Meal plan",
       "description": "Create, review, and favorite plans to turn your goal into a practical meal routine."
@@ -632,6 +656,10 @@
     "plansAction": {
       "title": "Organize your next meals",
       "description": "Build a plan from your goal and adapt the choices to your routine."
+    },
+    "plansOverview": {
+      "title": "Your plans stay together here",
+      "description": "Use saved plans as a reference for the day and adjust meals when your routine changes."
     }
   },
   "landing": {

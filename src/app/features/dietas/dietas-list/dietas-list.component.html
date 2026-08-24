@@ -38,6 +38,7 @@
       @if (!plans().length) {
         <div
           class="mt-8 rounded-[28px] border border-dashed border-primary/40 bg-primary-soft/35 p-8 text-center"
+          data-tour="onboarding-plans-empty"
         >
           <h2 class="m-0 text-xl">Sem plano salvo ainda</h2>
           <p class="m-0 mt-2 text-fg-muted">
@@ -55,6 +56,7 @@
       } @else {
         <div
           class="mt-8 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 2xl:grid-cols-5"
+          data-tour="onboarding-plans-list"
         >
           @for (plan of plans(); track plan.id) {
             <article

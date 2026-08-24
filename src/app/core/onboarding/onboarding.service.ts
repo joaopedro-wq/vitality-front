@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, effect, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { BdTourService } from 'bandeira-ui';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs';
+import { filter, finalize } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
 import { apiPaths } from '../http/api-paths';
@@ -19,8 +19,24 @@ interface OnboardingStage {
   content: string;
 }
 
+interface PageHint {
+  id: PageHintId;
+  route: string;
+  steps: readonly OnboardingStage[];
+}
+
+interface ActiveTourStep {
+  target: string;
+  title: string;
+  content: string;
+  placement: 'auto';
+}
+
+type PageHintId = 'diary' | 'goals' | 'plans';
+
 const TARGET_WAIT_TIMEOUT_MS = 2_400;
 const TARGET_RETRY_INTERVAL_MS = 80;
+const PAGE_HINTS_STORAGE_PREFIX = 'vitality:onboarding:page-hints:v1:';
 
 @Injectable({ providedIn: 'root' })
 export class OnboardingService {
@@ -33,13 +49,18 @@ export class OnboardingService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private automaticUserId: number | null = null;
+  private currentUserId: number | null = null;
   private readonly awaitingOutcome = signal(false);
   private readonly preparingStage = signal(false);
-  private readonly stage = signal(0);
   private readonly manualRun = signal(false);
+  private readonly activePageHint = signal<PageHintId | null>(null);
+  private readonly introStage = signal(0);
+  private readonly sessionPageHints = new Set<string>();
+  private welcomeManualRun = false;
   private runId = 0;
 
   readonly saving = signal(false);
+  readonly welcomeOpen = signal(false);
 
   constructor() {
     effect(() => {
@@ -48,46 +69,89 @@ export class OnboardingService {
 
       this.awaitingOutcome.set(false);
       this.clearSpotShape();
+      const pageHint = this.activePageHint();
+      if (pageHint) {
+        this.activePageHint.set(null);
+        this.markPageHintSeen(pageHint);
+        return;
+      }
+
       if (!outcome.completed) {
         if (!this.manualRun()) this.persist('skipped');
         return;
       }
 
-      if (this.stage() < this.stages().length - 1) {
-        this.stage.update((current) => current + 1);
+      if (this.introStage() < this.stages().length - 1) {
+        this.introStage.update((current) => current + 1);
         this.startCurrentStage();
         return;
       }
 
       if (!this.manualRun()) this.persist('completed');
     });
+
+    effect(() => {
+      const step = this.tour.step();
+      if (step?.target) this.applySpotShape(step.target);
+    });
+
+    this.router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => this.handleNavigation(event.urlAfterRedirects));
   }
 
   evaluateUser(user: User | null): void {
     if (!user) {
       this.automaticUserId = null;
+      this.currentUserId = null;
+      this.welcomeOpen.set(false);
+      this.cancelPendingPageHint();
       return;
     }
+
+    this.currentUserId = user.id;
     if (this.automaticUserId === user.id) return;
 
     this.automaticUserId = user.id;
-    if (user.onboarding_status === 'pending') this.start(false);
+    if (user.onboarding_status === 'pending') this.openWelcome(false);
+    else this.handleNavigation(this.router.url);
   }
 
   restart(): void {
-    this.start(true);
+    this.openWelcome(true);
+  }
+
+  beginIntroduction(): void {
+    if (!this.welcomeOpen()) return;
+
+    this.welcomeOpen.set(false);
+    this.start(this.welcomeManualRun);
+  }
+
+  dismissWelcome(): void {
+    if (!this.welcomeOpen()) return;
+
+    this.welcomeOpen.set(false);
+    if (!this.welcomeManualRun) this.persist('skipped');
   }
 
   private start(manual: boolean): void {
     if (this.tour.active() || this.awaitingOutcome() || this.preparingStage()) return;
 
     this.manualRun.set(manual);
-    this.stage.set(0);
+    this.introStage.set(0);
     this.startCurrentStage();
   }
 
+  private openWelcome(manual: boolean): void {
+    if (this.welcomeOpen() || this.tour.active() || this.awaitingOutcome() || this.preparingStage()) return;
+
+    this.welcomeManualRun = manual;
+    this.welcomeOpen.set(true);
+  }
+
   private startCurrentStage(): void {
-    const stage = this.stages()[this.stage()];
+    const stage = this.stages()[this.introStage()];
     if (!stage) return;
 
     const currentRunId = ++this.runId;
@@ -104,26 +168,30 @@ export class OnboardingService {
       this.preparingStage.set(false);
       if (!target) return;
 
-      this.applySpotShape(target);
-      this.openStage(stage, target);
+      this.openTour([{ ...stage, target, placement: 'auto' }], 'intro');
     });
   }
 
-  private openStage(stage: OnboardingStage, target: string): void {
+  private openTour(steps: readonly ActiveTourStep[], context: 'intro' | 'page-hint'): void {
     this.awaitingOutcome.set(true);
-    this.tour.start([{ target, title: stage.title, content: stage.content, placement: 'auto' }], {
+    this.tour.start([...steps], {
       next: this.transloco.translate('onboarding.next'),
       prev: this.transloco.translate('onboarding.back'),
-      finish:
-        this.stage() === this.stages().length - 1
-          ? this.transloco.translate('onboarding.finish')
-          : this.transloco.translate('onboarding.next'),
+      finish: this.transloco.translate(
+        context === 'page-hint'
+          ? 'onboarding.pageHintFinish'
+          : this.introStage() === this.stages().length - 1
+            ? 'onboarding.finish'
+            : 'onboarding.next',
+      ),
       skip: this.transloco.translate('onboarding.skip'),
       counter: () =>
-        this.transloco.translate('onboarding.step', {
-          current: this.stage() + 1,
-          total: this.stages().length,
-        }),
+        context === 'intro'
+          ? this.transloco.translate('onboarding.step', {
+              current: this.introStage() + 1,
+              total: this.stages().length,
+            })
+          : this.transloco.translate('onboarding.quickTip'),
     });
   }
 
@@ -131,42 +199,234 @@ export class OnboardingService {
     return [
       {
         route: '/dashboard',
-        targets: ['[data-tour="onboarding-register-meal"]'],
+        targets: [
+          '[data-tour="onboarding-dashboard-desktop"]',
+          '[data-tour="onboarding-dashboard-mobile"]',
+        ],
         title: this.transloco.translate('onboarding.dashboard.title'),
         content: this.transloco.translate('onboarding.dashboard.description'),
       },
       {
         route: '/diario',
         targets: [
-          '[data-tour="onboarding-diary-action"]',
-          '[data-tour="onboarding-diary-map"]',
           '[data-tour="onboarding-diary-desktop"]',
           '[data-tour="onboarding-diary-mobile"]',
         ],
-        title: this.transloco.translate('onboarding.diaryAction.title'),
-        content: this.transloco.translate('onboarding.diaryAction.description'),
+        title: this.transloco.translate('onboarding.diary.title'),
+        content: this.transloco.translate('onboarding.diary.description'),
       },
       {
         route: '/metas',
         targets: [
-          '[data-tour="onboarding-goals-action"]',
           '[data-tour="onboarding-goals-desktop"]',
           '[data-tour="onboarding-goals-mobile"]',
         ],
-        title: this.transloco.translate('onboarding.goalsAction.title'),
-        content: this.transloco.translate('onboarding.goalsAction.description'),
+        title: this.transloco.translate('onboarding.goals.title'),
+        content: this.transloco.translate('onboarding.goals.description'),
       },
       {
         route: '/dietas',
         targets: [
-          '[data-tour="onboarding-plans-action"]',
           '[data-tour="onboarding-plans-desktop"]',
           '[data-tour="onboarding-plans-mobile"]',
         ],
-        title: this.transloco.translate('onboarding.plansAction.title'),
-        content: this.transloco.translate('onboarding.plansAction.description'),
+        title: this.transloco.translate('onboarding.plans.title'),
+        content: this.transloco.translate('onboarding.plans.description'),
       },
     ];
+  }
+
+  private pageHints(): PageHint[] {
+    return [
+      {
+        id: 'diary',
+        route: '/diario',
+        steps: [
+          {
+            route: '/diario',
+            targets: ['[data-tour="onboarding-diary-map"]'],
+            title: this.transloco.translate('onboarding.diaryMap.title'),
+            content: this.transloco.translate('onboarding.diaryMap.description'),
+          },
+          {
+            route: '/diario',
+            targets: ['[data-tour="onboarding-diary-macros"]'],
+            title: this.transloco.translate('onboarding.diaryMacros.title'),
+            content: this.transloco.translate('onboarding.diaryMacros.description'),
+          },
+          {
+            route: '/diario',
+            targets: ['[data-tour="onboarding-diary-action"]'],
+            title: this.transloco.translate('onboarding.diaryAction.title'),
+            content: this.transloco.translate('onboarding.diaryAction.description'),
+          },
+        ],
+      },
+      {
+        id: 'goals',
+        route: '/metas',
+        steps: [
+          {
+            route: '/metas',
+            targets: ['[data-tour="onboarding-goals-action"]'],
+            title: this.transloco.translate('onboarding.goalsAction.title'),
+            content: this.transloco.translate('onboarding.goalsAction.description'),
+          },
+          {
+            route: '/metas',
+            targets: [
+              '[data-tour="onboarding-goals-form"]',
+              '[data-tour="onboarding-goals-review"]',
+            ],
+            title: this.transloco.translate('onboarding.goalsNext.title'),
+            content: this.transloco.translate('onboarding.goalsNext.description'),
+          },
+        ],
+      },
+      {
+        id: 'plans',
+        route: '/dietas',
+        steps: [
+          {
+            route: '/dietas',
+            targets: ['[data-tour="onboarding-plans-action"]'],
+            title: this.transloco.translate('onboarding.plansAction.title'),
+            content: this.transloco.translate('onboarding.plansAction.description'),
+          },
+          {
+            route: '/dietas',
+            targets: [
+              '[data-tour="onboarding-plans-empty"]',
+              '[data-tour="onboarding-plans-list"]',
+            ],
+            title: this.transloco.translate('onboarding.plansOverview.title'),
+            content: this.transloco.translate('onboarding.plansOverview.description'),
+          },
+        ],
+      },
+    ];
+  }
+
+  private handleNavigation(url: string): void {
+    const route = url.split('?')[0];
+    const currentHint = this.activePageHint();
+    if (currentHint && this.pageHints().find((hint) => hint.id === currentHint)?.route !== route) {
+      this.cancelPendingPageHint();
+    }
+
+    const hint = this.pageHints().find((item) => item.route === route);
+    if (hint) this.startPageHint(hint);
+  }
+
+  private startPageHint(hint: PageHint): void {
+    if (!this.canShowPageHint(hint.id)) return;
+
+    const currentRunId = ++this.runId;
+    this.preparingStage.set(true);
+    this.activePageHint.set(hint.id);
+    this.manualRun.set(false);
+
+    this.resolveVisibleSteps(hint.steps, currentRunId).then((steps) => {
+      if (currentRunId !== this.runId) return;
+
+      this.preparingStage.set(false);
+      if (!steps.length || this.router.url.split('?')[0] !== hint.route) {
+        this.activePageHint.set(null);
+        return;
+      }
+
+      this.openTour(steps, 'page-hint');
+    });
+  }
+
+  private canShowPageHint(id: PageHintId): boolean {
+    return Boolean(
+      this.currentUserId &&
+      !this.hasSeenPageHint(id) &&
+      !this.tour.active() &&
+      !this.awaitingOutcome() &&
+      !this.preparingStage() &&
+      !this.activePageHint(),
+    );
+  }
+
+  private cancelPendingPageHint(): void {
+    if (!this.activePageHint()) return;
+
+    this.runId += 1;
+    this.preparingStage.set(false);
+    this.activePageHint.set(null);
+    this.clearSpotShape();
+  }
+
+  private hasSeenPageHint(id: PageHintId): boolean {
+    return (
+      this.sessionPageHints.has(this.pageHintSessionKey(id)) || this.readPageHints()[id] === true
+    );
+  }
+
+  private markPageHintSeen(id: PageHintId): void {
+    if (!this.currentUserId) return;
+
+    this.sessionPageHints.add(this.pageHintSessionKey(id));
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    try {
+      const hints = this.readPageHints();
+      hints[id] = true;
+      window.localStorage.setItem(this.pageHintsStorageKey(), JSON.stringify(hints));
+    } catch {
+      // Em modo privado ou com armazenamento indisponível, a memória da sessão evita repetição.
+    }
+  }
+
+  private readPageHints(): Partial<Record<PageHintId, true>> {
+    if (!isPlatformBrowser(this.platformId) || !this.currentUserId) return {};
+
+    try {
+      const saved = window.localStorage.getItem(this.pageHintsStorageKey());
+      if (!saved) return {};
+
+      const parsed: unknown = JSON.parse(saved);
+      return typeof parsed === 'object' && parsed !== null ? parsed : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private pageHintsStorageKey(): string {
+    return `${PAGE_HINTS_STORAGE_PREFIX}${this.currentUserId}`;
+  }
+
+  private pageHintSessionKey(id: PageHintId): string {
+    return `${this.currentUserId}:${id}`;
+  }
+
+  private async resolveVisibleSteps(
+    steps: readonly OnboardingStage[],
+    currentRunId: number,
+  ): Promise<ActiveTourStep[]> {
+    if (!isPlatformBrowser(this.platformId)) return [];
+
+    const deadline = Date.now() + TARGET_WAIT_TIMEOUT_MS;
+    do {
+      const visibleSteps = this.findVisibleSteps(steps);
+      if (visibleSteps.length) {
+        await new Promise<void>((resolve) => window.setTimeout(resolve, TARGET_RETRY_INTERVAL_MS));
+        return this.findVisibleSteps(steps);
+      }
+
+      await new Promise<void>((resolve) => window.setTimeout(resolve, TARGET_RETRY_INTERVAL_MS));
+    } while (Date.now() < deadline && currentRunId === this.runId);
+
+    return [];
+  }
+
+  private findVisibleSteps(steps: readonly OnboardingStage[]): ActiveTourStep[] {
+    return steps.flatMap((step) => {
+      const target = this.findVisibleTarget(step.targets);
+      return target ? [{ ...step, target, placement: 'auto' as const }] : [];
+    });
   }
 
   private async waitForVisibleTarget(

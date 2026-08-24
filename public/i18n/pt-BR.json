@@ -603,11 +603,23 @@
     "back": "Voltar",
     "next": "Avançar",
     "finish": "Pronto, vamos começar",
+    "pageHintFinish": "Entendi",
+    "quickTip": "Dica rápida",
     "restart": "Ver onboarding novamente",
+    "welcome": {
+      "modalTitle": "Boas-vindas ao Vitality",
+      "close": "Pular apresentação",
+      "eyebrow": "Alimentação na sua rotina",
+      "title": "Somos o Vitality.",
+      "description": "Um lugar simples para organizar refeições, acompanhar calorias e macros e entender melhor o seu dia.",
+      "guide": "Vamos mostrar os caminhos principais para você começar sem pressa.",
+      "guideDetail": "Uma apresentação curta pelos menus do sistema",
+      "cta": "Conhecer o sistema"
+    },
     "saveError": "Não foi possível salvar sua escolha agora. Tente novamente.",
     "dashboard": {
-      "title": "Comece por uma refeição",
-      "description": "Este atalho leva você direto ao registro. Não precisa entender tudo antes de começar."
+      "title": "Painel: acompanhe o seu dia",
+      "description": "Aqui você encontra o resumo da rotina e os atalhos para seguir pelo seu ritmo."
     },
     "diary": {
       "title": "Registre o seu dia no Diário",
@@ -617,6 +629,14 @@
       "title": "Registre a refeição que está fazendo",
       "description": "Escolha uma refeição do dia e adicione os alimentos no seu ritmo. Você pode ajustar quantidades antes de salvar."
     },
+    "diaryMap": {
+      "title": "Escolha um momento do seu dia",
+      "description": "O mapa reúne as refeições organizadas por horário. Toque em uma delas para ver ou preencher os detalhes."
+    },
+    "diaryMacros": {
+      "title": "Acompanhe o resumo do dia",
+      "description": "Aqui você vê calorias e macros registrados até agora, sempre comparados à sua meta quando ela estiver definida."
+    },
     "goals": {
       "title": "Defina suas Metas",
       "description": "Configure seu objetivo e sua rotina. A meta diária orienta o Painel, o Diário e as sugestões alimentares."
@@ -625,6 +645,10 @@
       "title": "Ajuste sua meta quando a rotina mudar",
       "description": "Informe seus objetivos e preferências. Essa referência ajuda a organizar o plano e o acompanhamento do dia."
     },
+    "goalsNext": {
+      "title": "Siga uma etapa por vez",
+      "description": "Preencha ou revise os dados no seu ritmo. Você pode voltar e ajustar sua meta sempre que precisar."
+    },
     "plans": {
       "title": "Monte seu Plano alimentar",
       "description": "Crie, revise e favorite planos para transformar sua meta em uma rotina prática de refeições."
@@ -632,6 +656,10 @@
     "plansAction": {
       "title": "Organize as próximas refeições",
       "description": "Monte um plano a partir da sua meta e adapte as escolhas à sua rotina."
+    },
+    "plansOverview": {
+      "title": "Seu plano fica reunido aqui",
+      "description": "Use os planos salvos como referência para o dia e ajuste as refeições quando a rotina mudar."
     }
   },
   "landing": {
