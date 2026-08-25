@@ -31,6 +31,22 @@ export interface FoodFilters {
   sort_order?: 'asc' | 'desc';
 }
 
+export interface TacoSpreadsheetImportResult {
+  version: {
+    id: number;
+    status: string;
+    checksum: string;
+    activated_at: string | null;
+  };
+  summary: {
+    foods: number;
+    pending_review: number;
+    groups: Record<string, number>;
+    families: Record<string, number>;
+    role_coverage: Record<string, number>;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class AlimentoService {
   private readonly http = inject(HttpClient);
@@ -97,6 +113,14 @@ export class AlimentoService {
       .post<
         ApiResponse<{ created: number; updated: number; skipped: number }>
       >(apiPaths.adminImportarTaco(), {})
+      .pipe(map((response) => response.data));
+  }
+  importTacoSpreadsheet(file: File): Observable<TacoSpreadsheetImportResult> {
+    const body = new FormData();
+    body.append('file', file, file.name);
+
+    return this.http
+      .post<ApiResponse<TacoSpreadsheetImportResult>>(apiPaths.adminImportarPlanilhaTaco(), body)
       .pipe(map((response) => response.data));
   }
   planTags(): Observable<FoodPlanTag[]> {

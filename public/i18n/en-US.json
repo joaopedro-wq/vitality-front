@@ -409,6 +409,8 @@
     "reviewLabels": {
       "meals": "Meals",
       "style": "Style",
+      "diet": "Eating pattern",
+      "restrictions": "Restrictions",
       "avoiding": "Avoiding",
       "including": "Always including"
     },
@@ -435,11 +437,20 @@
       "preferences": {
         "title": "Preferences",
         "description": "Optional",
+        "dietQuestion": "Which eating pattern do you follow?",
+        "dietHint": "The TACO catalog filters compatible foods before building the plan.",
+        "dietTypes": {
+          "onivora": "Omnivorous",
+          "vegetariana": "Vegetarian"
+        },
+        "restrictionsQuestion": "Any important restriction?",
+        "restrictionsHint": "We show only options with enough catalog coverage.",
+        "checkingAvailability": "Updating compatible options…",
         "avoidQuestion": "Any foods to avoid?",
         "avoidHint": "You can skip this — only fill it in if you already know what you don't like.",
         "avoidLabel": "Avoid",
         "includeQuestion": "Any food that can't be missing?",
-        "includeHint": "It's guaranteed to be in the plan, in whichever meal makes the most sense.",
+        "includeHint": "Choose up to {{count}} foods: one required food per meal.",
         "includeLabel": "Always include"
       },
       "review": {

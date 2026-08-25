@@ -66,6 +66,8 @@ function criarAlimento(
   return {
     id,
     descricao: `Alimento ${id}`,
+    descricao_original: `Alimento ${id}`,
+    detalhe_exibicao: null,
     proteina: 0,
     gordura: 0,
     carbo: 0,

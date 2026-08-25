@@ -10,6 +10,7 @@ import type {
   MealPlanDraft,
   MealPlanPreferences,
   FoodRestrictionOption,
+  MealPlanFeasibilityResponse,
   MealPlanItemSuggestion,
 } from '../core/models/meal-plan.model';
 
@@ -173,6 +174,12 @@ export class MealPlanService {
   restrictions(): Observable<FoodRestrictionOption[]> {
     return this.http
       .get<ApiResponse<FoodRestrictionOption[]>>(apiPaths.mealPlanRestrictions())
+      .pipe(map((res) => res.data));
+  }
+
+  feasibility(preferences: MealPlanPreferences): Observable<MealPlanFeasibilityResponse> {
+    return this.http
+      .post<ApiResponse<MealPlanFeasibilityResponse>>(apiPaths.mealPlanFeasibility(), preferences)
       .pipe(map((res) => res.data));
   }
 

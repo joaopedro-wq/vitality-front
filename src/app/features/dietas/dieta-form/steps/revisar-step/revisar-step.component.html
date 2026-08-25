@@ -23,6 +23,18 @@
   <div
     class="flex items-center justify-between border-b border-dashed border-border-strong pb-2.5 text-sm"
   >
+    <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.diet' | transloco }}</span>
+    <strong>{{ formatDiet(dietType()) }}</strong>
+  </div>
+  <div
+    class="flex items-start justify-between gap-4 border-b border-dashed border-border-strong pb-2.5 text-sm"
+  >
+    <span class="shrink-0 text-fg-muted">{{ 'dietPlan.reviewLabels.restrictions' | transloco }}</span>
+    <strong class="text-right">{{ formatRestrictions(restrictions()) }}</strong>
+  </div>
+  <div
+    class="flex items-center justify-between border-b border-dashed border-border-strong pb-2.5 text-sm"
+  >
     <span class="text-fg-muted">{{ 'dietPlan.reviewLabels.avoiding' | transloco }}</span>
     <strong>{{
       excluded().length

@@ -9,6 +9,23 @@
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--bd-border);
 }
+
+.taco-import {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.taco-import__file {
+  max-width: 13rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--bd-fg-muted);
+  font-size: .78rem;
+}
 .back {
   display: inline-flex;
   align-items: center;

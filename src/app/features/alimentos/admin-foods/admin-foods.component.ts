@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BdButtonComponent, BdFieldComponent, BdInputComponent } from 'bandeira-ui';
-import { LucideArchive, LucidePlus, LucideRefreshCw } from '@lucide/angular';
+import { LucideArchive, LucidePlus, LucideUpload } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
@@ -22,9 +22,9 @@ import { LoadingOverlayComponent } from '../../../components/organisms/loading-o
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
 
 const MENSAGENS_IMPORTACAO: string[] = [
-  'Baixando o catálogo oficial…',
-  'Conferindo os alimentos já cadastrados…',
-  'Atualizando macros e nutrientes…',
+  'Validando a estrutura da planilha TACO…',
+  'Classificando alimentos e perfis de planejamento…',
+  'Ativando a nova versão do catálogo…',
 ];
 
 @Component({
@@ -38,7 +38,7 @@ const MENSAGENS_IMPORTACAO: string[] = [
     BdInputComponent,
     LucideArchive,
     LucidePlus,
-    LucideRefreshCw,
+    LucideUpload,
     PlateLoaderComponent,
     BackButtonComponent,
     LoadingStateComponent,
@@ -57,6 +57,7 @@ export class AdminFoodsComponent {
   protected readonly loading = signal(true);
   protected readonly loadingVisivel = gateCarregamento(this.loading);
   protected readonly importing = signal(false);
+  protected readonly tacoFile = signal<File | null>(null);
   protected readonly mensagensImportacao = MENSAGENS_IMPORTACAO;
   protected readonly saving = signal(false);
   protected readonly source = signal<FonteAlimento | ''>('');
@@ -187,18 +188,30 @@ export class AdminFoodsComponent {
       error: () => this.toastr.error('Não foi possível alterar o status.'),
     });
   }
-  importTaco(): void {
-    if (this.importing()) return;
+  selectTacoSpreadsheet(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.item(0) ?? null;
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.xlsx')) {
+      this.toastr.error('Selecione uma planilha .xlsx da TACO.');
+      return;
+    }
+    this.tacoFile.set(file);
+  }
+  importTaco(input: HTMLInputElement): void {
+    const file = this.tacoFile();
+    if (!file || this.importing()) return;
     this.importing.set(true);
     this.service
-      .importTaco()
+      .importTacoSpreadsheet(file)
       .pipe(finalize(() => this.importing.set(false)))
       .subscribe({
         next: (r) => {
-          this.toastr.success(`TACO processada: ${r.created} criados e ${r.updated} atualizados.`);
+          this.toastr.success(`TACO ativada: ${r.summary.foods} alimentos importados.`);
+          this.tacoFile.set(null);
+          input.value = '';
           this.load();
         },
-        error: () => this.toastr.error('Não foi possível importar a TACO.'),
+        error: () => this.toastr.error('Não foi possível importar a planilha TACO. Confira o arquivo e tente novamente.'),
       });
   }
   private load(): void {

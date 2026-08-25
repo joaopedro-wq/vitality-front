@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Subject, finalize, forkJoin, switchMap, takeUntil } from 'rxjs';
+import { EMPTY, Subject, finalize, forkJoin, switchMap, takeUntil } from 'rxjs';
 
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
@@ -38,6 +38,10 @@ import type {
   MealPlanMeal,
   MealPlanPreferences,
   MealPlanStyle,
+  MealPlanDietType,
+  FoodRestrictionOption,
+  MealPlanFeasibility,
+  MealPlanFeasibilityResponse,
 } from '../../../core/models/meal-plan.model';
 import { MealPlanPreviewComponent } from '../meal-plan-preview/meal-plan-preview.component';
 import { RefeicoesStepComponent } from './steps/refeicoes-step/refeicoes-step.component';
@@ -102,7 +106,19 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly meta = signal<MetaDiaria | null>(null);
   protected readonly draft = signal<MealPlanDraft | null>(null);
   protected readonly mealCount = signal<3 | 4 | 5>(4);
+  protected readonly mealTimes = signal<string[]>(horariosPadrao(4));
   protected readonly style = signal<MealPlanStyle>('rapido');
+  protected readonly dietType = signal<MealPlanDietType>('onivora');
+  protected readonly restrictionSlugs = signal<string[]>([]);
+  protected readonly restrictionOptions = signal<FoodRestrictionOption[]>([]);
+  protected readonly dietOptions = signal<Partial<Record<MealPlanDietType, MealPlanFeasibility>>>({});
+  protected readonly feasibility = signal<MealPlanFeasibility | null>(null);
+  protected readonly checkingFeasibility = signal(false);
+  protected readonly selectedRestrictions = computed(() => {
+    const selected = new Set(this.restrictionSlugs());
+
+    return this.restrictionOptions().filter((restriction) => selected.has(restriction.slug));
+  });
   protected readonly title = signal('');
   protected readonly excluded = signal<Alimento[]>([]);
   protected readonly included = signal<Alimento[]>([]);
@@ -126,6 +142,7 @@ export class DietaFormComponent implements OnDestroy {
   /** `effect()` roda uma vez na inicialização também — pula o primeiro disparo pra
    * não tentar retraduzir um draft que ainda nem existe. */
   private idiomaInicializado = false;
+  private feasibilityRequestId = 0;
 
   constructor() {
     this.iniciar();
@@ -169,6 +186,7 @@ export class DietaFormComponent implements OnDestroy {
 
   protected onRefeicoesConcluido(valor: 3 | 4 | 5): void {
     this.mealCount.set(valor);
+    if (this.mealTimes().length !== valor) this.mealTimes.set(horariosPadrao(valor));
     this.passo.set(1);
   }
 
@@ -177,27 +195,52 @@ export class DietaFormComponent implements OnDestroy {
     this.passo.set(2);
   }
 
-  protected onPreferenciasConcluido(valor: { evitados: Alimento[]; incluidos: Alimento[] }): void {
+  protected onPreferenciasConcluido(valor: { evitados: Alimento[]; incluidos: Alimento[]; dietType: MealPlanDietType; restrictions: string[] }): void {
     this.excluded.set(valor.evitados);
     this.included.set(valor.incluidos);
+    this.dietType.set(valor.dietType);
+    this.restrictionSlugs.set(valor.restrictions);
     this.passo.set(3);
+  }
+
+  protected onPreferenceCriteriaChange(valor: { dietType: MealPlanDietType; restrictions: string[] }): void {
+    this.loadFeasibility({
+      meal_count: this.mealCount(),
+      meal_times: this.mealTimes(),
+      style: this.style(),
+      excluded_food_ids: this.excluded().map((food) => food.id),
+      included_food_ids: this.included().map((food) => food.id),
+      diet_type: valor.dietType,
+      restriction_slugs: valor.restrictions,
+    });
   }
 
   protected generate(): void {
     const preferences: MealPlanPreferences = {
       meal_count: this.mealCount(),
-      meal_times: horariosPadrao(this.mealCount()),
+      meal_times: this.mealTimes(),
       style: this.style(),
       excluded_food_ids: this.excluded().map((food) => food.id),
       included_food_ids: this.included().map((food) => food.id),
-      diet_type: 'onivora',
-      restriction_slugs: [],
+      diet_type: this.dietType(),
+      restriction_slugs: this.restrictionSlugs(),
     };
     this.generating.set(true);
     this.plansService
-      .saveProfile(preferences)
+      .feasibility(preferences)
       .pipe(
-        switchMap(() => this.plansService.preview(preferences)),
+        switchMap((assessment) => {
+          this.applyFeasibility(assessment);
+          if (!assessment.current.feasible) {
+            this.toastr.error(assessment.current.message ?? this.transloco.translate('common.errors.generic'));
+
+            return EMPTY;
+          }
+
+          return this.plansService.saveProfile(preferences).pipe(
+            switchMap(() => this.plansService.preview(preferences)),
+          );
+        }),
         finalize(() => this.generating.set(false)),
         takeUntil(this.destruido),
       )
@@ -389,14 +432,25 @@ export class DietaFormComponent implements OnDestroy {
     forkJoin({
       metas: this.metaService.list(),
       profile: this.plansService.profile(),
+      restrictions: this.plansService.restrictions(),
     })
       .pipe(takeUntil(this.destruido))
       .subscribe({
-        next: ({ metas, profile }) => {
+        next: ({ metas, profile, restrictions }) => {
           const metaAtual = metas.find((item) => item.data === null) ?? metas[0] ?? null;
           this.meta.set(metaAtual);
           this.mealCount.set(profile.meal_count);
+          this.mealTimes.set(profile.meal_times);
           this.style.set(profile.style);
+          this.dietType.set(profile.diet_type);
+          this.restrictionSlugs.set([]);
+          this.restrictionOptions.set(restrictions);
+          this.loadFeasibility({
+            ...profile,
+            restriction_slugs: [],
+            excluded_food_ids: [],
+            included_food_ids: [],
+          });
 
           if (!metaAtual) {
             this.router.navigateByUrl('/metas');
@@ -436,5 +490,30 @@ export class DietaFormComponent implements OnDestroy {
           this.router.navigateByUrl('/dietas');
         },
       });
+  }
+
+  private loadFeasibility(preferences: MealPlanPreferences): void {
+    const requestId = ++this.feasibilityRequestId;
+    this.checkingFeasibility.set(true);
+    this.plansService
+      .feasibility(preferences)
+      .pipe(
+        finalize(() => {
+          if (requestId === this.feasibilityRequestId) this.checkingFeasibility.set(false);
+        }),
+        takeUntil(this.destruido),
+      )
+      .subscribe({
+        next: (assessment) => {
+          if (requestId === this.feasibilityRequestId) this.applyFeasibility(assessment);
+        },
+        error: () => undefined,
+      });
+  }
+
+  private applyFeasibility(assessment: MealPlanFeasibilityResponse): void {
+    this.feasibility.set(assessment.current);
+    this.dietOptions.set(assessment.diet_options);
+    this.restrictionOptions.set(assessment.restrictions);
   }
 }

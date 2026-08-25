@@ -1,7 +1,7 @@
 import type { DiaryMacros } from './diary.model';
 
 export type MealPlanStyle = 'rapido' | 'caseiro' | 'economico';
-export type MealPlanDietType = 'onivora' | 'vegetariana' | 'vegana';
+export type MealPlanDietType = 'onivora' | 'vegetariana';
 
 export interface FoodRestrictionOption {
   slug: string;
@@ -9,6 +9,20 @@ export interface FoodRestrictionOption {
   type: 'diet' | 'intolerance' | 'allergy';
   food_count: number;
   available: boolean;
+  unavailable_reason?: string | null;
+}
+
+export interface MealPlanFeasibility {
+  feasible: boolean;
+  candidate_count: number;
+  missing_roles: string[];
+  message: string | null;
+}
+
+export interface MealPlanFeasibilityResponse {
+  current: MealPlanFeasibility;
+  diet_options: Record<MealPlanDietType, MealPlanFeasibility>;
+  restrictions: FoodRestrictionOption[];
 }
 
 export interface MealPlanPreferences {

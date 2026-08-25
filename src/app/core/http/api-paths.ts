@@ -34,6 +34,7 @@ export const apiPaths = {
   adminRestaurarAlimento: (id: number | string) =>
     `${environment.apiBaseUrl}/admin/foods/${id}/restore`,
   adminImportarTaco: () => `${environment.apiBaseUrl}/admin/foods/import-taco`,
+  adminImportarPlanilhaTaco: () => `${environment.apiBaseUrl}/admin/foods/import-taco-spreadsheet`,
   adminFoodPlanTags: () => `${environment.apiBaseUrl}/admin/food-plan-tags`,
   adminFoodPlanTagsFor: (id: number | string) =>
     `${environment.apiBaseUrl}/admin/foods/${id}/plan-tags`,
@@ -51,6 +52,7 @@ export const apiPaths = {
   mealPlan: (id: number | string) => `${environment.apiBaseUrl}/meal-plans/${id}`,
   mealPlanProfile: () => `${environment.apiBaseUrl}/meal-plan-profile`,
   mealPlanRestrictions: () => `${environment.apiBaseUrl}/meal-plan-restrictions`,
+  mealPlanFeasibility: () => `${environment.apiBaseUrl}/meal-plan-feasibility`,
   mealPlanPreview: () => `${environment.apiBaseUrl}/meal-plans/preview`,
   mealPlanManualPreview: () => `${environment.apiBaseUrl}/meal-plans/manual/preview`,
   mealPlanManualAddMeal: () => `${environment.apiBaseUrl}/meal-plans/manual/preview/meal`,

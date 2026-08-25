@@ -4,7 +4,11 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { StepFooterComponent } from '../../../../../components/molecules/step-footer/step-footer.component';
 import { LanguageService } from '../../../../../core/i18n/language.service';
 import type { Alimento } from '../../../../../core/models/alimento.model';
-import type { MealPlanStyle } from '../../../../../core/models/meal-plan.model';
+import type {
+  FoodRestrictionOption,
+  MealPlanDietType,
+  MealPlanStyle,
+} from '../../../../../core/models/meal-plan.model';
 
 @Component({
   selector: 'vtp-revisar-step',
@@ -20,6 +24,8 @@ export class RevisarStepComponent {
 
   readonly mealCount = input.required<3 | 4 | 5>();
   readonly style = input.required<MealPlanStyle>();
+  readonly dietType = input.required<MealPlanDietType>();
+  readonly restrictions = input.required<FoodRestrictionOption[]>();
   readonly excluded = input.required<Alimento[]>();
   readonly included = input.required<Alimento[]>();
   readonly gerando = input(false);
@@ -31,5 +37,17 @@ export class RevisarStepComponent {
     this.language.locale();
 
     return this.transloco.translate(`dietPlan.styleLabels.${style}`);
+  }
+
+  protected formatDiet(dietType: MealPlanDietType): string {
+    this.language.locale();
+
+    return this.transloco.translate(`dietPlan.steps.preferences.dietTypes.${dietType}`);
+  }
+
+  protected formatRestrictions(restrictions: FoodRestrictionOption[]): string {
+    return restrictions.length
+      ? restrictions.map((restriction) => restriction.label).join(', ')
+      : this.transloco.translate('dietPlan.nothing');
   }
 }

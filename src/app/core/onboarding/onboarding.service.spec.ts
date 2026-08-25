@@ -104,7 +104,8 @@ describe('OnboardingService', () => {
     expect(tour.start).not.toHaveBeenCalled();
 
     service.beginIntroduction();
-    tick();
+    tick(80);
+    TestBed.flushEffects();
     expect(tour.start).toHaveBeenCalled();
     expect(tour.start).toHaveBeenCalledWith(
       [jasmine.objectContaining({ target: '[data-tour="onboarding-dashboard-desktop"]' })],
@@ -142,7 +143,8 @@ describe('OnboardingService', () => {
     tourTarget.dataset['tour'] = 'onboarding-diary-map';
     router.url = '/diario';
     routerEvents.next(new NavigationEnd(1, '/diario', '/diario'));
-    tick();
+    tick(80);
+    TestBed.flushEffects();
 
     expect(tour.start).toHaveBeenCalledWith(
       [jasmine.objectContaining({ target: '[data-tour="onboarding-diary-map"]' })],
@@ -152,13 +154,15 @@ describe('OnboardingService', () => {
     tourActive.set(false);
     tourOutcome.set({ completed: true, step: 0 });
     tick();
+    TestBed.flushEffects();
 
     expect(localStorage.getItem('vitality:onboarding:page-hints:v1:7')).toContain('"diary":true');
 
     tour.start.calls.reset();
     routerEvents.next(new NavigationEnd(2, '/dashboard', '/dashboard'));
     routerEvents.next(new NavigationEnd(3, '/diario', '/diario'));
-    tick();
+    tick(80);
+    TestBed.flushEffects();
 
     expect(tour.start).not.toHaveBeenCalled();
   }));

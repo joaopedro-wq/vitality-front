@@ -46,7 +46,14 @@
             <vtp-preferencias-step
               [excluidosIniciais]="excluded()"
               [incluidosIniciais]="included()"
+              [mealCount]="mealCount()"
+              [dietTypeInicial]="dietType()"
+              [restrictionOptions]="restrictionOptions()"
+              [dietOptions]="dietOptions()"
+              [feasibility]="feasibility()"
+              [checkingFeasibility]="checkingFeasibility()"
               (voltar)="irParaPasso(1)"
+              (criteriaChange)="onPreferenceCriteriaChange($event)"
               (concluido)="onPreferenciasConcluido($event)"
             />
           }
@@ -54,6 +61,8 @@
             <vtp-revisar-step
               [mealCount]="mealCount()"
               [style]="style()"
+              [dietType]="dietType()"
+              [restrictions]="selectedRestrictions()"
               [excluded]="excluded()"
               [included]="included()"
               [gerando]="generating()"

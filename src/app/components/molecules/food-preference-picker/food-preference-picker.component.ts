@@ -37,6 +37,7 @@ export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
   /** Ids a esconder da busca — a seleção da OUTRA seção, pra evitar que o mesmo
    * alimento seja escolhido em "evitar" e "incluir sempre" ao mesmo tempo. */
   readonly bloqueados = input<number[]>([]);
+  readonly limiteSelecao = input<number | null>(null);
   /** Rótulo acessível do campo de busca (ex. "Evitar"/"Incluir sempre") — as
    * duas instâncias no mesmo passo têm placeholder idêntico, sem isso um
    * leitor de tela não distingue qual campo é qual. */
@@ -78,7 +79,8 @@ export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
   }
 
   protected adicionar(food: Alimento): void {
-    if (!this.isSelecionado(food.id) && !this.isBloqueado(food.id)) {
+    const limiteAtingido = this.limiteSelecao() !== null && this.selecionados().length >= this.limiteSelecao()!;
+    if (!limiteAtingido && !this.isSelecionado(food.id) && !this.isBloqueado(food.id)) {
       this.selecionados.update((foods) => [...foods, food]);
       this.selecaoChange.emit(this.selecionados());
     }

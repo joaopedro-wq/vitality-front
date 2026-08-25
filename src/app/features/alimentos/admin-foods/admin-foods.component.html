@@ -8,21 +8,22 @@
         subtitulo="Itens globais usados por toda a plataforma."
       />
     </div>
-    <button
-      bdButton
-      variant="subtle"
-      size="sm"
-      [disabled]="importing()"
-      [attr.aria-busy]="importing() ? true : null"
-      (click)="importTaco()"
-    >
-      @if (importing()) {
-        <vtp-plate-loader tamanho="xs" cor="herdada" />
-      } @else {
-        <svg lucideRefreshCw size="16"></svg>
+    <div class="taco-import">
+      <input #tacoInput class="sr-only" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" [disabled]="importing()" (change)="selectTacoSpreadsheet($event)" />
+      <button bdButton variant="subtle" size="sm" [disabled]="importing()" (click)="tacoInput.click()">
+        <svg lucideUpload size="16"></svg>
+        Escolher planilha TACO
+      </button>
+      @if (tacoFile(); as file) {
+        <span class="taco-import__file" [title]="file.name">{{ file.name }}</span>
+        <button bdButton size="sm" [disabled]="importing()" [attr.aria-busy]="importing() ? true : null" (click)="importTaco(tacoInput)">
+          @if (importing()) {
+            <vtp-plate-loader tamanho="xs" cor="herdada" />
+          }
+          Importar e ativar
+        </button>
       }
-      Reimportar TACO
-    </button>
+    </div>
   </header>
   <div class="layout">
     <section class="card form-card">
@@ -152,6 +153,6 @@
 
 <vtp-loading-overlay
   [ativo]="importing()"
-  titulo="Importando a base TACO"
+  titulo="Importando a planilha TACO"
   [mensagens]="mensagensImportacao"
 />

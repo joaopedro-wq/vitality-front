@@ -409,6 +409,8 @@
     "reviewLabels": {
       "meals": "Refeições",
       "style": "Estilo",
+      "diet": "Padrão alimentar",
+      "restrictions": "Restrições",
       "avoiding": "Evitando",
       "including": "Incluindo sempre"
     },
@@ -435,11 +437,20 @@
       "preferences": {
         "title": "Preferências",
         "description": "Opcional",
+        "dietQuestion": "Qual padrão alimentar você segue?",
+        "dietHint": "A base TACO filtra os alimentos compatíveis antes de montar o plano.",
+        "dietTypes": {
+          "onivora": "Onívora",
+          "vegetariana": "Vegetariana"
+        },
+        "restrictionsQuestion": "Há alguma restrição importante?",
+        "restrictionsHint": "Mostramos apenas opções com cobertura suficiente no catálogo.",
+        "checkingAvailability": "Atualizando opções compatíveis…",
         "avoidQuestion": "Algum alimento pra evitar?",
         "avoidHint": "Pode pular — só entra se você já sabe do que não gosta.",
         "avoidLabel": "Evitar",
         "includeQuestion": "Algum alimento que não pode faltar?",
-        "includeHint": "Ele entra garantido no plano, na refeição onde fizer mais sentido.",
+        "includeHint": "Escolha até {{count}} alimentos: um obrigatório por refeição.",
         "includeLabel": "Incluir sempre"
       },
       "review": {
