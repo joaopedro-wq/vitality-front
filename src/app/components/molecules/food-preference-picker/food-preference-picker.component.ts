@@ -9,38 +9,28 @@ import {
   signal,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { LucideSearch, LucideX } from '@lucide/angular';
 import { Subject, takeUntil } from 'rxjs';
 
 import { AlimentoService } from '../../../services/alimento.service';
 import type { Alimento } from '../../../core/models/alimento.model';
 
-/**
- * Busca+chip genérico pra selecionar uma lista de alimentos (sem regra de negócio
- * de "evitar"/"incluir" — quem usa decide o que a seleção significa). Nasceu
- * dentro do quiz de plano por IA (`EvitarStepComponent`) e foi extraído pra
- * reaproveitar nas duas seções do passo "Preferências" (evitar / incluir sempre).
- */
 @Component({
   selector: 'vtp-food-preference-picker',
   standalone: true,
-  imports: [TranslocoPipe],
+  imports: [LucideSearch, LucideX, TranslocoPipe],
   templateUrl: './food-preference-picker.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
   private readonly foodsService = inject(AlimentoService);
-  /** Regra do sistema: toda subscription de chamada à API é encerrada ao sair do
-   * componente — `takeUntil(this.destruido)` em cada `.subscribe()`. */
+
   private readonly destruido = new Subject<void>();
 
   readonly selecionadosIniciais = input.required<Alimento[]>();
-  /** Ids a esconder da busca — a seleção da OUTRA seção, pra evitar que o mesmo
-   * alimento seja escolhido em "evitar" e "incluir sempre" ao mesmo tempo. */
+
   readonly bloqueados = input<number[]>([]);
   readonly limiteSelecao = input<number | null>(null);
-  /** Rótulo acessível do campo de busca (ex. "Evitar"/"Incluir sempre") — as
-   * duas instâncias no mesmo passo têm placeholder idêntico, sem isso um
-   * leitor de tela não distingue qual campo é qual. */
   readonly label = input('');
   readonly selecaoChange = output<Alimento[]>();
 
@@ -79,7 +69,8 @@ export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
   }
 
   protected adicionar(food: Alimento): void {
-    const limiteAtingido = this.limiteSelecao() !== null && this.selecionados().length >= this.limiteSelecao()!;
+    const limiteAtingido =
+      this.limiteSelecao() !== null && this.selecionados().length >= this.limiteSelecao()!;
     if (!limiteAtingido && !this.isSelecionado(food.id) && !this.isBloqueado(food.id)) {
       this.selecionados.update((foods) => [...foods, food]);
       this.selecaoChange.emit(this.selecionados());

@@ -425,20 +425,20 @@
         "title": "Refeições",
         "description": "Quantas por dia",
         "question": "Quantas refeições você costuma fazer?",
-        "hint": "Isso define quantos pratos vão entrar no seu dia."
+        "hint": "Você poderá ajustar os horários depois."
       },
       "style": {
         "title": "Estilo",
         "description": "O que ajuda na rotina",
         "question": "Qual estilo ajuda mais na sua rotina?",
-        "hint": "Isso ajusta somente praticidade, preparo e custo entre refeições que já fazem sentido. Não muda sua meta nem a coerência do prato.",
+        "hint": "Vamos priorizar praticidade, preparo e custo. Sua meta continua a mesma.",
         "legend": "Rápido prioriza montagens simples; Caseiro, pratos tradicionais; Econômico, alimentos acessíveis."
       },
       "preferences": {
         "title": "Preferências",
         "description": "Opcional",
         "dietQuestion": "Qual padrão alimentar você segue?",
-        "dietHint": "A base TACO filtra os alimentos compatíveis antes de montar o plano.",
+        "dietHint": "O catálogo filtra os alimentos compatíveis antes de montar o plano.",
         "dietTypes": {
           "onivora": "Onívora",
           "vegetariana": "Vegetariana"
@@ -451,13 +451,16 @@
         "avoidLabel": "Evitar",
         "includeQuestion": "Algum alimento que não pode faltar?",
         "includeHint": "Escolha até {{count}} alimentos: um obrigatório por refeição.",
-        "includeLabel": "Incluir sempre"
+        "includeLabel": "Incluir sempre",
+        "personalizeTitle": "Deixe o plano com a sua cara",
+        "personalizeHint": "Preferências opcionais para refinar os alimentos sugeridos.",
+        "optionalLabel": "Opcional"
       },
       "review": {
         "title": "Revisar",
         "description": "Confere antes de gerar",
         "question": "Confere antes de gerar",
-        "hint": "Pode voltar em qualquer pergunta pela trilha acima."
+        "hint": "Confira suas escolhas. Você pode voltar e ajustar qualquer uma delas."
       }
     },
     "toast": {

@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 1,
   "targets": {
     "landing-page": {
       "projectId": "2cf3921f-f1e6-456c-8f3a-489d2cb5a26b",
@@ -15,6 +16,57 @@
         "public/i18n/pt-BR.json"
       ],
       "brandAssets": { "logo": "public-favicon.svg" }
+    },
+    "diet-preferences-step": {
+      "targetKind": "existing-ui",
+      "projectId": "caa7cb18-30f4-4bc1-8892-b70e8fc78725",
+      "baselineDraftId": "8670ebaa-ecea-4644-92aa-3a67ccda5e27",
+      "activeDraftId": "8670ebaa-ecea-4644-92aa-3a67ccda5e27",
+      "currentVersion": 1,
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/styles.scss:1:259",
+        "src/app/core/layout/app-shell/app-shell.component.html",
+        "src/app/core/layout/app-shell/app-shell.component.scss",
+        "src/app/features/dietas/dieta-form/dieta-form.component.html",
+        "src/app/features/dietas/dieta-form/steps/preferencias-step/preferencias-step.component.ts",
+        "src/app/features/dietas/dieta-form/steps/preferencias-step/preferencias-step.component.html",
+        "src/app/components/molecules/food-preference-picker/food-preference-picker.component.html",
+        "src/app/components/molecules/step-footer/step-footer.component.html",
+        "src/app/components/molecules/step-footer/step-footer.component.scss",
+        "src/app/components/molecules/step-track/step-track.component.html"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "ebc983d89acf469f779ddcb9a2f3b55c56e0ff325194f8d631c01b69aba986de",
+        "src/styles.scss": "21a303c7f4678165ab29f1751f5efe1d991b931b2c1e4e0d5b40c772993fbb24",
+        "src/app/core/layout/app-shell/app-shell.component.html": "d3148e55b22f02ed59fa6b606e8b44dd3921e7edceffa075d8e07a6ab1f294d4",
+        "src/app/core/layout/app-shell/app-shell.component.scss": "def413fef2d85e6b7a76ff20821c69ce8354f98f15a384ff399249d011a85866",
+        "src/app/features/dietas/dieta-form/dieta-form.component.html": "b3480fb1428851cd936accb7a15690b408e04f22b61a6ab8bbc56ccdea4e89ff",
+        "src/app/features/dietas/dieta-form/steps/preferencias-step/preferencias-step.component.ts": "e30b6d900604ae564732bb347dae12152a707f18cdb3c44576b82ab8c1742a3a",
+        "src/app/features/dietas/dieta-form/steps/preferencias-step/preferencias-step.component.html": "7d5e7532985471331ed1f9c6b05f27bd04c04b63529e2153cc03468b9e284392",
+        "src/app/components/molecules/food-preference-picker/food-preference-picker.component.html": "71c4da27c18d9273cc6940657029396ef3e71e0925cb1d0c08484da6b5092d13",
+        "src/app/components/molecules/step-footer/step-footer.component.html": "0d21104727f707e468b2f8bddccf4be2aa97e8ba0bc6505f01f66cad52067098",
+        "src/app/components/molecules/step-footer/step-footer.component.scss": "94dd62fc06d146595e1a3baaff931e612b73dae5d0e0afbc803ef5933c0ea701",
+        "src/app/components/molecules/step-track/step-track.component.html": "f7c95110899ebfac9a9ed809269b71b1ac434ae8a74e782453f5126af586cec9"
+      },
+      "referenceIds": ["public-favicon.svg"],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-favicon.svg",
+          "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/2cf3921f-f1e6-456c-8f3a-489d2cb5a26b/brand-assets/public-favicon.svg/favicon.svg",
+          "sourcePath": "public/favicon.svg"
+        }
+      },
+      "components": [],
+      "drafts": {
+        "8670ebaa-ecea-4644-92aa-3a67ccda5e27": {
+          "title": "Plano alimentar — Preferências redesenhado",
+          "visualDirection": "Regras primeiro, preferências opcionais em duas áreas e resumo contextual do plano",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-08-24T23:06:27-03:00"
     }
   }
 }

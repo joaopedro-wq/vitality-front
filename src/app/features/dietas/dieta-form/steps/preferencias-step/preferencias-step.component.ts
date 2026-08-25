@@ -23,7 +23,7 @@ import type {
   standalone: true,
   imports: [StepFooterComponent, FoodPreferencePickerComponent, TranslocoPipe],
   templateUrl: './preferencias-step.component.html',
-  host: { class: 'card flex flex-col gap-1.5 p-6 md:p-8 text-center animate-reveal' },
+  host: { class: 'card block p-5 sm:p-6 md:p-8 animate-reveal' },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreferenciasStepComponent implements OnInit {
@@ -37,7 +37,12 @@ export class PreferenciasStepComponent implements OnInit {
   readonly feasibility = input<MealPlanFeasibility | null>(null);
   readonly checkingFeasibility = input(false);
   readonly voltar = output<void>();
-  readonly concluido = output<{ evitados: Alimento[]; incluidos: Alimento[]; dietType: MealPlanDietType; restrictions: string[] }>();
+  readonly concluido = output<{
+    evitados: Alimento[];
+    incluidos: Alimento[];
+    dietType: MealPlanDietType;
+    restrictions: string[];
+  }>();
   readonly criteriaChange = output<{ dietType: MealPlanDietType; restrictions: string[] }>();
 
   protected readonly evitados = signal<Alimento[]>([]);
@@ -64,7 +69,12 @@ export class PreferenciasStepComponent implements OnInit {
 
   protected avancar(): void {
     if (this.feasibility() && !this.feasibility()!.feasible) return;
-    this.concluido.emit({ evitados: this.evitados(), incluidos: this.incluidos(), dietType: this.dietType(), restrictions: this.restrictions() });
+    this.concluido.emit({
+      evitados: this.evitados(),
+      incluidos: this.incluidos(),
+      dietType: this.dietType(),
+      restrictions: this.restrictions(),
+    });
   }
 
   protected setDietType(type: MealPlanDietType): void {

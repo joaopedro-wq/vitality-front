@@ -425,20 +425,20 @@
         "title": "Meals",
         "description": "How many per day",
         "question": "How many meals do you usually have?",
-        "hint": "This sets how many dishes will be in your day."
+        "hint": "You can adjust the meal times later."
       },
       "style": {
         "title": "Style",
         "description": "What helps your routine",
         "question": "Which style helps your routine the most?",
-        "hint": "This only adjusts convenience, prep, and cost among meals that already make sense. It doesn't change your goal or the dish's coherence.",
+        "hint": "We'll prioritize convenience, preparation, and cost. Your goal stays the same.",
         "legend": "Fast favors simple assemblies; Homemade, traditional dishes; Budget, affordable foods."
       },
       "preferences": {
         "title": "Preferences",
         "description": "Optional",
         "dietQuestion": "Which eating pattern do you follow?",
-        "dietHint": "The TACO catalog filters compatible foods before building the plan.",
+        "dietHint": "The catalog filters compatible foods before building the plan.",
         "dietTypes": {
           "onivora": "Omnivorous",
           "vegetariana": "Vegetarian"
@@ -451,13 +451,16 @@
         "avoidLabel": "Avoid",
         "includeQuestion": "Any food that can't be missing?",
         "includeHint": "Choose up to {{count}} foods: one required food per meal.",
-        "includeLabel": "Always include"
+        "includeLabel": "Always include",
+        "personalizeTitle": "Make the plan your own",
+        "personalizeHint": "Optional preferences to refine the suggested foods.",
+        "optionalLabel": "Optional"
       },
       "review": {
         "title": "Review",
         "description": "Check before generating",
         "question": "Check before generating",
-        "hint": "You can go back to any question via the track above."
+        "hint": "Review your choices. You can go back and adjust any of them."
       }
     },
     "toast": {
