@@ -62,6 +62,14 @@ export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
           this.resultados.set(
             page.data
               .filter((food) => !this.isSelecionado(food.id) && !this.isBloqueado(food.id))
+              .sort(
+                (first, second) =>
+                  this.searchScore(first, termo) - this.searchScore(second, termo) ||
+                  this.descricaoCompleta(first).localeCompare(
+                    this.descricaoCompleta(second),
+                    'pt-BR',
+                  ),
+              )
               .slice(0, 6),
           ),
         error: () => this.resultados.set([]),
@@ -82,6 +90,32 @@ export class FoodPreferencePickerComponent implements OnInit, OnDestroy {
   protected remover(id: number): void {
     this.selecionados.update((foods) => foods.filter((food) => food.id !== id));
     this.selecaoChange.emit(this.selecionados());
+  }
+
+  protected descricaoCompleta(food: Alimento): string {
+    return food.detalhe_exibicao ? `${food.descricao} — ${food.detalhe_exibicao}` : food.descricao;
+  }
+
+  private searchScore(food: Alimento, term: string): number {
+    const query = this.normalizar(term);
+    const name = this.normalizar(food.descricao);
+    const detail = this.normalizar(food.detalhe_exibicao ?? '');
+    const original = this.normalizar(food.descricao_original);
+
+    if (name === query) return 0;
+    if (name.startsWith(query)) return 1;
+    if (detail.startsWith(query) || original.startsWith(query)) return 2;
+    if (name.includes(query)) return 3;
+
+    return 4;
+  }
+
+  private normalizar(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLocaleLowerCase('pt-BR')
+      .trim();
   }
 
   private isSelecionado(id: number): boolean {

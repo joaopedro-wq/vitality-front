@@ -23,8 +23,13 @@
     </button>
   }
 </div>
-<p class="m-0 mt-4 text-xs leading-relaxed text-fg-muted">
-  {{ 'dietPlan.steps.style.legend' | transloco }}
-</p>
+<div class="mx-auto mt-5 grid w-full max-w-md gap-2 text-left">
+  @for (option of opcoes(); track option.value) {
+    <div class="grid grid-cols-[5.75rem_1fr] items-baseline gap-3 text-xs leading-relaxed text-fg-muted">
+      <span class="font-bold">{{ option.label }}</span>
+      <span>{{ option.description }}</span>
+    </div>
+  }
+</div>
 
 <vtp-step-footer (voltar)="voltar.emit()" (avancar)="avancar()" />

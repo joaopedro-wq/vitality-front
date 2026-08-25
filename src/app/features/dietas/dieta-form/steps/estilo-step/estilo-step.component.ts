@@ -30,12 +30,13 @@ export class EstiloStepComponent implements OnInit {
   readonly voltar = output<void>();
   readonly concluido = output<MealPlanStyle>();
 
-  protected readonly opcoes = computed<{ value: MealPlanStyle; label: string }[]>(() => {
+  protected readonly opcoes = computed<{ value: MealPlanStyle; label: string; description: string }[]>(() => {
     this.language.locale();
 
     return (['rapido', 'caseiro', 'economico'] as const).map((value) => ({
       value,
       label: this.transloco.translate(`dietPlan.styleLabels.${value}`),
+      description: this.transloco.translate(`dietPlan.steps.style.descriptions.${value}`),
     }));
   });
 

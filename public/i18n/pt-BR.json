@@ -393,6 +393,7 @@
     "mealsCount": "{{count}} refeições",
     "mealsPerDay": "{{count}} por dia",
     "searchFoodPlaceholder": "Busque um alimento",
+    "foodSearchHint": "O segundo texto informa variedade, preparo ou versão do alimento.",
     "nothing": "Nada",
     "itemSingular": " item",
     "itemPlural": " itens",
@@ -431,8 +432,12 @@
         "title": "Estilo",
         "description": "O que ajuda na rotina",
         "question": "Qual estilo ajuda mais na sua rotina?",
-        "hint": "Vamos priorizar praticidade, preparo e custo. Sua meta continua a mesma.",
-        "legend": "Rápido prioriza montagens simples; Caseiro, pratos tradicionais; Econômico, alimentos acessíveis."
+        "hint": "O estilo orienta a escolha dos alimentos e preparos, sem mudar sua meta de calorias e macros.",
+        "descriptions": {
+          "rapido": "Refeições práticas, com pouco preparo.",
+          "caseiro": "Pratos tradicionais feitos na hora.",
+          "economico": "Ingredientes acessíveis e versáteis."
+        }
       },
       "preferences": {
         "title": "Preferências",
@@ -443,8 +448,12 @@
           "onivora": "Onívora",
           "vegetariana": "Vegetariana"
         },
+        "dietTypeHints": {
+          "onivora": "Inclui alimentos de origem vegetal e animal, como carnes, ovos e laticínios.",
+          "vegetariana": "Não inclui carnes nem peixes; pode incluir ovos e laticínios."
+        },
         "restrictionsQuestion": "Há alguma restrição importante?",
-        "restrictionsHint": "Mostramos apenas opções com cobertura suficiente no catálogo.",
+        "restrictionsHint": "Opções sem alimentos suficientes ficam desabilitadas para esta combinação.",
         "checkingAvailability": "Atualizando opções compatíveis…",
         "avoidQuestion": "Algum alimento pra evitar?",
         "avoidHint": "Pode pular — só entra se você já sabe do que não gosta.",

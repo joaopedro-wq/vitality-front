@@ -10,6 +10,9 @@
     (input)="buscar($any($event.target).value)"
   />
 </div>
+<p class="m-0 mt-1.5 text-left text-xs leading-relaxed text-fg-muted">
+  {{ 'dietPlan.foodSearchHint' | transloco }}
+</p>
 @if (resultados().length) {
   <div
     class="mt-2 w-full overflow-hidden rounded-xl border border-border bg-surface text-left shadow-sm"
@@ -20,7 +23,12 @@
         type="button"
         (click)="adicionar(food)"
       >
-        {{ food.descricao }}
+        <span class="block">{{ food.descricao }}</span>
+        @if (food.detalhe_exibicao) {
+          <span class="mt-0.5 block text-xs font-medium leading-snug text-fg-muted">{{
+            food.detalhe_exibicao
+          }}</span>
+        }
       </button>
     }
   </div>
@@ -33,7 +41,7 @@
         type="button"
         (click)="remover(food.id)"
       >
-        {{ food.descricao }}
+        {{ descricaoCompleta(food) }}
         <svg lucideX size="14" aria-hidden="true"></svg>
       </button>
     }

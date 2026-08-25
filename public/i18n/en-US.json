@@ -393,6 +393,7 @@
     "mealsCount": "{{count}} meals",
     "mealsPerDay": "{{count}} per day",
     "searchFoodPlaceholder": "Search for a food",
+    "foodSearchHint": "The second line identifies the food's variety, preparation, or version.",
     "nothing": "None",
     "itemSingular": " item",
     "itemPlural": " items",
@@ -431,8 +432,12 @@
         "title": "Style",
         "description": "What helps your routine",
         "question": "Which style helps your routine the most?",
-        "hint": "We'll prioritize convenience, preparation, and cost. Your goal stays the same.",
-        "legend": "Fast favors simple assemblies; Homemade, traditional dishes; Budget, affordable foods."
+        "hint": "The style guides food and preparation choices without changing your calorie or macro goal.",
+        "descriptions": {
+          "rapido": "Practical meals with little prep.",
+          "caseiro": "Traditional dishes made fresh.",
+          "economico": "Accessible, versatile ingredients."
+        }
       },
       "preferences": {
         "title": "Preferences",
@@ -443,8 +448,12 @@
           "onivora": "Omnivorous",
           "vegetariana": "Vegetarian"
         },
+        "dietTypeHints": {
+          "onivora": "Includes plant and animal foods, such as meat, eggs, and dairy.",
+          "vegetariana": "Does not include meat or fish; it can include eggs and dairy."
+        },
         "restrictionsQuestion": "Any important restriction?",
-        "restrictionsHint": "We show only options with enough catalog coverage.",
+        "restrictionsHint": "Options without enough foods are disabled for this combination.",
         "checkingAvailability": "Updating compatible options…",
         "avoidQuestion": "Any foods to avoid?",
         "avoidHint": "You can skip this — only fill it in if you already know what you don't like.",
