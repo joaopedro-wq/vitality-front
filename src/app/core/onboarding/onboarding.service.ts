@@ -174,8 +174,16 @@ export class OnboardingService {
       return;
     }
 
+    // `navigateByUrl` resolve com `false` quando o destino é a própria URL atual
+    // (`onSameUrlNavigation: 'ignore'`, o default do Router) — não é uma falha de
+    // navegação, é só não ter nada a fazer. O primeiro passo do tour aponta pro
+    // `/dashboard`, a tela onde o usuário normalmente já está logo após o login,
+    // então tratar `false` como erro abortava a introdução bem no primeiro clique
+    // em "Conhecer o sistema". Só um `false` combinado com estar em outra rota é
+    // falha de navegação de verdade.
+    const alreadyThere = this.router.url.split('?')[0] === stage.route;
     this.router.navigateByUrl(stage.route).then(async (navigated) => {
-      if (!navigated || currentRunId !== this.runId) {
+      if ((!navigated && !alreadyThere) || currentRunId !== this.runId) {
         this.preparingStage.set(false);
         return;
       }
