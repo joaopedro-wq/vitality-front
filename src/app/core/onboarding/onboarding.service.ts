@@ -50,6 +50,12 @@ export class OnboardingService {
   private readonly platformId = inject(PLATFORM_ID);
   private automaticUserId: number | null = null;
   private currentUserId: number | null = null;
+  /**
+   * Mantém o estado atual separado do id. O mesmo usuário muda de `pending`
+   * para `completed`/`skipped` durante a sessão, portanto o id não é suficiente
+   * para decidir se uma dica por rota pode abrir.
+   */
+  private currentOnboardingStatus: OnboardingStatus | null = null;
   private readonly awaitingOutcome = signal(false);
   private readonly preparingStage = signal(false);
   private readonly manualRun = signal(false);
@@ -104,12 +110,14 @@ export class OnboardingService {
     if (!user) {
       this.automaticUserId = null;
       this.currentUserId = null;
+      this.currentOnboardingStatus = null;
       this.welcomeOpen.set(false);
       this.cancelPendingPageHint();
       return;
     }
 
     this.currentUserId = user.id;
+    this.currentOnboardingStatus = user.onboarding_status;
     if (this.automaticUserId === user.id) return;
 
     this.automaticUserId = user.id;
@@ -378,6 +386,9 @@ export class OnboardingService {
   private canShowPageHint(id: PageHintId): boolean {
     return Boolean(
       this.currentUserId &&
+      // Dicas contextuais complementam uma introdução concluída. Nunca podem
+      // concorrer com as boas-vindas, um tour em andamento ou um onboarding pulado.
+      this.currentOnboardingStatus === 'completed' &&
       !this.hasSeenPageHint(id) &&
       !this.tour.active() &&
       !this.awaitingOutcome() &&

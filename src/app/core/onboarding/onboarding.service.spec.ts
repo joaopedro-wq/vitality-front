@@ -185,6 +185,21 @@ describe('OnboardingService', () => {
     expect(tour.start).not.toHaveBeenCalled();
   }));
 
+  it('não sobrepõe dicas por rota ao onboarding pendente ou pulado', fakeAsync(() => {
+    tourTarget.dataset['tour'] = 'onboarding-diary-map';
+    router.url = '/diario';
+
+    service.evaluateUser(user('pending'));
+    routerEvents.next(new NavigationEnd(1, '/diario', '/diario'));
+    tick(80);
+    expect(tour.start).not.toHaveBeenCalled();
+
+    service.evaluateUser(user('skipped'));
+    routerEvents.next(new NavigationEnd(2, '/diario', '/diario'));
+    tick(80);
+    expect(tour.start).not.toHaveBeenCalled();
+  }));
+
   it('espera a tradução ativa antes de abrir a dica do Diário', fakeAsync(() => {
     translationsLoaded = false;
     transloco.translate.and.callFake((key: string) => {

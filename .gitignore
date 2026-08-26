@@ -3,6 +3,8 @@
 # Compiled output
 /dist
 /tmp
+/.playwright-mcp/
+/tools/
 /.superdesign/tmp/
 /out-tsc
 /bazel-out
