@@ -1,0 +1,94 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e660]:
+        - button "Voltar" [ref=f1e662] [cursor=pointer]
+        - generic [ref=f1e666]:
+          - navigation "Etapas da configuração de metas" [ref=f1e669]:
+            - button "Seu perfil Peso, altura, idade e gênero" [ref=f1e769] [cursor=pointer]:
+              - generic [ref=f1e673]:
+                - generic [ref=f1e674]: Seu perfil
+                - generic [ref=f1e675]: Peso, altura, idade e gênero
+            - button "Atividade Nível de atividade e objetivo" [ref=f1e846] [cursor=pointer]:
+              - generic [ref=f1e680]:
+                - generic [ref=f1e681]: Atividade
+                - generic [ref=f1e682]: Nível de atividade e objetivo
+            - button "3 Sugestão Calculada a partir do perfil" [ref=f1e685] [cursor=pointer]:
+              - generic [ref=f1e686]: "3"
+              - generic [ref=f1e687]:
+                - generic [ref=f1e688]: Sugestão
+                - generic [ref=f1e689]: Calculada a partir do perfil
+            - button "4 Confirmar Revisar e salvar" [ref=f1e692] [cursor=pointer]:
+              - generic [ref=f1e693]: "4"
+              - generic [ref=f1e694]:
+                - generic [ref=f1e695]: Confirmar
+                - generic [ref=f1e696]: Revisar e salvar
+          - generic [ref=f1e849]:
+            - generic [ref=f1e850]:
+              - heading "Aqui está sua sugestão" [level=1] [ref=f1e851]
+              - paragraph [ref=f1e852]: Calculado a partir do que você respondeu — no próximo passo você pode ajustar.
+            - generic [ref=f1e854]:
+              - generic [ref=f1e855]: Calculando sua meta…
+              - generic [ref=f1e857]:
+                - generic [ref=f1e858]:
+                  - generic [ref=f1e859]: "--"
+                  - generic [ref=f1e860]: TMB
+                - generic [ref=f1e861]: +
+                - generic [ref=f1e862]:
+                  - generic [ref=f1e863]: "--"
+                  - generic [ref=f1e864]: GET
+              - generic [ref=f1e867]:
+                - generic [ref=f1e868]:
+                  - generic [ref=f1e869]: –
+                  - generic [ref=f1e870]: –
+                  - generic [ref=f1e871]: –
+                  - generic [ref=f1e872]: –
+                - generic [ref=f1e873]: kcal / dia
+              - generic [ref=f1e874]:
+                - generic [ref=f1e876]:
+                  - generic [ref=f1e877]: Proteína
+                  - generic [ref=f1e878]: 136g
+                - generic [ref=f1e881]:
+                  - generic [ref=f1e882]: Carboidrato
+                  - generic [ref=f1e883]: 181g
+                - generic [ref=f1e886]:
+                  - generic [ref=f1e887]: Gordura
+                  - generic [ref=f1e888]: 47g
+            - generic [ref=f1e891]:
+              - button "Voltar" [ref=f1e892] [cursor=pointer]
+              - button "Continuar" [ref=f1e895] [cursor=pointer]

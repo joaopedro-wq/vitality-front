@@ -6,7 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { ToastrService } from 'ngx-toastr';
 import { BdTourService } from 'bandeira-ui';
-import { Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
 import { apiPaths } from '../http/api-paths';
@@ -53,6 +53,15 @@ describe('OnboardingService', () => {
     url: '/dashboard',
     navigateByUrl: jasmine.createSpy('navigateByUrl').and.resolveTo(true),
   };
+  let translationsLoaded = true;
+  const transloco = {
+    translate: jasmine.createSpy('translate').and.callFake((key: string) => key),
+    getActiveLang: jasmine.createSpy('getActiveLang').and.returnValue('en-US'),
+    load: jasmine.createSpy('load').and.callFake(() => {
+      translationsLoaded = true;
+      return of({});
+    }),
+  };
 
   beforeEach(() => {
     currentUser.set(null);
@@ -63,6 +72,15 @@ describe('OnboardingService', () => {
     tour.start.calls.reset();
     router.navigateByUrl.calls.reset();
     router.url = '/dashboard';
+    translationsLoaded = true;
+    transloco.translate.calls.reset();
+    transloco.getActiveLang.calls.reset();
+    transloco.load.calls.reset();
+    transloco.translate.and.callFake((key: string) => key);
+    transloco.load.and.callFake(() => {
+      translationsLoaded = true;
+      return of({});
+    });
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
@@ -73,7 +91,7 @@ describe('OnboardingService', () => {
         { provide: BdTourService, useValue: tour },
         { provide: Router, useValue: router },
         { provide: ToastrService, useValue: { error: jasmine.createSpy('error') } },
-        { provide: TranslocoService, useValue: { translate: () => 'Erro' } },
+        { provide: TranslocoService, useValue: transloco },
       ],
     });
     service = TestBed.inject(OnboardingService);
@@ -165,5 +183,29 @@ describe('OnboardingService', () => {
     TestBed.flushEffects();
 
     expect(tour.start).not.toHaveBeenCalled();
+  }));
+
+  it('espera a tradução ativa antes de abrir a dica do Diário', fakeAsync(() => {
+    translationsLoaded = false;
+    transloco.translate.and.callFake((key: string) => {
+      if (!translationsLoaded) return key;
+      return (
+        {
+          'onboarding.diaryMap.title': 'Choose a moment in your day',
+          'onboarding.diaryMap.description': 'The map organizes meals by time.',
+        }[key] ?? key
+      );
+    });
+
+    service.evaluateUser(user('completed'));
+    tourTarget.dataset['tour'] = 'onboarding-diary-map';
+    router.url = '/diario';
+    routerEvents.next(new NavigationEnd(1, '/diario', '/diario'));
+    tick(80);
+    TestBed.flushEffects();
+
+    const [steps] = tour.start.calls.mostRecent().args;
+    expect(steps[0].title).toBe('Choose a moment in your day');
+    expect(steps[0].content).toBe('The map organizes meals by time.');
   }));
 });

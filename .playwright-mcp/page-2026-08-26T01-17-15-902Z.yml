@@ -1,0 +1,188 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [active] [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e1843]:
+        - generic [ref=f1e1844]:
+          - generic [ref=f1e1845]:
+            - generic [ref=f1e1847]:
+              - img [ref=f1e1848]:
+                - generic [ref=f1e1851]: "422"
+                - generic [ref=f1e1852]: kcal
+              - generic [ref=f1e1853]: Hoje
+              - generic [ref=f1e1854]:
+                - generic [ref=f1e1855]:
+                  - generic [ref=f1e1857]: Proteína
+                  - generic [ref=f1e1858]: 34 g
+                - generic [ref=f1e1859]:
+                  - generic [ref=f1e1861]: Carboidrato
+                  - generic [ref=f1e1862]: 44 g
+                - generic [ref=f1e1863]:
+                  - generic [ref=f1e1865]: Gordura
+                  - generic [ref=f1e1866]: 12 g
+            - generic [ref=f1e1867]:
+              - generic [ref=f1e1868]: Nível 1
+              - generic [ref=f1e1871]: 5 / 50 XP
+          - generic [ref=f1e1873]:
+            - generic [ref=f1e1874]:
+              - generic [ref=f1e1875]: 11:30
+              - generic [ref=f1e1882]:
+                - paragraph [ref=f1e1883]: Próxima missão
+                - heading "Registrar Almoço" [level=3] [ref=f1e1884]
+                - generic [ref=f1e1885]:
+                  - generic [ref=f1e1886]: Bacalhau
+                  - generic [ref=f1e1888]: Macarrão
+                  - generic [ref=f1e1890]: Feijão
+                  - generic [ref=f1e1892]: Abóbora
+              - link "Registrar Almoço" [ref=f1e1895] [cursor=pointer]:
+                - /url: /diario?registrar=1
+                - generic [ref=f1e1896]: Registrar
+            - generic [ref=f1e1898]:
+              - generic [ref=f1e1899]: ~593 kcal
+              - generic [ref=f1e1901]:
+                - generic [ref=f1e1903]: 48g
+                - text: Proteína
+              - generic [ref=f1e1904]:
+                - generic [ref=f1e1906]: 63g
+                - text: Carboidrato
+              - generic [ref=f1e1907]:
+                - generic [ref=f1e1909]: 16g
+                - text: Gordura
+            - generic [ref=f1e1910]:
+              - generic [ref=f1e1911]:
+                - generic [ref=f1e1916]: Café da manhã
+                - generic [ref=f1e1917]: 08:00
+              - generic [ref=f1e1918]:
+                - generic [ref=f1e1923]: Almoço
+                - generic [ref=f1e1924]: 11:30
+              - generic [ref=f1e1925]:
+                - generic [ref=f1e1930]: Lanche da tarde
+                - generic [ref=f1e1931]: 16:00
+              - generic [ref=f1e1932]:
+                - generic [ref=f1e1937]: Jantar
+                - generic [ref=f1e1938]: 20:00
+              - generic [ref=f1e1939]:
+                - generic [ref=f1e1944]: Ceia
+                - generic [ref=f1e1945]: 22:00
+        - generic [ref=f1e1946]:
+          - generic [ref=f1e1947]:
+            - paragraph [ref=f1e1948]: Missões
+            - generic [ref=f1e1951]:
+              - generic [ref=f1e1952]:
+                - generic [ref=f1e1953]: 🍽️
+                - generic [ref=f1e1955]:
+                  - paragraph [ref=f1e1956]: Registre sua primeira refeição hoje
+                  - paragraph [ref=f1e1957]: +5 XP · concluída
+              - paragraph [ref=f1e1965]: Complete o dia
+              - generic [ref=f1e1968]:
+                - generic [ref=f1e1969]: 📅
+                - generic [ref=f1e1971]:
+                  - paragraph [ref=f1e1972]: Registre em 3 dias diferentes essa semana
+                  - paragraph [ref=f1e1973]: +20 XP
+              - generic [ref=f1e1974]:
+                - generic [ref=f1e1975]: 🌟
+                - generic [ref=f1e1977]:
+                  - paragraph [ref=f1e1978]: Semana completa
+                  - paragraph [ref=f1e1979]: +50 XP
+              - generic [ref=f1e1980]:
+                - generic [ref=f1e1981]: 🔥
+                - generic [ref=f1e1983]:
+                  - paragraph [ref=f1e1984]: 4 dias seguidos de registro
+                  - paragraph [ref=f1e1985]: +30 XP
+              - generic [ref=f1e1986]:
+                - generic [ref=f1e1987]: 🏆
+                - generic [ref=f1e1989]:
+                  - paragraph [ref=f1e1990]: 7 dias seguidos de registro
+                  - paragraph [ref=f1e1991]: +60 XP
+              - generic [ref=f1e1992]:
+                - generic [ref=f1e1993]: 💎
+                - generic [ref=f1e1995]:
+                  - paragraph [ref=f1e1996]: 30 dias seguidos de registro
+                  - paragraph [ref=f1e1997]: +200 XP
+          - generic [ref=f1e1998]:
+            - paragraph [ref=f1e1999]: Sua semana
+            - generic [ref=f1e2000]:
+              - paragraph [ref=f1e2001]: 0 / 7
+              - paragraph [ref=f1e2002]: dias com a meta calórica batida nesta semana
+            - generic [ref=f1e2003]:
+              - generic [ref=f1e2004]:
+                - generic [ref=f1e2005]: qua
+                - generic [ref=f1e2006]: —
+              - generic [ref=f1e2007]:
+                - generic [ref=f1e2008]: qui
+                - generic [ref=f1e2009]: —
+              - generic [ref=f1e2010]:
+                - generic [ref=f1e2011]: sex
+                - generic [ref=f1e2012]: —
+              - generic [ref=f1e2013]:
+                - generic [ref=f1e2014]: sáb
+                - generic [ref=f1e2015]: —
+              - generic [ref=f1e2016]:
+                - generic [ref=f1e2017]: dom
+                - generic [ref=f1e2018]: —
+              - generic [ref=f1e2019]:
+                - generic [ref=f1e2020]: seg
+                - generic [ref=f1e2021]: —
+              - generic [ref=f1e2022]:
+                - generic [ref=f1e2023]: ter
+                - generic [ref=f1e2024]:
+                  - paragraph [ref=f1e2025]: 422 kcal
+                  - generic [ref=f1e2026]:
+                    - generic [ref=f1e2027]: 34g
+                    - generic [ref=f1e2029]: 44g
+                    - generic [ref=f1e2031]: 12g
+        - generic [ref=f1e2034]:
+          - link "Diário — Falta Almoço" [ref=f1e2036] [cursor=pointer]:
+            - /url: /diario
+            - generic [ref=f1e2037]:
+              - generic [ref=f1e2042]: Diário
+              - generic [ref=f1e2043]: Falta Almoço
+          - link "Plano alimentar — 4% aderência em 7 dias" [ref=f1e2044] [cursor=pointer]:
+            - /url: /dietas
+            - generic [ref=f1e2045]:
+              - generic [ref=f1e2050]: Plano alimentar
+              - generic [ref=f1e2051]: 4% aderência em 7 dias
+          - link "Metas — Meta definida" [ref=f1e2052] [cursor=pointer]:
+            - /url: /metas
+            - generic [ref=f1e2053]:
+              - generic [ref=f1e2059]: Metas
+              - generic [ref=f1e2060]: Meta definida
+          - 'link "Alimentos — Mais comido: Pão" [ref=f1e2061] [cursor=pointer]':
+            - /url: /alimentos
+            - generic [ref=f1e2062]:
+              - generic [ref=f1e2068]: Alimentos
+              - generic [ref=f1e2069]: "Mais comido: Pão"

@@ -1,0 +1,102 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e660]:
+        - button "Voltar" [ref=f1e662] [cursor=pointer]
+        - generic [ref=f1e666]:
+          - navigation "Etapas da configuração de metas" [ref=f1e669]:
+            - button "Seu perfil Peso, altura, idade e gênero" [ref=f1e769] [cursor=pointer]:
+              - generic [ref=f1e673]:
+                - generic [ref=f1e674]: Seu perfil
+                - generic [ref=f1e675]: Peso, altura, idade e gênero
+            - button "2 Atividade Nível de atividade e objetivo" [ref=f1e678] [cursor=pointer]:
+              - generic [ref=f1e679]: "2"
+              - generic [ref=f1e680]:
+                - generic [ref=f1e681]: Atividade
+                - generic [ref=f1e682]: Nível de atividade e objetivo
+            - button "3 Sugestão Calculada a partir do perfil" [ref=f1e685] [cursor=pointer]:
+              - generic [ref=f1e686]: "3"
+              - generic [ref=f1e687]:
+                - generic [ref=f1e688]: Sugestão
+                - generic [ref=f1e689]: Calculada a partir do perfil
+            - button "4 Confirmar Revisar e salvar" [ref=f1e692] [cursor=pointer]:
+              - generic [ref=f1e693]: "4"
+              - generic [ref=f1e694]:
+                - generic [ref=f1e695]: Confirmar
+                - generic [ref=f1e696]: Revisar e salvar
+          - generic [ref=f1e772]:
+            - generic [ref=f1e773]:
+              - generic [ref=f1e774]: Definindo seu estilo
+              - heading "Atividade e objetivo" [level=1] [ref=f1e775]
+              - paragraph [ref=f1e776]: Isso ajusta seu gasto calórico total e a distribuição de macros.
+            - generic [ref=f1e777]:
+              - generic [ref=f1e778]:
+                - paragraph [ref=f1e779]: Nível de atividade
+                - generic [ref=f1e780]:
+                  - generic [ref=f1e781] [cursor=pointer]:
+                    - radio "Sedentário" [ref=f1e782]
+                    - text: Sedentário
+                  - generic [ref=f1e789] [cursor=pointer]:
+                    - radio "Leve" [ref=f1e790]
+                    - text: Leve
+                  - generic [ref=f1e797] [cursor=pointer]:
+                    - radio "Moderado" [checked] [ref=f1e798]
+                    - text: Moderado
+                  - generic [ref=f1e805] [cursor=pointer]:
+                    - radio "Intenso" [ref=f1e806]
+                    - text: Intenso
+                  - generic [ref=f1e813] [cursor=pointer]:
+                    - radio "Muito intenso" [ref=f1e814]
+                    - text: Muito intenso
+                - generic [ref=f1e821]: Treino 3 a 4x por semana
+              - generic [ref=f1e822]:
+                - paragraph [ref=f1e823]: Objetivo
+                - generic [ref=f1e824]:
+                  - generic [ref=f1e825] [cursor=pointer]:
+                    - radio "Perder gordura" [ref=f1e826]
+                    - text: Perder gordura
+                  - generic [ref=f1e829] [cursor=pointer]:
+                    - radio "Manter o peso" [checked] [ref=f1e830]
+                    - text: Manter o peso
+                  - generic [ref=f1e833] [cursor=pointer]:
+                    - radio "Ganhar massa" [ref=f1e834]
+                    - text: Ganhar massa
+              - generic [ref=f1e837]: Isso mantém sua meta equilibrada →
+            - generic [ref=f1e839]:
+              - button "Voltar" [ref=f1e840] [cursor=pointer]
+              - button "Continuar" [ref=f1e843] [cursor=pointer]

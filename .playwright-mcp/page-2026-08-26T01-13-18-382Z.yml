@@ -1,0 +1,85 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e422]:
+        - button "Voltar" [ref=f1e424] [cursor=pointer]
+        - generic [ref=f1e427]:
+          - generic [ref=f1e428]:
+            - generic [ref=f1e430]:
+              - paragraph [ref=f1e431]: Minha conta
+              - heading "Perfil e preferências" [level=1] [ref=f1e432]
+              - paragraph [ref=f1e433]: Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.
+            - button "Ver onboarding novamente" [ref=f1e434] [cursor=pointer]
+          - generic [ref=f1e436]:
+            - navigation "Etapas do perfil" [ref=f1e439]:
+              - button "Identidade e foto Como podemos chamar você?" [ref=f1e528] [cursor=pointer]:
+                - generic [ref=f1e443]:
+                  - generic [ref=f1e444]: Identidade e foto
+                  - generic [ref=f1e445]: Como podemos chamar você?
+              - button "2 Seu corpo Dados para personalizar sua meta" [ref=f1e448] [cursor=pointer]:
+                - generic [ref=f1e449]: "2"
+                - generic [ref=f1e450]:
+                  - generic [ref=f1e451]: Seu corpo
+                  - generic [ref=f1e452]: Dados para personalizar sua meta
+              - button "3 Rotina e confirmação Conte como é o seu dia" [ref=f1e455] [cursor=pointer]:
+                - generic [ref=f1e456]: "3"
+                - generic [ref=f1e457]:
+                  - generic [ref=f1e458]: Rotina e confirmação
+                  - generic [ref=f1e459]: Conte como é o seu dia
+            - generic [ref=f1e532]:
+              - generic [ref=f1e533]:
+                - paragraph [ref=f1e534]: Etapa 2
+                - heading "Seu corpo" [level=2] [ref=f1e535]
+                - paragraph [ref=f1e536]: Essas medidas permitem que as metas acompanhem melhor o seu momento.
+              - generic [ref=f1e537]:
+                - generic [ref=f1e538]:
+                  - generic [ref=f1e539]:
+                    - text: Peso (kg) *
+                    - generic [ref=f1e540]: (obrigatório)
+                  - spinbutton "Peso (kg) (obrigatório)" [ref=f1e541]: "0"
+                  - generic [ref=f1e542]: Ajuda a estimar seu gasto energético basal.
+                - generic [ref=f1e543]:
+                  - generic [ref=f1e544]:
+                    - text: Altura (cm) *
+                    - generic [ref=f1e545]: (obrigatório)
+                  - spinbutton "Altura (cm) (obrigatório)" [ref=f1e546]: "0"
+                  - generic [ref=f1e547]: Informe a altura em centímetros.
+              - generic [ref=f1e548]: Você poderá ajustar esses dados sempre que houver uma mudança significativa no seu corpo ou rotina.
+              - generic [ref=f1e550]:
+                - button "Voltar" [ref=f1e551] [cursor=pointer]
+                - button "Continuar" [ref=f1e554] [cursor=pointer]

@@ -1,0 +1,91 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e660]:
+        - button "Voltar" [ref=f1e662] [cursor=pointer]
+        - generic [ref=f1e666]:
+          - navigation "Etapas da configuração de metas" [ref=f1e669]:
+            - button "1 Seu perfil Peso, altura, idade e gênero" [ref=f1e671] [cursor=pointer]:
+              - generic [ref=f1e672]: "1"
+              - generic [ref=f1e673]:
+                - generic [ref=f1e674]: Seu perfil
+                - generic [ref=f1e675]: Peso, altura, idade e gênero
+            - button "2 Atividade Nível de atividade e objetivo" [ref=f1e678] [cursor=pointer]:
+              - generic [ref=f1e679]: "2"
+              - generic [ref=f1e680]:
+                - generic [ref=f1e681]: Atividade
+                - generic [ref=f1e682]: Nível de atividade e objetivo
+            - button "3 Sugestão Calculada a partir do perfil" [ref=f1e685] [cursor=pointer]:
+              - generic [ref=f1e686]: "3"
+              - generic [ref=f1e687]:
+                - generic [ref=f1e688]: Sugestão
+                - generic [ref=f1e689]: Calculada a partir do perfil
+            - button "4 Confirmar Revisar e salvar" [ref=f1e692] [cursor=pointer]:
+              - generic [ref=f1e693]: "4"
+              - generic [ref=f1e694]:
+                - generic [ref=f1e695]: Confirmar
+                - generic [ref=f1e696]: Revisar e salvar
+          - generic [ref=f1e698]:
+            - generic [ref=f1e699]: Ficha iniciada
+            - generic [ref=f1e706]:
+              - heading "Vamos calcular sua meta ideal?" [level=1] [ref=f1e707]
+              - paragraph [ref=f1e708]: Alguns dados sobre você — usamos isso pra estimar seu gasto calórico.
+            - generic [ref=f1e709]:
+              - generic [ref=f1e710]:
+                - generic [ref=f1e711]:
+                  - generic [ref=f1e712]: Peso (kg)
+                  - spinbutton "Peso (kg)" [ref=f1e717]: "68"
+                - generic [ref=f1e718]:
+                  - generic [ref=f1e719]: Altura (cm)
+                  - spinbutton "Altura (cm)" [ref=f1e726]: "168"
+                - generic [ref=f1e727]:
+                  - generic [ref=f1e728]: Idade
+                  - spinbutton "Idade" [ref=f1e731]: "31"
+              - generic [ref=f1e732]:
+                - paragraph [ref=f1e733]: Gênero
+                - generic [ref=f1e734]:
+                  - generic [ref=f1e735] [cursor=pointer]:
+                    - radio "Masculino" [ref=f1e736]
+                    - text: Masculino
+                  - generic [ref=f1e741] [cursor=pointer]:
+                    - radio "Feminino" [checked] [ref=f1e742]
+                    - text: Feminino
+                  - generic [ref=f1e745] [cursor=pointer]:
+                    - radio "Outro" [ref=f1e746]
+                    - text: Outro
+            - button "Continuar" [ref=f1e753] [cursor=pointer]

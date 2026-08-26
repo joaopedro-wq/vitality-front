@@ -1,0 +1,122 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e1211]:
+        - generic [ref=f1e1214]:
+          - paragraph [ref=f1e1215]: Prévia do plano
+          - heading "Monte o seu prato" [level=1] [ref=f1e1216]
+        - generic [ref=f1e1217]:
+          - button "Ajustar preferências" [ref=f1e1218] [cursor=pointer]
+          - paragraph [ref=f1e1221]: Plano montado com combinações compatíveis do catálogo alimentar.
+          - generic [ref=f1e1222]:
+            - generic [ref=f1e1223]:
+              - generic [ref=f1e1224]:
+                - generic [ref=f1e1225]: Nome do plano
+                - textbox "Nome do plano" [active] [ref=f1e1226]:
+                  - /placeholder: Meu plano do dia
+                  - text: Rotina da Marina
+              - generic [ref=f1e1227]:
+                - generic [ref=f1e1228]: Alterações não salvas
+                - button "Salvar" [ref=f1e1329] [cursor=pointer]
+            - generic [ref=f1e1231]:
+              - generic [ref=f1e1233]:
+                - paragraph [ref=f1e1234]: Plano gerado
+                - paragraph [ref=f1e1235]:
+                  - strong [ref=f1e1236]: "1692"
+                  - generic [ref=f1e1237]: kcal
+              - generic [ref=f1e1239]:
+                - generic [ref=f1e1240]:
+                  - generic [ref=f1e1241]: Prot
+                  - strong [ref=f1e1243]: 136g
+                - generic [ref=f1e1244]:
+                  - generic [ref=f1e1245]: Carbo
+                  - strong [ref=f1e1247]: 180g
+                - generic [ref=f1e1248]:
+                  - generic [ref=f1e1249]: Gord
+                  - strong [ref=f1e1251]: 47g
+            - paragraph [ref=f1e1252]: Este plano é uma sugestão geral e não substitui o acompanhamento de um nutricionista, principalmente em caso de condições clínicas.
+          - generic [ref=f1e1255]:
+            - tablist "Refeições do dia" [ref=f1e1256]:
+              - tab "Café da manhã 08:00 · 422 kcal" [selected] [ref=f1e1258] [cursor=pointer]:
+                - generic [ref=f1e1262]:
+                  - generic [ref=f1e1263]: Café da manhã
+                  - generic [ref=f1e1264]: 08:00 · 422 kcal
+              - tab "Almoço 12:30 · 593 kcal" [ref=f1e1266] [cursor=pointer]:
+                - generic [ref=f1e1271]:
+                  - generic [ref=f1e1272]: Almoço
+                  - generic [ref=f1e1273]: 12:30 · 593 kcal
+              - tab "Lanche da tarde 16:30 · 254 kcal" [ref=f1e1275] [cursor=pointer]:
+                - generic [ref=f1e1280]:
+                  - generic [ref=f1e1281]: Lanche da tarde
+                  - generic [ref=f1e1282]: 16:30 · 254 kcal
+              - tab "Jantar 20:00 · 422 kcal" [ref=f1e1284] [cursor=pointer]:
+                - generic [ref=f1e1291]:
+                  - generic [ref=f1e1292]: Jantar
+                  - generic [ref=f1e1293]: 20:00 · 422 kcal
+            - tabpanel "Café da manhã 08:00 · 422 kcal" [ref=f1e1294]:
+              - generic [ref=f1e1295]:
+                - generic [ref=f1e1296]:
+                  - generic [ref=f1e1297]:
+                    - paragraph [ref=f1e1298]: Café da manhã · 08:00
+                    - heading "Ingredientes do prato" [level=3] [ref=f1e1299]
+                  - generic "Resumo nutricional da refeição" [ref=f1e1301]:
+                    - strong [ref=f1e1302]: 422 kcal
+                    - generic [ref=f1e1303]:
+                      - generic [ref=f1e1304]: P 34 g
+                      - generic [ref=f1e1306]: C 44 g
+                      - generic [ref=f1e1308]: G 12 g
+                - list [ref=f1e1310]:
+                  - listitem [ref=f1e1311]:
+                    - generic [ref=f1e1312]:
+                      - text: Pão · 85 g
+                      - generic [ref=f1e1313]: glúten, forma
+                    - button "Trocar" [ref=f1e1314] [cursor=pointer]
+                  - listitem [ref=f1e1315]:
+                    - generic [ref=f1e1316]:
+                      - text: Ovo · 170 g
+                      - generic [ref=f1e1317]: de galinha, clara, cozida/10minutos
+                    - button "Trocar" [ref=f1e1318] [cursor=pointer]
+                  - listitem [ref=f1e1319]:
+                    - generic [ref=f1e1320]:
+                      - text: Abacate · 110 g
+                      - generic [ref=f1e1321]: cru
+                    - button "Trocar" [ref=f1e1322] [cursor=pointer]
+                - paragraph [ref=f1e1323]: Combinação montada automaticamente com alimentos compatíveis e porções realistas.
+                - generic [ref=f1e1324]:
+                  - button "Trocar refeição" [ref=f1e1325] [cursor=pointer]
+                  - button "Usar no diário" [ref=f1e1327] [cursor=pointer]

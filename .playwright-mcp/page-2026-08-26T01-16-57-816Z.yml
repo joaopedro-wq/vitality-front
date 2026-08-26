@@ -1,0 +1,195 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e1415]:
+        - button "Voltar" [ref=f1e1417] [cursor=pointer]
+        - generic [ref=f1e1420]:
+          - generic [ref=f1e1421]:
+            - generic [ref=f1e1423]:
+              - paragraph [ref=f1e1424]: Diário
+              - heading "Diário alimentar" [level=1] [ref=f1e1425]
+              - paragraph [ref=f1e1426]: Registre suas refeições e acompanhe a composição do seu dia.
+            - generic [ref=f1e1427]:
+              - generic [ref=f1e1428]:
+                - button "Dia anterior" [ref=f1e1429] [cursor=pointer]
+                - generic [ref=f1e1432]:
+                  - generic [ref=f1e1433]: terça-feira, 25 de agosto
+                  - generic [ref=f1e1434]: Hoje
+                - button "Próximo dia" [disabled] [ref=f1e1435]
+              - button "Mais ações" [ref=f1e1440] [cursor=pointer]
+          - region "Macros do dia" [ref=f1e1446]:
+            - generic [ref=f1e1448]:
+              - strong [ref=f1e1449]: "0"
+              - generic [ref=f1e1450]: / 1,692 kcal
+              - generic [ref=f1e1451]: restam 1,692 kcal
+            - generic [ref=f1e1453]:
+              - generic [ref=f1e1455]:
+                - generic [ref=f1e1456]: Proteína
+                - generic [ref=f1e1457]: 0 / 136 g
+              - generic [ref=f1e1460]:
+                - generic [ref=f1e1461]: Carboidrato
+                - generic [ref=f1e1462]: 0 / 181 g
+              - generic [ref=f1e1465]:
+                - generic [ref=f1e1466]: Gordura
+                - generic [ref=f1e1467]: 0 / 47 g
+          - generic [ref=f1e1469]:
+            - generic [ref=f1e1471]:
+              - paragraph [ref=f1e1472]: Registrando aqui
+              - tablist "Fases do dia" [ref=f1e1473]:
+                - tab "Café da manhã, fase atual" [selected] [ref=f1e1480] [cursor=pointer]:
+                  - generic [ref=f1e1487]: Café da manhã
+                  - generic [ref=f1e1488]: fase atual
+                - tab "Almoço, em aberto" [ref=f1e1489] [cursor=pointer]:
+                  - generic [ref=f1e1497]: Almoço
+                  - generic [ref=f1e1498]: aberta
+                - tab "Lanche da tarde, em aberto" [ref=f1e1499] [cursor=pointer]:
+                  - generic [ref=f1e1504]: Lanche da tarde
+                  - generic [ref=f1e1505]: aberta
+                - tab "Jantar, em aberto" [ref=f1e1506] [cursor=pointer]:
+                  - generic [ref=f1e1511]: Jantar
+                  - generic [ref=f1e1512]: aberta
+                - tab "Ceia, em aberto" [ref=f1e1513] [cursor=pointer]:
+                  - generic [ref=f1e1517]: Ceia
+                  - generic [ref=f1e1518]: aberta
+                - button "Ver como está seu dia até agora. 0 / 1.692 kcal" [ref=f1e1519] [cursor=pointer]:
+                  - text: Fim do dia
+                  - generic [ref=f1e1524]: 0 / 1.692 kcal
+            - region "Registrar alimentos" [ref=f1e1526]:
+              - generic [ref=f1e1527]:
+                - paragraph [ref=f1e1528]: Novo registro
+                - generic [ref=f1e1530]:
+                  - generic [ref=f1e1537]:
+                    - generic [ref=f1e1538]: Registrando em
+                    - generic [ref=f1e1539]: Café da manhã
+                    - text: · 08:00
+                  - button "Trocar" [ref=f1e1540] [cursor=pointer]
+              - generic [ref=f1e1605]:
+                - generic [ref=f1e1606]: Do seu plano
+                - generic [ref=f1e1613]:
+                  - generic [ref=f1e1614]: Sugestão pra agora
+                  - strong [ref=f1e1615]: Café da manhã
+                  - generic [ref=f1e1616]: 422 kcal · 3 alimentos
+                - generic [ref=f1e1617]:
+                  - generic [ref=f1e1618]: Pão
+                  - generic [ref=f1e1619]: Ovo
+                  - generic [ref=f1e1620]: Abacate
+                - button "Usar essa sugestão" [active] [ref=f1e1621] [cursor=pointer]
+              - paragraph [ref=f1e1622]: ou monte do seu jeito
+              - generic [ref=f1e1544]:
+                - generic [ref=f1e1545]:
+                  - generic [ref=f1e1549]: Buscar alimento no catálogo
+                  - searchbox "Buscar alimento no catálogo" [ref=f1e1550]
+                - generic [ref=f1e1552]:
+                  - button "Ordenar Nome" [ref=f1e1553] [cursor=pointer]:
+                    - generic [ref=f1e1554]: Ordenar
+                    - generic [ref=f1e1555]: Nome
+                  - button "A–Z" [ref=f1e1558] [cursor=pointer]
+              - group "Filtros rápidos de alimento" [ref=f1e1561]:
+                - button "Frequentes" [ref=f1e1562] [cursor=pointer]
+                - button "Favoritos" [ref=f1e1566] [cursor=pointer]
+                - button "Bebidas" [ref=f1e1623] [cursor=pointer]
+                - button "Carnes e aves" [ref=f1e1628] [cursor=pointer]
+                - button "Doces e sobremesas" [ref=f1e1633] [cursor=pointer]
+                - button "Frutas" [ref=f1e1638] [cursor=pointer]
+                - button "Grãos, cereais e massas" [ref=f1e1644] [cursor=pointer]
+                - button "Leguminosas" [ref=f1e1654] [cursor=pointer]
+                - button "Leites e derivados" [ref=f1e1658] [cursor=pointer]
+                - button "Oleaginosas e sementes" [ref=f1e1662] [cursor=pointer]
+                - button "Óleos e gorduras" [ref=f1e1666] [cursor=pointer]
+                - button "Outros" [ref=f1e1669] [cursor=pointer]
+                - button "Ovos" [ref=f1e1674] [cursor=pointer]
+                - button "Pães e preparações" [ref=f1e1678] [cursor=pointer]
+                - button "Peixes e frutos do mar" [ref=f1e1688] [cursor=pointer]
+                - button "Verduras e legumes" [ref=f1e1693] [cursor=pointer]
+              - generic [ref=f1e1569]:
+                - paragraph [ref=f1e1570]: Seus alimentos de sempre
+                - paragraph [ref=f1e1571]: Busque um alimento para começar — os que você usa sempre aparecem aqui depois.
+                - generic [ref=f1e1572]:
+                  - heading "3 alimentos 422 kcal" [level=3] [ref=f1e1699]:
+                    - text: 3 alimentos
+                    - generic [ref=f1e1577]: 422 kcal
+                  - generic [ref=f1e1578]:
+                    - generic [ref=f1e1701]:
+                      - generic [ref=f1e1705]:
+                        - generic [ref=f1e1706]: Pão
+                        - generic [ref=f1e1707]: glúten, forma
+                        - text: 215 kcal · P 10.2 g · C 37.5 g · G 2.3 g
+                      - generic [ref=f1e1708]:
+                        - button "pouco" [ref=f1e1709] [cursor=pointer]
+                        - button "normal" [ref=f1e1710] [cursor=pointer]
+                        - button "bastante" [ref=f1e1711] [cursor=pointer]
+                      - generic [ref=f1e1712]:
+                        - generic [ref=f1e1713]: Quantidade de Pão em gramas
+                        - spinbutton "Quantidade de Pão em gramas g" [ref=f1e1714]: "85"
+                        - generic [ref=f1e1715]: g
+                      - button "Tirar Pão do prato" [ref=f1e1716] [cursor=pointer]
+                    - generic [ref=f1e1721]:
+                      - generic [ref=f1e1725]:
+                        - generic [ref=f1e1726]: Ovo
+                        - generic [ref=f1e1727]: de galinha, clara, cozida/10minutos
+                        - text: 101 kcal · P 22.9 g · C 0 g · G 0.2 g
+                      - generic [ref=f1e1728]:
+                        - button "pouco" [ref=f1e1729] [cursor=pointer]
+                        - button "normal" [ref=f1e1730] [cursor=pointer]
+                        - button "bastante" [ref=f1e1731] [cursor=pointer]
+                      - generic [ref=f1e1732]:
+                        - generic [ref=f1e1733]: Quantidade de Ovo em gramas
+                        - spinbutton "Quantidade de Ovo em gramas g" [ref=f1e1734]: "170"
+                        - generic [ref=f1e1735]: g
+                      - button "Tirar Ovo do prato" [ref=f1e1736] [cursor=pointer]
+                    - generic [ref=f1e1741]:
+                      - generic [ref=f1e1745]:
+                        - generic [ref=f1e1746]: Abacate
+                        - generic [ref=f1e1747]: cru
+                        - text: 106 kcal · P 1.4 g · C 6.6 g · G 9.2 g
+                      - generic [ref=f1e1748]:
+                        - button "pouco" [ref=f1e1749] [cursor=pointer]
+                        - button "normal" [ref=f1e1750] [cursor=pointer]
+                        - button "bastante" [ref=f1e1751] [cursor=pointer]
+                      - generic [ref=f1e1752]:
+                        - generic [ref=f1e1753]: Quantidade de Abacate em gramas
+                        - spinbutton "Quantidade de Abacate em gramas g" [ref=f1e1754]: "110"
+                        - generic [ref=f1e1755]: g
+                      - button "Tirar Abacate do prato" [ref=f1e1756] [cursor=pointer]
+                - generic [ref=f1e1580]:
+                  - generic [ref=f1e1581]: Horário
+                  - textbox "Horário" [ref=f1e1582]: 08:00
+                  - generic [ref=f1e1583]: · sugerido por esta fase
+              - generic [ref=f1e1585]:
+                - button "Voltar" [ref=f1e1586] [cursor=pointer]
+                - button "Continuar" [ref=f1e1589] [cursor=pointer]

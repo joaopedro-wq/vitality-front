@@ -1,0 +1,167 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e226]:
+        - generic [ref=f1e227]:
+          - generic [ref=f1e228]:
+            - generic [ref=f1e230]:
+              - img [ref=f1e231]:
+                - generic [ref=f1e234]: "0"
+                - generic [ref=f1e235]: kcal
+              - generic [ref=f1e236]: Hoje
+              - generic [ref=f1e237]:
+                - generic [ref=f1e238]:
+                  - generic [ref=f1e240]: Proteína
+                  - generic [ref=f1e241]: 0 g
+                - generic [ref=f1e242]:
+                  - generic [ref=f1e244]: Carboidrato
+                  - generic [ref=f1e245]: 0 g
+                - generic [ref=f1e246]:
+                  - generic [ref=f1e248]: Gordura
+                  - generic [ref=f1e249]: 0 g
+            - generic [ref=f1e250]:
+              - generic [ref=f1e251]: Nível 1
+              - generic [ref=f1e253]: 0 / 50 XP
+          - generic [ref=f1e255]:
+            - generic [ref=f1e256]:
+              - generic [ref=f1e257]: 08:00
+              - generic [ref=f1e264]:
+                - paragraph [ref=f1e265]: Próxima missão
+                - heading "Registrar Café da manhã" [level=3] [ref=f1e266]
+              - link "Registrar Café da manhã" [ref=f1e268] [cursor=pointer]:
+                - /url: /diario?registrar=1
+                - generic [ref=f1e269]: Registrar
+            - generic [ref=f1e271]:
+              - generic [ref=f1e272]:
+                - generic [ref=f1e277]: Café da manhã
+                - generic [ref=f1e278]: 08:00
+              - generic [ref=f1e279]:
+                - generic [ref=f1e284]: Almoço
+                - generic [ref=f1e285]: 11:30
+              - generic [ref=f1e286]:
+                - generic [ref=f1e291]: Lanche da tarde
+                - generic [ref=f1e292]: 16:00
+              - generic [ref=f1e293]:
+                - generic [ref=f1e298]: Jantar
+                - generic [ref=f1e299]: 20:00
+              - generic [ref=f1e300]:
+                - generic [ref=f1e305]: Ceia
+                - generic [ref=f1e306]: 22:00
+        - generic [ref=f1e307]:
+          - generic [ref=f1e308]:
+            - paragraph [ref=f1e309]: Missões
+            - generic [ref=f1e312]:
+              - paragraph [ref=f1e320]: Registre sua primeira refeição hoje
+              - generic [ref=f1e322]:
+                - generic [ref=f1e323]: ✅
+                - generic [ref=f1e325]:
+                  - paragraph [ref=f1e326]: Complete o dia
+                  - paragraph [ref=f1e327]: +15 XP
+              - generic [ref=f1e328]:
+                - generic [ref=f1e329]: 📅
+                - generic [ref=f1e331]:
+                  - paragraph [ref=f1e332]: Registre em 3 dias diferentes essa semana
+                  - paragraph [ref=f1e333]: +20 XP
+              - generic [ref=f1e334]:
+                - generic [ref=f1e335]: 🌟
+                - generic [ref=f1e337]:
+                  - paragraph [ref=f1e338]: Semana completa
+                  - paragraph [ref=f1e339]: +50 XP
+              - generic [ref=f1e340]:
+                - generic [ref=f1e341]: 🔥
+                - generic [ref=f1e343]:
+                  - paragraph [ref=f1e344]: 4 dias seguidos de registro
+                  - paragraph [ref=f1e345]: +30 XP
+              - generic [ref=f1e346]:
+                - generic [ref=f1e347]: 🏆
+                - generic [ref=f1e349]:
+                  - paragraph [ref=f1e350]: 7 dias seguidos de registro
+                  - paragraph [ref=f1e351]: +60 XP
+              - generic [ref=f1e352]:
+                - generic [ref=f1e353]: 💎
+                - generic [ref=f1e355]:
+                  - paragraph [ref=f1e356]: 30 dias seguidos de registro
+                  - paragraph [ref=f1e357]: +200 XP
+          - generic [ref=f1e358]:
+            - paragraph [ref=f1e359]: Sua semana
+            - generic [ref=f1e360]:
+              - paragraph [ref=f1e361]: 0 / 7
+              - paragraph [ref=f1e362]: dias com a meta calórica batida nesta semana
+            - generic [ref=f1e363]:
+              - generic [ref=f1e364]:
+                - generic [ref=f1e365]: qua
+                - generic [ref=f1e366]: —
+              - generic [ref=f1e367]:
+                - generic [ref=f1e368]: qui
+                - generic [ref=f1e369]: —
+              - generic [ref=f1e370]:
+                - generic [ref=f1e371]: sex
+                - generic [ref=f1e372]: —
+              - generic [ref=f1e373]:
+                - generic [ref=f1e374]: sáb
+                - generic [ref=f1e375]: —
+              - generic [ref=f1e376]:
+                - generic [ref=f1e377]: dom
+                - generic [ref=f1e378]: —
+              - generic [ref=f1e379]:
+                - generic [ref=f1e380]: seg
+                - generic [ref=f1e381]: —
+              - generic [ref=f1e382]:
+                - generic [ref=f1e383]: ter
+                - generic [ref=f1e384]: —
+        - generic [ref=f1e386]:
+          - link "Diário — Falta Café da manhã" [ref=f1e388] [cursor=pointer]:
+            - /url: /diario
+            - generic [ref=f1e389]:
+              - generic [ref=f1e394]: Diário
+              - generic [ref=f1e395]: Falta Café da manhã
+          - link "Plano alimentar — Nenhum plano ativo" [ref=f1e396] [cursor=pointer]:
+            - /url: /dietas
+            - generic [ref=f1e397]:
+              - generic [ref=f1e402]: Plano alimentar
+              - generic [ref=f1e403]: Nenhum plano ativo
+          - link "Metas — Defina sua meta" [ref=f1e404] [cursor=pointer]:
+            - /url: /metas
+            - generic [ref=f1e405]:
+              - generic [ref=f1e411]: Metas
+              - generic [ref=f1e412]: Defina sua meta
+          - link "Alimentos — Explorar catálogo" [ref=f1e413] [cursor=pointer]:
+            - /url: /alimentos
+            - generic [ref=f1e414]:
+              - generic [ref=f1e420]: Alimentos
+              - generic [ref=f1e421]: Explorar catálogo

@@ -1,0 +1,112 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [active] [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e422]:
+        - button "Voltar" [ref=f1e424] [cursor=pointer]
+        - generic [ref=f1e427]:
+          - generic [ref=f1e428]:
+            - generic [ref=f1e430]:
+              - paragraph [ref=f1e431]: Minha conta
+              - heading "Perfil e preferências" [level=1] [ref=f1e432]
+              - paragraph [ref=f1e433]: Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.
+            - button "Ver onboarding novamente" [ref=f1e434] [cursor=pointer]
+          - generic [ref=f1e436]:
+            - navigation "Etapas do perfil" [ref=f1e439]:
+              - button "1 Identidade e foto Como podemos chamar você?" [ref=f1e441] [cursor=pointer]:
+                - generic [ref=f1e442]: "1"
+                - generic [ref=f1e443]:
+                  - generic [ref=f1e444]: Identidade e foto
+                  - generic [ref=f1e445]: Como podemos chamar você?
+              - button "2 Seu corpo Dados para personalizar sua meta" [ref=f1e448] [cursor=pointer]:
+                - generic [ref=f1e449]: "2"
+                - generic [ref=f1e450]:
+                  - generic [ref=f1e451]: Seu corpo
+                  - generic [ref=f1e452]: Dados para personalizar sua meta
+              - button "3 Rotina e confirmação Conte como é o seu dia" [ref=f1e455] [cursor=pointer]:
+                - generic [ref=f1e456]: "3"
+                - generic [ref=f1e457]:
+                  - generic [ref=f1e458]: Rotina e confirmação
+                  - generic [ref=f1e459]: Conte como é o seu dia
+            - generic [ref=f1e462]:
+              - generic [ref=f1e463]:
+                - paragraph [ref=f1e464]: Etapa 1
+                - heading "Identidade e foto" [level=2] [ref=f1e465]
+                - paragraph [ref=f1e466]: Vamos começar pelos dados que identificam o seu perfil.
+              - generic [ref=f1e468]:
+                - generic [ref=f1e469]:
+                  - generic [ref=f1e471]:
+                    - generic [ref=f1e472]: MD
+                    - generic [ref=f1e473]: Marina Demo
+                  - generic "Adicionar foto de perfil" [ref=f1e474] [cursor=pointer]:
+                    - button "Adicionar foto de perfil" [ref=f1e475]
+                - generic [ref=f1e480]:
+                  - paragraph [ref=f1e481]: Marina Demo
+                  - paragraph [ref=f1e482]: marina.demo.video.20260826@example.com
+                - generic [ref=f1e483]: Perfil 22% completo
+              - generic [ref=f1e486]:
+                - generic [ref=f1e488]:
+                  - generic [ref=f1e489]:
+                    - text: Nome *
+                    - generic [ref=f1e490]: (obrigatório)
+                  - textbox "Nome (obrigatório)" [ref=f1e491]: Marina Demo
+                  - generic [ref=f1e492]: Usamos este nome para personalizar sua experiência.
+                - generic [ref=f1e494]:
+                  - generic [ref=f1e495]:
+                    - text: E-mail *
+                    - generic [ref=f1e496]: (obrigatório)
+                  - textbox "E-mail (obrigatório)" [ref=f1e497]: marina.demo.video.20260826@example.com
+                  - generic [ref=f1e498]: Seu acesso e comunicações importantes usam este endereço.
+                - generic [ref=f1e499]:
+                  - generic [ref=f1e500]:
+                    - text: Data de nascimento *
+                    - generic [ref=f1e501]: (obrigatório)
+                  - textbox "Data de nascimento (obrigatório)" [ref=f1e502]
+                  - generic [ref=f1e503]: Ela ajuda a calcular suas recomendações.
+                - generic [ref=f1e504]:
+                  - paragraph [ref=f1e505]: Gênero
+                  - generic [ref=f1e506]:
+                    - generic [ref=f1e507] [cursor=pointer]:
+                      - radio "Masculino" [checked] [ref=f1e508]
+                      - text: Masculino
+                    - generic [ref=f1e513] [cursor=pointer]:
+                      - radio "Feminino" [ref=f1e514]
+                      - text: Feminino
+                    - generic [ref=f1e517] [cursor=pointer]:
+                      - radio "Outro" [ref=f1e518]
+                      - text: Outro
+              - button "Continuar" [ref=f1e525] [cursor=pointer]

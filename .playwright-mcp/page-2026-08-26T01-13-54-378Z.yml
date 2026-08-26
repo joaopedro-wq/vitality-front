@@ -1,0 +1,59 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e422]:
+        - button "Voltar" [ref=f1e424] [cursor=pointer]
+        - generic [ref=f1e427]:
+          - generic [ref=f1e428]:
+            - generic [ref=f1e430]:
+              - paragraph [ref=f1e431]: Minha conta
+              - heading "Perfil e preferências" [level=1] [ref=f1e432]
+              - paragraph [ref=f1e433]: Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.
+            - button "Ver onboarding novamente" [ref=f1e434] [cursor=pointer]
+          - generic [ref=f1e641]:
+            - paragraph [ref=f1e642]: Perfil atualizado
+            - generic [ref=f1e644]:
+              - generic [ref=f1e647]:
+                - generic [ref=f1e648]: MD
+                - generic [ref=f1e649]: Marina Demo
+              - generic [ref=f1e650]:
+                - paragraph [ref=f1e651]: Marina Demo
+                - paragraph [ref=f1e652]: marina.demo.video.20260826@example.com
+              - generic [ref=f1e653]: Perfil 89% completo
+            - paragraph [ref=f1e656]: Seus dados já estão prontos para orientar as metas e recomendações.
+            - button "Editar perfil novamente" [ref=f1e657] [cursor=pointer]

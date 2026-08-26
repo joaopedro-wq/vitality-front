@@ -1,0 +1,79 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e1011]:
+        - button "Voltar" [ref=f1e1013] [cursor=pointer]
+        - generic [ref=f1e1016]:
+          - generic [ref=f1e1019]:
+            - paragraph [ref=f1e1020]: Novo plano
+            - heading "Como é o seu dia?" [level=1] [ref=f1e1021]
+            - paragraph [ref=f1e1022]: Usaremos sua meta de 1,692 kcal como referência.
+          - generic [ref=f1e1023]:
+            - navigation "Etapas do novo plano" [ref=f1e1025]:
+              - button "Refeições" [ref=f1e1055] [cursor=pointer]
+              - button "Estilo" [ref=f1e1084] [cursor=pointer]
+              - button "Preferências" [ref=f1e1150] [cursor=pointer]
+              - button "4 Revisar" [ref=f1e1038] [cursor=pointer]:
+                - generic [ref=f1e1039]: "4"
+                - generic [ref=f1e1040]: Revisar
+            - generic [ref=f1e1153]:
+              - paragraph [ref=f1e1154]: Passo 4 de 4
+              - heading "Confere antes de gerar" [level=2] [ref=f1e1155]
+              - paragraph [ref=f1e1156]: Confira suas escolhas. Você pode voltar e ajustar qualquer uma delas.
+              - generic [ref=f1e1157]:
+                - generic [ref=f1e1158]:
+                  - generic [ref=f1e1159]: Refeições
+                  - strong [ref=f1e1160]: 4 por dia
+                - generic [ref=f1e1161]:
+                  - generic [ref=f1e1162]: Estilo
+                  - strong [ref=f1e1163]: Caseiro
+                - generic [ref=f1e1164]:
+                  - generic [ref=f1e1165]: Padrão alimentar
+                  - strong [ref=f1e1166]: Onívora
+                - generic [ref=f1e1167]:
+                  - generic [ref=f1e1168]: Restrições
+                  - strong [ref=f1e1169]: Nada
+                - generic [ref=f1e1170]:
+                  - generic [ref=f1e1171]: Evitando
+                  - strong [ref=f1e1172]: Nada
+                - generic [ref=f1e1173]:
+                  - generic [ref=f1e1174]: Incluindo sempre
+                  - strong [ref=f1e1175]: Nada
+              - generic [ref=f1e1177]:
+                - button "Voltar" [ref=f1e1178] [cursor=pointer]
+                - button "Salvar" [ref=f1e1181] [cursor=pointer]

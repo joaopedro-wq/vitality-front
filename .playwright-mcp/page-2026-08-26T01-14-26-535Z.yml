@@ -1,0 +1,88 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e660]:
+        - button "Voltar" [ref=f1e662] [cursor=pointer]
+        - generic [ref=f1e666]:
+          - navigation "Etapas da configuração de metas" [ref=f1e669]:
+            - button "Seu perfil Peso, altura, idade e gênero" [ref=f1e769] [cursor=pointer]:
+              - generic [ref=f1e673]:
+                - generic [ref=f1e674]: Seu perfil
+                - generic [ref=f1e675]: Peso, altura, idade e gênero
+            - button "Atividade Nível de atividade e objetivo" [ref=f1e846] [cursor=pointer]:
+              - generic [ref=f1e680]:
+                - generic [ref=f1e681]: Atividade
+                - generic [ref=f1e682]: Nível de atividade e objetivo
+            - button "Sugestão Calculada a partir do perfil" [ref=f1e901] [cursor=pointer]:
+              - generic [ref=f1e687]:
+                - generic [ref=f1e688]: Sugestão
+                - generic [ref=f1e689]: Calculada a partir do perfil
+            - button "4 Confirmar Revisar e salvar" [ref=f1e692] [cursor=pointer]:
+              - generic [ref=f1e693]: "4"
+              - generic [ref=f1e694]:
+                - generic [ref=f1e695]: Confirmar
+                - generic [ref=f1e696]: Revisar e salvar
+          - generic [ref=f1e904]:
+            - generic [ref=f1e905]:
+              - generic [ref=f1e906]: Build revisado
+              - heading "Revisar e salvar" [level=1] [ref=f1e907]
+              - paragraph [ref=f1e908]: Já preenchido com a sugestão — ajuste o que quiser antes de salvar.
+            - generic [ref=f1e909]:
+              - generic [ref=f1e910]:
+                - generic [ref=f1e911]:
+                  - generic [ref=f1e912]: Calorias
+                  - generic [ref=f1e913]: "sugestão: 1692 kcal"
+                - spinbutton [ref=f1e914]: "1692"
+              - generic [ref=f1e918]:
+                - generic [ref=f1e919]:
+                  - generic [ref=f1e920]: Proteína (g)
+                  - generic [ref=f1e921]: "sugestão: 136g"
+                - spinbutton [ref=f1e922]: "136"
+              - generic [ref=f1e926]:
+                - generic [ref=f1e927]:
+                  - generic [ref=f1e928]: Carboidrato (g)
+                  - generic [ref=f1e929]: "sugestão: 181g"
+                - spinbutton [ref=f1e930]: "181"
+              - generic [ref=f1e934]:
+                - generic [ref=f1e935]:
+                  - generic [ref=f1e936]: Gordura (g)
+                  - generic [ref=f1e937]: "sugestão: 47g"
+                - spinbutton [ref=f1e938]: "47"
+            - generic [ref=f1e943]:
+              - button "Voltar" [ref=f1e944] [cursor=pointer]
+              - button "Salvar" [ref=f1e947] [cursor=pointer]

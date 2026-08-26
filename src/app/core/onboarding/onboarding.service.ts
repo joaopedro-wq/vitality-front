@@ -5,7 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { BdTourService } from 'bandeira-ui';
 import { ToastrService } from 'ngx-toastr';
-import { filter, finalize } from 'rxjs';
+import { filter, finalize, firstValueFrom } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
 import { apiPaths } from '../http/api-paths';
@@ -150,12 +150,21 @@ export class OnboardingService {
     this.welcomeOpen.set(true);
   }
 
-  private startCurrentStage(): void {
-    const stage = this.stages()[this.introStage()];
-    if (!stage) return;
-
+  private async startCurrentStage(): Promise<void> {
     const currentRunId = ++this.runId;
     this.preparingStage.set(true);
+
+    if (!(await this.loadActiveTranslations()) || currentRunId !== this.runId) {
+      if (currentRunId === this.runId) this.preparingStage.set(false);
+      return;
+    }
+
+    const stage = this.stages()[this.introStage()];
+    if (!stage) {
+      this.preparingStage.set(false);
+      return;
+    }
+
     this.router.navigateByUrl(stage.route).then(async (navigated) => {
       if (!navigated || currentRunId !== this.runId) {
         this.preparingStage.set(false);
@@ -318,7 +327,7 @@ export class OnboardingService {
     if (hint) this.startPageHint(hint);
   }
 
-  private startPageHint(hint: PageHint): void {
+  private async startPageHint(hint: PageHint): Promise<void> {
     if (!this.canShowPageHint(hint.id)) return;
 
     const currentRunId = ++this.runId;
@@ -326,17 +335,44 @@ export class OnboardingService {
     this.activePageHint.set(hint.id);
     this.manualRun.set(false);
 
-    this.resolveVisibleSteps(hint.steps, currentRunId).then((steps) => {
-      if (currentRunId !== this.runId) return;
-
-      this.preparingStage.set(false);
-      if (!steps.length || this.router.url.split('?')[0] !== hint.route) {
+    if (!(await this.loadActiveTranslations()) || currentRunId !== this.runId) {
+      if (currentRunId === this.runId) {
+        this.preparingStage.set(false);
         this.activePageHint.set(null);
-        return;
       }
+      return;
+    }
 
-      this.openTour(steps, 'page-hint');
-    });
+    // `hint` pode ter sido montada antes de o loader terminar. Recria as etapas
+    // depois da carga para nunca entregar as chaves cruas ao `BdTourService`.
+    const translatedHint = this.pageHints().find((item) => item.id === hint.id);
+    if (!translatedHint) {
+      this.preparingStage.set(false);
+      this.activePageHint.set(null);
+      return;
+    }
+
+    const steps = await this.resolveVisibleSteps(translatedHint.steps, currentRunId);
+    if (currentRunId !== this.runId) return;
+
+    this.preparingStage.set(false);
+    if (!steps.length || this.router.url.split('?')[0] !== translatedHint.route) {
+      this.activePageHint.set(null);
+      return;
+    }
+
+    this.openTour(steps, 'page-hint');
+  }
+
+  /** Garante que `translate()` devolva texto, não a chave, antes de abrir o tour. */
+  private async loadActiveTranslations(): Promise<boolean> {
+    try {
+      await firstValueFrom(this.transloco.load(this.transloco.getActiveLang()));
+      return true;
+    } catch {
+      // Sem as traduções, é melhor não abrir a dica do que expor as chaves da interface.
+      return false;
+    }
   }
 
   private canShowPageHint(id: PageHintId): boolean {

@@ -1,0 +1,129 @@
+- generic [ref=f1e101]:
+  - complementary [ref=f1e102]:
+    - link "vitality+" [ref=f1e103] [cursor=pointer]:
+      - /url: /dashboard
+    - navigation "Navegação principal" [ref=f1e109]:
+      - link "Painel" [ref=f1e110] [cursor=pointer]:
+        - /url: /dashboard
+      - link "Diário" [ref=f1e114] [cursor=pointer]:
+        - /url: /diario
+      - link "Alimentos" [ref=f1e118] [cursor=pointer]:
+        - /url: /alimentos
+      - link "Plano alimentar" [ref=f1e123] [cursor=pointer]:
+        - /url: /dietas
+      - link "Metas" [ref=f1e127] [cursor=pointer]:
+        - /url: /metas
+      - link "Perfil" [ref=f1e132] [cursor=pointer]:
+        - /url: /perfil
+    - link "Marina Demo Marina Demo Ver perfil" [ref=f1e136] [cursor=pointer]:
+      - /url: /perfil
+      - generic [ref=f1e137]:
+        - generic [ref=f1e138]: MD
+        - generic [ref=f1e139]: Marina Demo
+      - generic [ref=f1e140]:
+        - generic [ref=f1e141]: Marina Demo
+        - text: Ver perfil
+  - generic [ref=f1e142]:
+    - banner [ref=f1e143]:
+      - generic [ref=f1e144]: Boa noite, Marina
+      - generic [ref=f1e146]:
+        - button "Alterar idioma" [ref=f1e149] [cursor=pointer]:
+          - generic [ref=f1e150]: 🇧🇷
+        - button "Usar menu horizontal" [ref=f1e151] [cursor=pointer]
+        - button "Escolher paleta" [ref=f1e156] [cursor=pointer]
+        - button "Ativar tema claro" [ref=f1e164] [cursor=pointer]
+        - link "Registrar refeição" [ref=f1e172] [cursor=pointer]:
+          - /url: /diario?registrar=1
+        - button "Sair" [ref=f1e175] [cursor=pointer]
+    - main [ref=f1e180]:
+      - generic [ref=f1e1415]:
+        - button "Voltar" [ref=f1e1417] [cursor=pointer]
+        - generic [ref=f1e1420]:
+          - generic [ref=f1e1421]:
+            - generic [ref=f1e1423]:
+              - paragraph [ref=f1e1424]: Diário
+              - heading "Diário alimentar" [level=1] [ref=f1e1425]
+              - paragraph [ref=f1e1426]: Registre suas refeições e acompanhe a composição do seu dia.
+            - generic [ref=f1e1427]:
+              - generic [ref=f1e1428]:
+                - button "Dia anterior" [ref=f1e1429] [cursor=pointer]
+                - generic [ref=f1e1432]:
+                  - generic [ref=f1e1433]: terça-feira, 25 de agosto
+                  - generic [ref=f1e1434]: Hoje
+                - button "Próximo dia" [disabled] [ref=f1e1435]
+              - button "Mais ações" [ref=f1e1440] [cursor=pointer]
+          - region "Macros do dia" [ref=f1e1446]:
+            - generic [ref=f1e1448]:
+              - strong [ref=f1e1449]: "0"
+              - generic [ref=f1e1450]: / 1,692 kcal
+              - generic [ref=f1e1451]: restam 1,692 kcal
+            - generic [ref=f1e1453]:
+              - generic [ref=f1e1455]:
+                - generic [ref=f1e1456]: Proteína
+                - generic [ref=f1e1457]: 0 / 136 g
+              - generic [ref=f1e1460]:
+                - generic [ref=f1e1461]: Carboidrato
+                - generic [ref=f1e1462]: 0 / 181 g
+              - generic [ref=f1e1465]:
+                - generic [ref=f1e1466]: Gordura
+                - generic [ref=f1e1467]: 0 / 47 g
+          - generic [ref=f1e1469]:
+            - generic [ref=f1e1471]:
+              - paragraph [ref=f1e1472]: Registrando aqui
+              - tablist "Fases do dia" [ref=f1e1473]:
+                - tab "Café da manhã, fase atual" [selected] [ref=f1e1480] [cursor=pointer]:
+                  - generic [ref=f1e1487]: Café da manhã
+                  - generic [ref=f1e1488]: fase atual
+                - tab "Almoço, em aberto" [ref=f1e1489] [cursor=pointer]:
+                  - generic [ref=f1e1497]: Almoço
+                  - generic [ref=f1e1498]: aberta
+                - tab "Lanche da tarde, em aberto" [ref=f1e1499] [cursor=pointer]:
+                  - generic [ref=f1e1504]: Lanche da tarde
+                  - generic [ref=f1e1505]: aberta
+                - tab "Jantar, em aberto" [ref=f1e1506] [cursor=pointer]:
+                  - generic [ref=f1e1511]: Jantar
+                  - generic [ref=f1e1512]: aberta
+                - tab "Ceia, em aberto" [ref=f1e1513] [cursor=pointer]:
+                  - generic [ref=f1e1517]: Ceia
+                  - generic [ref=f1e1518]: aberta
+                - button "Ver como está seu dia até agora. 0 / 1.692 kcal" [ref=f1e1519] [cursor=pointer]:
+                  - text: Fim do dia
+                  - generic [ref=f1e1524]: 0 / 1.692 kcal
+            - region "Registrar alimentos" [ref=f1e1526]:
+              - generic [ref=f1e1527]:
+                - paragraph [ref=f1e1528]: Novo registro
+                - generic [ref=f1e1530]:
+                  - generic [ref=f1e1537]:
+                    - generic [ref=f1e1538]: Registrando em
+                    - generic [ref=f1e1539]: Café da manhã
+                    - text: · 08:00
+                  - button "Trocar" [ref=f1e1540] [cursor=pointer]
+              - generic [ref=f1e1760]:
+                - paragraph [ref=f1e1761]: Revisão da refeição
+                - heading "Confira antes de salvar" [level=2] [ref=f1e1762]
+                - paragraph [ref=f1e1763]: Os valores consideram as quantidades que você escolheu.
+                - generic [ref=f1e1765]:
+                  - generic [ref=f1e1767]:
+                    - generic [ref=f1e1768]: Sua refeição
+                    - generic [ref=f1e1771]:
+                      - generic [ref=f1e1772]:
+                        - generic [ref=f1e1773]: "4"
+                        - generic [ref=f1e1774]: "2"
+                        - generic [ref=f1e1775]: "2"
+                      - generic [ref=f1e1776]: kcal na refeição
+                    - generic [ref=f1e1777]:
+                      - generic [ref=f1e1779]:
+                        - generic [ref=f1e1780]: Proteína
+                        - generic [ref=f1e1781]: 34g
+                      - generic [ref=f1e1785]:
+                        - generic [ref=f1e1786]: Carboidrato
+                        - generic [ref=f1e1787]: 44g
+                      - generic [ref=f1e1791]:
+                        - generic [ref=f1e1792]: Gordura
+                        - generic [ref=f1e1793]: 12g
+                  - generic [ref=f1e1795]:
+                    - heading "Micronutrientes" [level=3] [ref=f1e1796]
+                    - paragraph [ref=f1e1797]: Não há micronutrientes detalhados disponíveis para os alimentos selecionados.
+              - generic [ref=f1e1585]:
+                - button "Voltar" [ref=f1e1586] [cursor=pointer]
+                - button "Salvar" [active] [ref=f1e1798] [cursor=pointer]
