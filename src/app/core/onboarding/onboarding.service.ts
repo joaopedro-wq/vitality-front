@@ -152,7 +152,8 @@ export class OnboardingService {
   }
 
   private openWelcome(manual: boolean): void {
-    if (this.welcomeOpen() || this.tour.active() || this.awaitingOutcome() || this.preparingStage()) return;
+    if (this.welcomeOpen() || this.tour.active() || this.awaitingOutcome() || this.preparingStage())
+      return;
 
     this.welcomeManualRun = manual;
     this.welcomeOpen.set(true);
@@ -183,9 +184,12 @@ export class OnboardingService {
       if (currentRunId !== this.runId) return;
 
       this.preparingStage.set(false);
-      if (!target) return;
-
-      this.openTour([{ ...stage, target, placement: 'auto' }], 'intro');
+      // Sem alvo visível a tempo (layout ainda assentando, breakpoint intermediário),
+      // o tour não pode simplesmente morrer aqui: o `BdTourComponent` já degrada sozinho
+      // para um balão centralizado quando o seletor não resolve nenhum elemento (ver
+      // `resolveTarget`/`measure` na lib), então sempre seguimos em frente com o primeiro
+      // seletor como melhor esforço em vez de abortar a introdução em silêncio.
+      this.openTour([{ ...stage, target: target ?? stage.targets[0], placement: 'auto' }], 'intro');
     });
   }
 
