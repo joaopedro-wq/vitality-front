@@ -52,6 +52,7 @@
         "diets": "Plano alimentar",
         "plan": "Plano",
         "goals": "Metas",
+        "groups": "Ligas",
         "profile": "Perfil",
         "catalog": "Catálogo"
       }
@@ -683,6 +684,69 @@
     "plansOverview": {
       "title": "Seu plano fica reunido aqui",
       "description": "Use os planos salvos como referência para o dia e ajuste as refeições quando a rotina mudar."
+    }
+  },
+  "groups": {
+    "title": "Ligas",
+    "subtitle": "Forme uma liga com seus amigos e dispute o ranking de XP.",
+    "empty": "Você ainda não faz parte de nenhuma liga.",
+    "createTitle": "Criar liga",
+    "createButton": "Criar liga",
+    "namePlaceholder": "Nome da liga",
+    "joinTitle": "Entrar com código",
+    "joinButton": "Entrar",
+    "codePlaceholder": "Código de convite",
+    "membersCount": "{{count}} membros",
+    "inviteCodeLabel": "Código de convite",
+    "copyCode": "Copiar código",
+    "leaveButton": "Sair da liga",
+    "deleteButton": "Excluir liga",
+    "backToList": "Voltar às ligas",
+    "globalBadge": "Liga oficial Vitality",
+    "challengeType": {
+      "label": "Cadência do ranking",
+      "weekly": "Semanal",
+      "weeklyHint": "Reseta toda segunda-feira",
+      "monthly": "Mensal",
+      "monthlyHint": "Reseta no início do mês",
+      "all_time": "Geral",
+      "all_timeHint": "Sem reset, XP acumulado",
+      "custom": "Personalizado",
+      "customHint": "Você escolhe as datas",
+      "startDate": "Início",
+      "endDate": "Fim"
+    },
+    "leaderboard": {
+      "titleWeekly": "Ranking da semana",
+      "titleMonthly": "Ranking do mês",
+      "titleAllTime": "Ranking geral",
+      "titleCustom": "Ranking do desafio",
+      "periodXp": "XP do período",
+      "totalXp": "XP total",
+      "level": "Nível {{level}}"
+    },
+    "activity": {
+      "empty": "Ninguém da liga registrou nenhuma missão ainda.",
+      "today": "Hoje",
+      "yesterday": "Ontem"
+    },
+    "confirmLeave": {
+      "title": "Sair da liga?",
+      "description": "Você deixa de aparecer no ranking até entrar de novo com o código de convite."
+    },
+    "confirmDelete": {
+      "title": "Excluir liga?",
+      "description": "Essa ação remove a liga e o ranking para todos os membros. Não pode ser desfeita."
+    },
+    "toast": {
+      "created": "Liga criada com sucesso",
+      "joined": "Você entrou na liga",
+      "invalidCode": "Código de convite inválido",
+      "left": "Você saiu da liga",
+      "deleted": "Liga excluída",
+      "copied": "Código copiado",
+      "loadError": "Não foi possível carregar suas ligas agora.",
+      "genericError": "Não foi possível completar a ação. Tente novamente."
     }
   },
   "landing": {

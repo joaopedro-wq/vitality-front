@@ -99,6 +99,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'grupos',
+        loadComponent: () =>
+          import('./features/grupos/grupos-page/grupos-page.component').then(
+            (m) => m.GruposPageComponent,
+          ),
+      },
+      {
+        path: 'grupos/:id',
+        loadComponent: () =>
+          import('./features/grupos/grupo-detail/grupo-detail.component').then(
+            (m) => m.GrupoDetailComponent,
+          ),
+      },
+      {
         path: 'admin/alimentos',
         canActivate: [adminGuard],
         loadComponent: () =>

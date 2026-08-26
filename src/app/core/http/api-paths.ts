@@ -87,4 +87,11 @@ export const apiPaths = {
 
   recomendacoes: () => `${environment.apiBaseUrl}/recomendacao`,
   recomendacao: (id: number | string) => `${environment.apiBaseUrl}/recomendacao/${id}`,
+
+  groups: () => `${environment.apiBaseUrl}/groups`,
+  group: (id: number | string) => `${environment.apiBaseUrl}/groups/${id}`,
+  groupJoin: () => `${environment.apiBaseUrl}/groups/join`,
+  groupLeave: (id: number | string) => `${environment.apiBaseUrl}/groups/${id}/leave`,
+  groupRanking: (id: number | string) => `${environment.apiBaseUrl}/groups/${id}/ranking`,
+  groupActivity: (id: number | string) => `${environment.apiBaseUrl}/groups/${id}/activity`,
 };

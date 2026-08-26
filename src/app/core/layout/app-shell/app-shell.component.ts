@@ -36,6 +36,7 @@ import {
   LucideTarget,
   LucideUser,
   LucideUsers,
+  LucideUsersRound,
   LucideUtensils,
   type LucideIcon,
 } from '@lucide/angular';
@@ -74,6 +75,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: LucideClipboardList,
   },
   { path: '/metas', label: 'common.shell.nav.goals', icon: LucideTarget },
+  { path: '/grupos', label: 'common.shell.nav.groups', icon: LucideUsersRound },
   { path: '/perfil', label: 'common.shell.nav.profile', icon: LucideUser },
   {
     path: '/admin/alimentos',
@@ -147,12 +149,16 @@ export class AppShellComponent implements OnDestroy {
   protected readonly mobileNavItems = computed(() =>
     this.navItemsVisiveis().filter(
       (item) =>
-        !['/alimentos', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
+        !['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
+          item.path,
+        ),
     ),
   );
   protected readonly mobileMoreItems = computed(() =>
     this.navItemsVisiveis().filter((item) =>
-      ['/alimentos', '/perfil', '/admin/alimentos', '/admin/usuarios'].includes(item.path),
+      ['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
+        item.path,
+      ),
     ),
   );
 

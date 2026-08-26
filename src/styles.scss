@@ -290,6 +290,21 @@
   }
 }
 
+@utility animate-podium-rise {
+  animation: vtp-podium-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  transform-origin: bottom;
+}
+@keyframes vtp-podium-rise {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
 @utility cta-glow {
   box-shadow: 0 0 0 6px var(--bd-primary-soft);
 }

@@ -1,0 +1,254 @@
+<header class="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-5">
+  <vtp-page-title
+    [contexto]="'groups.title' | transloco"
+    [titulo]="'groups.title' | transloco"
+    [subtitulo]="'groups.subtitle' | transloco"
+  />
+  <button bdButton size="sm" (click)="abrirModal('criar')">
+    <svg lucidePlus size="16" aria-hidden="true"></svg>
+    {{ 'groups.createButton' | transloco }}
+  </button>
+</header>
+
+@if (loadingVisivel()) {
+  <vtp-loading-state [titulo]="'groups.title' | transloco" />
+} @else {
+  @if (!groups().length) {
+    <section class="card animate-reveal mt-6 flex flex-col items-center gap-3 p-10 text-center">
+      <svg lucideUsersRound size="28" class="text-primary" aria-hidden="true"></svg>
+      <p class="m-0 text-[13px] text-fg-muted">{{ 'groups.empty' | transloco }}</p>
+      <button bdButton size="sm" (click)="abrirModal('criar')">
+        <svg lucidePlus size="15" aria-hidden="true"></svg>
+        {{ 'groups.createButton' | transloco }}
+      </button>
+    </section>
+  } @else {
+    <div class="mt-6 grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
+      @for (group of gruposOrdenados(); track group.id; let indice = $index) {
+        <button
+          type="button"
+          class="card animate-ficha-pop flex flex-col gap-4 border-t-[3px] p-5 text-left transition-transform hover:-translate-y-1"
+          [class]="group.is_global ? 'border-t-accent' : 'border-t-primary'"
+          [style.animation-delay.ms]="indice * 110"
+          (click)="abrirGrupo(group)"
+        >
+          <div class="flex items-center gap-3">
+            <vtp-progress-ring-icon
+              [progresso]="progressoDe(group.id)"
+              [corVar]="group.is_global ? '--bd-accent' : '--bd-primary'"
+              tamanho="md"
+            >
+              <span
+                class="grid size-9 place-items-center rounded-full"
+                [class]="
+                  group.is_global
+                    ? 'bg-accent-soft text-accent'
+                    : 'bg-primary-soft text-primary-strong'
+                "
+              >
+                <svg
+                  [lucideIcon]="iconeCanteiro(group.voce?.nivel ?? 1)"
+                  size="17"
+                  aria-hidden="true"
+                ></svg>
+              </span>
+            </vtp-progress-ring-icon>
+
+            <div class="min-w-0 flex-1">
+              <h3
+                class="m-0 flex items-center gap-1.5 truncate text-[14.5px] font-extrabold text-fg"
+              >
+                {{ group.name }}
+                @if (group.is_global) {
+                  <svg lucideCrown size="13" class="shrink-0 text-accent" aria-hidden="true"></svg>
+                }
+              </h3>
+              <p class="m-0 text-[11px] text-fg-muted">
+                {{ 'groups.membersCount' | transloco: { count: group.members_count ?? 1 } }}
+              </p>
+            </div>
+
+            <span
+              class="shrink-0 rounded-full border border-border bg-surface px-2.5 py-1 text-[10px] font-bold text-fg-muted"
+            >
+              {{ 'groups.challengeType.' + group.challenge_type | transloco }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span
+              class="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[10.5px] font-bold text-accent"
+            >
+              {{ 'groups.leaderboard.level' | transloco: { level: group.voce?.nivel ?? 1 } }}
+            </span>
+            <span class="h-1 flex-1 overflow-hidden rounded-full bg-border">
+              <span
+                class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
+                [style.width.%]="group.voce?.progresso_percent ?? 0"
+              ></span>
+            </span>
+          </div>
+
+          @if (group.members_preview?.length) {
+            <div class="flex items-center -space-x-2.5">
+              @for (membro of group.members_preview; track membro.id) {
+                <bd-avatar
+                  [name]="membro.name"
+                  [src]="membro.avatar ?? ''"
+                  size="sm"
+                  class="rounded-full ring-2 ring-surface"
+                />
+              }
+              @if ((group.members_count ?? 0) > (group.members_preview?.length ?? 0)) {
+                <span
+                  class="z-10 grid size-8 place-items-center rounded-full bg-surface-hover text-[10.5px] font-bold text-fg-muted ring-2 ring-surface"
+                >
+                  +{{ (group.members_count ?? 0) - (group.members_preview?.length ?? 0) }}
+                </span>
+              }
+            </div>
+          }
+
+          <div class="mt-auto flex items-baseline gap-1.5 border-t border-border pt-3">
+            <b class="tabular-nums text-[26px] font-black text-primary-strong"
+              ><span [bdCountUp]="group.voce?.xp_periodo ?? 0" [duration]="900"></span
+            ></b>
+            <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
+              'groups.leaderboard.periodXp' | transloco
+            }}</span>
+            <svg
+              lucideArrowRight
+              size="15"
+              class="ml-auto shrink-0 text-fg-subtle"
+              aria-hidden="true"
+            ></svg>
+          </div>
+        </button>
+      }
+    </div>
+  }
+}
+
+<bd-modal
+  [open]="modalAberto()"
+  (openChange)="onModalOpenChange($any($event))"
+  [title]="'groups.createTitle' | transloco"
+  [ariaLabel]="'groups.createTitle' | transloco"
+  [closeLabel]="'common.actions.close' | transloco"
+>
+  <div class="flex flex-col gap-4 px-1 pb-1">
+    <div class="flex gap-[3px] rounded-full border border-border bg-surface-hover p-[3px]">
+      <button
+        type="button"
+        class="flex-1 rounded-full px-3 py-2 text-[12.5px] font-bold transition-colors"
+        [class]="
+          abaModal() === 'criar' ? 'bg-surface text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
+        "
+        (click)="escolherAbaModal('criar')"
+      >
+        {{ 'groups.createTitle' | transloco }}
+      </button>
+      <button
+        type="button"
+        class="flex-1 rounded-full px-3 py-2 text-[12.5px] font-bold transition-colors"
+        [class]="
+          abaModal() === 'entrar' ? 'bg-surface text-fg shadow-sm' : 'text-fg-muted hover:text-fg'
+        "
+        (click)="escolherAbaModal('entrar')"
+      >
+        {{ 'groups.joinTitle' | transloco }}
+      </button>
+    </div>
+
+    @if (abaModal() === 'criar') {
+      <div class="flex flex-col gap-4">
+        <input
+          bdInput
+          type="text"
+          maxlength="60"
+          [placeholder]="'groups.namePlaceholder' | transloco"
+          [value]="nomeNovoGrupo()"
+          (input)="nomeNovoGrupo.set($any($event.target).value)"
+        />
+
+        <div>
+          <p class="m-0 mb-2 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
+            {{ 'groups.challengeType.label' | transloco }}
+          </p>
+          <div class="flex flex-wrap gap-2">
+            @for (opcao of opcoesDesafio; track opcao.value) {
+              <button
+                type="button"
+                class="inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-bold transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+                [class]="
+                  tipoDesafio() === opcao.value
+                    ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+                    : 'border-border bg-surface text-fg hover:border-border-strong'
+                "
+                [title]="opcao.hint | transloco"
+                (click)="escolherTipoDesafio(opcao.value)"
+              >
+                <svg [lucideIcon]="opcao.icone" size="13" aria-hidden="true"></svg>
+                {{ opcao.label | transloco }}
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (tipoDesafio() === 'custom') {
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
+                'groups.challengeType.startDate' | transloco
+              }}</span>
+              <input
+                bdInput
+                type="date"
+                [value]="dataInicio()"
+                (input)="dataInicio.set($any($event.target).value)"
+              />
+            </label>
+            <label class="flex flex-col gap-1">
+              <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
+                'groups.challengeType.endDate' | transloco
+              }}</span>
+              <input
+                bdInput
+                type="date"
+                [value]="dataFim()"
+                (input)="dataFim.set($any($event.target).value)"
+              />
+            </label>
+          </div>
+        }
+
+        <button bdButton block [disabled]="criando() || !podeCriar()" (click)="criarGrupo()">
+          <svg lucidePlus size="15" aria-hidden="true"></svg>
+          {{ 'groups.createButton' | transloco }}
+        </button>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-4">
+        <input
+          bdInput
+          type="text"
+          maxlength="8"
+          class="text-center uppercase tracking-widest"
+          [placeholder]="'groups.codePlaceholder' | transloco"
+          [value]="codigoConvite()"
+          (input)="codigoConvite.set($any($event.target).value)"
+          (keydown.enter)="entrarComCodigo()"
+        />
+        <button
+          bdButton
+          block
+          variant="ghost"
+          [disabled]="entrando() || !podeEntrar()"
+          (click)="entrarComCodigo()"
+        >
+          {{ 'groups.joinButton' | transloco }}
+        </button>
+      </div>
+    }
+  </div>
+</bd-modal>

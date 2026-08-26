@@ -52,6 +52,7 @@
         "diets": "Meal plan",
         "plan": "Plan",
         "goals": "Goals",
+        "groups": "Leagues",
         "profile": "Profile",
         "catalog": "Catalog"
       }
@@ -683,6 +684,69 @@
     "plansOverview": {
       "title": "Your plans stay together here",
       "description": "Use saved plans as a reference for the day and adjust meals when your routine changes."
+    }
+  },
+  "groups": {
+    "title": "Leagues",
+    "subtitle": "Form a league with your friends and compete in the XP ranking.",
+    "empty": "You're not part of any league yet.",
+    "createTitle": "Create league",
+    "createButton": "Create league",
+    "namePlaceholder": "League name",
+    "joinTitle": "Join with a code",
+    "joinButton": "Join",
+    "codePlaceholder": "Invite code",
+    "membersCount": "{{count}} members",
+    "inviteCodeLabel": "Invite code",
+    "copyCode": "Copy code",
+    "leaveButton": "Leave league",
+    "deleteButton": "Delete league",
+    "backToList": "Back to leagues",
+    "globalBadge": "Official Vitality league",
+    "challengeType": {
+      "label": "Ranking cadence",
+      "weekly": "Weekly",
+      "weeklyHint": "Resets every Monday",
+      "monthly": "Monthly",
+      "monthlyHint": "Resets at the start of the month",
+      "all_time": "All-time",
+      "all_timeHint": "No reset, XP keeps piling up",
+      "custom": "Custom",
+      "customHint": "You choose the dates",
+      "startDate": "Start",
+      "endDate": "End"
+    },
+    "leaderboard": {
+      "titleWeekly": "This week's ranking",
+      "titleMonthly": "This month's ranking",
+      "titleAllTime": "Overall ranking",
+      "titleCustom": "Challenge ranking",
+      "periodXp": "Period XP",
+      "totalXp": "Total XP",
+      "level": "Level {{level}}"
+    },
+    "activity": {
+      "empty": "No one in the league has completed a mission yet.",
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "confirmLeave": {
+      "title": "Leave the league?",
+      "description": "You stop showing up on the ranking until you join again with the invite code."
+    },
+    "confirmDelete": {
+      "title": "Delete the league?",
+      "description": "This removes the league and the ranking for every member. It can't be undone."
+    },
+    "toast": {
+      "created": "League created successfully",
+      "joined": "You joined the league",
+      "invalidCode": "Invalid invite code",
+      "left": "You left the league",
+      "deleted": "League deleted",
+      "copied": "Code copied",
+      "loadError": "Couldn't load your leagues right now.",
+      "genericError": "Couldn't complete the action. Please try again."
     }
   },
   "landing": {
