@@ -21,9 +21,9 @@ import {
   LucideCalendar,
   LucideCalendarDays,
   LucideCalendarRange,
-  LucideCrown,
   LucideDynamicIcon,
   LucideFlower2,
+  LucideHeartPulse,
   LucideInfinity,
   LucideLeaf,
   LucidePlus,
@@ -62,7 +62,7 @@ type AbaModal = 'criar' | 'entrar';
     BdInputComponent,
     BdModalComponent,
     LucideArrowRight,
-    LucideCrown,
+    LucideHeartPulse,
     LucideDynamicIcon,
     LucidePlus,
     LucideUsersRound,
@@ -79,8 +79,6 @@ export class GruposPageComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
   private readonly transloco = inject(TranslocoService);
-  /** Regra do sistema (CLAUDE.md, "Stack"): toda subscription de API é
-   * encerrada ao sair do componente — `takeUntil(this.destruido)`. */
   private readonly destruido = new Subject<void>();
 
   protected readonly loading = signal(true);
@@ -97,14 +95,24 @@ export class GruposPageComponent implements OnDestroy {
   protected readonly modalAberto = signal(false);
   protected readonly abaModal = signal<AbaModal>('criar');
 
-  /** Anel de progresso animado por cartão — mesma curva/técnica do pódio do grupo
-   * (`progresso-animado.util.ts`), só que aqui cada anel representa "você" naquela liga. */
   private readonly progressoPorGrupo = new Map<number, WritableSignal<number>>();
 
-  /** Grupo global "Vitality" primeiro, sempre — é o único que ninguém criou de propósito. */
-  protected readonly gruposOrdenados = computed(() =>
+  protected readonly ligasOrdenadas = computed(() =>
     [...this.groups()].sort((a, b) => Number(b.is_global) - Number(a.is_global)),
   );
+
+  protected readonly ligaDestaque = computed(() => this.ligasOrdenadas()[0] ?? null);
+
+  protected readonly outrasLigas = computed(() => {
+    const destaque = this.ligaDestaque();
+    return this.ligasOrdenadas().filter((group) => group.id !== destaque?.id);
+  });
+
+  protected readonly xpEmRitmo = computed(() =>
+    this.groups().reduce((total, group) => total + (group.voce?.xp_periodo ?? 0), 0),
+  );
+
+  protected readonly nivelAtual = computed(() => this.ligaDestaque()?.voce?.nivel ?? 1);
 
   protected readonly opcoesDesafio: OpcaoDesafio[] = [
     {
@@ -218,7 +226,7 @@ export class GruposPageComponent implements OnDestroy {
   }
 
   protected entrarComCodigo(): void {
-    const codigo = this.codigoConvite().trim();
+    const codigo = this.codigoConvite().trim().toUpperCase();
     if (!codigo || this.entrando()) return;
 
     this.entrando.set(true);

@@ -3,13 +3,12 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  type WritableSignal,
   computed,
   inject,
   input,
   signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { BdAvatarComponent, BdButtonComponent, BdCountUpDirective } from 'bandeira-ui';
 import {
@@ -17,6 +16,7 @@ import {
   LucideCheckCheck,
   LucideCopy,
   LucideCrown,
+  LucideHeartPulse,
   LucideLogOut,
   LucideTrash2,
   LucideTrophy,
@@ -25,7 +25,6 @@ import {
 import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, forkJoin, takeUntil } from 'rxjs';
 
-import { AchievementBadgeComponent } from '../../../components/molecules/achievement-badge/achievement-badge.component';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
@@ -36,32 +35,32 @@ import {
 } from '../../../components/molecules/view-mode-toggle/view-mode-toggle.component';
 import { ProgressRingIconComponent } from '../../../components/atoms/progress-ring-icon/progress-ring-icon.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
-import { animarProgresso } from '../../../components/utils/progresso-animado.util';
 import { AuthService } from '../../../core/auth/auth.service';
 import { LanguageService } from '../../../core/i18n/language.service';
+import type { DashboardResumo } from '../../../core/models/dashboard.model';
 import type { Group, GroupActivityItem, GroupRankingEntry } from '../../../core/models/group.model';
+import { DashboardService } from '../../../services/dashboard.service';
 import { GroupService } from '../../../services/group.service';
 
 type ModoVisualizacao = 'ranking' | 'atividade';
-
-const MEDALHAS = ['🥇', '🥈', '🥉'] as const;
 
 @Component({
   selector: 'vtp-grupo-detail',
   standalone: true,
   imports: [
     TranslocoPipe,
+    RouterLink,
     BdButtonComponent,
     BdAvatarComponent,
     BdCountUpDirective,
     LucideCheckCheck,
     LucideCopy,
     LucideCrown,
+    LucideHeartPulse,
     LucideLogOut,
     LucideTrash2,
     LucideTrophy,
     LucideUsersRound,
-    AchievementBadgeComponent,
     BackButtonComponent,
     ConfirmDialogComponent,
     LoadingStateComponent,
@@ -75,6 +74,7 @@ const MEDALHAS = ['🥇', '🥈', '🥉'] as const;
 })
 export class GrupoDetailComponent implements OnInit, OnDestroy {
   private readonly groupService = inject(GroupService);
+  private readonly dashboardService = inject(DashboardService);
   private readonly router = inject(Router);
   private readonly toastr = inject(ToastrService);
   private readonly transloco = inject(TranslocoService);
@@ -95,17 +95,61 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
   private atividadeCarregada = false;
   protected readonly carregandoAtividade = signal(false);
   protected readonly carregandoAtividadeVisivel = gateCarregamento(this.carregandoAtividade);
+  protected readonly resumoDashboard = signal<DashboardResumo | null>(null);
+  protected readonly carregandoMissoes = signal(true);
 
-  protected readonly modoOpcoes: ViewModeOption[] = [
-    { value: 'ranking', label: 'Ranking', icon: LucideTrophy },
-    { value: 'atividade', label: 'Atividade', icon: LucideActivity },
-  ];
+  protected readonly minhaEntrada = computed(() => {
+    const userId = this.auth.currentUser()?.id;
+    return this.ranking().find((entry) => entry.user.id === userId) ?? null;
+  });
 
-  protected readonly temPodio = computed(() => this.ranking().length >= 3);
-  protected readonly top3 = computed(() => this.ranking().slice(0, 3));
-  protected readonly restante = computed(() => this.ranking().slice(3));
+  protected readonly minhaPosicao = computed(() => {
+    const userId = this.auth.currentUser()?.id;
+    const indice = this.ranking().findIndex((entry) => entry.user.id === userId);
+    return indice >= 0 ? indice + 1 : null;
+  });
 
-  private readonly progressoPorUsuario = new Map<number, WritableSignal<number>>();
+  /** Participante imediatamente à frente do usuário no placar atual. */
+  protected readonly rivalAcima = computed(() => {
+    const posicao = this.minhaPosicao();
+    return posicao && posicao > 1 ? this.ranking()[posicao - 2] : null;
+  });
+
+  /** XP necessário para tomar a posição seguinte, sem pressupor metas da API. */
+  protected readonly xpParaUltrapassar = computed(() => {
+    const minhaEntrada = this.minhaEntrada();
+    const rival = this.rivalAcima();
+    if (!minhaEntrada || !rival) return null;
+    return Math.max(0, rival.xp_periodo - minhaEntrada.xp_periodo + 1);
+  });
+
+  protected readonly meuProgresso = computed(
+    () => this.minhaEntrada()?.progresso_percent ?? this.group()?.voce?.progresso_percent ?? 0,
+  );
+
+  protected readonly missoesDiarias = computed(
+    () => this.resumoDashboard()?.progressao.diarias ?? [],
+  );
+
+  protected readonly missoesDiariasConcluidas = computed(
+    () => this.missoesDiarias().filter((missao) => missao.concluida).length,
+  );
+
+  protected readonly modoOpcoes = computed<ViewModeOption[]>(() => {
+    this.language.locale();
+    return [
+      {
+        value: 'ranking',
+        label: this.transloco.translate('groups.detail.rankingTab'),
+        icon: LucideHeartPulse,
+      },
+      {
+        value: 'atividade',
+        label: this.transloco.translate('groups.detail.activityTab'),
+        icon: LucideActivity,
+      },
+    ];
+  });
 
   protected readonly ehDono = computed(
     () => this.group()?.owner_id === this.auth.currentUser()?.id,
@@ -137,29 +181,6 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
 
   protected alterarModo(modo: ModoVisualizacao): void {
     this.modo.set(modo);
-    if (modo === 'atividade' && !this.atividadeCarregada) this.carregarAtividade();
-  }
-
-  protected medalha(posicao: number): string | null {
-    return MEDALHAS[posicao] ?? null;
-  }
-
-  protected progressoDe(userId: number): number {
-    return this.progressoPorUsuario.get(userId)?.() ?? 0;
-  }
-
-  private duracaoPorPosicao(indice: number): number {
-    if (indice === 0) return 1600;
-    if (indice === 1 || indice === 2) return 1300;
-    return 1000;
-  }
-
-  protected primeiroNome(nomeCompleto: string): string {
-    return nomeCompleto.split(' ')[0];
-  }
-
-  protected atrasoLinha(posicao: number): number {
-    return (this.temPodio() ? 900 : 0) + posicao * 200;
   }
 
   protected formatarQuando(iso: string): string {
@@ -262,13 +283,8 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
         next: ({ group, ranking }) => {
           this.group.set(group);
           this.ranking.set(ranking);
-
-          this.progressoPorUsuario.clear();
-          ranking.forEach((entry, indice) => {
-            const sinal = signal(0);
-            this.progressoPorUsuario.set(entry.user.id, sinal);
-            animarProgresso(sinal, entry.progresso_percent, this.duracaoPorPosicao(indice));
-          });
+          this.carregarAtividade();
+          this.carregarMissoes();
         },
         error: () => {
           this.toastr.error(this.transloco.translate('groups.toast.genericError'));
@@ -294,6 +310,20 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
           this.atividadeCarregada = true;
         },
         error: () => this.toastr.error(this.transloco.translate('groups.toast.genericError')),
+      });
+  }
+
+  private carregarMissoes(): void {
+    this.carregandoMissoes.set(true);
+    this.dashboardService
+      .resumo()
+      .pipe(
+        finalize(() => this.carregandoMissoes.set(false)),
+        takeUntil(this.destruido),
+      )
+      .subscribe({
+        next: (resumo) => this.resumoDashboard.set(resumo),
+        error: () => this.resumoDashboard.set(null),
       });
   }
 }

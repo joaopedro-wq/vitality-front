@@ -305,6 +305,36 @@
   }
 }
 
+@utility animate-vitality-breathe {
+  animation: vtp-vitality-breathe 2.8s ease-in-out infinite;
+}
+@keyframes vtp-vitality-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--bd-primary-soft);
+  }
+  50% {
+    transform: scale(1.035);
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+@utility animate-vitality-shimmer {
+  background-image: linear-gradient(90deg, var(--bd-primary), var(--bd-accent), var(--bd-primary));
+  background-size: 200% 100%;
+  animation: vtp-vitality-shimmer 3.6s ease-in-out infinite;
+}
+@keyframes vtp-vitality-shimmer {
+  0%,
+  100% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0 50%;
+  }
+}
+
 @utility cta-glow {
   box-shadow: 0 0 0 6px var(--bd-primary-soft);
 }

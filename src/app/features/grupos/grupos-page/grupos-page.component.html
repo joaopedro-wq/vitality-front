@@ -4,136 +4,343 @@
     [titulo]="'groups.title' | transloco"
     [subtitulo]="'groups.subtitle' | transloco"
   />
-  <button bdButton size="sm" (click)="abrirModal('criar')">
-    <svg lucidePlus size="16" aria-hidden="true"></svg>
-    {{ 'groups.createButton' | transloco }}
-  </button>
+  <div class="flex items-center gap-2 lg:hidden">
+    <button bdButton variant="ghost" size="sm" (click)="abrirModal('entrar')">
+      <svg lucideUsersRound size="15" aria-hidden="true"></svg>{{ 'groups.joinTitle' | transloco }}
+    </button>
+    <button bdButton size="sm" (click)="abrirModal('criar')">
+      <svg lucidePlus size="16" aria-hidden="true"></svg>{{ 'groups.createButton' | transloco }}
+    </button>
+  </div>
 </header>
 
 @if (loadingVisivel()) {
   <vtp-loading-state [titulo]="'groups.title' | transloco" />
-} @else {
-  @if (!groups().length) {
-    <section class="card animate-reveal mt-6 flex flex-col items-center gap-3 p-10 text-center">
-      <svg lucideUsersRound size="28" class="text-primary" aria-hidden="true"></svg>
-      <p class="m-0 text-[13px] text-fg-muted">{{ 'groups.empty' | transloco }}</p>
+} @else if (!groups().length) {
+  <section class="card animate-reveal mt-6 flex flex-col items-center gap-4 p-7 text-center">
+    <span
+      class="animate-vitality-breathe grid size-12 place-items-center rounded-2xl bg-primary-soft text-primary-strong"
+      ><svg lucideHeartPulse size="23" aria-hidden="true"></svg
+    ></span>
+    <div class="max-w-[42ch]">
+      <h2 class="m-0 text-[16px] font-extrabold text-fg">{{ 'groups.empty' | transloco }}</h2>
+      <p class="m-0 mt-1.5 text-[13px] leading-5 text-fg-muted">
+        {{ 'groups.emptyDescription' | transloco }}
+      </p>
+    </div>
+    <div class="flex flex-wrap justify-center gap-2">
       <button bdButton size="sm" (click)="abrirModal('criar')">
-        <svg lucidePlus size="15" aria-hidden="true"></svg>
-        {{ 'groups.createButton' | transloco }}
+        <svg lucidePlus size="15" aria-hidden="true"></svg
+        >{{ 'groups.createButton' | transloco }}</button
+      ><button bdButton variant="ghost" size="sm" (click)="abrirModal('entrar')">
+        {{ 'groups.joinFromEmpty' | transloco }}
       </button>
-    </section>
-  } @else {
-    <div class="mt-6 grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4">
-      @for (group of gruposOrdenados(); track group.id; let indice = $index) {
-        <button
-          type="button"
-          class="card animate-ficha-pop flex flex-col gap-4 border-t-[3px] p-5 text-left transition-transform hover:-translate-y-1"
-          [class]="group.is_global ? 'border-t-accent' : 'border-t-primary'"
-          [style.animation-delay.ms]="indice * 110"
-          (click)="abrirGrupo(group)"
+    </div>
+  </section>
+} @else if (ligaDestaque(); as destaque) {
+  <section
+    class="animate-reveal relative mt-5 overflow-hidden border-0 rounded-3xl bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] shadow-[0_18px_42px_color-mix(in_srgb,var(--bd-primary)_24%,transparent)]"
+  >
+    <div
+      class="pointer-events-none absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:24px_24px]"
+    ></div>
+    <div
+      class="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-primary/25 blur-3xl"
+    ></div>
+    <div
+      class="relative grid gap-6 px-5 py-6 sm:px-7 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-center"
+    >
+      <div>
+        <p
+          class="m-0 flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.15em] text-[var(--sidebar-fg-muted)]"
         >
-          <div class="flex items-center gap-3">
+          <span class="inline-block size-1.5 rounded-full bg-accent"></span
+          >{{ 'groups.list.communityLabel' | transloco }}
+        </p>
+        <h2
+          class="m-0 mt-3 max-w-[23ch] text-[24px] font-black leading-tight tracking-tight text-[var(--sidebar-fg)]"
+        >
+          {{ 'groups.list.heroTitle' | transloco }}
+        </h2>
+        <p class="m-0 mt-2 max-w-[58ch] text-[12px] leading-relaxed text-[var(--sidebar-fg-muted)]">
+          {{ 'groups.list.heroDescription' | transloco }}
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-3 divide-x divide-white/10 rounded-2xl border border-white/10 bg-white/[0.07] px-3 py-4 text-center"
+      >
+        <div>
+          <b class="block text-[23px] font-black tabular-nums text-[var(--sidebar-fg)]">{{
+            groups().length
+          }}</b
+          ><span
+            class="mt-1 block text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--sidebar-fg-muted)]"
+            >{{ 'groups.list.leaguesStat' | transloco }}</span
+          >
+        </div>
+        <div>
+          <b class="block text-[23px] font-black tabular-nums text-[var(--sidebar-fg)]"
+            ><span [bdCountUp]="xpEmRitmo()" [duration]="900"></span></b
+          ><span
+            class="mt-1 block text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--sidebar-fg-muted)]"
+            >{{ 'groups.list.rhythmXpStat' | transloco }}</span
+          >
+        </div>
+        <div>
+          <b class="block text-[23px] font-black tabular-nums text-[var(--sidebar-fg)]">{{
+            nivelAtual()
+          }}</b
+          ><span
+            class="mt-1 block text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--sidebar-fg-muted)]"
+            >{{ 'groups.list.levelStat' | transloco }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div
+    class="card animate-reveal mt-5 grid divide-y divide-border lg:grid-cols-[minmax(0,1fr)_292px] lg:divide-x lg:divide-y-0"
+    style="animation-delay: 40ms"
+  >
+    <div class="min-w-0 p-5 lg:p-7">
+      <div class="mb-3 flex items-end justify-between gap-3">
+        <div>
+          <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-primary">
+            {{ 'groups.list.focusLabel' | transloco }}
+          </p>
+          <h2 class="m-0 mt-1 text-[18px] font-extrabold text-fg">
+            {{ 'groups.list.focusTitle' | transloco }}
+          </h2>
+        </div>
+        <span
+          class="rounded-full bg-surface-hover px-2.5 py-1 text-[10px] font-bold text-fg-muted"
+          >{{ 'groups.challengeType.' + destaque.challenge_type | transloco }}</span
+        >
+      </div>
+
+      <button
+        type="button"
+        class="card animate-reveal group w-full overflow-hidden p-0 text-left transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        style="animation-delay: 80ms"
+        (click)="abrirGrupo(destaque)"
+      >
+        <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+          <div class="flex min-w-0 flex-1 items-center gap-4">
             <vtp-progress-ring-icon
-              [progresso]="progressoDe(group.id)"
-              [corVar]="group.is_global ? '--bd-accent' : '--bd-primary'"
+              [progresso]="progressoDe(destaque.id)"
+              [corVar]="destaque.is_global ? '--bd-accent' : '--bd-primary'"
               tamanho="md"
+              ativo
             >
               <span
-                class="grid size-9 place-items-center rounded-full"
+                class="animate-vitality-breathe grid size-9 place-items-center rounded-full"
                 [class]="
-                  group.is_global
+                  destaque.is_global
                     ? 'bg-accent-soft text-accent'
                     : 'bg-primary-soft text-primary-strong'
                 "
-              >
-                <svg
-                  [lucideIcon]="iconeCanteiro(group.voce?.nivel ?? 1)"
+                ><svg
+                  [lucideIcon]="iconeCanteiro(destaque.voce?.nivel ?? 1)"
                   size="17"
                   aria-hidden="true"
-                ></svg>
-              </span>
+                ></svg
+              ></span>
             </vtp-progress-ring-icon>
-
             <div class="min-w-0 flex-1">
-              <h3
-                class="m-0 flex items-center gap-1.5 truncate text-[14.5px] font-extrabold text-fg"
-              >
-                {{ group.name }}
-                @if (group.is_global) {
-                  <svg lucideCrown size="13" class="shrink-0 text-accent" aria-hidden="true"></svg>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="m-0 truncate text-[17px] font-extrabold text-fg">
+                  {{ destaque.name }}
+                </h3>
+                @if (destaque.is_global) {
+                  <span
+                    class="rounded-full bg-accent-soft px-2 py-0.5 text-[9px] font-extrabold text-accent"
+                    >{{ 'groups.globalBadge' | transloco }}</span
+                  >
                 }
-              </h3>
-              <p class="m-0 text-[11px] text-fg-muted">
-                {{ 'groups.membersCount' | transloco: { count: group.members_count ?? 1 } }}
+              </div>
+              <p class="m-0 mt-1 text-[11px] text-fg-muted">
+                {{ 'groups.list.featuredDescription' | transloco }}
               </p>
             </div>
-
-            <span
-              class="shrink-0 rounded-full border border-border bg-surface px-2.5 py-1 text-[10px] font-bold text-fg-muted"
-            >
-              {{ 'groups.challengeType.' + group.challenge_type | transloco }}
-            </span>
           </div>
-
-          <div class="flex items-center gap-2">
-            <span
-              class="shrink-0 rounded-full bg-accent-soft px-2 py-0.5 text-[10.5px] font-bold text-accent"
-            >
-              {{ 'groups.leaderboard.level' | transloco: { level: group.voce?.nivel ?? 1 } }}
-            </span>
-            <span class="h-1 flex-1 overflow-hidden rounded-full bg-border">
-              <span
-                class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
-                [style.width.%]="group.voce?.progresso_percent ?? 0"
-              ></span>
-            </span>
+          <div class="flex items-center justify-between gap-4 sm:justify-end">
+            <span class="flex flex-col items-end"
+              ><b class="text-[22px] font-black tabular-nums text-primary-strong"
+                ><span [bdCountUp]="destaque.voce?.xp_periodo ?? 0" [duration]="900"></span>
+                <small class="text-[10px]">XP</small></b
+              ><span class="text-[10px] text-fg-muted">{{
+                'groups.list.yourRhythm' | transloco
+              }}</span></span
+            ><span
+              class="grid size-9 shrink-0 place-items-center rounded-full bg-surface-hover text-primary-strong transition-transform group-hover:translate-x-0.5"
+              ><svg lucideArrowRight size="17" aria-hidden="true"></svg
+            ></span>
           </div>
-
-          @if (group.members_preview?.length) {
-            <div class="flex items-center -space-x-2.5">
-              @for (membro of group.members_preview; track membro.id) {
-                <bd-avatar
-                  [name]="membro.name"
-                  [src]="membro.avatar ?? ''"
-                  size="sm"
-                  class="rounded-full ring-2 ring-surface"
-                />
-              }
-              @if ((group.members_count ?? 0) > (group.members_preview?.length ?? 0)) {
-                <span
-                  class="z-10 grid size-8 place-items-center rounded-full bg-surface-hover text-[10.5px] font-bold text-fg-muted ring-2 ring-surface"
-                >
-                  +{{ (group.members_count ?? 0) - (group.members_preview?.length ?? 0) }}
-                </span>
-              }
-            </div>
-          }
-
-          <div class="mt-auto flex items-baseline gap-1.5 border-t border-border pt-3">
-            <b class="tabular-nums text-[26px] font-black text-primary-strong"
-              ><span [bdCountUp]="group.voce?.xp_periodo ?? 0" [duration]="900"></span
-            ></b>
-            <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
-              'groups.leaderboard.periodXp' | transloco
-            }}</span>
-            <svg
-              lucideArrowRight
-              size="15"
-              class="ml-auto shrink-0 text-fg-subtle"
+        </div>
+        <div
+          class="flex flex-col gap-3 border-t border-border bg-surface-hover/65 px-5 py-3 sm:flex-row sm:items-center sm:gap-4"
+        >
+          <span class="min-w-0 flex-1"
+            ><span class="flex items-center justify-between text-[10px] font-bold text-fg-muted"
+              ><span>{{
+                'groups.leaderboard.level' | transloco: { level: destaque.voce?.nivel ?? 1 }
+              }}</span
+              ><span class="tabular-nums text-primary-strong"
+                >{{ destaque.voce?.progresso_percent ?? 0 }}%</span
+              ></span
+            ><span class="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-border"
+              ><span
+                class="animate-vitality-shimmer block h-full rounded-full transition-[width] duration-700 ease-out"
+                [style.width.%]="destaque.voce?.progresso_percent ?? 0"
+              ></span></span></span
+          ><span
+            class="border-t border-border pt-3 text-[10px] font-semibold text-fg-muted sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0"
+            ><svg
+              lucideUsersRound
+              size="13"
+              class="mr-1 inline-block align-middle"
               aria-hidden="true"
-            ></svg>
+            ></svg
+            >{{ 'groups.membersCount' | transloco: { count: destaque.members_count ?? 1 } }}</span
+          >
+        </div>
+      </button>
+
+      @if (outrasLigas().length) {
+        <section class="mt-7">
+          <div class="mb-3 flex items-end justify-between gap-3">
+            <div>
+              <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-fg-muted">
+                {{ 'groups.list.otherLabel' | transloco }}
+              </p>
+              <h2 class="m-0 mt-1 text-[18px] font-extrabold text-fg">
+                {{ 'groups.otherLeagues' | transloco }}
+              </h2>
+            </div>
+            <span class="text-[11px] font-bold text-fg-muted"
+              >{{ outrasLigas().length }} {{ 'groups.list.leaguesStat' | transloco }}</span
+            >
           </div>
-        </button>
+          <div class="grid gap-4 sm:grid-cols-2">
+            @for (group of outrasLigas(); track group.id; let indice = $index) {
+              <button
+                type="button"
+                class="card animate-ficha-pop group flex min-w-0 flex-col p-4 text-left transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                [style.animation-delay.ms]="indice * 80 + 180"
+                (click)="abrirGrupo(group)"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <span
+                    class="grid size-10 place-items-center rounded-xl"
+                    [class]="
+                      group.is_global
+                        ? 'bg-accent-soft text-accent'
+                        : 'bg-primary-soft text-primary-strong'
+                    "
+                    ><svg
+                      [lucideIcon]="iconeCanteiro(group.voce?.nivel ?? 1)"
+                      size="19"
+                      aria-hidden="true"
+                    ></svg></span
+                  ><span
+                    class="rounded-full bg-surface-hover px-2 py-1 text-[9px] font-bold text-fg-muted"
+                    >{{ 'groups.challengeType.' + group.challenge_type | transloco }}</span
+                  >
+                </div>
+                <h3 class="m-0 mt-4 truncate text-[15px] font-extrabold text-fg">
+                  {{ group.name }}
+                </h3>
+                <p class="m-0 mt-1 text-[11px] text-fg-muted">
+                  {{ 'groups.membersCount' | transloco: { count: group.members_count ?? 1 } }} ·
+                  {{ 'groups.challengeType.' + group.challenge_type + 'Hint' | transloco }}
+                </p>
+                <div class="mt-4 flex items-end justify-between gap-3">
+                  <span
+                    ><span
+                      class="block text-[10px] font-bold uppercase tracking-[0.1em] text-fg-subtle"
+                      >{{ 'groups.list.yourRhythm' | transloco }}</span
+                    ><b class="mt-1 block text-[18px] font-black tabular-nums text-primary-strong"
+                      ><span [bdCountUp]="group.voce?.xp_periodo ?? 0" [duration]="900"></span>
+                      <small class="text-[10px]">XP</small></b
+                    ></span
+                  >
+                  @if (group.members_preview?.length) {
+                    <span class="flex -space-x-2">
+                      @for (membro of group.members_preview; track membro.id) {
+                        <bd-avatar
+                          [name]="membro.name"
+                          [src]="membro.avatar ?? ''"
+                          size="sm"
+                          class="rounded-full ring-2 ring-surface"
+                        />
+                      }
+                    </span>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        </section>
       }
     </div>
-  }
+
+    <aside class="flex flex-col gap-5 p-5 lg:p-7">
+      <section class="card animate-reveal p-5" style="animation-delay: 160ms">
+        <div class="flex items-center gap-2">
+          <span
+            class="animate-vitality-breathe grid size-8 place-items-center rounded-xl bg-primary-soft text-primary-strong"
+            ><svg lucidePlus size="17" aria-hidden="true"></svg
+          ></span>
+          <h2 class="m-0 text-[15px] font-extrabold text-fg">
+            {{ 'groups.list.createAsideTitle' | transloco }}
+          </h2>
+        </div>
+        <p class="m-0 mt-3 text-[11px] leading-relaxed text-fg-muted">
+          {{ 'groups.list.createAsideDescription' | transloco }}
+        </p>
+        <button bdButton block size="sm" class="mt-4" (click)="abrirModal('criar')">
+          {{ 'groups.list.createAsideAction' | transloco }}
+        </button>
+      </section>
+      <section
+        class="animate-reveal rounded-[20px] border border-dashed border-border-strong bg-surface/50 p-5"
+        style="animation-delay: 240ms"
+      >
+        <div class="flex items-center gap-2">
+          <span class="grid size-8 place-items-center rounded-xl bg-accent-soft text-accent"
+            ><svg lucideUsersRound size="17" aria-hidden="true"></svg
+          ></span>
+          <h2 class="m-0 text-[15px] font-extrabold text-fg">
+            {{ 'groups.list.joinAsideTitle' | transloco }}
+          </h2>
+        </div>
+        <p class="m-0 mt-3 text-[11px] leading-relaxed text-fg-muted">
+          {{ 'groups.list.joinAsideDescription' | transloco }}
+        </p>
+        <button
+          bdButton
+          variant="ghost"
+          block
+          size="sm"
+          class="mt-4"
+          (click)="abrirModal('entrar')"
+        >
+          {{ 'groups.list.joinAsideAction' | transloco }}
+        </button>
+      </section>
+      <p class="m-0 px-1 text-[10.5px] leading-relaxed text-fg-subtle">
+        {{ 'groups.list.asideFootnote' | transloco }}
+      </p>
+    </aside>
+  </div>
 }
 
 <bd-modal
   [open]="modalAberto()"
   (openChange)="onModalOpenChange($any($event))"
-  [title]="'groups.createTitle' | transloco"
-  [ariaLabel]="'groups.createTitle' | transloco"
+  [title]="(abaModal() === 'criar' ? 'groups.createTitle' : 'groups.joinTitle') | transloco"
+  [ariaLabel]="(abaModal() === 'criar' ? 'groups.createTitle' : 'groups.joinTitle') | transloco"
   [closeLabel]="'common.actions.close' | transloco"
 >
   <div class="flex flex-col gap-4 px-1 pb-1">
@@ -159,94 +366,115 @@
         {{ 'groups.joinTitle' | transloco }}
       </button>
     </div>
-
     @if (abaModal() === 'criar') {
       <div class="flex flex-col gap-4">
-        <input
-          bdInput
-          type="text"
-          maxlength="60"
-          [placeholder]="'groups.namePlaceholder' | transloco"
-          [value]="nomeNovoGrupo()"
-          (input)="nomeNovoGrupo.set($any($event.target).value)"
-        />
-
         <div>
-          <p class="m-0 mb-2 text-[10px] font-extrabold uppercase tracking-wide text-fg-subtle">
-            {{ 'groups.challengeType.label' | transloco }}
-          </p>
-          <div class="flex flex-wrap gap-2">
+          <label
+            for="league-name"
+            class="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wide text-fg-subtle"
+            >{{ 'groups.form.nameLabel' | transloco }}</label
+          ><input
+            id="league-name"
+            bdInput
+            type="text"
+            maxlength="60"
+            [placeholder]="'groups.namePlaceholder' | transloco"
+            [value]="nomeNovoGrupo()"
+            (input)="nomeNovoGrupo.set($any($event.target).value)"
+          />
+        </div>
+        <div>
+          <div class="flex items-baseline justify-between gap-3">
+            <p class="m-0 text-[11px] font-extrabold uppercase tracking-wide text-fg-subtle">
+              {{ 'groups.challengeType.label' | transloco }}
+            </p>
+            <span class="text-[10.5px] text-fg-subtle">{{
+              'groups.form.cadenceHint' | transloco
+            }}</span>
+          </div>
+          <div class="mt-2 grid grid-cols-2 gap-2">
             @for (opcao of opcoesDesafio; track opcao.value) {
               <button
                 type="button"
-                class="inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-bold transition-[box-shadow,border-color,background-color,transform] duration-150 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-95"
+                class="flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition-[border-color,background-color,box-shadow]"
                 [class]="
                   tipoDesafio() === opcao.value
-                    ? 'border-primary bg-primary-soft text-primary-strong scale-[1.03] [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
-                    : 'border-border bg-surface text-fg hover:border-border-strong'
+                    ? 'border-primary bg-primary-soft text-primary-strong [box-shadow:0_0_0_2px_var(--bd-primary-soft)]'
+                    : 'border-border bg-surface text-fg hover:border-border-strong hover:bg-surface-hover'
                 "
-                [title]="opcao.hint | transloco"
+                [attr.aria-pressed]="tipoDesafio() === opcao.value"
                 (click)="escolherTipoDesafio(opcao.value)"
               >
-                <svg [lucideIcon]="opcao.icone" size="13" aria-hidden="true"></svg>
-                {{ opcao.label | transloco }}
+                <svg [lucideIcon]="opcao.icone" size="14" class="shrink-0" aria-hidden="true"></svg
+                ><span class="min-w-0"
+                  ><b class="block text-[11.5px]">{{ opcao.label | transloco }}</b
+                  ><span class="mt-0.5 block truncate text-[10px] text-fg-muted">{{
+                    opcao.hint | transloco
+                  }}</span></span
+                >
               </button>
             }
           </div>
         </div>
-
         @if (tipoDesafio() === 'custom') {
           <div class="grid grid-cols-2 gap-2">
-            <label class="flex flex-col gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
+            <label class="flex flex-col gap-1.5"
+              ><span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
                 'groups.challengeType.startDate' | transloco
-              }}</span>
-              <input
+              }}</span
+              ><input
                 bdInput
                 type="date"
                 [value]="dataInicio()"
-                (input)="dataInicio.set($any($event.target).value)"
-              />
-            </label>
-            <label class="flex flex-col gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
+                (input)="dataInicio.set($any($event.target).value)" /></label
+            ><label class="flex flex-col gap-1.5"
+              ><span class="text-[10px] font-bold uppercase tracking-wide text-fg-subtle">{{
                 'groups.challengeType.endDate' | transloco
-              }}</span>
-              <input
+              }}</span
+              ><input
                 bdInput
                 type="date"
                 [value]="dataFim()"
                 (input)="dataFim.set($any($event.target).value)"
-              />
-            </label>
+            /></label>
           </div>
         }
-
         <button bdButton block [disabled]="criando() || !podeCriar()" (click)="criarGrupo()">
-          <svg lucidePlus size="15" aria-hidden="true"></svg>
-          {{ 'groups.createButton' | transloco }}
+          <svg lucidePlus size="15" aria-hidden="true"></svg
+          >{{ 'groups.form.startChallenge' | transloco }}
         </button>
       </div>
     } @else {
       <div class="flex flex-col gap-4">
-        <input
-          bdInput
-          type="text"
-          maxlength="8"
-          class="text-center uppercase tracking-widest"
-          [placeholder]="'groups.codePlaceholder' | transloco"
-          [value]="codigoConvite()"
-          (input)="codigoConvite.set($any($event.target).value)"
-          (keydown.enter)="entrarComCodigo()"
-        />
-        <button
-          bdButton
-          block
-          variant="ghost"
-          [disabled]="entrando() || !podeEntrar()"
-          (click)="entrarComCodigo()"
-        >
-          {{ 'groups.joinButton' | transloco }}
+        <p class="m-0 text-[12.5px] leading-5 text-fg-muted">
+          {{ 'groups.joinDescription' | transloco }}
+        </p>
+        <div>
+          <label
+            for="invite-code"
+            class="mb-1.5 block text-[11px] font-extrabold uppercase tracking-wide text-fg-subtle"
+            >{{ 'groups.joinCodeLabel' | transloco }}</label
+          ><input
+            id="invite-code"
+            bdInput
+            type="text"
+            maxlength="8"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            class="text-center font-mono uppercase tracking-[0.28em]"
+            [placeholder]="'groups.codePlaceholder' | transloco"
+            [value]="codigoConvite()"
+            (input)="codigoConvite.set($any($event.target).value.toUpperCase())"
+            (keydown.enter)="entrarComCodigo()"
+          />
+          <p class="m-0 mt-1.5 text-center text-[11px] text-fg-subtle">
+            {{ 'groups.joinCodeHint' | transloco }}
+          </p>
+        </div>
+        <button bdButton block [disabled]="entrando() || !podeEntrar()" (click)="entrarComCodigo()">
+          {{ 'groups.joinButton' | transloco
+          }}<svg lucideArrowRight size="15" aria-hidden="true"></svg>
         </button>
       </div>
     }

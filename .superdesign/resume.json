@@ -67,6 +67,95 @@
         }
       },
       "updatedAt": "2026-08-24T23:06:27-03:00"
+    },
+    "ligas-campeonato-prototipo": {
+      "targetKind": "prototype",
+      "projectId": "71d25d2b-f535-4455-9c1b-981969f83208",
+      "baselineDraftId": "5e80e2ef-e2b2-4665-a1eb-b47a332451bc",
+      "activeDraftId": "5e80e2ef-e2b2-4665-a1eb-b47a332451bc",
+      "currentVersion": 2,
+      "visualDirection": "Liga Vitality: rotina saudável compartilhada, XP e posição como incentivo discreto, com foco em consistência, plano alimentar e movimentos da comunidade.",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/features/grupos/grupo-detail/grupo-detail.component.ts",
+        "src/app/features/grupos/grupo-detail/grupo-detail.component.html",
+        "src/app/core/models/group.model.ts"
+      ],
+      "drafts": {
+        "5e80e2ef-e2b2-4665-a1eb-b47a332451bc": {
+          "title": "Ligas — Campeonato (Protótipo)",
+          "currentVersion": 2
+        }
+      },
+      "updatedAt": "2026-08-26T22:59:35-03:00"
+    },
+    "ligas-lista-viva-prototipo": {
+      "targetKind": "prototype",
+      "projectId": "71d25d2b-f535-4455-9c1b-981969f83208",
+      "baselineDraftId": "7fc39266-b62e-4814-9e9d-376398cc3e14",
+      "activeDraftId": "7fc39266-b62e-4814-9e9d-376398cc3e14",
+      "currentVersion": 1,
+      "visualDirection": "Lista Liga Viva: entrada acolhedora, contexto de rotina compartilhada, liga em destaque, comunidades compactas e ações de criar ou entrar.",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/styles.scss",
+        "src/app/features/grupos/grupos-page/grupos-page.component.ts",
+        "src/app/features/grupos/grupos-page/grupos-page.component.html",
+        "src/app/core/models/group.model.ts"
+      ],
+      "drafts": {
+        "7fc39266-b62e-4814-9e9d-376398cc3e14": {
+          "title": "Ligas — Lista Viva (Protótipo)",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-08-26T23:59:00-03:00"
+    },
+    "ligas-lista-e-formulario": {
+      "targetKind": "existing-ui",
+      "projectId": "71d25d2b-f535-4455-9c1b-981969f83208",
+      "baselineDraftId": "c00121f5-c334-4d26-b0f9-8e2c0f7d4190",
+      "activeDraftId": "c00121f5-c334-4d26-b0f9-8e2c0f7d4190",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        ".superdesign/init/theme.md",
+        "src/app/core/layout/app-shell/app-shell.component.html",
+        "src/app/core/layout/app-shell/app-shell.component.scss",
+        "src/app/features/grupos/grupos-page/grupos-page.component.ts",
+        "src/app/features/grupos/grupos-page/grupos-page.component.html",
+        "src/app/components/molecules/page-title/page-title.component.html",
+        "src/app/components/atoms/progress-ring-icon/progress-ring-icon.component.ts",
+        "src/app/components/atoms/progress-ring-icon/progress-ring-icon.component.html"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "ebc983d89acf469f779ddcb9a2f3b55c56e0ff325194f8d631c01b69aba986de",
+        ".superdesign/init/theme.md": "04b05976b4052031a8a71d4da107a03d901df1733f2ffd5c6d7e0249d8dd0aa2",
+        "src/app/core/layout/app-shell/app-shell.component.html": "d3148e55b22f02ed59fa6b606e8b44dd3921e7edceffa075d8e07a6ab1f294d4",
+        "src/app/core/layout/app-shell/app-shell.component.scss": "def413fef2d85e6b7a76ff20821c69ce8354f98f15a384ff399249d011a85866",
+        "src/app/features/grupos/grupos-page/grupos-page.component.ts": "7031a1acca78a23118c59b6e4340f2aa3375d3f9be166e8965a7448de27177b5",
+        "src/app/features/grupos/grupos-page/grupos-page.component.html": "1ea92a87ae93e8269db79f05a1975f92ce1bad2ea47375cee32db59d12154dbc",
+        "src/app/components/molecules/page-title/page-title.component.html": "e3533c9cf04f066cb13473251d1030cf96d1db57e879a40cedd1290a3b11f6d0",
+        "src/app/components/atoms/progress-ring-icon/progress-ring-icon.component.ts": "3abe9647b80ca20cd8b81caf0befd06196127f184865ae473c8fdd5486bee84a",
+        "src/app/components/atoms/progress-ring-icon/progress-ring-icon.component.html": "d9ee89fd402fee4bd76b89604a20131ac47d54f0eb98fc3d2cca50603b9481f4"
+      },
+      "referenceIds": ["public-favicon.svg"],
+      "brandAssets": {
+        "logo": {
+          "assetKey": "public-favicon.svg",
+          "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/projects/71d25d2b-f535-4455-9c1b-981969f83208/brand-assets/public-favicon.svg/favicon.svg",
+          "sourcePath": "public/favicon.svg"
+        }
+      },
+      "components": [],
+      "drafts": {
+        "c00121f5-c334-4d26-b0f9-8e2c0f7d4190": {
+          "title": "Ligas — interface atual",
+          "visualDirection": "Reprodução fiel da lista de ligas e do modal de criar ou entrar",
+          "currentVersion": 1
+        }
+      },
+      "updatedAt": "2026-08-26T18:14:10-03:00"
     }
   }
 }

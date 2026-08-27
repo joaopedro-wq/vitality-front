@@ -18,9 +18,7 @@
       </button>
 
       @if (ehGlobal()) {
-        <span
-          class="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[11.5px] font-bold text-accent"
-        >
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1.5 text-[11.5px] font-bold text-accent">
           <svg lucideCrown size="13" aria-hidden="true"></svg>
           {{ 'groups.globalBadge' | transloco }}
         </span>
@@ -38,242 +36,188 @@
     </div>
   </header>
 
-  <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
-    <h2 class="m-0 text-[14px] font-bold text-fg">{{ tituloRanking() | transloco }}</h2>
-    <vtp-view-mode-toggle
-      [options]="modoOpcoes"
-      [value]="modo()"
-      (valueChange)="alterarModo($any($event))"
-    />
-  </div>
+  <section class="animate-reveal relative mt-5 overflow-hidden rounded-3xl bg-[var(--sidebar-bg)] text-[var(--sidebar-fg)] shadow-[0_18px_42px_color-mix(in_srgb,var(--bd-primary)_24%,transparent)]">
+    <div class="pointer-events-none absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+    <div class="pointer-events-none absolute -right-20 -top-20 size-72 rounded-full bg-primary/25 blur-3xl"></div>
 
-  @if (modo() === 'ranking') {
-    <section class="card animate-reveal mt-3 flex flex-col gap-6 p-6">
-      @if (temPodio()) {
-        <div class="mx-auto grid w-full max-w-[560px] grid-cols-3 items-end gap-3">
-          <!-- 2º lugar -->
-          <div
-            class="animate-reveal flex flex-col items-center gap-2"
-            style="animation-delay: 300ms"
-          >
-            <vtp-progress-ring-icon [progresso]="progressoDe(top3()[1].user.id)" tamanho="md">
-              <bd-avatar
-                [name]="top3()[1].user.name"
-                [src]="top3()[1].user.avatar ?? ''"
-                size="md"
-              />
-            </vtp-progress-ring-icon>
-            <span class="flex items-center gap-1 text-[13px] font-bold text-fg">
-              {{ primeiroNome(top3()[1].user.name) }}
-              @if (top3()[1].user.id === auth.currentUser()?.id) {
-                <span class="text-primary">· você</span>
-              }
-            </span>
-            <b class="text-[19px] font-black tabular-nums"
-              ><span [bdCountUp]="top3()[1].xp_periodo" [duration]="1300"></span
-            ></b>
-            <div
-              class="animate-podium-rise flex h-[84px] w-full items-center justify-center rounded-t-2xl border border-border-strong bg-primary-soft text-[26px] font-black text-primary-strong"
-              style="animation-delay: 300ms"
-            >
-              2
-            </div>
-          </div>
-
-          <!-- 1º lugar -->
-          <div
-            class="animate-reveal flex flex-col items-center gap-2"
-            style="animation-delay: 600ms"
-          >
-            <svg lucideCrown size="22" class="text-accent" aria-hidden="true"></svg>
-            <vtp-progress-ring-icon [progresso]="progressoDe(top3()[0].user.id)" tamanho="lg">
-              <bd-avatar
-                [name]="top3()[0].user.name"
-                [src]="top3()[0].user.avatar ?? ''"
-                size="lg"
-              />
-            </vtp-progress-ring-icon>
-            <span class="flex items-center gap-1 text-[13.5px] font-bold text-fg">
-              {{ primeiroNome(top3()[0].user.name) }}
-              @if (top3()[0].user.id === auth.currentUser()?.id) {
-                <span class="text-primary">· você</span>
-              }
-            </span>
-            <b class="text-[26px] font-black tabular-nums text-primary-strong"
-              ><span [bdCountUp]="top3()[0].xp_periodo" [duration]="1600"></span
-            ></b>
-            <div
-              class="animate-podium-rise flex h-28 w-full items-center justify-center rounded-t-2xl border border-accent bg-accent-soft text-[30px] font-black text-accent"
-              style="animation-delay: 600ms"
-            >
-              1
-            </div>
-          </div>
-
-          <!-- 3º lugar -->
-          <div class="animate-reveal flex flex-col items-center gap-2">
-            <vtp-progress-ring-icon [progresso]="progressoDe(top3()[2].user.id)" tamanho="md">
-              <bd-avatar
-                [name]="top3()[2].user.name"
-                [src]="top3()[2].user.avatar ?? ''"
-                size="sm"
-              />
-            </vtp-progress-ring-icon>
-            <span class="flex items-center gap-1 text-[13px] font-bold text-fg">
-              {{ primeiroNome(top3()[2].user.name) }}
-              @if (top3()[2].user.id === auth.currentUser()?.id) {
-                <span class="text-primary">· você</span>
-              }
-            </span>
-            <b class="text-[19px] font-black tabular-nums text-fat"
-              ><span [bdCountUp]="top3()[2].xp_periodo" [duration]="1300"></span
-            ></b>
-            <div
-              class="animate-podium-rise flex h-16 w-full items-center justify-center rounded-t-2xl border border-border-strong bg-fat/15 text-[24px] font-black text-fat"
-            >
-              3
-            </div>
+    <div class="relative px-5 py-5 sm:px-7 sm:py-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex min-w-0 items-center gap-3">
+          <span class="animate-vitality-breathe grid size-12 shrink-0 place-items-center rounded-2xl bg-primary text-primary-contrast shadow-lg ring-1 ring-white/20">
+            <svg lucideHeartPulse size="23" aria-hidden="true"></svg>
+          </span>
+          <div class="min-w-0">
+            <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.16em] text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.seasonLive' | transloco }}</p>
+            <h2 class="m-0 mt-1 truncate text-[21px] font-black tracking-tight text-[var(--sidebar-fg)]">{{ tituloRanking() | transloco }}</h2>
+            <p class="m-0 mt-1 text-[11.5px] text-[var(--sidebar-fg-muted)]">
+              {{ 'groups.challengeType.' + group.challenge_type | transloco }}
+              · {{ 'groups.membersCount' | transloco: { count: group.members_count ?? 1 } }}
+            </p>
           </div>
         </div>
-      }
 
-      <ul class="m-0 flex list-none flex-col gap-2 p-0">
-        @for (
-          entry of temPodio() ? restante() : ranking();
-          track entry.user.id;
-          let posicao = $index
-        ) {
-          <li
-            class="animate-reveal flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3"
-            [style.animation-delay.ms]="atrasoLinha(posicao)"
-          >
-            <span class="grid w-7 place-items-center text-[13px] font-bold text-fg-muted">
-              @if (!temPodio() && medalha(posicao); as medalha) {
-                <vtp-achievement-badge
-                  [icone]="medalha"
-                  [titulo]="'#' + (posicao + 1)"
-                  conquistado
-                />
-              } @else {
-                {{ temPodio() ? posicao + 4 : posicao + 1 }}
-              }
-            </span>
-
-            <vtp-progress-ring-icon [progresso]="progressoDe(entry.user.id)" tamanho="sm">
-              <bd-avatar [name]="entry.user.name" [src]="entry.user.avatar ?? ''" size="sm" />
-            </vtp-progress-ring-icon>
-
-            <span class="flex min-w-0 flex-1 flex-col gap-1">
-              <span class="flex items-center gap-1.5">
-                <b class="truncate text-[13.5px] font-bold text-fg">{{ entry.user.name }}</b>
-                @if (entry.user.id === auth.currentUser()?.id) {
-                  <span class="text-[11px] font-bold text-primary">· você</span>
-                }
-                @if (entry.user.id === group.owner_id) {
-                  <svg lucideCrown size="13" class="shrink-0 text-accent" aria-hidden="true"></svg>
-                }
-              </span>
-              <span class="flex items-center gap-2">
-                <span
-                  class="inline-flex items-center rounded-full bg-accent-soft px-2 py-0.5 text-[10.5px] font-bold text-accent"
-                >
-                  {{ 'groups.leaderboard.level' | transloco: { level: entry.nivel } }}
-                </span>
-                <span class="h-1 flex-1 max-w-[120px] overflow-hidden rounded-full bg-border">
-                  <span
-                    class="block h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
-                    [style.width.%]="entry.progresso_percent"
-                  ></span>
-                </span>
-              </span>
-            </span>
-
-            <span class="flex flex-col items-end">
-              <b class="text-[15px] font-extrabold tabular-nums text-primary-strong"
-                ><span [bdCountUp]="entry.xp_periodo" [duration]="1000"></span
-              ></b>
-              <span class="text-[10.5px] text-fg-muted">{{
-                'groups.leaderboard.periodXp' | transloco
-              }}</span>
-              <span class="text-[10.5px] tabular-nums text-fg-subtle"
-                >{{ 'groups.leaderboard.totalXp' | transloco }}: {{ entry.xp_total }}</span
-              >
-            </span>
-          </li>
+        @if (ehGlobal()) {
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10.5px] font-bold text-[var(--sidebar-fg)]">
+            <svg lucideCrown size="12" aria-hidden="true"></svg>
+            {{ 'groups.globalBadge' | transloco }}
+          </span>
         }
-      </ul>
-    </section>
-  } @else {
-    <section class="card animate-reveal mt-3 flex flex-col gap-1 p-6">
-      @if (carregandoAtividadeVisivel()) {
-        <vtp-loading-state [titulo]="'groups.title' | transloco" tamanho="sm" />
-      } @else if (!atividade().length) {
-        <p class="m-0 text-[13px] text-fg-muted">{{ 'groups.activity.empty' | transloco }}</p>
-      } @else {
-        <ul class="m-0 flex list-none flex-col p-0">
-          @for (item of atividade(); track $index; let posicao = $index) {
-            <li
-              class="animate-reveal flex items-center gap-3 border-b border-border py-3 last:border-b-0"
-              [style.animation-delay.ms]="posicao * 130"
-            >
-              <span
-                class="grid size-8 shrink-0 place-items-center rounded-full"
-                [class]="
-                  item.marco ? 'bg-accent-soft text-accent' : 'bg-surface-hover text-fg-muted'
-                "
-              >
-                @if (item.marco) {
-                  <svg lucideTrophy size="15" aria-hidden="true"></svg>
-                } @else {
-                  <svg lucideCheckCheck size="15" aria-hidden="true"></svg>
-                }
-              </span>
+      </div>
 
-              <bd-avatar [name]="item.user.name" [src]="item.user.avatar ?? ''" size="sm" />
+      <div class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.72fr)]">
+        <div class="animate-reveal rounded-2xl border border-white/10 bg-white/[0.08] p-4 backdrop-blur-sm" style="animation-delay: 90ms">
+          <div class="flex items-center justify-between gap-3">
+            <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.yourRun' | transloco }}</p>
+            <span class="rounded-full bg-white/10 px-2 py-1 text-[10px] font-bold text-[var(--sidebar-fg)]">{{ 'groups.leaderboard.level' | transloco: { level: group.voce?.nivel ?? 1 } }}</span>
+          </div>
 
-              <span class="flex min-w-0 flex-1 flex-col">
-                <span class="truncate text-[13px] text-fg">
-                  <b class="font-bold">{{ item.user.name }}</b>
-                  {{ item.titulo }}
+          <div class="mt-3 flex flex-wrap items-end gap-4">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+              <vtp-progress-ring-icon [progresso]="meuProgresso()" corVar="--bd-primary" tamanho="md">
+                <bd-avatar [name]="auth.currentUser()?.name ?? '?'" [src]="auth.currentUser()?.avatar ?? ''" size="md" />
+              </vtp-progress-ring-icon>
+              <div class="min-w-0">
+                <b class="block truncate text-[14px] text-[var(--sidebar-fg)]">{{ auth.currentUser()?.name }}</b>
+                <span class="text-[11px] text-[var(--sidebar-fg-muted)]">
+                  @if (minhaPosicao(); as posicao) { {{ 'groups.detail.yourPosition' | transloco }} #{{ posicao }} } @else { {{ 'groups.detail.rankingPending' | transloco }} }
                 </span>
-                <span class="text-[11px] text-fg-subtle">{{
-                  formatarQuando(item.completed_at)
-                }}</span>
-              </span>
+              </div>
+            </div>
+            <div class="text-right">
+              <b class="block text-[30px] font-black leading-none tabular-nums text-[var(--sidebar-fg)]"><span [bdCountUp]="group.voce?.xp_periodo ?? 0" [duration]="900"></span></b>
+              <span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.roundPoints' | transloco }}</span>
+            </div>
+          </div>
 
-              @if (item.xp > 0) {
-                <span
-                  class="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold tabular-nums text-primary-strong"
-                >
-                  +<span [bdCountUp]="item.xp" [duration]="600"></span> XP
-                </span>
+          <div class="mt-4 border-t border-white/10 pt-3">
+            <span class="flex items-center justify-between text-[10px] font-bold text-[var(--sidebar-fg-muted)]"><span>{{ 'groups.detail.levelProgress' | transloco }}</span><span class="tabular-nums text-[var(--sidebar-fg)]">{{ meuProgresso() }}%</span></span>
+            <span class="mt-1.5 block h-1.5 overflow-hidden rounded-full bg-white/10"><span class="animate-vitality-shimmer block h-full rounded-full transition-[width] duration-700 ease-out" [style.width.%]="meuProgresso()"></span></span>
+          </div>
+        </div>
+
+        <div class="animate-reveal flex items-center gap-3 rounded-2xl border border-accent/25 bg-accent-soft p-4" style="animation-delay: 180ms">
+          <span class="animate-vitality-breathe grid size-11 shrink-0 place-items-center rounded-2xl bg-accent text-accent-contrast"><svg lucideHeartPulse size="21" aria-hidden="true"></svg></span>
+          <div class="min-w-0">
+            <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.nextStep' | transloco }}</p>
+            @if (rivalAcima()) {
+              <p class="m-0 mt-1 text-[14px] font-bold text-[var(--sidebar-fg)]">{{ 'groups.detail.overtakeRival' | transloco: { xp: xpParaUltrapassar() } }}</p>
+              <p class="m-0 mt-1 text-[11px] leading-relaxed text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.nextStepHint' | transloco }}</p>
+            } @else if (minhaPosicao() === 1) {
+              <p class="m-0 mt-1 text-[14px] font-bold text-[var(--sidebar-fg)]">{{ 'groups.detail.leadingSeason' | transloco }}</p>
+              <p class="m-0 mt-1 text-[11px] leading-relaxed text-[var(--sidebar-fg-muted)]">{{ 'groups.detail.leadingHint' | transloco }}</p>
+            } @else {
+              <p class="m-0 mt-1 text-[14px] font-bold text-[var(--sidebar-fg)]">{{ 'groups.detail.rankingPending' | transloco }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mt-5 grid items-start gap-5 lg:h-[680px] lg:grid-cols-[minmax(0,1fr)_320px]">
+    <section class="card animate-reveal overflow-hidden p-0 lg:flex lg:h-full lg:min-h-0 lg:flex-col" style="animation-delay: 120ms">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
+        <div>
+          <p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-primary">{{ 'groups.detail.togetherLabel' | transloco }}</p>
+          <h3 class="m-0 mt-1 text-[16px] font-extrabold text-fg">{{ (modo() === 'ranking' ? 'groups.detail.classification' : 'groups.detail.roundEvents') | transloco }}</h3>
+        </div>
+        <vtp-view-mode-toggle [options]="modoOpcoes()" [value]="modo()" (valueChange)="alterarModo($any($event))" />
+      </div>
+      @if (modo() === 'ranking') {
+        <div class="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+          <p class="m-0 mb-4 text-[12px] leading-relaxed text-fg-muted">{{ 'groups.detail.rankingDescription' | transloco }}</p>
+          <div class="overflow-hidden rounded-2xl border border-border lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+            <div class="grid grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-2 border-b border-border bg-surface-hover px-3 py-2 text-[9.5px] font-extrabold uppercase tracking-[0.1em] text-fg-subtle sm:grid-cols-[46px_minmax(0,1fr)_90px_auto]">
+              <span>#</span><span>{{ 'groups.detail.athlete' | transloco }}</span><span class="hidden sm:block">{{ 'groups.detail.levelAbbr' | transloco }}</span><span>{{ 'groups.detail.pointsAbbr' | transloco }}</span>
+            </div>
+            <ul class="m-0 list-none divide-y divide-border p-0 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+              @for (entry of ranking(); track entry.user.id; let posicao = $index) {
+                <li class="animate-reveal grid grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-2 px-3 py-3 sm:grid-cols-[46px_minmax(0,1fr)_90px_auto]" [class.bg-primary-soft]="entry.user.id === auth.currentUser()?.id" [style.animation-delay.ms]="posicao * 80">
+                  <span class="grid size-7 place-items-center rounded-full text-[11px] font-extrabold tabular-nums" [class]="entry.user.id === auth.currentUser()?.id ? 'bg-primary text-primary-contrast' : 'text-fg-muted'">{{ posicao + 1 }}</span>
+                  <span class="flex min-w-0 items-center gap-2.5"><bd-avatar [name]="entry.user.name" [src]="entry.user.avatar ?? ''" size="sm" /><span class="min-w-0"><b class="block truncate text-[12.5px] text-fg">{{ entry.user.name }}</b>@if (entry.user.id === auth.currentUser()?.id) { <span class="text-[10px] font-bold text-primary">{{ 'groups.detail.you' | transloco }}</span> }</span></span>
+                  <span class="hidden text-center text-[11px] font-bold text-fg-muted sm:block">{{ entry.nivel }}</span>
+                  <span class="text-right"><b class="block text-[14px] font-black tabular-nums text-primary-strong"><span [bdCountUp]="entry.xp_periodo" [duration]="1000"></span></b><span class="text-[9px] font-bold uppercase tracking-wide text-fg-subtle">XP</span></span>
+                </li>
               }
-            </li>
+            </ul>
+          </div>
+        </div>
+      } @else {
+        <div class="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+          <p class="m-0 mb-4 text-[12px] leading-relaxed text-fg-muted">{{ 'groups.detail.activityDescription' | transloco }}</p>
+          @if (carregandoAtividadeVisivel()) {
+            <vtp-loading-state [titulo]="'groups.title' | transloco" tamanho="sm" />
+          } @else if (!atividade().length) {
+            <p class="m-0 text-[13px] text-fg-muted">{{ 'groups.activity.empty' | transloco }}</p>
+          } @else {
+            <ul class="m-0 list-none divide-y divide-border overflow-hidden rounded-2xl border border-border p-0 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+              @for (item of atividade(); track $index; let posicao = $index) {
+                <li class="animate-reveal flex items-center gap-3 px-3 py-3" [style.animation-delay.ms]="posicao * 80">
+                  <span class="grid size-8 shrink-0 place-items-center rounded-full" [class]="item.marco ? 'bg-accent-soft text-accent' : 'bg-surface-hover text-fg-muted'">@if (item.marco) { <svg lucideTrophy size="15" aria-hidden="true"></svg> } @else { <svg lucideCheckCheck size="15" aria-hidden="true"></svg> }</span>
+                  <bd-avatar [name]="item.user.name" [src]="item.user.avatar ?? ''" size="sm" />
+                  <span class="flex min-w-0 flex-1 flex-col"><span class="truncate text-[13px] text-fg"><b class="font-bold">{{ item.user.name }}</b> {{ item.titulo }}</span><span class="text-[11px] text-fg-subtle">{{ formatarQuando(item.completed_at) }}</span></span>
+                  @if (item.xp > 0) { <span class="shrink-0 rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-bold tabular-nums text-primary-strong">+<span [bdCountUp]="item.xp" [duration]="600"></span> XP</span> }
+                </li>
+              }
+            </ul>
           }
-        </ul>
+        </div>
       }
     </section>
-  }
 
-  <vtp-confirm-dialog
-    [aberto]="confirmacao() === 'sair'"
-    variante="soft"
-    [titulo]="'groups.confirmLeave.title' | transloco"
-    [descricao]="'groups.confirmLeave.description' | transloco"
-    [confirmarTexto]="'groups.leaveButton' | transloco"
-    [cancelarTexto]="'common.actions.cancel' | transloco"
-    (cancelado)="fecharConfirmacao()"
-    (confirmado)="confirmarAcao()"
-  />
+    <aside class="flex flex-col gap-5 lg:grid lg:h-full lg:min-h-0 lg:grid-rows-[minmax(0,1.25fr)_minmax(0,0.9fr)]">
+      <section class="card animate-reveal p-5 lg:min-h-0 lg:overflow-y-auto" style="animation-delay: 200ms">
+        <div class="flex items-start justify-between gap-3">
+          <div><p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-primary">{{ 'groups.detail.dailyEyebrow' | transloco }}</p><h3 class="m-0 mt-1 text-[16px] font-extrabold text-fg">{{ 'groups.detail.dailyTitle' | transloco }}</h3></div>
+          <span class="animate-vitality-breathe grid size-9 place-items-center rounded-xl bg-primary-soft text-primary-strong"><svg lucideHeartPulse size="18" aria-hidden="true"></svg></span>
+        </div>
+        <p class="m-0 mt-3 text-[12px] leading-relaxed text-fg-muted">{{ 'groups.detail.dailyDescription' | transloco }}</p>
+        @if (carregandoMissoes()) {
+          <div class="mt-4 space-y-2.5">
+            <span class="block h-12 animate-pulse rounded-xl bg-surface-hover"></span>
+            <span class="block h-12 animate-pulse rounded-xl bg-surface-hover"></span>
+          </div>
+        } @else if (!missoesDiarias().length) {
+          <p class="m-0 mt-4 rounded-xl bg-surface-hover px-3 py-3 text-[11px] leading-relaxed text-fg-muted">{{ 'groups.detail.dailyMissionsEmpty' | transloco }}</p>
+        } @else {
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <span class="text-[10px] font-extrabold uppercase tracking-[0.1em] text-fg-subtle">{{ 'groups.detail.dailyMissions' | transloco }}</span>
+            <span class="rounded-full bg-primary-soft px-2 py-1 text-[10px] font-extrabold tabular-nums text-primary-strong">{{ 'groups.detail.dailyMissionProgress' | transloco: { done: missoesDiariasConcluidas(), total: missoesDiarias().length } }}</span>
+          </div>
+          <ul class="m-0 mt-2 list-none divide-y divide-border overflow-hidden rounded-2xl border border-border p-0">
+            @for (missao of missoesDiarias(); track missao.codigo; let posicao = $index) {
+              <li class="animate-reveal flex items-center gap-2.5 px-3 py-2.5" [class.bg-primary-soft]="missao.concluida" [style.animation-delay.ms]="posicao * 90 + 260">
+                <span class="grid size-7 shrink-0 place-items-center rounded-lg text-[14px]" [class]="missao.concluida ? 'bg-primary text-primary-contrast' : 'bg-surface-hover'">@if (missao.concluida) { <svg lucideCheckCheck size="14" aria-hidden="true"></svg> } @else { {{ missao.icone }} }</span>
+                <span class="min-w-0 flex-1"><b class="block truncate text-[11px] text-fg" [class.line-through]="missao.concluida">{{ missao.titulo }}</b>@if (missao.concluida) { <span class="text-[9.5px] font-bold text-primary">{{ 'groups.detail.missionCompleted' | transloco }}</span> } @else if (missao.progresso > 0) { <span class="mt-1 block h-1 overflow-hidden rounded-full bg-border"><span class="animate-vitality-shimmer block h-full rounded-full" [style.width.%]="missao.progresso"></span></span> } @else { <span class="text-[9.5px] text-fg-subtle">{{ 'groups.detail.missionPending' | transloco }}</span> }</span>
+                <span class="shrink-0 text-[10px] font-extrabold tabular-nums text-primary-strong">+{{ missao.xp }} XP</span>
+              </li>
+            }
+          </ul>
+        }
+        <a bdButton variant="ghost" size="sm" routerLink="/diario" class="mt-4 w-full justify-center">{{ 'groups.detail.openDiary' | transloco }}</a>
+      </section>
 
-  <vtp-confirm-dialog
-    [aberto]="confirmacao() === 'excluir'"
-    variante="danger"
-    [titulo]="'groups.confirmDelete.title' | transloco"
-    [descricao]="'groups.confirmDelete.description' | transloco"
-    [confirmarTexto]="'groups.deleteButton' | transloco"
-    [cancelarTexto]="'common.actions.cancel' | transloco"
-    (cancelado)="fecharConfirmacao()"
-    (confirmado)="confirmarAcao()"
-  />
+      <section class="card animate-reveal p-5 lg:min-h-0 lg:overflow-y-auto" style="animation-delay: 280ms">
+        <div class="flex items-center gap-2"><span class="grid size-8 place-items-center rounded-xl bg-accent-soft text-accent"><svg lucideTrophy size="16" aria-hidden="true"></svg></span><div><p class="m-0 text-[10px] font-extrabold uppercase tracking-[0.13em] text-accent">{{ 'groups.detail.togetherLabel' | transloco }}</p><h3 class="m-0 mt-0.5 text-[15px] font-extrabold text-fg">{{ 'groups.detail.roundEvents' | transloco }}</h3></div></div>
+        @if (carregandoAtividadeVisivel()) {
+          <div class="py-5"><vtp-loading-state [titulo]="'groups.title' | transloco" tamanho="sm" /></div>
+        } @else if (!atividade().length) {
+          <p class="m-0 mt-4 text-[12px] leading-relaxed text-fg-muted">{{ 'groups.activity.empty' | transloco }}</p>
+        } @else {
+          <ul class="m-0 mt-3 list-none divide-y divide-border p-0">
+            @for (item of atividade().slice(0, 3); track $index; let posicao = $index) {
+              <li class="animate-reveal flex items-center gap-2.5 py-3 first:pt-0 last:pb-0" [style.animation-delay.ms]="posicao * 100 + 350">
+                <span class="grid size-7 shrink-0 place-items-center rounded-full" [class]="item.marco ? 'bg-accent-soft text-accent' : 'bg-surface-hover text-fg-muted'">@if (item.marco) { <svg lucideTrophy size="13" aria-hidden="true"></svg> } @else { <svg lucideCheckCheck size="13" aria-hidden="true"></svg> }</span>
+                <span class="min-w-0 flex-1"><span class="block truncate text-[11px] text-fg"><b class="font-bold">{{ item.user.name }}</b> {{ item.titulo }}</span><span class="text-[10px] text-fg-subtle">{{ formatarQuando(item.completed_at) }}</span></span>
+                @if (item.xp > 0) { <span class="shrink-0 text-[10px] font-extrabold tabular-nums text-primary-strong">+{{ item.xp }} XP</span> }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+    </aside>
+  </div>
+
+  <vtp-confirm-dialog [aberto]="confirmacao() === 'sair'" variante="soft" [titulo]="'groups.confirmLeave.title' | transloco" [descricao]="'groups.confirmLeave.description' | transloco" [confirmarTexto]="'groups.leaveButton' | transloco" [cancelarTexto]="'common.actions.cancel' | transloco" (cancelado)="fecharConfirmacao()" (confirmado)="confirmarAcao()" />
+  <vtp-confirm-dialog [aberto]="confirmacao() === 'excluir'" variante="danger" [titulo]="'groups.confirmDelete.title' | transloco" [descricao]="'groups.confirmDelete.description' | transloco" [confirmarTexto]="'groups.deleteButton' | transloco" [cancelarTexto]="'common.actions.cancel' | transloco" (cancelado)="fecharConfirmacao()" (confirmado)="confirmarAcao()" />
 }
