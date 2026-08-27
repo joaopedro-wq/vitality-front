@@ -18,6 +18,7 @@ import {
   LucideCrown,
   LucideHeartPulse,
   LucideLogOut,
+  LucideTarget,
   LucideTrash2,
   LucideTrophy,
   LucideUsersRound,
@@ -58,6 +59,7 @@ type ModoVisualizacao = 'ranking' | 'atividade';
     LucideCrown,
     LucideHeartPulse,
     LucideLogOut,
+    LucideTarget,
     LucideTrash2,
     LucideTrophy,
     LucideUsersRound,
@@ -115,7 +117,6 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
     return posicao && posicao > 1 ? this.ranking()[posicao - 2] : null;
   });
 
-  /** XP necessário para tomar a posição seguinte, sem pressupor metas da API. */
   protected readonly xpParaUltrapassar = computed(() => {
     const minhaEntrada = this.minhaEntrada();
     const rival = this.rivalAcima();
@@ -125,6 +126,18 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
 
   protected readonly meuProgresso = computed(
     () => this.minhaEntrada()?.progresso_percent ?? this.group()?.voce?.progresso_percent ?? 0,
+  );
+
+  protected readonly meuNivel = computed(
+    () => this.minhaEntrada()?.nivel ?? this.group()?.voce?.nivel ?? 1,
+  );
+
+  protected readonly meuXp = computed(
+    () => this.minhaEntrada()?.xp_periodo ?? this.group()?.voce?.xp_periodo ?? 0,
+  );
+
+  protected readonly membrosCount = computed(
+    () => this.ranking().length || this.group()?.members_count || 1,
   );
 
   protected readonly missoesDiarias = computed(
