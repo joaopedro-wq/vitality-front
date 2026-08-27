@@ -35,6 +35,10 @@ export class AdminUsersService {
     });
   }
 
+  remove(id: number): Observable<{ success: boolean }> {
+    return this.http.delete<{ success: boolean }>(apiPaths.adminUsuario(id));
+  }
+
   private params(filters: AdminUsersFilters): HttpParams {
     let params = new HttpParams();
     for (const [key, value] of Object.entries(filters)) {

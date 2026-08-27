@@ -26,6 +26,9 @@
       @for (col of cols(); track col.field) {
         <col [style.width]="col.width" />
       }
+      @if (deletable()) {
+        <col style="width: 48px" />
+      }
     </colgroup>
   </ng-template>
   <ng-template #header>
@@ -44,6 +47,9 @@
             <p-sortIcon [field]="col.field" />
           }
         </th>
+      }
+      @if (deletable()) {
+        <th style="width: 48px"></th>
       }
     </tr>
   </ng-template>
@@ -64,6 +70,18 @@
           } @else {
             <span [class.data-table__multiline]="col.multiline">{{ displayValue(col, row) }}</span>
           }
+        </td>
+      }
+      @if (deletable()) {
+        <td class="text-center">
+          <button
+            type="button"
+            class="grid size-8 place-items-center rounded-full text-fg-subtle transition-colors hover:bg-danger-soft hover:text-danger"
+            aria-label="Excluir"
+            (click)="onDeleteClick($event, row)"
+          >
+            <svg lucideTrash2 size="16" aria-hidden="true"></svg>
+          </button>
         </td>
       }
     </tr>

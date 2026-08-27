@@ -2,11 +2,13 @@
   "schemaVersion": 1,
   "targets": {
     "landing-page": {
+      "targetKind": "existing-ui",
       "projectId": "2cf3921f-f1e6-456c-8f3a-489d2cb5a26b",
       "baselineDraftId": "afd7c8fd-af19-43d7-8c2f-48c8f99e4f53",
-      "activeDraftId": "1b0a5576-6e13-430d-aff1-680e33f5c6dc",
-      "currentVersion": 2,
-      "branch": "Concise, routine-focused landing with real product previews",
+      "activeDraftId": "c1416f6c-9aac-40bc-bf7d-92ae9b394e1b",
+      "currentVersion": 1,
+      "branch": "Ligas como prova de produto, com screenshot integrado à narrativa",
+      "designSystemPath": ".superdesign/design-system.md",
       "contextFiles": [
         ".superdesign/design-system.md",
         "src/app/features/landing/landing-page/landing-page.component.ts",
@@ -15,7 +17,39 @@
         "src/styles.scss",
         "public/i18n/pt-BR.json"
       ],
-      "brandAssets": { "logo": "public-favicon.svg" }
+      "fingerprints": {
+        ".superdesign/design-system.md": "ebc983d89acf469f779ddcb9a2f3b55c56e0ff325194f8d631c01b69aba986de",
+        "src/app/features/landing/landing-page/landing-page.component.ts": "4097baa383cec13549c7613143a9b5bd382f69dcc9c5de92d560baac8f6993f8",
+        "src/app/features/landing/landing-page/landing-page.component.html": "11b7948355d0f660d4ea23bb5b62b684870e0659e2d10bd705b877264a8ee8ef",
+        "src/app/features/landing/landing-page/landing-page.component.scss": "1c7842a7007752e6da371055f86c1611180ea69fc21ce53386f401d91593fba7",
+        "src/styles.scss": "762317d71f220dc08acc6e64e27edcf1054fcedfe528fdd1d5e0bcad975c8159",
+        "public/i18n/pt-BR.json": "b14f18102b86b8b52b45b37411abee4c63cfa8b43575af9f39e3c42cdb6ec33c"
+      },
+      "referenceIds": [
+        "0452e8fc-57cc-4db7-91cd-2e4d09c27201",
+        "73617ec9-2467-43cf-9801-a426c04d0a25"
+      ],
+      "components": [],
+      "drafts": {
+        "c1416f6c-9aac-40bc-bf7d-92ae9b394e1b": {
+          "title": "Vitality Landing - Ligas",
+          "visualDirection": "Screenshot como prova de produto, narrativa editorial e benefícios compactos",
+          "currentVersion": 1
+        },
+        "523f711e-ece5-4698-9299-06a640b3c392": {
+          "title": "Vitality Landing - Ligas da Comunidade (Editorial)",
+          "visualDirection": "Direcao A: captura clara e narrativa editorial leve",
+          "currentVersion": 1,
+          "parentDraftId": "c1416f6c-9aac-40bc-bf7d-92ae9b394e1b"
+        },
+        "691d7c45-3848-4e9d-b03b-3e869a09788e": {
+          "title": "Vitality Landing - Ligas",
+          "visualDirection": "Direcao B: captura escura em bloco de alto contraste",
+          "currentVersion": 1,
+          "parentDraftId": "c1416f6c-9aac-40bc-bf7d-92ae9b394e1b"
+        }
+      },
+      "updatedAt": "2026-08-27T18:01:00-03:00"
     },
     "diet-preferences-step": {
       "targetKind": "existing-ui",

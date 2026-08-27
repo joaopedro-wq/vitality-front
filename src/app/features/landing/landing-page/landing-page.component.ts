@@ -8,7 +8,10 @@ import {
   LucideCheck,
   LucideClipboardList,
   LucideInfo,
+  LucideMedal,
   LucideRefreshCw,
+  LucideSparkles,
+  LucideUsersRound,
 } from '@lucide/angular';
 import { BdAccordionComponent, BdButtonComponent, BdRevealDirective } from 'bandeira-ui';
 import type { BdAccordionItem } from 'bandeira-ui';
@@ -37,7 +40,10 @@ interface LandingFeature {
     LucideCheck,
     LucideClipboardList,
     LucideInfo,
+    LucideMedal,
     LucideRefreshCw,
+    LucideSparkles,
+    LucideUsersRound,
   ],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',

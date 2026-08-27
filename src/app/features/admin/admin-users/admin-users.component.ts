@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { BdButtonComponent, BdInputComponent } from 'bandeira-ui';
 import { LucideSearch, LucideUsers, LucideX } from '@lucide/angular';
 import type { TableLazyLoadEvent } from 'primeng/table';
+import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
 
 import type {
@@ -12,9 +13,11 @@ import type {
   AdminUsersPage,
 } from '../../../core/models/admin-user.model';
 import { AdminUsersService } from '../../../services/admin-users.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { PageTitleComponent } from '../../../components/molecules/page-title/page-title.component';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
+import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import {
   DataTableComponent,
   type DataTableColumn,
@@ -34,6 +37,7 @@ import { PaginationControlsComponent } from '../../../components/molecules/pagin
     BackButtonComponent,
     PageTitleComponent,
     LoadingStateComponent,
+    ConfirmDialogComponent,
     DataTableComponent,
     PaginationControlsComponent,
   ],
@@ -43,11 +47,15 @@ import { PaginationControlsComponent } from '../../../components/molecules/pagin
 })
 export class AdminUsersComponent {
   private readonly service = inject(AdminUsersService);
+  private readonly auth = inject(AuthService);
+  private readonly toastr = inject(ToastrService);
   protected readonly users = signal<AdminUser[]>([]);
   protected readonly meta = signal<AdminUsersPage['meta'] | null>(null);
   protected readonly loading = signal(true);
   protected readonly detailLoading = signal(false);
   protected readonly selected = signal<AdminUserDetail | null>(null);
+  protected readonly userToDelete = signal<AdminUser | null>(null);
+  protected readonly deleting = signal(false);
   protected readonly search = signal('');
   protected readonly period = signal<7 | 30 | 90>(30);
   protected readonly accountType = signal<'all' | 'admin' | 'member'>('all');
@@ -165,6 +173,33 @@ export class AdminUsersComponent {
   }
   protected closeDetail(): void {
     this.selected.set(null);
+  }
+  protected requestDelete(user: AdminUser): void {
+    if (user.id === this.auth.currentUser()?.id) {
+      this.toastr.error('Você não pode excluir sua própria conta por aqui.');
+      return;
+    }
+    this.userToDelete.set(user);
+  }
+  protected cancelDelete(): void {
+    this.userToDelete.set(null);
+  }
+  protected confirmDeleteUser(): void {
+    const user = this.userToDelete();
+    if (!user || this.deleting()) return;
+    this.deleting.set(true);
+    this.service
+      .remove(user.id)
+      .pipe(finalize(() => this.deleting.set(false)))
+      .subscribe({
+        next: () => {
+          this.userToDelete.set(null);
+          if (this.selected()?.id === user.id) this.selected.set(null);
+          this.toastr.success(`Conta de ${user.name} excluída.`);
+          this.load();
+        },
+        error: () => this.toastr.error('Não foi possível excluir esta conta agora.'),
+      });
   }
   protected statusLabel(status: AdminUser['engagement_status']): string {
     return { novo: 'Novo', em_ativacao: 'Em ativação', engajado: 'Engajado', inativo: 'Inativo' }[

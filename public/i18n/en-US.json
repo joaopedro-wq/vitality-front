@@ -920,6 +920,18 @@
       "swapsBody": "Adjust meals when your routine changes, while keeping the plan as a reference.",
       "swapsAlt": "Vitality meal plan with food swap option"
     },
+    "community": {
+      "eyebrow": "Community leagues",
+      "title": "A routine feels lighter when you don't follow it alone.",
+      "lede": "After organising your plan and tracking your logs, you can bring company into the same journey at your own pace and in your own way.",
+      "photoAlt": "Vitality Leagues screen showing the user's pace, the ongoing official league, and other communities",
+      "createTitle": "Your group, your way",
+      "createBody": "Create a league and invite the people who fit your routine with a simple code.",
+      "rhythmTitle": "A challenge that respects your rhythm",
+      "rhythmBody": "Follow the XP ranking and celebrate consistency without turning food into pressure.",
+      "progressTitle": "Small movements count",
+      "progressBody": "Every log and completed mission helps your league keep moving forward."
+    },
     "guidance": {
       "eyebrow": "Responsible guidance",
       "title": "Information to support your choices.",

@@ -171,6 +171,66 @@
       </div>
     </section>
 
+    <section id="ligas" class="landing-section landing-community" aria-labelledby="ligas-titulo">
+      <div class="page-shell landing-community-shell">
+        <div
+          class="landing-section-heading landing-community-heading"
+          bdReveal="up"
+          [revealDelay]="80"
+        >
+          <p class="landing-eyebrow">{{ t('landing.community.eyebrow') }}</p>
+          <h2 id="ligas-titulo" class="landing-h2">{{ t('landing.community.title') }}</h2>
+          <p class="landing-body">{{ t('landing.community.lede') }}</p>
+        </div>
+
+        <div class="landing-community-showcase">
+          <figure
+            class="landing-community-photo landing-feature-stage"
+            bdReveal="scale"
+            [revealDelay]="100"
+          >
+            <img
+              src="images/landing/ligas%202.png"
+              [alt]="t('landing.community.photoAlt')"
+              loading="lazy"
+            />
+          </figure>
+
+          <div class="landing-community-highlights">
+            <div class="landing-community-points">
+              <article bdReveal="right" [revealDelay]="180">
+                <span class="landing-community-icon"
+                  ><svg lucideUsersRound size="17" aria-hidden="true"></svg
+                ></span>
+                <div>
+                  <h3>{{ t('landing.community.createTitle') }}</h3>
+                  <p>{{ t('landing.community.createBody') }}</p>
+                </div>
+              </article>
+              <article bdReveal="right" [revealDelay]="290">
+                <span class="landing-community-icon"
+                  ><svg lucideMedal size="17" aria-hidden="true"></svg
+                ></span>
+                <div>
+                  <h3>{{ t('landing.community.rhythmTitle') }}</h3>
+                  <p>{{ t('landing.community.rhythmBody') }}</p>
+                </div>
+              </article>
+              <article bdReveal="right" [revealDelay]="400">
+                <span class="landing-community-icon"
+                  ><svg lucideSparkles size="17" aria-hidden="true"></svg
+                ></span>
+                <div>
+                  <h3>{{ t('landing.community.progressTitle') }}</h3>
+                  <p>{{ t('landing.community.progressBody') }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section
       class="page-shell landing-section landing-section--compact"
       aria-labelledby="orientacao-titulo"

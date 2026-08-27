@@ -86,9 +86,11 @@
           [loading]="loading()"
           [sortField]="sortField()"
           [sortOrder]="sortOrder()"
+          [deletable]="true"
           stateKey="admin-users-table"
           (lazyLoad)="onLazyLoad($event)"
           (rowClick)="openDetail($event)"
+          (rowDelete)="requestDelete($event)"
         />
       </div>
       <vtp-pagination-controls
@@ -158,4 +160,20 @@
       }
     </aside>
   }
+
+  <vtp-confirm-dialog
+    [aberto]="!!userToDelete()"
+    variante="danger"
+    titulo="Excluir conta de usuário?"
+    [descricao]="
+      'Isso apaga permanentemente a conta de ' +
+      (userToDelete()?.name ?? '') +
+      ' e todo o histórico dela (diário, planos, metas). Não pode ser desfeito.'
+    "
+    confirmarTexto="Excluir conta"
+    cancelarTexto="Cancelar"
+    [dismissible]="!deleting()"
+    (cancelado)="cancelDelete()"
+    (confirmado)="confirmDeleteUser()"
+  />
 </main>

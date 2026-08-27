@@ -897,6 +897,18 @@
       "swapsBody": "Faça ajustes nas refeições quando a rotina mudar, mantendo o plano como referência.",
       "swapsAlt": "Plano alimentar do Vitality com opção de trocar alimentos"
     },
+    "community": {
+      "eyebrow": "Ligas da comunidade",
+      "title": "Uma rotina fica mais leve quando você não segue sozinho.",
+      "lede": "Depois de organizar seu plano e acompanhar seus registros, você pode trazer companhia para essa mesma caminhada no seu tempo e do seu jeito.",
+      "photoAlt": "Tela de Ligas do Vitality mostrando o ritmo do usuário, a liga oficial em andamento e outras comunidades",
+      "createTitle": "Seu grupo, do seu jeito",
+      "createBody": "Crie uma liga e convide quem faz sentido para a sua rotina com um código simples.",
+      "rhythmTitle": "Uma disputa que respeita o ritmo",
+      "rhythmBody": "Acompanhe o ranking de XP e celebre constância, sem transformar alimentação em pressão.",
+      "progressTitle": "Pequenos movimentos contam",
+      "progressBody": "Cada registro e missão concluída ajuda sua liga a seguir em frente."
+    },
     "guidance": {
       "eyebrow": "Orientação responsável",
       "title": "Informação para apoiar suas escolhas.",
