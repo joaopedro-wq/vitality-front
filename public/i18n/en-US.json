@@ -307,13 +307,13 @@
     "goalReady": "Your daily goal is ready",
     "development": "Development",
     "planPreview": "Plan preview",
-    "dashboardSubtitle": "Phase 6 of the plan is not implemented yet.",
-    "foodsSubtitle": "Find items in the TACO catalog and save the ones you use often.",
+    "dashboardSubtitle": "Coming soon: your goal and intake, together.",
+    "foodsSubtitle": "Find foods and favorite the ones you use often.",
     "diarySubtitle": "Log your meals and follow your day's composition.",
-    "profileSubtitle": "Update your details in short steps. Each advance is saved so you do not lose progress.",
+    "profileSubtitle": "Update your details in a few short steps.",
     "foodCatalogSubtitle": "Global items used across the platform.",
-    "dietsGoalSubtitle": "Your plan is built from the calories and macros you confirmed for your goal.",
-    "dietsRoutineSubtitle": "Flexible suggestions based on your current goal — you always review before logging.",
+    "dietsGoalSubtitle": "Based on the calories and macros from your goal.",
+    "dietsRoutineSubtitle": "Suggestions tailored to your current goal.",
     "goalReadySubtitle": "It counts for today in the dashboard and diary. Routine changed? Retake the quiz whenever you want."
   },
   "auth": {

@@ -307,13 +307,13 @@
     "goalReady": "Sua meta diária está pronta",
     "development": "Desenvolvimento",
     "planPreview": "Prévia do plano",
-    "dashboardSubtitle": "Fase 6 do plano ainda não implementada.",
-    "foodsSubtitle": "Encontre itens do catálogo TACO e guarde os que você usa com frequência.",
+    "dashboardSubtitle": "Em breve: meta e consumo em um só lugar.",
+    "foodsSubtitle": "Encontre alimentos e favorite os que você usa com frequência.",
     "diarySubtitle": "Registre suas refeições e acompanhe a composição do seu dia.",
-    "profileSubtitle": "Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.",
+    "profileSubtitle": "Atualize seus dados em poucos passos.",
     "foodCatalogSubtitle": "Itens globais usados por toda a plataforma.",
-    "dietsGoalSubtitle": "Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.",
-    "dietsRoutineSubtitle": "Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.",
+    "dietsGoalSubtitle": "Baseado nas calorias e macros do seu objetivo.",
+    "dietsRoutineSubtitle": "Sugestões pensadas para a sua meta atual.",
     "goalReadySubtitle": "Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser."
   },
   "auth": {
