@@ -13,6 +13,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { BdAvatarComponent, BdButtonComponent, BdCountUpDirective } from 'bandeira-ui';
 import {
   LucideActivity,
+  LucideCheck,
   LucideCheckCheck,
   LucideCopy,
   LucideCrown,
@@ -24,7 +25,7 @@ import {
   LucideUsersRound,
 } from '@lucide/angular';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, finalize, forkJoin, takeUntil } from 'rxjs';
+import { Subject, finalize, forkJoin, takeUntil, timer } from 'rxjs';
 
 import { BackButtonComponent } from '../../../components/molecules/back-button/back-button.component';
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
@@ -54,6 +55,7 @@ type ModoVisualizacao = 'ranking' | 'atividade';
     BdButtonComponent,
     BdAvatarComponent,
     BdCountUpDirective,
+    LucideCheck,
     LucideCheckCheck,
     LucideCopy,
     LucideCrown,
@@ -94,6 +96,7 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
   protected readonly excluindo = signal(false);
   protected readonly confirmacao = signal<'sair' | 'excluir' | null>(null);
   protected readonly modo = signal<ModoVisualizacao>('ranking');
+  protected readonly codigoCopiado = signal(false);
   private atividadeCarregada = false;
   protected readonly carregandoAtividade = signal(false);
   protected readonly carregandoAtividadeVisivel = gateCarregamento(this.carregandoAtividade);
@@ -219,7 +222,13 @@ export class GrupoDetailComponent implements OnInit, OnDestroy {
     if (!codigo) return;
     navigator.clipboard
       .writeText(codigo)
-      .then(() => this.toastr.success(this.transloco.translate('groups.toast.copied')))
+      .then(() => {
+        this.toastr.success(this.transloco.translate('groups.toast.copied'));
+        this.codigoCopiado.set(true);
+        timer(1500)
+          .pipe(takeUntil(this.destruido))
+          .subscribe(() => this.codigoCopiado.set(false));
+      })
       .catch(() => undefined);
   }
 

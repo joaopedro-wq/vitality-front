@@ -12,11 +12,21 @@
       <button
         type="button"
         class="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-surface px-3.5 py-2 text-[12.5px] font-bold text-fg-muted transition-colors hover:border-primary hover:text-primary sm:w-auto"
+        [class]="codigoCopiado() ? 'border-primary text-primary' : ''"
         (click)="copiarCodigo()"
       >
         <svg lucideUsersRound size="14" aria-hidden="true"></svg>
         {{ 'groups.inviteCodeLabel' | transloco }}: {{ group.invite_code }}
-        <svg lucideCopy size="13" aria-hidden="true"></svg>
+        @if (codigoCopiado()) {
+          <svg
+            lucideCheck
+            size="13"
+            class="animate-ficha-pop text-primary"
+            aria-hidden="true"
+          ></svg>
+        } @else {
+          <svg lucideCopy size="13" aria-hidden="true"></svg>
+        }
       </button>
 
       @if (!ehGlobal()) {
@@ -232,7 +242,7 @@
         />
       </div>
       @if (modo() === 'ranking') {
-        <div class="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+        <div class="animate-reveal p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
           <p class="m-0 mb-4 text-[12px] leading-relaxed text-fg-muted">
             {{ 'groups.detail.rankingDescription' | transloco }}
           </p>
@@ -253,10 +263,17 @@
             >
               @for (entry of ranking(); track entry.user.id; let posicao = $index) {
                 <li
-                  class="animate-reveal grid grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-2 px-3 py-3 sm:grid-cols-[46px_minmax(0,1fr)_90px_auto]"
+                  class="animate-reveal relative grid grid-cols-[38px_minmax(0,1fr)_auto] items-center gap-2 px-3 py-3 sm:grid-cols-[46px_minmax(0,1fr)_90px_auto]"
                   [class.bg-primary-soft]="entry.user.id === auth.currentUser()?.id"
                   [style.animation-delay.ms]="posicao * 80"
                 >
+                  @if (entry.user.id === auth.currentUser()?.id) {
+                    <span
+                      class="animate-highlight-ring pointer-events-none absolute inset-0"
+                      [style.animation-delay.ms]="posicao * 80 + 450"
+                      aria-hidden="true"
+                    ></span>
+                  }
                   <span
                     class="grid size-7 place-items-center rounded-full text-[11px] font-extrabold tabular-nums"
                     [class]="
@@ -296,7 +313,7 @@
           </div>
         </div>
       } @else {
-        <div class="p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
+        <div class="animate-reveal p-5 sm:p-6 lg:flex lg:min-h-0 lg:flex-1 lg:flex-col">
           <p class="m-0 mb-4 text-[12px] leading-relaxed text-fg-muted">
             {{ 'groups.detail.activityDescription' | transloco }}
           </p>
