@@ -413,6 +413,7 @@
       "style": "Estilo",
       "diet": "Padrão alimentar",
       "restrictions": "Restrições",
+      "proteinPriority": "Prioridade de proteína",
       "avoiding": "Evitando",
       "including": "Incluindo sempre"
     },
@@ -455,6 +456,13 @@
         },
         "restrictionsQuestion": "Há alguma restrição importante?",
         "restrictionsHint": "Opções sem alimentos suficientes ficam desabilitadas para esta combinação.",
+        "proteinQuestion": "Qual proteína você prefere priorizar?",
+        "proteinHint": "Marque uma ou mais para usar só essas no plano. Sem seleção, todas continuam disponíveis.",
+        "proteinCategories": {
+          "carneVermelha": "Carne vermelha",
+          "aves": "Aves",
+          "frutosDoMar": "Peixes e frutos do mar"
+        },
         "checkingAvailability": "Atualizando opções compatíveis…",
         "avoidQuestion": "Algum alimento pra evitar?",
         "avoidHint": "Pode pular — só entra se você já sabe do que não gosta.",

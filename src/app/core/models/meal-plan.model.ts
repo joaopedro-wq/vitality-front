@@ -6,7 +6,7 @@ export type MealPlanDietType = 'onivora' | 'vegetariana';
 export interface FoodRestrictionOption {
   slug: string;
   label: string;
-  type: 'diet' | 'intolerance' | 'allergy';
+  type: 'diet' | 'intolerance' | 'allergy' | 'preference';
   food_count: number;
   available: boolean;
   unavailable_reason?: string | null;

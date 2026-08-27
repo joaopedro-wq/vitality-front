@@ -413,6 +413,7 @@
       "style": "Style",
       "diet": "Eating pattern",
       "restrictions": "Restrictions",
+      "proteinPriority": "Protein priority",
       "avoiding": "Avoiding",
       "including": "Always including"
     },
@@ -455,6 +456,13 @@
         },
         "restrictionsQuestion": "Any important restriction?",
         "restrictionsHint": "Options without enough foods are disabled for this combination.",
+        "proteinQuestion": "Which protein do you want to prioritize?",
+        "proteinHint": "Select one or more to use only those in the plan. With nothing selected, every protein stays available.",
+        "proteinCategories": {
+          "carneVermelha": "Red meat",
+          "aves": "Poultry",
+          "frutosDoMar": "Fish and seafood"
+        },
         "checkingAvailability": "Updating compatible options…",
         "avoidQuestion": "Any foods to avoid?",
         "avoidHint": "You can skip this — only fill it in if you already know what you don't like.",

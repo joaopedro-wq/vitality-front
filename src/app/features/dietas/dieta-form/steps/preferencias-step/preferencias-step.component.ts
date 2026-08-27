@@ -18,6 +18,25 @@ import type {
   MealPlanFeasibility,
 } from '../../../../../core/models/meal-plan.model';
 
+type CategoriaProteina = 'carne_vermelha' | 'aves' | 'fruto_do_mar';
+
+const SLUG_POR_CATEGORIA: Record<CategoriaProteina, string> = {
+  carne_vermelha: 'sem_carne_vermelha',
+  aves: 'sem_aves',
+  fruto_do_mar: 'sem_frutos_do_mar',
+};
+
+const CATEGORIA_POR_SLUG: Record<string, CategoriaProteina> = {
+  sem_carne_vermelha: 'carne_vermelha',
+  sem_aves: 'aves',
+  sem_frutos_do_mar: 'fruto_do_mar',
+};
+const LABEL_KEY_POR_CATEGORIA: Record<CategoriaProteina, string> = {
+  carne_vermelha: 'dietPlan.steps.preferences.proteinCategories.carneVermelha',
+  aves: 'dietPlan.steps.preferences.proteinCategories.aves',
+  fruto_do_mar: 'dietPlan.steps.preferences.proteinCategories.frutosDoMar',
+};
+
 @Component({
   selector: 'vtp-preferencias-step',
   standalone: true,
@@ -42,6 +61,7 @@ export class PreferenciasStepComponent implements OnInit {
     incluidos: Alimento[];
     dietType: MealPlanDietType;
     restrictions: string[];
+    proteinPriorityLabelKeys: string[];
   }>();
   readonly criteriaChange = output<{ dietType: MealPlanDietType; restrictions: string[] }>();
 
@@ -52,8 +72,45 @@ export class PreferenciasStepComponent implements OnInit {
   protected readonly selectableRestrictions = computed(() =>
     // Mantém visíveis as opções incompatíveis para explicar a limitação pelo
     // próprio estado desabilitado, em vez de fazê-las parecer que não existem.
-    this.restrictionOptions().filter((item) => item.type !== 'diet'),
+    // 'preference' (carne vermelha/aves/frutos do mar) vira uma seção própria
+    // logo abaixo — só faz sentido dentro de onívora, ver proteinPreferences.
+    this.restrictionOptions().filter((item) => item.type !== 'diet' && item.type !== 'preference'),
   );
+
+  /** As 3 opções de proteína, com o rótulo positivo do chip ("Aves") e a categoria
+   *  (`CategoriaProteina`) usada por `toggleProteinPriority`/`prioridadesProteina`. Não herda
+   *  `available` da API: aquele campo mede viabilidade de EXCLUIR o slug isolado, que não bate
+   *  com a semântica invertida daqui (marcar = priorizar, não excluir) — a inviabilidade da
+   *  combinação final continua visível pelo aviso genérico de `feasibility()` no rodapé.
+   */
+  protected readonly proteinPreferences = computed(() =>
+    this.restrictionOptions()
+      .filter((item) => item.type === 'preference')
+      .flatMap((item) => {
+        const categoria = CATEGORIA_POR_SLUG[item.slug];
+        return categoria ? [{ categoria, labelKey: LABEL_KEY_POR_CATEGORIA[categoria] }] : [];
+      }),
+  );
+
+  protected readonly prioridadesProteina = signal<CategoriaProteina[]>([]);
+
+  /** O backend só entende exclusão (`restriction_slugs`). "Priorizar aves" vira, na prática,
+   *  excluir toda categoria de proteína que a pessoa NÃO marcou — determinístico, sem depender
+   *  do prompt. Sem nenhuma categoria marcada, não exclui nada (estado inicial = tudo permitido,
+   *  igual era antes dessa tela existir). */
+  private readonly exclusoesDeProteina = computed<string[]>(() => {
+    const prioridades = this.prioridadesProteina();
+    if (this.dietType() !== 'onivora' || prioridades.length === 0) return [];
+
+    return (Object.keys(SLUG_POR_CATEGORIA) as CategoriaProteina[])
+      .filter((categoria) => !prioridades.includes(categoria))
+      .map((categoria) => SLUG_POR_CATEGORIA[categoria]);
+  });
+
+  protected readonly restricoesEfetivas = computed(() => [
+    ...this.restrictions(),
+    ...this.exclusoesDeProteina(),
+  ]);
 
   protected readonly evitadosIds = computed(() => this.evitados().map((food) => food.id));
   protected readonly incluidosIds = computed(() => this.incluidos().map((food) => food.id));
@@ -62,9 +119,10 @@ export class PreferenciasStepComponent implements OnInit {
     this.evitados.set(this.excluidosIniciais());
     this.incluidos.set(this.incluidosIniciais());
     this.dietType.set(this.dietTypeInicial());
-    // Uma nova geração sempre começa sem restrições pré-marcadas. O usuário
+    // Uma nova geração sempre começa sem restrições/prioridades pré-marcadas. O usuário
     // escolhe conscientemente as opções aplicáveis à combinação atual.
     this.restrictions.set([]);
+    this.prioridadesProteina.set([]);
   }
 
   protected avancar(): void {
@@ -73,7 +131,10 @@ export class PreferenciasStepComponent implements OnInit {
       evitados: this.evitados(),
       incluidos: this.incluidos(),
       dietType: this.dietType(),
-      restrictions: this.restrictions(),
+      restrictions: this.restricoesEfetivas(),
+      proteinPriorityLabelKeys: this.prioridadesProteina().map(
+        (categoria) => LABEL_KEY_POR_CATEGORIA[categoria],
+      ),
     });
   }
 
@@ -95,7 +156,20 @@ export class PreferenciasStepComponent implements OnInit {
     this.emitCriteria();
   }
 
+  protected toggleProteinPriority(categoria: CategoriaProteina): void {
+    if (this.checkingFeasibility()) return;
+    this.prioridadesProteina.update((items) =>
+      items.includes(categoria)
+        ? items.filter((item) => item !== categoria)
+        : [...items, categoria],
+    );
+    this.emitCriteria();
+  }
+
   private emitCriteria(): void {
-    this.criteriaChange.emit({ dietType: this.dietType(), restrictions: this.restrictions() });
+    this.criteriaChange.emit({
+      dietType: this.dietType(),
+      restrictions: this.restricoesEfetivas(),
+    });
   }
 }

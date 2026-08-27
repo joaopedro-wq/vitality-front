@@ -43,17 +43,12 @@ export class PageTitleComponent {
     'Sua meta diária está pronta': 'pageTitle.goalReady',
     Desenvolvimento: 'pageTitle.development',
     'Prévia do plano': 'pageTitle.planPreview',
-    'Fase 6 do plano ainda não implementada.': 'pageTitle.dashboardSubtitle',
-    'Encontre itens do catálogo TACO e guarde os que você usa com frequência.':
-      'pageTitle.foodsSubtitle',
+    'Em breve: meta e consumo em um só lugar.': 'pageTitle.dashboardSubtitle',
     'Registre suas refeições e acompanhe a composição do seu dia.': 'pageTitle.diarySubtitle',
-    'Atualize seus dados em etapas curtas. Cada avanço é salvo para não perder seu progresso.':
-      'pageTitle.profileSubtitle',
+    'Atualize seus dados em poucos passos.': 'pageTitle.profileSubtitle',
     'Itens globais usados por toda a plataforma.': 'pageTitle.foodCatalogSubtitle',
-    'Seu plano é montado a partir das calorias e macros que você confirmou para o seu objetivo.':
-      'pageTitle.dietsGoalSubtitle',
-    'Sugestões flexíveis baseadas na sua meta atual — você sempre revisa antes de registrar.':
-      'pageTitle.dietsRoutineSubtitle',
+    'Baseado nas calorias e macros do seu objetivo.': 'pageTitle.dietsGoalSubtitle',
+    'Sugestões pensadas para a sua meta atual.': 'pageTitle.dietsRoutineSubtitle',
     'Vale hoje pro painel e pro diário. Mudou a rotina? Refaça o quiz quando quiser.':
       'pageTitle.goalReadySubtitle',
   };

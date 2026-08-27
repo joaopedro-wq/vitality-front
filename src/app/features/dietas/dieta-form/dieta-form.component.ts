@@ -116,9 +116,14 @@ export class DietaFormComponent implements OnDestroy {
   protected readonly checkingFeasibility = signal(false);
   protected readonly selectedRestrictions = computed(() => {
     const selected = new Set(this.restrictionSlugs());
-
-    return this.restrictionOptions().filter((restriction) => selected.has(restriction.slug));
+    // 'preference' (carne vermelha/aves/frutos do mar) não entra aqui: são as categorias que a
+    // pessoa NÃO priorizou, e mostrar isso como "restrição" inverte o que ela escolheu — têm sua
+    // própria linha no resumo (ver proteinPriorityLabelKeys).
+    return this.restrictionOptions().filter(
+      (restriction) => selected.has(restriction.slug) && restriction.type !== 'preference',
+    );
   });
+  protected readonly proteinPriorityLabelKeys = signal<string[]>([]);
   protected readonly title = signal('');
   protected readonly excluded = signal<Alimento[]>([]);
   protected readonly included = signal<Alimento[]>([]);
@@ -195,11 +200,18 @@ export class DietaFormComponent implements OnDestroy {
     this.passo.set(2);
   }
 
-  protected onPreferenciasConcluido(valor: { evitados: Alimento[]; incluidos: Alimento[]; dietType: MealPlanDietType; restrictions: string[] }): void {
+  protected onPreferenciasConcluido(valor: {
+    evitados: Alimento[];
+    incluidos: Alimento[];
+    dietType: MealPlanDietType;
+    restrictions: string[];
+    proteinPriorityLabelKeys: string[];
+  }): void {
     this.excluded.set(valor.evitados);
     this.included.set(valor.incluidos);
     this.dietType.set(valor.dietType);
     this.restrictionSlugs.set(valor.restrictions);
+    this.proteinPriorityLabelKeys.set(valor.proteinPriorityLabelKeys);
     this.passo.set(3);
   }
 
@@ -444,6 +456,7 @@ export class DietaFormComponent implements OnDestroy {
           this.style.set(profile.style);
           this.dietType.set(profile.diet_type);
           this.restrictionSlugs.set([]);
+          this.proteinPriorityLabelKeys.set([]);
           this.restrictionOptions.set(restrictions);
           this.loadFeasibility({
             ...profile,

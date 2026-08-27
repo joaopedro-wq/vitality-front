@@ -44,12 +44,20 @@
 
     @if (selectableRestrictions().length) {
       <div class="border-t border-border p-4 sm:p-5">
-        <h3 class="m-0 text-base font-bold tracking-tight">
-          {{ 'dietPlan.steps.preferences.restrictionsQuestion' | transloco }}
-        </h3>
-        <p class="m-0 mt-1 text-sm leading-relaxed text-fg-muted">
-          {{ 'dietPlan.steps.preferences.restrictionsHint' | transloco }}
-        </p>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 class="m-0 text-sm font-bold tracking-tight sm:text-base">
+              {{ 'dietPlan.steps.preferences.restrictionsQuestion' | transloco }}
+            </h3>
+            <span
+              class="shrink-0 rounded-full bg-surface-hover px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-muted sm:px-2.5 sm:py-1 sm:text-[11px]"
+              >{{ 'dietPlan.steps.preferences.optionalLabel' | transloco }}</span
+            >
+          </div>
+          <p class="m-0 mt-1 text-xs leading-relaxed text-fg-muted sm:text-sm">
+            {{ 'dietPlan.steps.preferences.restrictionsHint' | transloco }}
+          </p>
+        </div>
         @if (checkingFeasibility()) {
           <p
             class="m-0 mt-3 flex items-center gap-2 text-xs font-semibold text-fg-muted"
@@ -96,22 +104,72 @@
         }
       </div>
     }
+
+    @if (dietType() === 'onivora' && proteinPreferences().length) {
+      <div class="border-t border-border p-4 sm:p-5">
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <h3 class="m-0 text-sm font-bold tracking-tight sm:text-base">
+              {{ 'dietPlan.steps.preferences.proteinQuestion' | transloco }}
+            </h3>
+            <span
+              class="shrink-0 rounded-full bg-surface-hover px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-muted sm:px-2.5 sm:py-1 sm:text-[11px]"
+              >{{ 'dietPlan.steps.preferences.optionalLabel' | transloco }}</span
+            >
+          </div>
+          <p class="m-0 mt-1 text-xs leading-relaxed text-fg-muted sm:text-sm">
+            {{ 'dietPlan.steps.preferences.proteinHint' | transloco }}
+          </p>
+        </div>
+        @if (checkingFeasibility()) {
+          <p
+            class="m-0 mt-3 flex items-center gap-2 text-xs font-semibold text-fg-muted"
+            role="status"
+            aria-live="polite"
+          >
+            <span
+              class="size-3 animate-spin rounded-full border-2 border-primary/25 border-t-primary"
+              aria-hidden="true"
+            ></span>
+            {{ 'dietPlan.steps.preferences.checkingAvailability' | transloco }}
+          </p>
+        }
+        <div class="mt-3 flex flex-wrap gap-2" [attr.aria-busy]="checkingFeasibility()">
+          @for (pref of proteinPreferences(); track pref.categoria) {
+            <button
+              type="button"
+              class="min-h-9 rounded-full border px-3 text-[13px] font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-45"
+              [class]="
+                prioridadesProteina().includes(pref.categoria)
+                  ? 'border-primary bg-primary-soft text-primary-strong'
+                  : 'border-border bg-surface text-fg-muted hover:border-primary/50 hover:text-fg'
+              "
+              [disabled]="checkingFeasibility()"
+              [attr.aria-pressed]="prioridadesProteina().includes(pref.categoria)"
+              (click)="toggleProteinPriority(pref.categoria)"
+            >
+              {{ pref.labelKey | transloco }}
+            </button>
+          }
+        </div>
+      </div>
+    }
   </section>
 
   <section>
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <h2 class="m-0 text-lg font-bold tracking-tight">
+    <div>
+      <div class="flex flex-wrap items-center gap-2">
+        <h2 class="m-0 text-base font-bold tracking-tight sm:text-lg">
           {{ 'dietPlan.steps.preferences.personalizeTitle' | transloco }}
         </h2>
-        <p class="m-0 mt-1 text-sm leading-relaxed text-fg-muted">
-          {{ 'dietPlan.steps.preferences.personalizeHint' | transloco }}
-        </p>
+        <span
+          class="shrink-0 rounded-full bg-surface-hover px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-[0.08em] text-fg-muted sm:px-2.5 sm:py-1 sm:text-[11px]"
+          >{{ 'dietPlan.steps.preferences.optionalLabel' | transloco }}</span
+        >
       </div>
-      <span
-        class="rounded-full bg-surface-hover px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.08em] text-fg-muted"
-        >{{ 'dietPlan.steps.preferences.optionalLabel' | transloco }}</span
-      >
+      <p class="m-0 mt-1 text-xs leading-relaxed text-fg-muted sm:text-sm">
+        {{ 'dietPlan.steps.preferences.personalizeHint' | transloco }}
+      </p>
     </div>
 
     <div class="mt-4 grid gap-3 lg:grid-cols-2">

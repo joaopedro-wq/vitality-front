@@ -26,6 +26,7 @@ export class RevisarStepComponent {
   readonly style = input.required<MealPlanStyle>();
   readonly dietType = input.required<MealPlanDietType>();
   readonly restrictions = input.required<FoodRestrictionOption[]>();
+  readonly proteinPriorities = input<string[]>([]);
   readonly excluded = input.required<Alimento[]>();
   readonly included = input.required<Alimento[]>();
   readonly gerando = input(false);
@@ -48,6 +49,14 @@ export class RevisarStepComponent {
   protected formatRestrictions(restrictions: FoodRestrictionOption[]): string {
     return restrictions.length
       ? restrictions.map((restriction) => restriction.label).join(', ')
+      : this.transloco.translate('dietPlan.nothing');
+  }
+
+  protected formatProteinPriorities(labelKeys: string[]): string {
+    this.language.locale();
+
+    return labelKeys.length
+      ? labelKeys.map((key) => this.transloco.translate(key)).join(', ')
       : this.transloco.translate('dietPlan.nothing');
   }
 }
