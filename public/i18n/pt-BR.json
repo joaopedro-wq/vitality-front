@@ -56,6 +56,9 @@
         "profile": "Perfil",
         "catalog": "Catálogo"
       }
+    },
+    "app": {
+      "exitHint": "Toque em voltar de novo para sair"
     }
   },
   "ui": {

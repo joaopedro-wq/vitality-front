@@ -56,6 +56,9 @@
         "profile": "Profile",
         "catalog": "Catalog"
       }
+    },
+    "app": {
+      "exitHint": "Press back again to exit"
     }
   },
   "ui": {

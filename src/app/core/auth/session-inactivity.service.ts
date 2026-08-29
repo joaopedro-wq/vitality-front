@@ -2,7 +2,9 @@ import { Injectable, Injector, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 
+import { PlatformService } from '../platform/platform.service';
 import { AuthService } from './auth.service';
+import { TOKEN_WEB_STORAGE_KEY } from './token.store';
 
 const IDLE_TIMEOUT_MS = 30 * 60 * 1000;
 const WARNING_TIMEOUT_MS = 2 * 60 * 1000;
@@ -10,12 +12,14 @@ const ACTIVITY_THROTTLE_MS = 1000;
 const ACTIVITY_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'focus'] as const;
 const ACTIVITY_DEADLINE_KEY = 'vitality-session-idle-deadline';
 const LOGOUT_KEY = 'vitality-session-logout';
-const TOKEN_KEY = 'vitality_token';
+
+const TOKEN_KEY = TOKEN_WEB_STORAGE_KEY;
 
 @Injectable({ providedIn: 'root' })
 export class SessionInactivityService {
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
+  private readonly platform = inject(PlatformService);
   private warningTimer: ReturnType<typeof setTimeout> | null = null;
   private logoutTimer: ReturnType<typeof setTimeout> | null = null;
   private navigationSubscription: Subscription | null = null;
@@ -32,9 +36,14 @@ export class SessionInactivityService {
   start(): void {
     if (this.started || typeof window === 'undefined') return;
 
+    // Expirar por ociosidade faz sentido num navegador compartilhado; num app
+    // instalado no aparelho da pessoa, só obriga a relogar toda vez que ele é
+    // reaberto. O aparelho já tem a própria tela de bloqueio.
+    if (this.platform.isNative) return;
+
     this.started = true;
     ACTIVITY_EVENTS.forEach((event) =>
-      window.addEventListener(event, this.activity, { passive: true }),
+      window.addEventListener(event, this.activity, { passive: true })
     );
     window.addEventListener('storage', this.storageChange);
     document.addEventListener('visibilitychange', this.visibilityChange);
@@ -88,7 +97,7 @@ export class SessionInactivityService {
     const now = Date.now();
     this.warningTimer = setTimeout(
       () => this.warningOpen.set(true),
-      Math.max(0, deadline - WARNING_TIMEOUT_MS - now),
+      Math.max(0, deadline - WARNING_TIMEOUT_MS - now)
     );
     this.logoutTimer = setTimeout(() => this.expire(), Math.max(0, deadline - now));
   }

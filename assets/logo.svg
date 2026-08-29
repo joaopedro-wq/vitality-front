@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1024" height="1024">
+  <!-- Fonte única dos ícones do app (gerados por @capacitor/assets).
+       É o mesmo desenho do favicon.svg, sem a media query de tema: um ícone de
+       loja é estático, e os tons são os da paleta Horta (padrão do produto). -->
+  <path
+    fill="#5c7a3f"
+    d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
+  />
+  <path
+    d="M10 46 L31 46 L39 29 L50 64 L59 38 L67 46 L90 46"
+    fill="none"
+    stroke="#fffdf7"
+    stroke-width="7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

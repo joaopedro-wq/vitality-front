@@ -8,7 +8,16 @@ estrutura mudar (uma pasta nova, um critério de organização revisto), atualiz
 ```
 src/app/
   core/
-    auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, admin.guard.ts, auth.interceptor.ts, token.storage.ts
+    auth/       auth.service.ts, auth.guard.ts, guest.guard.ts, admin.guard.ts, auth.interceptor.ts,
+                token.store.ts (dono do token: signal em memória + Preferences do Capacitor,
+                com migração da chave crua antiga; o interceptor lê do signal porque o
+                armazenamento nativo é assíncrono e o caminho da requisição não é),
+                session-inactivity.service.ts
+    platform/   o que muda entre navegador e app empacotado — platform.service.ts
+                (isNative/isAndroid/isIos, ponto único de consulta), native-shell.service.ts
+                (botão voltar, resume, barra de status, baixa da splash; no-op na web),
+                overlay-stack.service.ts (pilha de camadas dispensáveis, para o voltar
+                fechar o que está por cima antes de navegar), native-landing.guard.ts
     http/       error.interceptor.ts, api-paths.ts
     models/     user, alimento, refeicao, dieta, registro, diary, meta-diaria,
                 nutricao-recomendada, api-response, nutrientes

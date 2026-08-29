@@ -9,6 +9,7 @@ import {
   effect,
   inject,
   signal,
+  type Signal,
 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import {
@@ -42,6 +43,7 @@ import {
 } from '@lucide/angular';
 
 import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
+import { OverlayStackService } from '../../platform/overlay-stack.service';
 import { AuthService } from '../../auth/auth.service';
 import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
 import { gateCarregamento } from '../../../components/utils/loading-gate.util';
@@ -129,6 +131,7 @@ export class AppShellComponent implements OnDestroy {
   private readonly router = inject(Router);
   protected readonly inactivity = inject(SessionInactivityService);
   private readonly onboarding = inject(OnboardingService);
+  private readonly overlays = inject(OverlayStackService);
   @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
   constructor() {
@@ -137,6 +140,18 @@ export class AppShellComponent implements OnDestroy {
       else this.inactivity.stop();
     });
     effect(() => this.onboarding.evaluateUser(this.auth.currentUser()));
+
+    this.registrarOverlay(this.mobileMoreOpen, () => this.closeMobileMore());
+    this.registrarOverlay(this.paletaMenuAberto, () => this.paletaMenuAberto.set(false));
+  }
+
+  private registrarOverlay(aberto: Signal<boolean>, fechar: () => void): void {
+    effect((onCleanup) => {
+      if (!aberto()) return;
+
+      const desregistrar = this.overlays.registrar(fechar);
+      onCleanup(desregistrar);
+    });
   }
 
   ngOnDestroy(): void {
@@ -144,22 +159,22 @@ export class AppShellComponent implements OnDestroy {
   }
 
   protected readonly navItemsVisiveis = computed(() =>
-    NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin),
+    NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin)
   );
   protected readonly mobileNavItems = computed(() =>
     this.navItemsVisiveis().filter(
       (item) =>
         !['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
-          item.path,
-        ),
-    ),
+          item.path
+        )
+    )
   );
   protected readonly mobileMoreItems = computed(() =>
     this.navItemsVisiveis().filter((item) =>
       ['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
-        item.path,
-      ),
-    ),
+        item.path
+      )
+    )
   );
 
   protected readonly mobileMoreOpen = signal(false);
@@ -182,12 +197,12 @@ export class AppShellComponent implements OnDestroy {
       path === '/dashboard'
         ? 'dashboard'
         : path === '/diario'
-          ? 'diary'
-          : path === '/metas'
-            ? 'goals'
-            : path === '/dietas'
-              ? 'plans'
-              : null;
+        ? 'diary'
+        : path === '/metas'
+        ? 'goals'
+        : path === '/dietas'
+        ? 'plans'
+        : null;
     return item ? `onboarding-${item}-${surface}` : null;
   }
 
@@ -214,7 +229,7 @@ export class AppShellComponent implements OnDestroy {
   }
 
   protected readonly primeiroNome = computed(
-    () => this.auth.currentUser()?.name?.split(' ')[0] ?? '',
+    () => this.auth.currentUser()?.name?.split(' ')[0] ?? ''
   );
 
   protected readonly saudacaoPeriodo = computed(() => {
@@ -224,8 +239,8 @@ export class AppShellComponent implements OnDestroy {
       hora < 12
         ? 'common.shell.morning'
         : hora < 18
-          ? 'common.shell.afternoon'
-          : 'common.shell.evening',
+        ? 'common.shell.afternoon'
+        : 'common.shell.evening'
     );
   });
 

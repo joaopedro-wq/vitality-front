@@ -58,7 +58,14 @@ npm install
 npm start          # http://localhost:4200
 npm run build
 npm test
+
+npm run app:sync   # ng build + cap sync android (sempre que o web mudar)
+npm run app:android # o anterior + abre o projeto no Android Studio
 ```
+
+O app Android exige **Android Studio (Otter 2025.2.1+) e JDK 17** instalados. O backend precisa
+liberar as origins do WebView no CORS (`http://localhost` e `capacitor://localhost`, já fixas em
+`config/cors.php`); origins extras entram por `FRONTEND_ORIGINS` (CSV).
 
 Backend em paralelo, em `../vitality-Back`:
 
@@ -76,6 +83,43 @@ tudo isso vive em **[`ESTRUTURA.md`](./ESTRUTURA.md)**, não aqui. Ao criar past
 critério de organização, atualize lá, não aqui.
 
 ## Decisões de arquitetura
+
+- **App nativo é Capacitor, não Ionic** (2026-08-29). O mesmo bundle Angular roda no navegador e
+  dentro do WebView; `android/` é versionado ao lado de `src/`, e `npm run app:sync`
+  (`ng build && cap sync android`) é o caminho único de atualização. **Nenhum componente do Ionic
+  Framework entra**: adotá-los significaria descartar bandeira-ui + Tailwind + as 4 paletas — dois
+  design systems disputando token de cor. O que a web não entrega (push, câmera, deep link, botão
+  voltar) vem de plugin, não de UI pronta. O que muda de comportamento entre as duas plataformas
+  vive em `core/platform/` e é sempre no-op no navegador — nunca espalhar `Capacitor.isNative*()`
+  pelos componentes; perguntar ao `PlatformService`.
+  - **O token não mora mais em `localStorage` cru**: `core/auth/token.store.ts` guarda no
+    `Preferences` (no Android, `SharedPreferences` — fora do alcance de uma limpeza de dados do
+    WebView). Como o `Preferences` é assíncrono e o `authInterceptor` roda no caminho síncrono de
+    toda requisição, o valor vive num **signal em memória**: quem lê, lê do signal; a persistência
+    acontece em segundo plano. O `provideAppInitializer` hidrata o signal **antes** do
+    `restoreSession()` — invertido, a primeira requisição sai sem `Authorization`. Sem token
+    guardado, `restoreSession()` nem é chamado (numa rede móvel, um 401 garantido só atrasa a
+    primeira tela). A chave mudou de nome (o plugin prefixa com `CapacitorStorage.`), então o
+    `load()` migra a chave antiga uma vez — sem isso, subir esta versão deslogaria todo mundo que
+    já usava a web. Coberto por `token.store.spec.ts`.
+  - **Expirar por ociosidade é comportamento de navegador**: `SessionInactivityService` não arma no
+    app. Num aparelho pessoal, os 30 min só obrigariam a relogar a cada reabertura — o aparelho já
+    tem tela de bloqueio. O que substitui é revalidar a sessão no `appStateChange`.
+  - **O botão físico de voltar tem uma ordem fixa**: fecha overlay (`OverlayStackService`) → navega
+    para trás → na raiz, sai só no segundo toque (toast "toque de novo para sair", padrão Android).
+    Componente com camada dispensável se registra na pilha via `effect` + `onCleanup`; a pilha só
+    sabe fechar, não sabe o que a camada é.
+  - **A landing não entra no app** (`nativeLandingGuard`): ela existe para converter visitante na web
+    aberta; quem abriu o app já instalou.
+  - **A inicialização nativa fica em `app.config.ts`, não no componente raiz.** Injetar o
+    `NativeShellService` em `App` arrastaria `AuthService`/`HttpClient` para a árvore de
+    dependências do casco vazio — e quebrou `app.spec.ts` na hora. `provideAppInitializer` resolve
+    sem acoplar nada.
+  - **Fraunces é auto-hospedada** (`public/fonts`, `@font-face` no `styles.scss` com caminho
+    raiz-relativo `/fonts/…`, que o builder do Angular preserva): sem rede no primeiro boot, o CDN
+    do Google deixaria a marca sem tipografia. Sem `preload` de propósito — hoje só a landing usa
+    Fraunces, e o navegador só baixa o woff2 quando um glifo casa com o `@font-face`. Um arquivo por
+    estilo: sendo fonte variável, 600 e 700 são byte a byte o mesmo woff2.
 
 - **Bug crítico corrigido: Tailwind não gerava nenhuma classe utilitária** (2026-08-13, achado
   migrando o SCSS de Metas pra Tailwind). Causa raiz: o `@angular/build` só ativa o pipeline do

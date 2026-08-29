@@ -18,6 +18,8 @@ import { provideTranslocoLocale } from '@jsverse/transloco-locale';
 
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
+import { TokenStore } from './core/auth/token.store';
+import { NativeShellService } from './core/platform/native-shell.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
 import { localeInterceptor } from './core/i18n/locale.interceptor';
@@ -31,7 +33,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(
       withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
-      withInterceptors([authInterceptor, localeInterceptor, errorInterceptor]),
+      withInterceptors([authInterceptor, localeInterceptor, errorInterceptor])
     ),
     provideTransloco({
       config: translocoConfig({
@@ -59,10 +61,31 @@ export const appConfig: ApplicationConfig = {
         positionClass: 'toast-top-right',
         preventDuplicates: true,
         timeOut: 3500,
-      }),
+      })
     ),
     // Restaura a sessão (token -> usuário) antes da primeira navegação/guard rodar,
     // pra um refresh de página não jogar o usuário logado de volta pro /login.
-    provideAppInitializer(() => firstValueFrom(inject(AuthService).restoreSession())),
+    // O token vem de armazenamento assíncrono (TokenStore), então precisa ser
+    // hidratado ANTES do /user — senão a requisição sai sem Authorization.
+    // Sem token guardado, nem chega a chamar: numa rede móvel lenta, esse
+    // 401 garantido atrasaria a primeira tela à toa.
+    provideAppInitializer(() => {
+      const tokenStore = inject(TokenStore);
+      const auth = inject(AuthService);
+
+      return tokenStore.load().then((token) => {
+        if (!token) {
+          auth.markBootstrapped();
+          return null;
+        }
+
+        return firstValueFrom(auth.restoreSession());
+      });
+    }),
+    // Botão físico de voltar, revalidação ao voltar do segundo plano, barra de
+    // status e baixa da splash nativa. No-op no navegador. Fica aqui, e não no
+    // componente raiz, pra não arrastar AuthService/HttpClient para dentro da
+    // árvore de dependências de `App` — que é (e deve seguir) um casco vazio.
+    provideAppInitializer(() => inject(NativeShellService).start()),
   ],
 };

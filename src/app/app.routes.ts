@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { guestGuard } from './core/auth/guest.guard';
 import { adminGuard } from './core/auth/admin.guard';
+import { nativeLandingGuard } from './core/platform/native-landing.guard';
 
 export const routes: Routes = [
   {
@@ -14,10 +15,10 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    canActivate: [guestGuard],
+    canActivate: [nativeLandingGuard, guestGuard],
     loadComponent: () =>
       import('./features/landing/landing-page/landing-page.component').then(
-        (m) => m.LandingPageComponent,
+        (m) => m.LandingPageComponent
       ),
   },
   {
@@ -53,63 +54,63 @@ export const routes: Routes = [
         path: 'diario',
         loadComponent: () =>
           import('./features/diario/diario-list/diario-list.component').then(
-            (m) => m.DiarioListComponent,
+            (m) => m.DiarioListComponent
           ),
       },
       {
         path: 'alimentos',
         loadComponent: () =>
           import('./features/alimentos/alimentos-list/alimentos-list.component').then(
-            (m) => m.AlimentosListComponent,
+            (m) => m.AlimentosListComponent
           ),
       },
       {
         path: 'dietas',
         loadComponent: () =>
           import('./features/dietas/dietas-list/dietas-list.component').then(
-            (m) => m.DietasListComponent,
+            (m) => m.DietasListComponent
           ),
       },
       {
         path: 'dietas/novo',
         loadComponent: () =>
           import('./features/dietas/dieta-form/dieta-form.component').then(
-            (m) => m.DietaFormComponent,
+            (m) => m.DietaFormComponent
           ),
       },
       {
         path: 'dietas/novo/manual',
         loadComponent: () =>
           import('./features/dietas/manual-dieta-form/manual-dieta-form.component').then(
-            (m) => m.ManualDietaFormComponent,
+            (m) => m.ManualDietaFormComponent
           ),
       },
       {
         path: 'metas',
         loadComponent: () =>
           import('./features/metas/metas-page/metas-page.component').then(
-            (m) => m.MetasPageComponent,
+            (m) => m.MetasPageComponent
           ),
       },
       {
         path: 'perfil',
         loadComponent: () =>
           import('./features/perfil/perfil-page/perfil-page.component').then(
-            (m) => m.PerfilPageComponent,
+            (m) => m.PerfilPageComponent
           ),
       },
       {
         path: 'grupos',
         loadComponent: () =>
           import('./features/grupos/grupos-page/grupos-page.component').then(
-            (m) => m.GruposPageComponent,
+            (m) => m.GruposPageComponent
           ),
       },
       {
         path: 'grupos/:id',
         loadComponent: () =>
           import('./features/grupos/grupo-detail/grupo-detail.component').then(
-            (m) => m.GrupoDetailComponent,
+            (m) => m.GrupoDetailComponent
           ),
       },
       {
@@ -117,7 +118,7 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./features/alimentos/admin-foods/admin-foods.component').then(
-            (m) => m.AdminFoodsComponent,
+            (m) => m.AdminFoodsComponent
           ),
       },
       {
@@ -125,7 +126,7 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./features/admin/admin-users/admin-users.component').then(
-            (m) => m.AdminUsersComponent,
+            (m) => m.AdminUsersComponent
           ),
       },
     ],

@@ -3,6 +3,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, catchError, finalize, map, of, tap } from 'rxjs';
 
 import { authPaths, apiPaths } from '../http/api-paths';
+import { TokenStore } from './token.store';
 import type { ApiResponse, LoginResponse } from '../models/api-response.model';
 import type { User } from '../models/user.model';
 
@@ -27,6 +28,7 @@ export interface RegisterResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly tokenStore = inject(TokenStore);
   private readonly currentUserSignal = signal<User | null>(null);
   private readonly bootstrappedSignal = signal(false);
 
@@ -42,9 +44,9 @@ export class AuthService {
   login(payload: LoginPayload): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(authPaths.login(), payload).pipe(
       tap((res) => {
-        localStorage.setItem('vitality_token', res.token);
+        this.tokenStore.set(res.token);
         this.currentUserSignal.set(res.user);
-      }),
+      })
     );
   }
 
@@ -55,13 +57,18 @@ export class AuthService {
   logout(): Observable<unknown> {
     return this.http.post(authPaths.logout(), {}).pipe(
       catchError(() => of(null)),
-      tap(() => this.forceLogout()),
+      tap(() => this.forceLogout())
     );
   }
 
   forceLogout(): void {
-    localStorage.removeItem('vitality_token');
+    this.tokenStore.clear();
     this.currentUserSignal.set(null);
+  }
+
+  /** Encerra o boot sem ida à rede — usado quando não há token guardado. */
+  markBootstrapped(): void {
+    this.bootstrappedSignal.set(true);
   }
 
   restoreSession(): Observable<User | null> {
@@ -74,12 +81,11 @@ export class AuthService {
         this.forceLogout();
         return of(null);
       }),
-      finalize(() => this.bootstrappedSignal.set(true)),
+      finalize(() => this.bootstrappedSignal.set(true))
     );
   }
 
   refreshSession(): Observable<void> {
     return this.http.post<void>(apiPaths.sessionRefresh(), {});
   }
-
 }

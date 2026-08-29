@@ -44,3 +44,17 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Capacitor / Android
+# O projeto nativo (android/) é versionado — só saída de build, config local da
+# máquina e credenciais ficam de fora.
+/android/.gradle
+/android/build
+/android/app/build
+/android/capacitor-cordova-android-plugins
+/android/local.properties
+/android/.idea
+/android/app/google-services.json
+/android/app/release
+*.keystore
+*.jks
