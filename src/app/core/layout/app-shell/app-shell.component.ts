@@ -1,114 +1,36 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  OnDestroy,
-  ViewChild,
-  computed,
-  effect,
-  inject,
-  signal,
-  type Signal,
-} from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import {
   BdAvatarComponent,
   BdButtonComponent,
   BdTooltipDirective,
   BdTourComponent,
 } from 'bandeira-ui';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { TranslocoService } from '@jsverse/transloco';
-import {
-  LucideCarrot,
-  LucideClipboardList,
-  LucideDynamicIcon,
-  LucideEllipsis,
-  LucideHouse,
-  LucideLogOut,
-  LucideMoon,
-  LucidePalette,
-  LucidePanelLeft,
-  LucidePanelTop,
-  LucidePlus,
-  LucideShieldCheck,
-  LucideSun,
-  LucideTarget,
-  LucideUser,
-  LucideUsers,
-  LucideUsersRound,
-  LucideUtensils,
-  type LucideIcon,
-} from '@lucide/angular';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
+import { BsShellComponent, type ShellLabels } from 'bandeira-shell/ui';
+import { LucideLogOut, LucidePlus } from '@lucide/angular';
 
-import { PalettePickerComponent } from '../../../components/molecules/palette-picker/palette-picker.component';
-import { OverlayStackService } from '../../platform/overlay-stack.service';
 import { AuthService } from '../../auth/auth.service';
-import { LoadingStateComponent } from '../../../components/molecules/loading-state/loading-state.component';
-import { gateCarregamento } from '../../../components/utils/loading-gate.util';
-import { NavegacaoService } from '../navegacao.service';
-import { NavigationLayoutService } from '../navigation-layout.service';
-import { PaletteService, type PaletteId } from '../palette.service';
-import { ThemeService } from '../theme.service';
 import { LanguageService } from '../../i18n/language.service';
 import { LanguageSelectorComponent } from '../../../components/molecules/language-selector/language-selector.component';
 import { ConfirmDialogComponent } from '../../../components/molecules/confirm-dialog/confirm-dialog.component';
 import { SessionInactivityService } from '../../auth/session-inactivity.service';
 import { OnboardingService } from '../../onboarding/onboarding.service';
 import { OnboardingWelcomeComponent } from '../../onboarding/onboarding-welcome.component';
-
-interface NavItem {
-  path: string;
-  label: string;
-  mobileLabel?: string;
-  icon: LucideIcon;
-  adminOnly?: boolean;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { path: '/dashboard', label: 'common.shell.nav.dashboard', icon: LucideHouse },
-  { path: '/diario', label: 'common.shell.nav.diary', icon: LucideUtensils },
-  { path: '/alimentos', label: 'common.shell.nav.foods', icon: LucideCarrot },
-  {
-    path: '/dietas',
-    label: 'common.shell.nav.diets',
-    mobileLabel: 'common.shell.nav.plan',
-    icon: LucideClipboardList,
-  },
-  { path: '/metas', label: 'common.shell.nav.goals', icon: LucideTarget },
-  { path: '/grupos', label: 'common.shell.nav.groups', icon: LucideUsersRound },
-  { path: '/perfil', label: 'common.shell.nav.profile', icon: LucideUser },
-  {
-    path: '/admin/alimentos',
-    label: 'common.shell.nav.catalog',
-    icon: LucideShieldCheck,
-    adminOnly: true,
-  },
-  { path: '/admin/usuarios', label: 'Usuários', icon: LucideUsers, adminOnly: true },
-];
+import { provideVitalityShellNavigation } from '../../../shell-nav.config';
 
 @Component({
   selector: 'vtp-app-shell',
   standalone: true,
+  providers: [provideVitalityShellNavigation()],
   imports: [
-    RouterOutlet,
     RouterLink,
-    RouterLinkActive,
     BdAvatarComponent,
     BdButtonComponent,
     BdTooltipDirective,
-    LucideDynamicIcon,
-    LucideEllipsis,
-    LucidePlus,
+    BsShellComponent,
     LucideLogOut,
-    LucideSun,
-    LucideMoon,
-    LucidePalette,
-    LucidePanelLeft,
-    LucidePanelTop,
-    PalettePickerComponent,
-    LoadingStateComponent,
+    LucidePlus,
     LanguageSelectorComponent,
     ConfirmDialogComponent,
     BdTourComponent,
@@ -119,20 +41,13 @@ const NAV_ITEMS: NavItem[] = [
   styleUrl: './app-shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppShellComponent implements OnDestroy {
+export class AppShellComponent {
   protected readonly auth = inject(AuthService);
-  protected readonly theme = inject(ThemeService);
   protected readonly language = inject(LanguageService);
   private readonly transloco = inject(TranslocoService);
-  protected readonly palette = inject(PaletteService);
-  protected readonly navigationLayout = inject(NavigationLayoutService);
-  private readonly navegacao = inject(NavegacaoService);
-  protected readonly navegandoVisivel = gateCarregamento(this.navegacao.navegando);
   private readonly router = inject(Router);
   protected readonly inactivity = inject(SessionInactivityService);
   private readonly onboarding = inject(OnboardingService);
-  private readonly overlays = inject(OverlayStackService);
-  @ViewChild('paletteControl') private paletteControl?: ElementRef<HTMLElement>;
 
   constructor() {
     effect(() => {
@@ -140,92 +55,6 @@ export class AppShellComponent implements OnDestroy {
       else this.inactivity.stop();
     });
     effect(() => this.onboarding.evaluateUser(this.auth.currentUser()));
-
-    this.registrarOverlay(this.mobileMoreOpen, () => this.closeMobileMore());
-    this.registrarOverlay(this.paletaMenuAberto, () => this.paletaMenuAberto.set(false));
-  }
-
-  private registrarOverlay(aberto: Signal<boolean>, fechar: () => void): void {
-    effect((onCleanup) => {
-      if (!aberto()) return;
-
-      const desregistrar = this.overlays.registrar(fechar);
-      onCleanup(desregistrar);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.inactivity.stop();
-  }
-
-  protected readonly navItemsVisiveis = computed(() =>
-    NAV_ITEMS.filter((item) => !item.adminOnly || this.auth.currentUser()?.is_admin)
-  );
-  protected readonly mobileNavItems = computed(() =>
-    this.navItemsVisiveis().filter(
-      (item) =>
-        !['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
-          item.path
-        )
-    )
-  );
-  protected readonly mobileMoreItems = computed(() =>
-    this.navItemsVisiveis().filter((item) =>
-      ['/alimentos', '/perfil', '/grupos', '/admin/alimentos', '/admin/usuarios'].includes(
-        item.path
-      )
-    )
-  );
-
-  protected readonly mobileMoreOpen = signal(false);
-  protected readonly paletaMenuAberto = signal(false);
-
-  toggleMobileMore(): void {
-    this.mobileMoreOpen.update((open) => !open);
-  }
-
-  closeMobileMore(): void {
-    this.mobileMoreOpen.set(false);
-  }
-
-  isMobileMoreActive(): boolean {
-    return this.mobileMoreItems().some((item) => this.router.url.startsWith(item.path));
-  }
-
-  protected tourTarget(path: string, surface: 'desktop' | 'mobile'): string | null {
-    const item =
-      path === '/dashboard'
-        ? 'dashboard'
-        : path === '/diario'
-        ? 'diary'
-        : path === '/metas'
-        ? 'goals'
-        : path === '/dietas'
-        ? 'plans'
-        : null;
-    return item ? `onboarding-${item}-${surface}` : null;
-  }
-
-  togglePaletaMenu(): void {
-    this.paletaMenuAberto.update((aberto) => !aberto);
-  }
-
-  escolherPaleta(id: PaletteId): void {
-    this.palette.set(id);
-    this.paletaMenuAberto.set(false);
-  }
-
-  @HostListener('document:keydown.escape')
-  protected onEscape(): void {
-    this.closeMobileMore();
-    this.paletaMenuAberto.set(false);
-  }
-
-  @HostListener('document:click', ['$event'])
-  protected onDocumentClick(event: MouseEvent): void {
-    if (!this.paletteControl?.nativeElement.contains(event.target as Node)) {
-      this.paletaMenuAberto.set(false);
-    }
   }
 
   protected readonly primeiroNome = computed(
@@ -248,6 +77,25 @@ export class AppShellComponent implements OnDestroy {
     const periodo = this.saudacaoPeriodo();
     const nome = this.primeiroNome();
     return nome ? `${periodo}, ${nome}` : periodo;
+  });
+
+  protected readonly shellLabels = computed<ShellLabels>(() => {
+    this.language.locale();
+    const t = (chave: string) => this.transloco.translate(chave);
+    return {
+      mainNav: t('common.navigation.main'),
+      profile: t('common.navigation.profile'),
+      account: t('common.navigation.account'),
+      palette: t('common.shell.palette'),
+      lightTheme: t('common.shell.lightTheme'),
+      darkTheme: t('common.shell.darkTheme'),
+      horizontalMenu: t('common.shell.horizontalMenu'),
+      sidebarMenu: t('common.shell.sidebarMenu'),
+      close: t('common.actions.close'),
+      moreOptions: t('common.navigation.moreOptions'),
+      more: t('common.navigation.more'),
+      loading: t('common.actions.loading'),
+    };
   });
 
   logout(): void {

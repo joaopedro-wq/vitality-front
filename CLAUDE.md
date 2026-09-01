@@ -91,7 +91,7 @@ critério de organização, atualize lá, não aqui.
   design systems disputando token de cor. O que a web não entrega (push, câmera, deep link, botão
   voltar) vem de plugin, não de UI pronta. O que muda de comportamento entre as duas plataformas
   vive em `core/platform/` e é sempre no-op no navegador — nunca espalhar `Capacitor.isNative*()`
-  pelos componentes; perguntar ao `PlatformService`.
+  pelos componentes; perguntar ao `BsPlatformService` (`bandeira-shell`, ver decisão abaixo).
   - **O token não mora mais em `localStorage` cru**: `core/auth/token.store.ts` guarda no
     `Preferences` (no Android, `SharedPreferences` — fora do alcance de uma limpeza de dados do
     WebView). Como o `Preferences` é assíncrono e o `authInterceptor` roda no caminho síncrono de
@@ -105,14 +105,14 @@ critério de organização, atualize lá, não aqui.
   - **Expirar por ociosidade é comportamento de navegador**: `SessionInactivityService` não arma no
     app. Num aparelho pessoal, os 30 min só obrigariam a relogar a cada reabertura — o aparelho já
     tem tela de bloqueio. O que substitui é revalidar a sessão no `appStateChange`.
-  - **O botão físico de voltar tem uma ordem fixa**: fecha overlay (`OverlayStackService`) → navega
+  - **O botão físico de voltar tem uma ordem fixa**: fecha overlay (`BsOverlayStackService`) → navega
     para trás → na raiz, sai só no segundo toque (toast "toque de novo para sair", padrão Android).
     Componente com camada dispensável se registra na pilha via `effect` + `onCleanup`; a pilha só
     sabe fechar, não sabe o que a camada é.
   - **A landing não entra no app** (`nativeLandingGuard`): ela existe para converter visitante na web
     aberta; quem abriu o app já instalou.
   - **A inicialização nativa fica em `app.config.ts`, não no componente raiz.** Injetar o
-    `NativeShellService` em `App` arrastaria `AuthService`/`HttpClient` para a árvore de
+    `BsNativeShellService` em `App` arrastaria `AuthService`/`HttpClient` para a árvore de
     dependências do casco vazio — e quebrou `app.spec.ts` na hora. `provideAppInitializer` resolve
     sem acoplar nada.
   - **Fraunces é auto-hospedada** (`public/fonts`, `@font-face` no `styles.scss` com caminho
@@ -121,6 +121,53 @@ critério de organização, atualize lá, não aqui.
     Fraunces, e o navegador só baixa o woff2 quando um glifo casa com o `@font-face`. Um arquivo por
     estilo: sendo fonte variável, 600 e 700 são byte a byte o mesmo woff2.
 
+- **O motor de app shell/tema/paletas é o pacote `bandeira-shell`, não código local** (2026-09-01).
+  Extraído de `core/layout/`+`core/platform/` para `C:\Users\JP\Documents\projetos\bandeira-shell`
+  (repositório irmão, mesmo padrão de tarball local de `bandeira-ui`:
+  `"bandeira-shell": "file:vendor/bandeira-shell-0.1.0.tgz"`), pra reaproveitar em outros projetos
+  sem recriar sidebar/topbar responsivo, tema claro/escuro, paletas trocáveis e botão físico de
+  voltar do zero a cada vez. API via `provide*()` (`provideShellTheme`, `provideShellPalette`,
+  `provideShellNavigation`/`SHELL_NAVIGATION_CONFIG`, `provideShellNative`), no espírito de
+  `provideRouter`/`provideHttpClient` — itens de menu, paletas e rotas-raiz são config injetada
+  pelo app, não hardcoded no pacote. `AppShellComponent` (`core/layout/app-shell/`) virou wrapper
+  fino: só o que é específico do Vitality (logo, saudação, CTA "Registrar refeição", rodapé de
+  perfil, overlays de sessão/onboarding) entra via slots de projeção (`bsShellBrand`,
+  `bsShellGreeting`, `bsShellTopActions`, `bsShellSidebarFooter`, `bsShellOverlays`) do `<bs-shell>`
+  do pacote — grid, breakpoints, bottom-nav/bottom-sheet mobile, dropdown de tema/paleta e toggle
+  sidebar↔horizontal moraram lá. Tokens `--sidebar-*` viraram `--bs-sidebar-*` (contrato do
+  pacote, documentado em `bandeira-shell/styles/_palette-contract.scss`, mixin `bs-palette()` —
+  `styles.scss` usa `@include shell.bs-palette(...)` em vez de escrever os 4 blocos
+  `[data-palette='...']` na mão). O script anti-flash de `index.html` deixou de ter a lista de
+  paletas hardcoded — é regenerado por `scripts/sync-index-html.mjs` (rodado via `prestart`/
+  `prebuild`, `node --experimental-strip-types`) a partir da mesma lista em
+  `src/app/shell-palette.config.ts`, fonte única.
+  - **`bandeira-shell` tem DOIS entry points, não um** (`bandeira-shell` e `bandeira-shell/ui`) —
+    achado depurando uma regressão real: colocar `BsShellComponent` (que puxa Router, `bandeira-ui`
+    e ícones Lucide) no MESMO entry point que os serviços leves (`BsThemeService`,
+    `BsPlatformService`...) fazia QUALQUER import eager de um serviço leve arrastar o arquivo FESM
+    inteiro do pacote — ng-packagr empacota cada entry point como um único `.mjs`, e a
+    árvore-de-tree-shaking do esbuild sobre código Ivy "partial compilation" não é granular o
+    bastante pra eliminar só a parte não usada. Sintoma: bundle inicial de produção pulou de
+    ~718kB pra 1.14MB. `BsShellComponent`/`BsPalettePickerComponent` (pesados, só usados dentro do
+    chunk lazy do shell) foram pro entry point `bandeira-shell/ui`; tema/paleta/navegação/overlay/
+    plataforma (leves, usados também por guards/serviços que rodam antes do login) ficaram no
+    entry point default.
+  - **Import eager de QUALQUER binding de um módulo carrega o módulo inteiro, side effects
+    inclusive** — segunda causa da mesma regressão, independente da separação de entry points
+    acima. `app.config.ts` importava `ROTAS_RAIZ` (um array de strings) de um arquivo que também
+    declarava ~9 ícones Lucide no topo (usados só dentro do `AppShellComponent`, lazy) — só isso
+    já bastava pra esbuild considerar aqueles ícones alcançáveis de forma síncrona e prender o
+    chunk de ícones compartilhado (usado por várias outras features) no bundle inicial. Corrigido
+    separando `ROTAS_RAIZ` (`shell-routes.config.ts`, sem imports pesados, importado eager por
+    `app.config.ts`) de `buildNavItems()`/`provideVitalityShellNavigation()`
+    (`shell-nav.config.ts`, com os ícones Lucide, registrado só no `providers` do `@Component` de
+    `AppShellComponent` — nunca na rota nem em `app.config.ts`, mesmo a rota sendo `loadComponent`:
+    um `providers` no OBJETO da rota é avaliado eager porque `app.routes.ts` é importado eager por
+    `app.config.ts`, só o que a rota carrega via `loadComponent`/`loadChildren` é de fato lazy).
+    **Lição geral**: ao suspeitar de bundle inicial inflado por um pacote de terceiros com um único
+    entry point, comparar a lista de `sources` do sourcemap do maior chunk contra uma build sem a
+    mudança (`ng build --source-map`, depois `JSON.parse` no `.map` e ranquear `sources`) — muito
+    mais confiável que adivinhar por `grep` no bundle minificado.
 - **Bug crítico corrigido: Tailwind não gerava nenhuma classe utilitária** (2026-08-13, achado
   migrando o SCSS de Metas pra Tailwind). Causa raiz: o `@angular/build` só ativa o pipeline do
   PostCSS/Tailwind automaticamente se encontrar um `tailwind.config.{js,cjs,mjs,ts}` na raiz — e
@@ -138,8 +185,8 @@ critério de organização, atualize lá, não aqui.
 - **Tokens únicos**: `--bd-*` (definidos pela bandeira-ui) são a fonte de verdade visual.
   `src/styles.scss` sobrescreve os `--bd-*` default com a paleta do produto e o `@theme` do
   Tailwind aponta para os mesmos `--bd-*` — sem duplicar paleta em dois lugares. Tema controlado
-  via `data-theme` no `documentElement` (`ThemeService` em `core/layout/theme.service.ts`),
-  persistido em `localStorage`, com script anti-flash no `index.html`.
+  via `data-theme` no `documentElement` (`BsThemeService`, de `bandeira-shell`, ver decisão
+  abaixo), persistido em `localStorage`, com script anti-flash no `index.html`.
 - **Paletas trocáveis do sistema** (2026-08-13): a antiga "Cozinha Quente" coral foi substituída
   por Horta (default), Especiaria, Sálvia e Ameixa Reversa. `PaletteService` persiste a escolha em
   `localStorage` (`palette`) e sincroniza `data-palette` no `documentElement`; o script anti-flash

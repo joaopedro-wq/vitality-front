@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node --experimental-strip-types scripts/sync-index-html.mjs",
     "start": "ng serve",
+    "prebuild": "node --experimental-strip-types scripts/sync-index-html.mjs",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -43,6 +45,7 @@
     "@jsverse/transloco-locale": "^8.4.0",
     "@lucide/angular": "^1.31.0",
     "@primeuix/themes": "^1.2.5",
+    "bandeira-shell": "file:vendor/bandeira-shell-0.1.0.tgz",
     "bandeira-ui": "file:vendor/bandeira-ui-0.2.0.tgz",
     "ngx-toastr": "^19.1.0",
     "primeng": "20.4.0",

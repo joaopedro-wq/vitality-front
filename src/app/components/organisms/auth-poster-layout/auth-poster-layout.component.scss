@@ -6,8 +6,8 @@
   min-height: 100vh;
   padding: 40px 20px;
   overflow: hidden;
-  background: var(--sidebar-bg);
-  color: var(--sidebar-fg);
+  background: var(--bs-sidebar-bg);
+  color: var(--bs-sidebar-fg);
   font-family: var(--bd-font-sans);
 }
 .auth-language {
@@ -32,7 +32,7 @@
   inset: 0;
   background: repeating-linear-gradient(
     135deg,
-    color-mix(in srgb, var(--sidebar-bg) 16%, transparent) 0 2px,
+    color-mix(in srgb, var(--bs-sidebar-bg) 16%, transparent) 0 2px,
     transparent 2px 26px
   );
 }
@@ -52,7 +52,7 @@
   height: 100%;
 }
 .poster-ring circle {
-  stroke: var(--sidebar-fg);
+  stroke: var(--bs-sidebar-fg);
 }
 
 .poster-heart {
@@ -74,7 +74,7 @@
   opacity: 0.22;
 }
 .poster-heart--2 path {
-  stroke: var(--sidebar-fg);
+  stroke: var(--bs-sidebar-fg);
 }
 .poster-heart--6 {
   top: 27%;
@@ -84,7 +84,7 @@
   opacity: 0.18;
 }
 .poster-heart--6 path {
-  fill: var(--sidebar-fg);
+  fill: var(--bs-sidebar-fg);
 }
 .poster-heart--4 {
   top: 47%;
@@ -94,7 +94,7 @@
   opacity: 0.24;
 }
 .poster-heart--4 path {
-  stroke: var(--sidebar-fg);
+  stroke: var(--bs-sidebar-fg);
 }
 .poster-heart--8 {
   top: 68%;
@@ -104,7 +104,7 @@
   opacity: 0.2;
 }
 .poster-heart--8 path {
-  fill: var(--sidebar-fg);
+  fill: var(--bs-sidebar-fg);
 }
 .poster-heart--1 {
   bottom: 5%;
@@ -114,7 +114,7 @@
   opacity: 0.55;
 }
 .poster-heart--1 path:first-child {
-  fill: var(--sidebar-fg);
+  fill: var(--bs-sidebar-fg);
 }
 .poster-heart--1 path:last-child {
   stroke: var(--bd-primary);
@@ -129,7 +129,7 @@
   opacity: 0.3;
 }
 .poster-heart--3 path {
-  fill: var(--sidebar-fg);
+  fill: var(--bs-sidebar-fg);
 }
 .poster-heart--7 {
   top: 52%;
@@ -139,7 +139,7 @@
   opacity: 0.2;
 }
 .poster-heart--7 path {
-  stroke: var(--sidebar-fg);
+  stroke: var(--bs-sidebar-fg);
 }
 .poster-heart--5 {
   top: 70%;
@@ -149,7 +149,7 @@
   opacity: 0.28;
 }
 .poster-heart--5 path {
-  fill: var(--sidebar-fg);
+  fill: var(--bs-sidebar-fg);
 }
 .poster-heart--9 {
   top: 87%;
@@ -159,7 +159,7 @@
   opacity: 0.2;
 }
 .poster-heart--9 path {
-  stroke: var(--sidebar-fg);
+  stroke: var(--bs-sidebar-fg);
 }
 
 .stage {

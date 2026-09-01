@@ -1,30 +1,80 @@
 import { provideHttpClient, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import {
   ApplicationConfig,
+  EnvironmentProviders,
   importProvidersFrom,
   inject,
+  makeEnvironmentProviders,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { ToastrModule } from 'ngx-toastr';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { providePrimeNG } from 'primeng/config';
 import { firstValueFrom } from 'rxjs';
 import { isDevMode } from '@angular/core';
-import { provideTransloco, translocoConfig } from '@jsverse/transloco';
+import { provideTransloco, TranslocoService, translocoConfig } from '@jsverse/transloco';
 import { provideTranslocoLocale } from '@jsverse/transloco-locale';
+import {
+  BsNativeShellService,
+  provideShellPalette,
+  provideShellTheme,
+  SHELL_NATIVE_CONFIG,
+  type ShellNativeConfig,
+} from 'bandeira-shell';
 
 import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
 import { TokenStore } from './core/auth/token.store';
-import { NativeShellService } from './core/platform/native-shell.service';
 import { authInterceptor } from './core/auth/auth.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
 import { localeInterceptor } from './core/i18n/locale.interceptor';
 import { VitalityPrimeNgPreset } from './core/layout/primeng-preset';
 import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
+import { PALETAS, DEFAULT_PALETTE_ID } from './shell-palette.config';
+import { ROTAS_RAIZ } from './shell-routes.config';
+
+/**
+ * `SHELL_NATIVE_CONFIG` via `useFactory` (não `provideShellNative()`, que só
+ * aceita um valor estático) — os hooks `onExitConfirmRequested`/`onResume`
+ * precisam de `ToastrService`/`TranslocoService`/`AuthService`, e `inject()`
+ * só funciona durante a construção do provider, nunca dentro de um callback
+ * chamado depois (ex.: no toque do botão físico de voltar). Por isso os
+ * serviços são resolvidos aqui e capturados no closure, não injetados de
+ * novo dentro dos hooks. Registra também o `provideAppInitializer` que
+ * chama `BsNativeShellService.start()` — o mesmo papel que `provideShell()`
+ * cumpriria automaticamente se os itens de navegação não precisassem de DI.
+ */
+function provideVitalityShellNative(rootRoutes: string[]): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    {
+      provide: SHELL_NATIVE_CONFIG,
+      useFactory: (): Required<ShellNativeConfig> => {
+        const toastr = inject(ToastrService);
+        const transloco = inject(TranslocoService);
+        const auth = inject(AuthService);
+
+        return {
+          rootRoutes,
+          exitConfirmWindowMs: 2000,
+          autoStart: true,
+          onExitConfirmRequested: () => {
+            toastr.info(transloco.translate('common.app.exitHint'));
+          },
+          onResume: () => {
+            if (auth.isAuthenticated()) auth.restoreSession().subscribe();
+          },
+        };
+      },
+    },
+    provideAppInitializer(() => {
+      const nativeConfig = inject(SHELL_NATIVE_CONFIG);
+      if (nativeConfig.autoStart) inject(BsNativeShellService).start();
+    }),
+  ]);
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -48,6 +98,12 @@ export const appConfig: ApplicationConfig = {
     }),
     provideTranslocoLocale({ langToLocaleMapping: { 'pt-BR': 'pt-BR', 'en-US': 'en-US' } }),
     provideAnimations(),
+    provideShellTheme(),
+    provideShellPalette({ options: PALETAS, defaultId: DEFAULT_PALETTE_ID }),
+    // `SHELL_NAVIGATION_CONFIG` NÃO entra aqui — é provider da rota que
+    // lazy-carrega `AppShellComponent` (`app.routes.ts`), pra manter os
+    // ícones Lucide dos itens de menu fora do bundle inicial. Ver
+    // `provideVitalityShellNavigation` em `shell-nav.config.ts`.
     // Tem que ser aqui (root), não provider de rota lazy: `providePrimeNG`
     // registra sua config via `provideAppInitializer`, e isso só roda de
     // verdade no bootstrap raiz da aplicação — colocado num injector de rota
@@ -86,6 +142,10 @@ export const appConfig: ApplicationConfig = {
     // status e baixa da splash nativa. No-op no navegador. Fica aqui, e não no
     // componente raiz, pra não arrastar AuthService/HttpClient para dentro da
     // árvore de dependências de `App` — que é (e deve seguir) um casco vazio.
-    provideAppInitializer(() => inject(NativeShellService).start()),
+    // O motor em si (`BsNativeShellService`, dentro de `bandeira-shell`) não
+    // conhece `AuthService`/`ToastrService` — os dois pontos de acoplamento
+    // viram hooks (`onExitConfirmRequested`/`onResume`) resolvidos em
+    // `provideVitalityShellNative`.
+    provideVitalityShellNative(ROTAS_RAIZ),
   ],
 };

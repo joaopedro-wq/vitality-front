@@ -83,13 +83,12 @@
 
 .landing-hero {
   padding: 3.5rem 1rem 4rem;
-  background:
-    radial-gradient(
+  background: radial-gradient(
       70% 90% at 100% 0%,
       color-mix(in srgb, var(--bd-accent) 25%, transparent),
       transparent
     ),
-    var(--sidebar-bg);
+    var(--bs-sidebar-bg);
 }
 .landing-hero-grid,
 .landing-feature-grid {
@@ -109,7 +108,7 @@
   text-transform: uppercase;
 }
 .landing-eyebrow--inverse {
-  color: var(--sidebar-fg-muted);
+  color: var(--bs-sidebar-fg-muted);
 }
 .landing-hero-title,
 .landing-h2,
@@ -122,14 +121,14 @@
 }
 .landing-hero-title {
   max-width: 11ch;
-  color: var(--sidebar-fg);
+  color: var(--bs-sidebar-fg);
   font-size: clamp(2.3rem, 9vw, 4.25rem);
   line-height: 1.02;
 }
 .landing-hero-lede {
   max-width: 48ch;
   margin: 1.25rem 0 1.75rem;
-  color: var(--sidebar-fg-muted);
+  color: var(--bs-sidebar-fg-muted);
   font-size: clamp(1rem, 2.5vw, 1.125rem);
   line-height: 1.6;
 }
@@ -138,11 +137,11 @@
   gap: 0.625rem;
 }
 .landing-hero-actions a[variant='ghost'] {
-  border-color: color-mix(in srgb, var(--sidebar-fg) 30%, transparent);
-  color: var(--sidebar-fg);
+  border-color: color-mix(in srgb, var(--bs-sidebar-fg) 30%, transparent);
+  color: var(--bs-sidebar-fg);
 }
 .landing-hero-actions a[variant='ghost']:hover {
-  background: color-mix(in srgb, var(--sidebar-fg) 10%, transparent);
+  background: color-mix(in srgb, var(--bs-sidebar-fg) 10%, transparent);
 }
 .landing-hero-visual,
 .landing-feature-stage {
@@ -153,7 +152,7 @@
   box-shadow: var(--bd-shadow-lg);
 }
 .landing-hero-visual {
-  border-color: color-mix(in srgb, var(--sidebar-fg) 22%, transparent);
+  border-color: color-mix(in srgb, var(--bs-sidebar-fg) 22%, transparent);
   transform-origin: center;
 }
 .landing-window-bar {
@@ -200,10 +199,8 @@
 }
 .landing-benefit {
   padding: 1.25rem;
-  transition:
-    transform 0.36s var(--landing-motion-ease),
-    border-color 0.36s var(--landing-motion-ease),
-    box-shadow 0.36s var(--landing-motion-ease);
+  transition: transform 0.36s var(--landing-motion-ease),
+    border-color 0.36s var(--landing-motion-ease), box-shadow 0.36s var(--landing-motion-ease);
 }
 .landing-benefit:hover {
   transform: translateY(-0.25rem);
@@ -312,10 +309,8 @@
   font: inherit;
   font-size: 0.8125rem;
   font-weight: 700;
-  transition:
-    border-color var(--bd-duration) var(--bd-ease),
-    background-color var(--bd-duration) var(--bd-ease),
-    color var(--bd-duration) var(--bd-ease);
+  transition: border-color var(--bd-duration) var(--bd-ease),
+    background-color var(--bd-duration) var(--bd-ease), color var(--bd-duration) var(--bd-ease);
 }
 .landing-feature-tabs button:hover,
 .landing-feature-tabs button.is-active {
@@ -413,26 +408,25 @@
 .landing-final-cta {
   padding: 2.5rem 1.25rem;
   border-radius: 1.5rem;
-  background:
-    radial-gradient(
+  background: radial-gradient(
       75% 120% at 100% 0%,
       color-mix(in srgb, var(--bd-accent) 25%, transparent),
       transparent
     ),
-    var(--sidebar-bg);
+    var(--bs-sidebar-bg);
   text-align: center;
 }
 .landing-final-cta h2 {
   max-width: 20ch;
   margin-inline: auto;
-  color: var(--sidebar-fg);
+  color: var(--bs-sidebar-fg);
   font-size: clamp(1.75rem, 5vw, 2.625rem);
   line-height: 1.12;
 }
 .landing-final-cta p {
   max-width: 48ch;
   margin: 1rem auto 1.5rem;
-  color: var(--sidebar-fg-muted);
+  color: var(--bs-sidebar-fg-muted);
   line-height: 1.6;
 }
 .landing-footer {

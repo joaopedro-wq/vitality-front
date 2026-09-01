@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { BsPlatformService } from 'bandeira-shell';
 
 import { AuthService } from '../auth/auth.service';
-import { PlatformService } from './platform.service';
 
 export const nativeLandingGuard: CanActivateFn = () => {
-  const platform = inject(PlatformService);
+  const platform = inject(BsPlatformService);
 
   if (!platform.isNative) return true;
 

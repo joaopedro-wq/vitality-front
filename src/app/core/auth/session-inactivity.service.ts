@@ -2,7 +2,8 @@ import { Injectable, Injector, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 
-import { PlatformService } from '../platform/platform.service';
+import { BsPlatformService } from 'bandeira-shell';
+
 import { AuthService } from './auth.service';
 import { TOKEN_WEB_STORAGE_KEY } from './token.store';
 
@@ -19,7 +20,7 @@ const TOKEN_KEY = TOKEN_WEB_STORAGE_KEY;
 export class SessionInactivityService {
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
-  private readonly platform = inject(PlatformService);
+  private readonly platform = inject(BsPlatformService);
   private warningTimer: ReturnType<typeof setTimeout> | null = null;
   private logoutTimer: ReturnType<typeof setTimeout> | null = null;
   private navigationSubscription: Subscription | null = null;

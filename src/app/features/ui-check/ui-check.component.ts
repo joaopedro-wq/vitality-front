@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { BdBadgeComponent, BdButtonComponent, BdCardComponent } from 'bandeira-ui';
+import { BsThemeService } from 'bandeira-shell';
 
 import {
   PlateLoaderComponent,
@@ -7,7 +8,6 @@ import {
 } from '../../components/atoms/plate-loader/plate-loader.component';
 import { LoadingStateComponent } from '../../components/molecules/loading-state/loading-state.component';
 import { PageTitleComponent } from '../../components/molecules/page-title/page-title.component';
-import { ThemeService } from '../../core/layout/theme.service';
 import {
   ConfirmDialogComponent,
   type ConfirmDialogVariant,
@@ -52,12 +52,12 @@ import {
 
         <div class="flex flex-wrap items-end gap-8">
           @for (t of tamanhos; track t) {
-            <div class="flex flex-col items-center gap-2">
-              <vtp-plate-loader [tamanho]="t" />
-              <span class="text-[11px] font-bold uppercase tracking-widest text-fg-subtle">
-                {{ t }}
-              </span>
-            </div>
+          <div class="flex flex-col items-center gap-2">
+            <vtp-plate-loader [tamanho]="t" />
+            <span class="text-[11px] font-bold uppercase tracking-widest text-fg-subtle">
+              {{ t }}
+            </span>
+          </div>
           }
         </div>
 
@@ -94,19 +94,19 @@ import {
 
         <div class="grid gap-3 sm:grid-cols-3">
           @for (prototipo of prototipos; track prototipo.variante) {
-            <button
-              bdButton
-              variant="ghost"
-              type="button"
-              class="!h-auto !min-h-0 flex-col !items-start !gap-1 !p-4 text-left"
-              (click)="abrirConfirmacao(prototipo.variante)"
-            >
-              <span class="text-[11px] font-extrabold uppercase tracking-wider text-primary">
-                {{ prototipo.nome }}
-              </span>
-              <span class="text-sm font-bold text-fg">{{ prototipo.titulo }}</span>
-              <span class="text-xs font-normal text-fg-muted">{{ prototipo.descricao }}</span>
-            </button>
+          <button
+            bdButton
+            variant="ghost"
+            type="button"
+            class="!h-auto !min-h-0 flex-col !items-start !gap-1 !p-4 text-left"
+            (click)="abrirConfirmacao(prototipo.variante)"
+          >
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-primary">
+              {{ prototipo.nome }}
+            </span>
+            <span class="text-sm font-bold text-fg">{{ prototipo.titulo }}</span>
+            <span class="text-xs font-normal text-fg-muted">{{ prototipo.descricao }}</span>
+          </button>
           }
         </div>
       </bd-card>
@@ -125,7 +125,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiCheckComponent {
-  protected readonly theme = inject(ThemeService);
+  protected readonly theme = inject(BsThemeService);
   protected readonly tamanhos: TamanhoPrato[] = ['xs', 'sm', 'md', 'lg'];
   protected readonly confirmacaoAberta = signal<ConfirmDialogVariant | null>(null);
   protected readonly prototipos: ReadonlyArray<{

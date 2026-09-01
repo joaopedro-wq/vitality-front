@@ -36,24 +36,35 @@
     />
     <meta name="twitter:image" content="https://vitality-front.vercel.app/images/og-image.png" />
 
-    <!-- Evita flash de tema/paleta errados antes do Angular iniciar -->
+    <!-- Evita flash de idioma/tema/paleta errados antes do Angular iniciar -->
     <script>
       (function () {
         try {
           var storedLanguage = localStorage.getItem('vitality-language');
           var initialLanguage = storedLanguage === 'en-US' ? 'en-US' : 'pt-BR';
           document.documentElement.setAttribute('lang', initialLanguage);
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Bloco de tema/paleta regenerado por scripts/sync-index-html.mjs (rodado via
+         "prestart"/"prebuild") a partir de src/app/shell-palette.config.ts — fonte
+         única, não editar à mão entre os marcadores abaixo. -->
+    <!-- ANTI_FLASH_START -->
+    <script>
+      (function () {
+        try {
           var t = localStorage.getItem('theme');
           if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
           document.documentElement.setAttribute('data-theme', t);
 
-          var validPalettes = ['horta', 'especiaria', 'salvia', 'ameixa-reversa'];
+          var validPalettes = ["horta","especiaria","salvia","ameixa-reversa"];
           var p = localStorage.getItem('palette');
-          if (validPalettes.indexOf(p) === -1) p = 'horta';
+          if (validPalettes.indexOf(p) === -1) p = "horta";
           document.documentElement.setAttribute('data-palette', p);
         } catch (e) {}
       })();
     </script>
+    <!-- ANTI_FLASH_END -->
 
     <style>
       .vtp-splash {

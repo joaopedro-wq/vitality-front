@@ -1,261 +1,87 @@
-<div
-  class="shell"
-  [class.sidebar-layout]="navigationLayout.layout() === 'sidebar'"
-  *transloco="let t"
->
-  @if (navigationLayout.layout() === 'sidebar') {
-    <aside class="sidebar">
-      <a routerLink="/dashboard" class="logo">
-        <svg width="26" height="26" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-          <path
-            d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
-            fill="var(--bd-primary)"
-          />
-          <path
-            d="M10 46 L31 46 L39 29 L50 64 L59 38 L67 46 L90 46"
-            stroke="var(--sidebar-accent)"
-            stroke-width="9"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span class="word font-mono">vitality<span>+</span></span>
-      </a>
-      <div class="grain" aria-hidden="true"></div>
+<bs-shell [labels]="shellLabels()" *transloco="let t">
+  <a bsShellBrand routerLink="/dashboard" class="logo">
+    <svg width="26" height="26" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <path
+        d="M50 90 C18 66 6 45 6 28 C6 13 19 2 32 2 C43 2 49 11 50 18 C51 11 57 2 68 2 C81 2 94 13 94 28 C94 45 82 66 50 90 Z"
+        fill="var(--bd-primary)"
+      />
+      <path
+        d="M10 46 L31 46 L39 29 L50 64 L59 38 L67 46 L90 46"
+        stroke="var(--bs-sidebar-accent)"
+        stroke-width="9"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+    <span class="word font-mono">vitality<span>+</span></span>
+  </a>
 
-      <nav [attr.aria-label]="t('common.navigation.main')">
-        @for (item of navItemsVisiveis(); track item.path) {
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="active"
-            class="nav-item"
-            [attr.data-tour]="tourTarget(item.path, 'desktop')"
-          >
-            <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
-            {{ t(item.label) }}
-          </a>
-        }
-      </nav>
-
-      <a routerLink="/perfil" class="sidebar-foot" [bdTooltip]="t('common.navigation.profile')">
-        <bd-avatar
-          [name]="auth.currentUser()?.name ?? '?'"
-          [src]="auth.currentUser()?.avatar ?? ''"
-          size="sm"
-        />
-        <span class="txt">
-          <b>{{ auth.currentUser()?.name ?? t('common.navigation.account') }}</b>
-          {{ t('common.navigation.profile') }}
-        </span>
-      </a>
-    </aside>
-  }
-
-  <div class="main">
-    <header class="topbar">
-      <div class="topbar-leading">
-        <div class="greeting">
-          <span class="greeting-full">{{ saudacao() }}</span>
-          <span class="greeting-compact">{{ saudacaoPeriodo() }}</span>
-          <span class="greeting-mobile">{{ t('common.shell.hello') }}</span>
-        </div>
-      </div>
-
-      <div class="top-actions">
-        <vtp-language-selector />
-        <button
-          class="layout-toggle"
-          bdButton
-          variant="ghost"
-          size="sm"
-          iconOnly
-          [bdTooltip]="
-            navigationLayout.layout() === 'sidebar'
-              ? t('common.shell.horizontalMenu')
-              : t('common.shell.sidebarMenu')
-          "
-          placement="bottom"
-          [attr.aria-label]="
-            navigationLayout.layout() === 'sidebar'
-              ? t('common.shell.horizontalMenu')
-              : t('common.shell.sidebarMenu')
-          "
-          (click)="navigationLayout.toggle()"
-        >
-          @if (navigationLayout.layout() === 'sidebar') {
-            <svg lucidePanelTop size="16" aria-hidden="true"></svg>
-          } @else {
-            <svg lucidePanelLeft size="16" aria-hidden="true"></svg>
-          }
-        </button>
-
-        <div #paletteControl class="palette-control">
-          <button
-            bdButton
-            variant="ghost"
-            size="sm"
-            iconOnly
-            [bdTooltip]="t('common.shell.palette')"
-            placement="bottom"
-            [attr.aria-label]="t('common.shell.palette')"
-            aria-haspopup="menu"
-            [attr.aria-expanded]="paletaMenuAberto()"
-            (click)="togglePaletaMenu()"
-          >
-            <svg lucidePalette size="16" aria-hidden="true"></svg>
-          </button>
-          @if (paletaMenuAberto()) {
-            <vtp-palette-picker
-              [paletas]="palette.paletas"
-              [ativa]="palette.palette()"
-              (escolher)="escolherPaleta($event)"
-            />
-          }
-        </div>
-
-        <button
-          bdButton
-          variant="ghost"
-          size="sm"
-          iconOnly
-          [bdTooltip]="
-            theme.theme() === 'dark' ? t('common.shell.lightTheme') : t('common.shell.darkTheme')
-          "
-          placement="bottom"
-          [attr.aria-label]="
-            theme.theme() === 'dark' ? t('common.shell.lightTheme') : t('common.shell.darkTheme')
-          "
-          (click)="theme.toggle()"
-        >
-          @if (theme.theme() === 'dark') {
-            <svg lucideSun size="16" aria-hidden="true"></svg>
-          } @else {
-            <svg lucideMoon size="16" aria-hidden="true"></svg>
-          }
-        </button>
-
-        <a
-          routerLink="/diario"
-          [queryParams]="{ registrar: 1 }"
-          class="cta"
-          data-tour="onboarding-register-meal"
-          [bdTooltip]="t('common.shell.registerMeal')"
-          placement="bottom"
-          [attr.aria-label]="t('common.shell.registerMeal')"
-        >
-          <svg lucidePlus size="15" aria-hidden="true"></svg>
-          <span class="cta-full">{{ t('common.shell.registerMeal') }}</span>
-          <span class="cta-compact">{{ t('common.shell.register') }}</span>
-        </a>
-
-        <button
-          bdButton
-          variant="ghost"
-          size="sm"
-          iconOnly
-          [bdTooltip]="t('common.actions.logout')"
-          placement="bottom"
-          [attr.aria-label]="t('common.actions.logout')"
-          (click)="logout()"
-        >
-          <svg lucideLogOut size="16" aria-hidden="true"></svg>
-        </button>
-      </div>
-    </header>
-
-    @if (navigationLayout.layout() === 'horizontal') {
-      <nav class="horizontal-nav" [attr.aria-label]="t('common.navigation.main')">
-        <div class="horizontal-nav__inner">
-          @for (item of navItemsVisiveis(); track item.path) {
-            <a
-              [routerLink]="item.path"
-              routerLinkActive="active"
-              class="horizontal-nav__item"
-              [attr.data-tour]="tourTarget(item.path, 'desktop')"
-            >
-              <svg [lucideIcon]="item.icon" size="17" aria-hidden="true"></svg>
-              {{ t(item.label) }}
-            </a>
-          }
-        </div>
-      </nav>
-    }
-
-    <main class="content">
-      <router-outlet />
-      <!-- Troca de rota baixa um chunk (`loadComponent`). Gateado: navegação
-           com chunk em cache não chega a piscar nada. -->
-      @if (navegandoVisivel()) {
-        <div class="route-loading">
-          <vtp-loading-state [titulo]="t('common.actions.loading')" />
-        </div>
-      }
-    </main>
+  <div bsShellGreeting class="greeting">
+    <span class="greeting-full">{{ saudacao() }}</span>
+    <span class="greeting-compact">{{ saudacaoPeriodo() }}</span>
+    <span class="greeting-mobile">{{ t('common.shell.hello') }}</span>
   </div>
 
-  @if (mobileMoreOpen()) {
-    <button
-      class="mobile-scrim"
-      [attr.aria-label]="t('common.navigation.close')"
-      (click)="closeMobileMore()"
-    ></button>
-    <section
-      class="mobile-more-sheet"
-      role="dialog"
-      aria-modal="true"
-      [attr.aria-label]="t('common.navigation.moreOptions')"
-    >
-      <div class="mobile-more-sheet__header">
-        <span>{{ t('common.navigation.moreOptions') }}</span>
-        <button bdButton variant="ghost" size="sm" (click)="closeMobileMore()">
-          {{ t('common.actions.close') }}
-        </button>
-      </div>
-      <nav [attr.aria-label]="t('common.navigation.moreOptions')">
-        @for (item of mobileMoreItems(); track item.path) {
-          <a [routerLink]="item.path" class="mobile-more-sheet__item" (click)="closeMobileMore()">
-            <svg [lucideIcon]="item.icon" size="18" aria-hidden="true"></svg>
-            {{ t(item.label) }}
-          </a>
-        }
-      </nav>
-    </section>
-  }
+  <vtp-language-selector bsShellTopActionsBefore />
 
-  <nav class="mobile-nav" [attr.aria-label]="t('common.navigation.main')">
-    @for (item of mobileNavItems(); track item.path) {
-      <a
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        class="mobile-nav__item"
-        [attr.data-tour]="tourTarget(item.path, 'mobile')"
-      >
-        <svg [lucideIcon]="item.icon" size="19" aria-hidden="true"></svg>
-        <span>{{ t(item.mobileLabel ?? item.label) }}</span>
-      </a>
-    }
-    <button
-      class="mobile-nav__item"
-      [class.active]="mobileMoreOpen() || isMobileMoreActive()"
-      [attr.aria-expanded]="mobileMoreOpen()"
-      aria-haspopup="dialog"
-      (click)="toggleMobileMore()"
+  <div bsShellTopActions class="top-actions">
+    <a
+      routerLink="/diario"
+      [queryParams]="{ registrar: 1 }"
+      class="cta"
+      data-tour="onboarding-register-meal"
+      [bdTooltip]="t('common.shell.registerMeal')"
+      placement="bottom"
+      [attr.aria-label]="t('common.shell.registerMeal')"
     >
-      <svg lucideEllipsis size="19" aria-hidden="true"></svg>
-      <span>{{ t('common.navigation.more') }}</span>
+      <svg lucidePlus size="15" aria-hidden="true"></svg>
+      <span class="cta-full">{{ t('common.shell.registerMeal') }}</span>
+      <span class="cta-compact">{{ t('common.shell.register') }}</span>
+    </a>
+
+    <button
+      bdButton
+      variant="ghost"
+      size="sm"
+      iconOnly
+      [bdTooltip]="t('common.actions.logout')"
+      placement="bottom"
+      [attr.aria-label]="t('common.actions.logout')"
+      (click)="logout()"
+    >
+      <svg lucideLogOut size="16" aria-hidden="true"></svg>
     </button>
-  </nav>
+  </div>
 
-  <vtp-confirm-dialog
-    [aberto]="inactivity.warningOpen()"
-    variante="soft"
-    [dismissible]="false"
-    [mostrarCancelar]="false"
-    [titulo]="t('auth.sessionWarning.title')"
-    [descricao]="t('auth.sessionWarning.description')"
-    [confirmarTexto]="t('auth.sessionWarning.continue')"
-    (confirmado)="inactivity.continueSession()"
-  />
-  <vtp-onboarding-welcome />
-  <bd-tour [scrollIntoView]="true" [spotPadding]="10" />
-</div>
+  <a
+    bsShellSidebarFooter
+    routerLink="/perfil"
+    class="sidebar-foot"
+    [bdTooltip]="t('common.navigation.profile')"
+  >
+    <bd-avatar
+      [name]="auth.currentUser()?.name ?? '?'"
+      [src]="auth.currentUser()?.avatar ?? ''"
+      size="sm"
+    />
+    <span class="txt">
+      <b>{{ auth.currentUser()?.name ?? t('common.navigation.account') }}</b>
+      {{ t('common.navigation.profile') }}
+    </span>
+  </a>
+
+  <div bsShellOverlays>
+    <vtp-confirm-dialog
+      [aberto]="inactivity.warningOpen()"
+      variante="soft"
+      [dismissible]="false"
+      [mostrarCancelar]="false"
+      [titulo]="t('auth.sessionWarning.title')"
+      [descricao]="t('auth.sessionWarning.description')"
+      [confirmarTexto]="t('auth.sessionWarning.continue')"
+      (confirmado)="inactivity.continueSession()"
+    />
+    <vtp-onboarding-welcome />
+    <bd-tour [scrollIntoView]="true" [spotPadding]="10" />
+  </div>
+</bs-shell>
